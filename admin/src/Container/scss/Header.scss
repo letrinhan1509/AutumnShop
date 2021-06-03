@@ -1,0 +1,9 @@
+.ant-layout {
+    .header {
+        background: #fff;
+        .ant-menu{
+            display: flex;
+            justify-content: flex-end;
+        }
+    }
+}
