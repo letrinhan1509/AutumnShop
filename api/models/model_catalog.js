@@ -7,17 +7,35 @@ var dataListPro=[];
 
             // DANH MỤC:
     // Danh sách các danh mục:
-exports.list_categorys = async () => {
+exports.list_Categorys = async () => {
     return new Promise( (hamOK, hamLoi) => {
         let sql = `SELECT danhmuc.tendm, loaisp.tenloai
         FROM ((sanpham JOIN danhmuc ON sanpham.madm = danhmuc.madm)
         JOIN loaisp ON sanpham.maloai = loaisp.maloai)`;
         db.query(sql, (err, result) => {
             if(err){
+                console.log("Error!!!");
                 hamLoi(err);
             }else{
                 console.log('List success');
                 hamOK(result);
+            }
+        })
+    })
+}
+    // Get danh mục theo id:
+exports.get_Category_Id = async (id) => {
+    return new Promise( (hamOK, hamLoi) => {
+        let sql = `SELECT * FROM danhmuc WHERE madm='${id}'`;
+        db.query(sql, (err, result) => {
+            if(err)
+                hamLoi(err);
+            else{
+                if(result[0] == null){  // Không có trong DB:
+                    hamOK(-1)
+                }else{
+                    hamOK(result[0]);
+                }
             }
         })
     })
@@ -90,7 +108,7 @@ exports.listByName = async (nameCat) => {
     )
 }
     // Get loại theo id:
-exports.getById = async (typeId) => {
+exports.get_Type_Id = async (typeId) => {
     return new Promise( (hamOK, hamLoi) => {
         let sql = `SELECT * FROM loaisp WHERE maloai='${typeId}'`;
         db.query(sql, (err, result) => {
@@ -107,7 +125,7 @@ exports.getById = async (typeId) => {
     })
 }
     // Thêm loại sản phẩm:
-exports.insertType = (data) => {
+exports.insert_Type = (data) => {
     return new Promise( (resolve, reject) => {
         let sql = "INSERT INTO loaisp SET ?";
         db.query(sql, data, (err, result) => {
@@ -121,14 +139,14 @@ exports.insertType = (data) => {
     })
 }
     // Cập nhật loại sản phẩm:
-exports.updateType = (typeId, name) => {
+exports.update_Type = (typeId, name) => {
     let sql = `UPDATE loaisp SET tenloai = '${name}' WHERE maloai = '${typeId}'`;
     db.query(sql, (err, result) => {
         console.log('Update type success');
     })
 }
     // Xoá loại sản phẩm:
-exports.deleteType = (typeId) => {
+exports.delete_Type = (typeId) => {
     return new Promise( (hamOK, hamLoi) => {
         let sql_type = `SELECT sanpham.code, sanpham.tensp 
         FROM sanpham JOIN loaisp 

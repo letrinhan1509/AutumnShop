@@ -5,11 +5,6 @@ const jwt = require("jsonwebtoken");
 
 const db = require('../models/database');
 const modelAdmin = require('../models/model_admin');
-const modelUser = require('../models/model_user');
-const modelProduct = require('../models/model_product');
-const modelCatalog = require('../models/model_catalog');
-const modelOrder = require('../models/model_order');
-const modelProducer= require('../models/model_producer');
 const { json } = require('express');
 
 const signToken = (id) => {

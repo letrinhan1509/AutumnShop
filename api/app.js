@@ -12,6 +12,7 @@ const adminRouter = require('./routes/admin');
 const catalogRouter = require('./routes/catalog');
 const productRouter = require('./routes/product');
 const orderRouter = require('./routes/order');
+const producerRouter = require('./routes/producer');
 
 var app = express();
 
@@ -37,6 +38,7 @@ app.use('/api/v1/khach-hang', usersRouter);
 app.use('/api/v1/danh-muc', catalogRouter);
 app.use('/api/v1/san-pham', productRouter);
 app.use('/api/v1/don-hang', orderRouter);
+app.use('/api/v1/nha-sx', producerRouter);
 //app.use('/khuyen-mai', );
 
 // catch 404 and forward to error handler
