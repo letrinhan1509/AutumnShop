@@ -5,8 +5,9 @@ var db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
     password: '',
-    database: 'fashion_shop'
+    database: 'autumn_shop'
 })
+
 
 db.connect(function (err) {  
     if (err) 
