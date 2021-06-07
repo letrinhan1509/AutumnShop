@@ -16,9 +16,11 @@ import ListUserKH from "./Container/Components/listUserKH";
 import ListUserAdmin from "./Container/Components/listUserAdmin";
 import EditAdmin from "./Container/Components/editAdmin";
 import AddNVien from "./Container/Components/addNVien";
-
+import AddProduct from "./Container/Components/AddProduct";
+import AllProduct from "./Container/Components/AllProduct";
 import ProtectedRoute from "./Container/ProtectedRoute";
 import Home from "./Container/Components/Client/home";
+
 
 function App() {
   const PrivateRoute = ({ component: Component, ...rest }) => (
@@ -72,9 +74,11 @@ function App() {
                     <EditAdmin />
                   </Route>
                   <Route exact path="/them-san-pham">
-
+                    <AddProduct />
                   </Route>
-
+                  <Route exact path="/tat-ca-san-pham">
+                    <AllProduct />
+                  </Route>
                 </Content>
               </Col>
             </Row>

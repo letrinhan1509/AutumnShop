@@ -6,6 +6,7 @@ const Dashboard = () => {
     return (
         <div>
             <h2>Xin chào {admin.username}</h2>
+            
         </div>
     );
 }
