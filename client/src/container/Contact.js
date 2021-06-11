@@ -2,7 +2,7 @@ import React from "react";
 import "./components-css/Register.scss";
 import "./components-css/contact.scss";
 import {  Form, Input,Button} from "antd";
-import emailjs from "emailjs-com";
+//import emailjs from "emailjs-com";
 const swal = require('react-swal');
 
 
@@ -37,7 +37,7 @@ const Contact = () => {
   const onFinish = (values) => {
     console.log(values);
   }
-  const sendemail = (e) => {
+  /* const sendemail = (e) => {
     e.preventDefault();
     emailjs.sendemail('thanhloi486@gmail.com', 'template_qa0en4o', e.target)
       .then((result) => {
@@ -52,7 +52,7 @@ const Contact = () => {
         console.log(error.text);
       });
     e.target.reset();
-  }
+  } */
   return (
 
     <div className="wrapper">
@@ -63,7 +63,7 @@ const Contact = () => {
 
       <div className="form" >
         <div className="text-contact"> <h1> CONTACT US </h1></div>
-        <Form {...layout} onFinish={onFinish} name="nest-messages" onSubmitCapture={sendemail} validateMessages={validateMessages} >
+        <Form {...layout} onFinish={onFinish} name="nest-messages" /*onSubmitCapture={sendemail}*/ validateMessages={validateMessages} >
           <div className="name">Name</div>
           <Form.Item
 

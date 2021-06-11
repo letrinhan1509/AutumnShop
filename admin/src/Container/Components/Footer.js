@@ -10,7 +10,7 @@ const footer = () => {
                 
             <Divider className="driver" />
             <p>
-                Trường Đại Học Công Nghệ Sài Gòn <br />
+                Autumn Shop - Phong cách hàng đầu Việt Nam <br />
                 Địa chỉ: 180 Cao Lỗ, Phường 4, Quận 8, Tp.HCM
             </p>
             </Row>

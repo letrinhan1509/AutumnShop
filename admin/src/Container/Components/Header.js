@@ -4,7 +4,7 @@ import React from "react";
 /* import {  LoginOutlined } from '@ant-design/icons'; */
 import { BrowserRouter as Router} from "react-router-dom";
 import { useHistory } from "react-router-dom";
-import "./scss/Header.scss"
+import "../Components/scss/Header.scss"
 import { Layout } from 'antd';
 //import { getAdminId } from '../../../api/models/model_admin';
 const { Header} = Layout;
@@ -28,16 +28,19 @@ const admin = JSON.parse(localStorage.getItem('user'));
             <Header className="header">
                 <Row>
                     <Router>
-                        <Col span={22} offset={1}>
-                        <Menu  mode="horizontal">
-                                <Menu.Item onClick={linkto} key="thong-tin-tai-khoan">
-                                    <Avatar>N</Avatar> &nbsp;
-                                    {admin.username}
+                        <Col className="logo">
+                            <p>Autumn</p>
+                        </Col>
+                        <Col span={20} offset={1}>
+                            <Menu  mode="horizontal">
+                                    <Menu.Item onClick={linkto} key="thong-tin-tai-khoan">
+                                        <Avatar>N</Avatar> &nbsp;
+                                        {admin.username}
+                                    </Menu.Item>
+                                    <Menu.Item onClick={logout} key="item" icon={<LogoutOutlined />}>
+                                        Đăng xuất
                                 </Menu.Item>
-                                <Menu.Item onClick={logout} key="item" icon={<LogoutOutlined />}>
-                                    Đăng xuất
-                            </Menu.Item>
-                        </Menu>
+                            </Menu>
                         </Col>
 
                     </Router>

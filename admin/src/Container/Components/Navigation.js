@@ -30,7 +30,7 @@ const Navigation = () => {
                             onClick={linkto}
 
                             forceSubMenuRender="true">
-                            <Menu.Item key="dashboard" icon={<DashboardOutlined />}>Dashboard</Menu.Item>
+                            <Menu.Item key="" icon={<DashboardOutlined />}>Dashboard</Menu.Item>
                             <SubMenu key="sub2" icon={<IdcardOutlined />} title=" Quản lý tài khoản">
                                 <Menu.Item key="danh-sach-khach-hang" icon={<ProfileOutlined />}>Khách hàng</Menu.Item>
                                 <Menu.Item key="danh-sach-admin" icon={<ProfileOutlined />}>Nhân viên</Menu.Item>    
@@ -43,11 +43,11 @@ const Navigation = () => {
                                 </SubMenu>
                                 <SubMenu key="sub5" icon={<UnorderedListOutlined />} title="Quản lý loại">
                                     <Menu.Item key="danh-sach-loai" >Danh sách loại</Menu.Item>
-                                    {result.permission==='Admin'?(<Menu.Item key="them-loai" icon={<FileAddOutlined />}>Thêm loại</Menu.Item>):(<p/>)}
+                                    {result.permission==='Admin'?(<Menu.Item key="them-loai-san-pham" icon={<FileAddOutlined />}>Thêm loại</Menu.Item>):(<p/>)}
                                 </SubMenu>
                                 <SubMenu key="sub6" icon={<UnorderedListOutlined />} title="Quản lý nhà sản xuất">
                                     <Menu.Item key ="danh-sach-nha-sx" >Danh sách nhà sản xuất</Menu.Item> 
-                                    {result.permission==='Admin'?(<Menu.Item key ="them-nha-sx" icon={<FileAddOutlined />}>Thêm nhà sản xuất</Menu.Item>):(<p/>)}
+                                    {result.permission==='Admin'?(<Menu.Item key ="them-nha-san-xuat" icon={<FileAddOutlined />}>Thêm nhà sản xuất</Menu.Item>):(<p/>)}
                                 </SubMenu>
                                 <SubMenu key="sub7" icon={<UnorderedListOutlined />} title="Quản lý menu">
                                     <Menu.Item key="danh-muc-san-pham" >Danh mục sản phẩm</Menu.Item>
@@ -68,7 +68,7 @@ const Navigation = () => {
                             </SubMenu>
                             <SubMenu key="sub20" icon={<SettingOutlined />} title="Cài đặt">
                                 <Menu.Item key="thong-tin-tai-khoan" icon={<ProfileOutlined />}>Thông tin tài khoản</Menu.Item>
-                                <Menu.Item onClick={logout} key="thong-tin-tai-khoan" icon={<LogoutOutlined />}>Đăng xuất</Menu.Item>
+                                <Menu.Item onClick={logout} icon={<LogoutOutlined />}>Đăng xuất</Menu.Item>
                             </SubMenu>
                             
                         </Menu>
