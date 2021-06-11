@@ -46,7 +46,7 @@ exports.insert_category = (data) => {
         let sql = "INSERT INTO danhmuc SET ?";
         db.query(sql, data, (err, result) => {
             if(err)
-                hamLoi(err);
+                reject(err);
             else{
                 console.log('Insert category successfully')
                 resolve(result);    // trả về kết quả nếu promise hoàn thành.

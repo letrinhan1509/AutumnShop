@@ -10,9 +10,10 @@ var db = mysql.createConnection({
 
 
 db.connect(function (err) {  
-    if (err) 
+    if (err){
+        throw err;
         console.log('Database is connected fail! Please check the connection again!');
-    else
+    } else
         console.log('Database is connected successfully!');
 });
 

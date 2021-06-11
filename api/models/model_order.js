@@ -21,6 +21,37 @@ exports.list_Orders = async () => {
         })
     })
 }
+    // Đơn hàng theo mã đơn hàng:
+exports.get_By_Id = async (orderId) => {
+    const data = [];
+    return new Promise( (hamOK, hamLoi) => {
+        let sql = `SELECT DH.madonhang, DH.makh, khachhang.tenkh, DH.tongtien, khuyenmai.tenkm, DH.ngaydat, DH.ngaygiao,
+        DH.trangthai, DH.manv FROM ((donhang AS DH JOIN khachhang ON DH.makh = khachhang.makh)
+        JOIN khuyenmai ON DH.makm = khuyenmai.makm) WHERE DH.madonhang = '${orderId}'`;
+        db.query(sql, (err, result) => {
+            if(err){
+                hamLoi(err);
+            }else{
+                if(result.length > 0){
+                    let sql = `SELECT CTDH.mact, sanpham.tensp, sanpham.gia, CTDH.giagiam, CTDH.soluong, CTDH.thanhtien,
+                    khuyenmai.tenkm, CTDH.madonhang FROM ((chitietdh AS CTDH JOIN sanpham ON CTDH.masp = sanpham.masp)
+                    JOIN khuyenmai ON CTDH.makm = khuyenmai.makm) WHERE CTDH.madonhang = '${orderId}'`;
+                    db.query(sql, (err, result1) => {
+                        if(err){
+                            hamLoi(err);
+                        } else {
+                            result.chitietDH = result1;
+                            data.push(result);
+                            hamOK(data);
+                        }
+                    })
+                }else{
+                    hamOK(-1);
+                }
+            }
+        })
+    })
+}
     // Đơn hàng theo mã khách hàng:
 exports.get_By_userId = async (userId) => {
     return new Promise( (hamOK, hamLoi) => {
@@ -30,9 +61,12 @@ exports.get_By_userId = async (userId) => {
         db.query(sql, (err, result) => {
             if(err){
                 hamLoi(err);
-            }else{
-                dataList = result;
-                hamOK(dataList);
+            } else {
+                if(result.length > 0){
+                    dataList = result;
+                    hamOK(dataList);
+                } else
+                    hamOK(-1);
             }
         })
     })

@@ -26,7 +26,7 @@ const Login = () => {
         if(res.data.status ==="lockUser") {
           message.error(res.data.message)
         }
-        if(res.data.status ==="error") {
+        if(res.data.status ==="LoginFail") {
           message.error(res.data.message)
         }
       })

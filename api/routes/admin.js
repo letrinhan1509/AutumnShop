@@ -27,41 +27,46 @@ router.post('/dang-nhap', function (req, res, next) {
 
     let sql = `SELECT * FROM admin WHERE admin = '${em}'`;
     db.query(sql, (err, rows) => {
-        if (rows.length <= 0) {
+        if(err){
             res.json({"status": "LoginFail", "message": "Không tìm thấy tài khoản!", "error": err});
         }
-        let admin = rows[0];
-        let pass_fromdb = admin.matkhau;
-        console.log("Mật khẩu DB:", pass_fromdb);
-        var kq = bcrypt.compareSync(mk, pass_fromdb);// So sánh mật khẩu từ người dùng và MK đã mã hoá dưới DB.
-        console.log(kq);
-        const token = signToken(admin._id);
-        const cookieOptions = {
-            expires: new Date(
-                Date.now() + 90 * 24 * 60 * 60 * 1000
-            ),
-            httpOnly: true,
-        }; 
-        res.cookie("jwt", token, cookieOptions);
-         //Remove password from output
-        //user.password = undefined;
-        if (kq) {
-            res.json({
-                status: "LoginSuccess",
-                admin: {
-                    manv: admin.manv,
-                    username: admin.tennv,
-                    email: admin.admin,
-                    phone: admin.sodienthoai,
-                    address: admin.diachi,
-                    permission: admin.quyen,
-                    status: admin.trangthai   
-                },
-                token
-            });
+        if (rows.length == 0) {
+            res.json({"status": "LoginFail", "message": "Không tìm thấy tài khoản admin này! Vui lòng kiểm tra lại email!", "error": err});
         }else{
-            console.log("Not OK");
-            res.json({status: "LoginFail", message: "Đăng nhập không thành công!"});
+            let admin = rows[0];
+            let pass_fromdb = admin.matkhau;
+            console.log("Mật khẩu DB:", pass_fromdb);
+            var kq = bcrypt.compareSync(mk, pass_fromdb);// So sánh mật khẩu từ người dùng và MK đã mã hoá dưới DB.
+            console.log(kq);
+            const token = signToken(admin._id);
+            const cookieOptions = {
+                expires: new Date(
+                    Date.now() + 90 * 24 * 60 * 60 * 1000
+                ),
+                httpOnly: true,
+            }; 
+            res.cookie("jwt", token, cookieOptions);
+            //Remove password from output
+            //user.password = undefined;
+            if (kq) {
+                res.json({
+                    status: "LoginSuccess",
+                    message: "Đăng nhập thành công!",
+                    admin: {
+                        manv: admin.manv,
+                        username: admin.tennv,
+                        email: admin.admin,
+                        phone: admin.sodienthoai,
+                        address: admin.diachi,
+                        permission: admin.quyen,
+                        status: admin.trangthai   
+                    },
+                    token
+                });
+            }else{
+                console.log("Not OK");
+                res.json({status: "LoginFail", message: "Đăng nhập không thành công! Vui lòng kiểm tra lại mật khẩu."});
+            }
         }
     });
 });
@@ -69,7 +74,7 @@ router.post('/dang-nhap', function (req, res, next) {
 
             // API GET:
     // Danh sách tất cả admins:
-router.get('/danh-sach-admin', async function (req, res) {
+router.get('/danh-sach', async function (req, res) {
     try {
         let listAdmins = await modelAdmin.listAdmins();
         res.json({"status": "Success", "data": listAdmins});
@@ -98,7 +103,6 @@ router.post('/dang-ky', async function(req, res) {
     let address = req.body.address;
     let phone = req.body.phone;
     let permission = req.body.permission;
-    console.log(req.body);
 
     var salt = bcrypt.genSaltSync(10); // Chuỗi cộng thêm vào mật khẩu để mã hoá.
     var pass_mahoa = bcrypt.hashSync(pass, salt);   // Mã hoá password.
@@ -119,38 +123,50 @@ router.post('/dang-ky', async function(req, res) {
     }
 });
     // Cập nhật thông tin tài khoản admin:
-router.post('/tai-khoan-admin/cap-nhat', async function(req, res) {
+router.put('/cap-nhat-tai-khoan', async function(req, res) {
     let adminId = req.body.adminId;
     let pass = req.body.pass;
     let name = req.body.name;
     let address = req.body.address;
     let phone = req.body.phone;
     let permission = req.body.permission;
-    if(adminId == null){
+
+    var salt = bcrypt.genSaltSync(10); // Chuỗi cộng thêm vào mật khẩu để mã hoá.
+    var pass_mahoa = bcrypt.hashSync(pass, salt);
+
+    if(adminId == ''){
         res.json({"status": "Fail", "message": "Thiếu id admin!"});
-    }
-    try {
-        let query = await modelAdmin.updateProfileAdmin(adminId, pass, name, address, phone, permission);
-        res.json({"status": "Success", "message": "Sửa thông tin tài khoản admin thành công!"});
-    } catch (error) {
-        res.json({"status": "Fail", "message": "Lỗi cú pháp!", "error": error});
+    }else{
+        try {
+            let query = await modelAdmin.updateProfileAdmin(adminId, pass_mahoa, name, address, phone, permission);
+            res.json({"status": "Success", "message": "Sửa thông tin tài khoản admin thành công!"});
+        } catch (error) {
+            res.json({"status": "Fail", "message": "Lỗi cú pháp!", "error": error});
+        }
     }
 });
     // Cập nhật trạng thái admin:
-router.post('/trang-thai-admin/cap-nhat', async function(req, res) {
+router.put('/cap-nhat-trang-thai', async function(req, res) {
     let adminId = req.body.adminId;
     let stt = req.body.stt;
-    console.log(req.body);
 
-    if(adminId == null){
+    if(adminId == ''){
         res.json({"status": "Fail", "message": "Không có id admin!"});
     }else{
         if(stt == 0){
-            let query = await modelAdmin.lockAdmin(adminId);
-            res.json({"status": "Success", "message": "Khoá tài khoản admin thành công!"});
+            try {
+                let query = await modelAdmin.lockAdmin(adminId);
+                res.json({"status": "Success", "message": "Khoá tài khoản admin thành công!"});
+            } catch (error) {
+                res.json({"status": "Fail", "message": "Lỗi... Không thể khoá tài khoản admin!", "error": error});
+            }
         }else{
-            let query = await modelAdmin.unlockAdmin(adminId);
-            res.json({"status": "Success", "message": "Mở khoá tài khoản admin thành công!"});
+            try {
+                let query = await modelAdmin.unlockAdmin(adminId);
+                res.json({"status": "Success", "message": "Mở khoá tài khoản admin thành công!"});
+            } catch (error) {
+                res.json({"status": "Fail", "message": "Lỗi... Không thể mở khoá tài khoản admin!", "error": error});
+            }
         }
     }
 });  
@@ -176,20 +192,21 @@ router.post('/api/v1/trang-thai/them', async function(req, res) {
 router.post('/api/v1/update-status', async function(req, res) {
     let sttId = req.body.sttId;
     let name = req.body.name;
-    if(sttId == null){
+    if(sttId == ''){
         res.json({"status": "Fail", "message": "Không có id trạng thái!"});
-    }
-    try {
-        let query = await modelAdmin.updateStatusOr(sttId, name);
-        res.json({"status": "Success", "message": "Cập nhật trạng thái thành công!"});
-    } catch (error) {
-        res.json({"status": "Fail", "message": "Lỗi cú pháp! Cập nhật trạng thái không thành công!", "error": error});
+    }else{
+        try {
+            let query = await modelAdmin.updateStatusOr(sttId, name);
+            res.json({"status": "Success", "message": "Cập nhật trạng thái thành công!"});
+        } catch (error) {
+            res.json({"status": "Fail", "message": "Lỗi cú pháp! Cập nhật trạng thái không thành công!", "error": error});
+        }
     }
 });
     // Xoá trạng thái:
 router.post('/api/v1/delete-status', async function(req, res) {
     let sttId = req.body.sttId;
-    if(sttId == null){
+    if(sttId == ''){
         res.json({"status": "Fail", "message": "Không có id nhà sản xuất!"});
     }
     try {

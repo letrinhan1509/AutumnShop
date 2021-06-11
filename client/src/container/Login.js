@@ -41,11 +41,11 @@ const Login = () => {
     const history = useHistory();
 
     const login = (values) => {
-        const url = "http://localhost:3001/users/api/dang-nhap";
+        const url = "localhost:5000/api/v1/khach-hang/dang-nhap";
         axios
             .post(url, values)
             .then(async (res) => {
-                if (res.data.status === "success") {
+                if (res.data.status === "LoginSuccess") {
                     message.success(`Xin chào, ${res.data.data.username}`)
                     console.log(res.data.data.username)
                     localStorage.setItem('token',res.data.token)
@@ -94,7 +94,7 @@ const Login = () => {
 
                     <Form.Item {...tailLayout}>
                         <Button type="primary" htmlType="submit">
-                            Submit
+                            Đăng nhập
                         </Button>
                     </Form.Item>
                 </Form>

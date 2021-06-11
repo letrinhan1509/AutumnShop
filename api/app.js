@@ -13,6 +13,8 @@ const catalogRouter = require('./routes/catalog');
 const productRouter = require('./routes/product');
 const orderRouter = require('./routes/order');
 const producerRouter = require('./routes/producer');
+const commentRouter = require('./routes/comment');
+const discountRouter = require('./routes/discount');
 
 var app = express();
 
@@ -39,7 +41,8 @@ app.use('/api/v1/danh-muc', catalogRouter);
 app.use('/api/v1/san-pham', productRouter);
 app.use('/api/v1/don-hang', orderRouter);
 app.use('/api/v1/nha-sx', producerRouter);
-//app.use('/khuyen-mai', );
+app.use('/api/v1/binh-luan', commentRouter);
+app.use('/api/v1/khuyen-mai', discountRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

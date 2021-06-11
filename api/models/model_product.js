@@ -19,18 +19,23 @@ exports.list_products = async () => {
     })
 }
     // Lọc sản phẩm theo ID:
-exports.getById = async (productId) => {
+exports.get_By_Id = async (productId) => {
     return new Promise( (hamOK, hamLoi) => {
         let sql = `SELECT SP.masp, SP.code, SP.tensp, SP.soluong, SP.size, SP.mau, SP.gia, SP.hinh, 
         SP.hinhchitiet, SP.mota, SP.trangthai, nhasx.tennsx, loaisp.tenloai, danhmuc.tendm
         FROM (((sanpham AS SP JOIN danhmuc ON SP.madm = danhmuc.madm) JOIN loaisp ON SP.maloai = loaisp.maloai)
-        JOIN nhasx ON SP.mansx = nhasx.mansx) WHERE SP.masp='${productId}' AND SP.trangthai = 1`;
+        JOIN nhasx ON SP.mansx = nhasx.mansx) WHERE SP.masp='${productId}'`;
         db.query(sql, (err, result) => {
             if(err){
                 hamLoi(err);
             }else{
-                console.log('List success');
-                hamOK(result[0]);
+                if(result[0] == null){
+                    hamOK(-1);
+                } else if(result[0].trangthai == 0){
+                    hamOK(0);
+                } else{
+                    hamOK(result[0]);
+                }
             }
         })
     })
@@ -69,6 +74,23 @@ exports.get_by_type = async (maloai) => {
         })
     })
 }
+    // Lọc danh sách sản phẩm theo nhà sản xuất:
+exports.get_by_producer = async (mansx) => {
+    return new Promise( (hamOK, hamLoi) => {
+        let sql = `SELECT SP.masp, SP.code, SP.tensp, SP.soluong, SP.size, SP.mau, SP.gia, SP.hinh, 
+        SP.hinhchitiet, SP.mota, SP.trangthai, nhasx.tennsx, loaisp.tenloai, danhmuc.tendm
+        FROM (((sanpham AS SP JOIN danhmuc ON SP.madm = danhmuc.madm) JOIN loaisp ON SP.maloai = loaisp.maloai)
+        JOIN nhasx ON SP.mansx = nhasx.mansx) WHERE SP.mansx='${mansx}' AND SP.trangthai = 1`;
+        db.query(sql, (err, result) => {
+            if(err){
+                hamLoi(err);
+            }else{
+                console.log('List success');
+                hamOK(result);
+            }
+        })
+    })
+}
     // Chi tiết sản phẩm theo tên:
 exports.detailByName = async (name) => {
     return new Promise( (hamOK, hamLoi) => {
@@ -92,31 +114,17 @@ exports.detailByName = async (name) => {
     )
 }
     // Thêm sản phẩm:
-exports.create_product = (code, tensp, soluong, size, mau, gia, hinh, hinhchitiet, mota, mansx, maloai, madm) => {
-    let data = {
-        code: code,
-        tensp: tensp,
-        soluong: soluong,
-        size: size,
-        mau: mau,
-        gia: gia,
-        hinh: hinh,
-        hinhchitiet: hinhchitiet,
-        mota: mota,
-        mansx: mansx,
-        maloai: maloai,
-        madm: madm,
-    };
+exports.create_product = (data) => {
     let sql = "INSERT INTO sanpham SET ?";
     let query = db.query(sql, data, (err, result) => {
         console.log('Create product success');
     });
     let sql_productId = "SELECT LAST_INSERT_ID() as LastID;";
     let query1 = db.query(sql_productId, (err, result1) => {
-        console.log(result1[0]);
+        console.log("ID sản phẩm vừa tạo: ", result1[0].LastID);
         let dataCTDM = {
-            masp: result1[0],
-            madm: madm,
+            masp: result1[0].LastID,
+            madm: data.madm,
         }
         let sql_CTDM = `INSERT INTO chitietdm SET ?`;
         let query = db.query(sql_CTDM, dataCTDM, (err, result) => {
@@ -126,38 +134,56 @@ exports.create_product = (code, tensp, soluong, size, mau, gia, hinh, hinhchitie
     });
 }
     // Sửa sản phẩm:
-exports.update_product = (masp, code, tensp, soluong, size, mau, gia, hinh, hinhchitiet, mota, mansx, maloai, madm) => {
-    let sql = `UPDATE products SET
-    masp='${masp}'
-    code='${code}', 
-    tensp='${tensp}',
-    soluong='${soluong}',
-    size='${size}',
-    mau='${mau}',
-    gia='${gia}',
-    hinh='${hinh}',
-    hinhchitiet='${hinhchitiet}',
-    mota='${mota}',
-    mansx='${mansx}',
-    maloai='${maloai}',
-    maloai='${madm}'
-    WHERE masp=${masp}`;
-    let query = db.query(sql, (err, result) => {
-        console.log('Update product success');
+exports.update_product = (masp, code, tensp, soluong, size, mau, gia, hinh, hinhchitiet, mota) => {
+    return new Promise( (hamOK, hamLoi) => {
+        let sql = `UPDATE sanpham SET  
+        code='${code}', 
+        tensp='${tensp}', 
+        soluong='${soluong}', 
+        size='${size}', 
+        mau='${mau}', 
+        gia='${gia}', 
+        hinh='${hinh}', 
+        hinhchitiet='${hinhchitiet}',
+        mota='${mota}' 
+        WHERE masp='${masp}'`;
+        let query = db.query(sql, (err, result) => {
+            if(err){
+                console.log("Lỗi!", err);
+                hamLoi(err);
+            }else{
+                console.log('Update product success');
+                hamOK(result);
+            }
+        });
     });
-}
+};
     // Khoá sản phẩm: (Ẩn sản phẩm )
 exports.lock_product = (masp) => {
-    let sql = `UPDATE sanpham SET trangthai = 0 WHERE masp = '${masp}'`;
-    db.query(sql, (err, result) => {
-        console.log('Lock product success');
+    return new Promise( (hamOK, hamLoi) => {
+        let sql = `UPDATE sanpham SET trangthai = 0 WHERE masp = '${masp}'`;
+        db.query(sql, (err, result) => {
+            if(err){
+                hamLoi(err);
+            }else{
+                console.log('Lock product success');
+                hamOK(result);
+            }
+        })
     })
 }
     // Mở khoá sản phẩm:
 exports.unlock_product = (masp) => {
-    let sql = `UPDATE sanpham SET trangthai = 1 WHERE masp = '${masp}'`;
-    db.query(sql, (err, result) => {
-        console.log('Unlock product success');
+    return new Promise( (hamOK, hamLoi) => {
+        let sql = `UPDATE sanpham SET trangthai = 1 WHERE masp = '${masp}'`;
+        db.query(sql, (err, result) => {
+            if(err){
+                hamLoi(err);
+            }else{
+                console.log('Unlock product success');
+                hamOK(result);
+            }
+        })
     })
 }
     // Xoá sản phẩm:

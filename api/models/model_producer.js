@@ -18,7 +18,7 @@ exports.list_producer = async () => {
     })
 }
     // Get nhà sản xuất theo id:
-exports.getById = async (producerId) => {
+exports.get_By_Id = async (producerId) => {
     return new Promise( (hamOK, hamLoi) => {
         let sql = `SELECT * FROM nhasx WHERE mansx='${producerId}'`;
         db.query(sql, (err, result) => {
@@ -39,7 +39,7 @@ exports.insert_producer = (data) => {
         let sql = "INSERT INTO nhasx SET ?";
         db.query(sql, data, (err, result) => {
             if(err)
-                hamLoi(err);
+                reject(err);
             else{
                 console.log('Insert producer successfully')
                 resolve(result);    // trả về kết quả nếu promise hoàn thành.

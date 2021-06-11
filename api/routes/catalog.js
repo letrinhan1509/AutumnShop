@@ -1,9 +1,6 @@
 var express = require('express');
 var router = express.Router();
 const modelCatalog = require('../models/model_catalog.js'); //nhúng model catalog vào controller này để sử dụng
-var modelProduct = require('../models/model_product.js');
-var message = '';
-
 
 
       // API
@@ -59,22 +56,26 @@ router.get('/loai-id/:id', async function (req, res) {
 router.post('/them-loai', async function(req, res) {
   let typeId = req.body.typeId;
   let name = req.body.name;
-  let data = {
-      maloai: typeId,
-      tenloai: name
-  }
-  try {
-      let query = await modelCatalog.insert_category(data);
-      res.json({"status": "Success", "message": "Thêm loại thành công!", "data": query});
-  } catch (error) {
-      res.json({"status": "Fail", "message": "Lỗi cú pháp! Thêm loại không thành công!", "error": error});
+  if(typeId == '' || name == ''){
+    res.json({"status": "Fail", "message": "Thiếu thông tin loại!"});
+  }else{
+    let data = {
+        maloai: typeId,
+        tenloai: name
+    }
+    try {
+        let query = await modelCatalog.insert_Type(data);
+        res.json({"status": "Success", "message": "Thêm loại thành công!", "result": query});
+    } catch (error) {
+        res.json({"status": "Fail", "message": "Lỗi cú pháp! Thêm loại không thành công!", "error": error});
+    }
   }
 });
   // Cập nhật tên loại:
-router.post('/cap-nhat-loai', async function(req, res) {
+router.put('/cap-nhat-loai', async function(req, res) {
   let typeId = req.body.typeId;
   let name = req.body.name;
-  if(typeId == null){
+  if(typeId == ''){
       res.json({"status": "Fail", "message": "Không có id loại!"});
   }
   try {
@@ -85,9 +86,9 @@ router.post('/cap-nhat-loai', async function(req, res) {
   }
 });
   // Xoá loại sản phẩm:
-router.post('/xoa-loai', async function(req, res) {
+router.delete('/xoa-loai', async function(req, res) {
   let typeId = req.body.typeId;
-  if(typeId == null){
+  if(typeId == ''){
       res.json({"status": "Fail", "message": "Không có id loại!"});
   }
   try {
@@ -95,7 +96,7 @@ router.post('/xoa-loai', async function(req, res) {
       if(query == 1){
           res.json({"status": "Success", "message": "Xoá loại thành công!"});
       }else
-          res.json({"status": "Success", "message": "Có ràng buộc khoá ngoại. Không thể xoá loại!"});
+          res.json({"status": "Fail", "message": "Có ràng buộc khoá ngoại. Không thể xoá loại!"});
   } catch (error) {
       res.json({"status": "Fail", "message": "Lỗi cú pháp! Xoá loại không thành công!", "error": error});
   }
@@ -106,29 +107,34 @@ router.post('/xoa-loai', async function(req, res) {
 router.post('/them-danh-muc', async function(req, res) {
   let categoryId = req.body.categoryId;
   let name = req.body.name;
-  let data = {
+  if(categoryId == '' || name == ''){
+    res.json({"status": "Fail", "message": "Sai hoặc thiếu thông tin danh mục!"});
+  }else{
+    let data = {
       madm: categoryId,
       tendm: name
-  }
-  try {
-      let query = await modelCatalog.insert_category(data);
-      res.json({"status": "Success", "message": "Thêm loại thành công!", "data": query});
-  } catch (error) {
-      res.json({"status": "Fail", "message": "Lỗi cú pháp! Thêm loại không thành công!", "error": error});
+    }
+    try {
+        let query = await modelCatalog.insert_category(data);
+        res.json({"status": "Success", "message": "Thêm danh mục thành công!", "result": query});
+    } catch (error) {
+        res.json({"status": "Fail", "message": "Lỗi cú pháp! Thêm danh mục không thành công!", "error": error});
+    }
   }
 })
   // Cập nhật tên danh mục:
-router.post('/cap-nhat-danh-muc', async function(req, res) {
+router.put('/cap-nhat-danh-muc', async function(req, res) {
   let categoryId = req.body.categoryId;
   let name = req.body.name;
-  if(categoryId == null){
-      res.json({"status": "Fail", "message": "Không có id danh mục!"});
-  }
-  try {
+  if(categoryId == '' || name == ''){
+      res.json({"status": "Fail", "message": "Sai hoặc thiếu thông tin danh mục!"});
+  }else{
+    try {
       let query = await modelCatalog.update_category(categoryId, name);
-      res.json({"status": "Success", "message": "Cập nhật tên loại thành công!"});
-  } catch (error) {
-      res.json({"status": "Fail", "message": "Lỗi cú pháp! Cập nhật tên loại không thành công!", "error": error});
+      res.json({"status": "Success", "message": "Cập nhật danh mục thành công!"});
+    } catch (error) {
+        res.json({"status": "Fail", "message": "Lỗi cú pháp! Cập nhật danh mục không thành công!", "error": error});
+    }
   }
 });
 

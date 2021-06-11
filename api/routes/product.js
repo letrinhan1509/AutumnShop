@@ -1,15 +1,19 @@
 var express = require('express');
 var router = express.Router();
-var modelProduct = require('../models/model_product'); //nhúng model products vào controller này để sử dụng
-var modelCatalog = require('../models/model_catalog');
+const modelProduct = require('../models/model_product'); //nhúng model products vào controller này để sử dụng
+const modelComment = require('../models/model_comment');
 
 var breadcrumb = 'Tất cả sản phẩm';
 
-      // API
+      // API GET:
   // Danh sách tất cả sản phẩm:
-router.get('/api/v1/san-pham', async function(req, res) { 
-  let listPro = await modelProduct.list();
-  res.json(listPro);
+router.get('/danh-sach', async function(req, res) { 
+  try {
+    let listPro = await modelProduct.list_products();
+    res.json({ "status": "Success", "data": listPro });
+  } catch (error) {
+    res.json({ "status": "Fail", "error": error })
+  }
 })
 router.get('/api/hot-product', async function(req, res) {
   let data = await modelProduct.hotProduct();
@@ -19,24 +23,152 @@ router.get('/api/new-product', async function(req, res) {
   let data = await modelProduct.newProduct();
   res.json(data);
 })
+
   // Lọc sản phẩm theo id:
-router.get('/api/v1/id/:loai', async function(req, res) {
-  let loai = req.params.loai;
-  let data = await modelProduct.detail(loai);
-  res.json(data);
+router.get('/id=:id', async function(req, res) {
+  let idSpham = req.params.id;
+  try {
+    let sanPham = await modelProduct.get_By_Id(idSpham);
+    let listCmt = await modelComment.get_by_productId(idSpham);
+    if (sanPham == -1) {
+      res.json({ "status": "Fail", "message": "Không tìm thấy sản phẩm này trong DB!" });
+    } else if(sanPham == 0){
+      res.json({ "status": "Fail", "message": "Sản phẩm này hiện đang ẩn!" });
+    } else
+      res.json({ "status": "Success", "data_Spham": sanPham, "data_Cmt": listCmt });
+  } catch (error) {
+    res.json({ "status": "Fail", "message": "Lỗi !!!", "error": error });
+  }
 })
-  // Lọc sản phẩm theo tên:
-router.get('/api/v1/name/:name', async function(req, res) {
-  let name = req.params.name;
-  let data = await modelProduct.detailByName(name);
-  res.json(data);
+  // Lọc sản phẩm theo loại:
+router.get('/spham-loai/:loai', async function(req, res) {
+  let idLoai = req.params.loai;
+  try {
+    let listPro = await modelProduct.get_by_type(idLoai);  
+    if(listPro.length > 0){
+      res.json({ "status": "Success", "data": listPro });
+    }
+    else
+      res.json({ "status": "Fail", "message": "Không có sản phẩm nào thuộc loại này" });
+  } catch (error) {
+    res.json({ "status": "Fail", "error": error })
+  }
+})
+  // lọc sản phẩm theo danh mục:
+router.get('/spham-danh-muc/:dmuc', async function(req, res) {
+  let idDMuc = req.params.dmuc;
+  try {
+    let listPro = await modelProduct.get_by_category(idDMuc);
+    if(listPro.length > 0){
+      res.json({ "status": "Success", "data": listPro });
+    }
+    else
+      res.json({ "status": "Fail", "message": "Không có sản phẩm nào thuộc danh mục này" });
+  } catch (error) {
+    res.json({ "status": "Fail", "error": error })
+  }
+})
+  // Lọc sản phẩm theo nhà sản xuất:
+router.get('/spham-nha-sx/:nhasx', async function(req, res) {
+  let idNSX = req.params.nhasx;
+  try {
+    let listPro = await modelProduct.get_by_producer(idNSX);
+    if(listPro.length > 0){
+      res.json({ "status": "Success", "data": listPro });
+    }
+    else
+      res.json({ "status": "Fail", "message": "Không có sản phẩm nào thuộc nhà sản xuất này" });
+  } catch (error) {
+    res.json({ "status": "Fail", "error": error })
+  }
+})
+
+
+      // API POST:
+  // Thêm sản phẩm:
+router.post('/them-san-pham', async function(req, res) {
+  let code = req.body.code;
+  let tensp = req.body.ten;
+  let soluong = req.body.soluong;
+  let size = req.body.size;
+  let mau = req.body.mau;
+  let gia = req.body.gia;
+  let hinh = req.body.hinh;
+  let hinhchitiet = req.body.hinhchitiet;
+  let mota = req.body.mota;
+  let mansx = req.body.mansx;
+  let maloai = req.body.maloai;
+  let madm = req.body.madm;
+
+  if(code == '' || tensp == '' || soluong == '' || size == '' || mau == '' || gia == '' || hinh == '' || maloai == '' || madm == ''){
+    res.json({"status": "Fail", "message": "Thêm sản phẩm không thành công! Thiếu thông tin sản phẩm"});
+  }else{
+    let data = {
+      code: code,
+      tensp: tensp,
+      soluong: soluong,
+      size: size,
+      mau: mau,
+      gia: gia,
+      hinh: hinh,
+      hinhchitiet: hinhchitiet,
+      mota: mota,
+      mansx: mansx,
+      maloai: maloai,
+      madm: madm,
+    };
+    try {
+        let query = await modelProduct.create_product(data);
+        res.json({"status": "Success", "message": "Thêm sản phẩm thành công!", "result": query});
+    } catch (error) {
+        res.json({"status": "Fail", "message": "Lỗi cú pháp! Thêm sản phẩm không thành công!", "error": error});
+    }
+  }
 });
-// Lọc sản phẩm theo loại:
-// lọc sản phẩm theo danh mục:
-// Lọc sản phẩm theo nhà sản xuất:
-// Thêm sản phẩm:
-// Sửa sản phẩm:
-// Xoá sản phẩm:
+  // Sửa sản phẩm:
+router.put('/cap-nhat-san-pham', async function(req, res) {
+  let masp = req.body.masp;
+  let code = req.body.code;
+  let tensp = req.body.ten;
+  let soluong = req.body.soluong;
+  let size = req.body.size;
+  let mau = req.body.mau;
+  let gia = req.body.gia;
+  let hinh = req.body.hinh;
+  let hinhchitiet = req.body.hinhchitiet;
+  let mota = req.body.mota;
+  if(masp == '' || code == '' || tensp == '' || soluong == '' || size == '' || mau == '' || gia == '' || hinh == ''){
+    res.json({"status": "Fail", "message": "Cập nhật sản phẩm không thành công! Thiếu thông tin sản phẩm"});
+  }else{
+    try {
+        let query = await modelProduct.update_product(masp, code, tensp, soluong, size, mau, gia, hinh, hinhchitiet, mota);
+        res.json({"status": "Success", "message": "Cập nhật sản phẩm thành công!", "result": query});
+    } catch (error) {
+        res.json({"status": "Fail", "message": "Lỗi cú pháp! Cập nhật sản phẩm không thành công!", "error": error});
+    }
+  }
+});
+  // Cập nhật trạng thái sản phẩm:
+router.put('/cap-nhat-trang-thai', async function(req, res) {
+  let masp = req.body.masp;
+  let trangthai = req.body.trangthai;
+
+  if(masp == '' || trangthai == ''){
+    res.json({"status": "Fail", "message": "Cập nhật trạng thái sản phẩm không thành công! Thiếu thông tin sản phẩm"});
+  }else{
+    try {
+      if(trangthai == 1){
+        let query = await modelProduct.unlock_product(masp);
+        res.json({"status": "Success", "message": "Hiện sản phẩm thành công!", "result": query});
+      }else{
+        let query = await modelProduct.lock_product(masp);
+        res.json({"status": "Success", "message": "Ẩn sản phẩm thành công!", "result": query});
+      }
+    } catch (error) {
+        res.json({"status": "Fail", "message": "Lỗi cú pháp! Cập nhật sản phẩm không thành công!", "error": error});
+    }
+  }
+});
 
 
 
@@ -68,6 +200,7 @@ router.post('/comment/createcomment', async function(req, res) {
   newName = replaceNameProduct(nameProduct).toLowerCase();
   res.redirect(`/san-pham/${newName}`)
 })
+
 function xoa_dau(str) {
   str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
   str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e");
