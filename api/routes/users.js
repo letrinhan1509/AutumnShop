@@ -128,26 +128,31 @@ router.get('/khach-hang-ten/:name', async function (req, res) {
     // Đăng ký tài khoản:
 router.post('/dang-ky', async function(req, res) {
     let email = req.body.email;
-    let pass = req.body.pass;
-    let name = req.body.name;
-    let address = req.body.address;
-    let phone = req.body.phone;
-
-    var salt = bcrypt.genSaltSync(10); // Chuỗi cộng thêm vào mật khẩu để mã hoá.
-    var pass_mahoa = bcrypt.hashSync(pass, salt);   // Mã hoá password.
-    let data = {
-        tenkh: name,
-        email: email,
-        matkhau: pass_mahoa,
-        sodienthoai: phone,
-        diachi: address,   
-    }
-    try {
-        let query = await modelUser.insertUser(data);
-        res.json({"status": "Success", "message": "Thêm tài khoản user thành công!"});
-    } catch (error) {
-        res.json({"status": "Fail", "message": "Lỗi cú pháp! Thêm không thành công!", "error": error});
-    }
+    let pass = req.body.matkhau;
+    let nhaplaimk = req.body.nhaplaimk;
+    let name = req.body.tenkh;
+    let address = req.body.diachi;
+    let phone = req.body.sodienthoai;
+    
+    if(email == '' || pass == '' || name == '' || address == '' || phone == ''){
+        res.json({"status": "Fail", "message": "Thiếu thông tin!"});
+    }else{ 
+        try {
+            var salt = bcrypt.genSaltSync(10); // Chuỗi cộng thêm vào mật khẩu để mã hoá.
+            var mk_mahoa = bcrypt.hashSync(pass, salt);   // Mã hoá password.
+            let data = {
+                tenkh: name,
+                email: email,
+                matkhau: mk_mahoa,
+                sodienthoai: phone,
+                diachi: address,   
+            }
+            let query = await modelUser.insertUser(data);
+            res.json({ "status": "Success", "message": "Thêm tài khoản user thành công!" });
+        } catch (error) {
+            res.json({ "status": "Fail", "message": "Lỗi cú pháp! Thêm không thành công!", "error": error });
+        }
+    } 
 })
     // Đăng nhập tài khoản:
 router.post('/dang-nhap', function (req, res, next) {
@@ -176,7 +181,7 @@ router.post('/dang-nhap', function (req, res, next) {
                 console.log("OK!!! Đăng nhập thành công");
                 res.json({
                     status: "LoginSuccess",
-                    user: {
+                    data: {
                         makh: user.makh, 
                         username: user.tenkh,
                         email: user.email,

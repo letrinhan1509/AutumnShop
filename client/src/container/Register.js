@@ -23,7 +23,7 @@ const RegisterForm = () => {
       );
     const register = (values) => {
         console.log(values)
-        const url = "http://localhost:3001/users/api/dang-ky"
+        const url = "http://localhost:5000/api/v1/khach-hang/dang-ky"
         axios.post(url, values).then((res) => {
             message.success("Register successfully!")
             setTimeout(() => { history.push('/login') }, 2000)

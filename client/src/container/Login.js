@@ -41,7 +41,7 @@ const Login = () => {
     const history = useHistory();
 
     const login = (values) => {
-        const url = "localhost:5000/api/v1/khach-hang/dang-nhap";
+        const url = "http://localhost:5000/api/v1/khach-hang/dang-nhap";
         axios
             .post(url, values)
             .then(async (res) => {

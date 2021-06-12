@@ -62,8 +62,13 @@ exports.insertUser = (data) => {
     return new Promise( (resolve, reject) => {
         let sql = "INSERT INTO khachhang SET ?";
         db.query(sql, data, (err, result) => {
-            console.log('Insert user successfully')
-            resolve(result);    // trả về kết quả nếu promise hoàn thành.
+            if(err){
+                console.log('Insert user fail')
+                reject(err);
+            } else{
+                console.log('Insert user successfully');
+                resolve(result);    // trả về kết quả nếu promise hoàn thành.
+            }
         })
     })
 }
