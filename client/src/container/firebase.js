@@ -3,8 +3,8 @@ import "@firebase/storage";
 
 
 var firebaseConfig = {
-  apiKey: "AIzaSyA8Se-jTQFPdAWaEN3qC5XpEmbnnFfaMnM",
-  authDomain: "fashionshop-c6610.firebaseapp.com",
+  apiKey: process.env.REACT_APP_FIREBASE_API,
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
   projectId: "fashionshop-c6610",
   storageBucket: "fashionshop-c6610.appspot.com",
   messagingSenderId: "184279877528",

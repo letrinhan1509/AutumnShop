@@ -86,59 +86,7 @@ const HomeBestseller = (props) => {
                 </div>
             </Carousel> */}
             <div className="site-card-wrapper product_home">
-                <Row gutter={16} justify="space-around">
-                        {ProductHome.slice(0, hiddenitem).map((productItem) => {
-                            return (
-                                <Col key={productItem.masp} span={6}>
-
-                                    <Card
-                                        width={'100%'}
-                                        key={productItem.masp}
-                                        className="card-pro card_product_home"
-                                        bordered={false}
-                                        hoverable >
-                                        <div className="img-box">
-                                            <Image
-                                                width={'100%'}
-                                                src={`./images/test/${productItem.hinh}`}
-                                                preview={{
-                                                    visible: false,
-                                                    /* onVisibleChange: () => { onClick() }, */
-                                                    mask: <div className="icon_product">
-                                                        <span onClick={() => props.Thongbao_Them(productItem)}>
-                                                            <ShoppingCartOutlined
-                                                                style={{ fontSize: '36px' }} />
-                                                        </span>
-                                                        <span>
-                                                            <Link to={`/san-pham/chi-tiet-san-pham/${productItem.masp}`}>
-                                                                <EyeOutlined
-                                                                    style={{ fontSize: '36px' }}
-                                                                />
-                                                            </Link>
-                                                        </span>
-                                                    </div>
-                                                }}
-                                            />
-                                        </div>
-                                        <Meta
-                                            className="card-pro-name"
-                                            title={productItem.tensp} />
-                                        <div className="price">
-                                            <Meta
-                                                className="card-pro-priceSale"
-                                                title={`${productItem.gia - (productItem.gia * productItem.giamgia / 100)} VNĐ`} />
-                                            <Meta
-                                                className="card-pro-price"
-                                                title={`${productItem.gia} VNĐ`} />
-                                            <Meta
-                                                className="card-pro-sale"
-                                                title={`${productItem.giamgia}% Off`} />
-                                        </div>
-                                    </Card>
-                                </Col>
-                            );
-                        })}
-                </Row>
+                
             </div>
         </>
     )

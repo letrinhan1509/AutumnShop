@@ -30,7 +30,7 @@ const tailFormItemLayout = {
     },
 };
 const user = JSON.parse(localStorage.getItem("user"));
-console.log(user.address);
+//console.log(user.address);
 const UserInf = (props) => {
     const [form] = Form.useForm();
     const history = useHistory();

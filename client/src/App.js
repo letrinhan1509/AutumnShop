@@ -15,6 +15,7 @@ import Contact from "./container/Contact";
 import axios from "axios";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import Shirt from "./container/Shirt";
+import firebase from 'firebase';
 import { storage } from "./container/firebase"
 //import AllProduct from './container/All-Product';
 import UserInfo from "./container/UserInfo";
@@ -24,22 +25,54 @@ import SearchResult from "./container/SearchResult";
 import Accessories from "./container/Acessories";
 import Error404 from "./container/Error404";
 import ScrollToTop from "./ScrollToTop";
+
+
+
+
+
+
+
+
 function App() {
+
+const [userEmail, setUserEmail] = useState([]);
+// Listen to the Firebase Auth state and set the local state.
+useEffect(() => {
+  
+  const unregisterAuthObserver = firebase.auth().onAuthStateChanged(async (user) => {
+    if(!user){
+      //user logs out, handle somthing here
+      console.log('user is not logged in!');
+      return;
+    }
+
+    console.log('Logged in user: ', user);
+    const token = await user.getIdToken;
+    console.log('logged in user token: ', token);
+    userEmail["name"] = user.displayName;
+    userEmail["gmail"] = user.email;
+    userEmail["uid"] = user.uid;
+    userEmail["img"] = user.photoURL;
+  });
+  return () => unregisterAuthObserver(); // Make sure we un-register Firebase observers when the component unmounts.
+}, []);
+
+console.log(userEmail);
 
 
   //Lấy Data bằng API
   const [ListProductHome, setListProductHome] = useState([]);
   const { confirm } = Modal;
   useEffect(() => {
-    axios.get("http://localhost:3001/san-pham/api/product").then((res) => {
+    axios.get("http://localhost:5000/api/v1/san-pham/danh-sach").then((res) => {
       setListProductHome(res.data);
     });
   }, []);
 
 
   //Hàm random sản phẩm
-  const shuffled = ListProductHome.sort(() => 0.5 - Math.random());
-  const randomItem = shuffled.slice(0, 4);
+  /* const shuffled = ListProductHome.sort(() => 0.5 - Math.random());
+  const randomItem = shuffled.slice(0, 4); */
 
 
   const storageItem = JSON.parse(localStorage.getItem("cart") || "[]");
@@ -170,7 +203,7 @@ function App() {
                 </Route>
                 <Route exact path="/san-pham/chi-tiet-san-pham/:id">
                   <ProductDetail
-                    initRelatedItems={randomItem}
+                    //initRelatedItems={randomItem}
                     ListProductHome={ListProductHome}
                     addCart={addCart}
                     link={link}

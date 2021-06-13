@@ -1,7 +1,7 @@
 import React from "react";
 import { Form, Input, Row, Col, Button, message,Select } from "antd";
 //import "./component-css/Register.css";
-
+import khachHang from '../API/khachHang';
 import axios from "axios"
 import { useHistory } from "react-router-dom"
 import Meta from "antd/lib/card/Meta";
@@ -22,9 +22,8 @@ const RegisterForm = () => {
         </Form.Item>
       );
     const register = (values) => {
-        console.log(values)
-        const url = "http://localhost:5000/api/v1/khach-hang/dang-ky"
-        axios.post(url, values).then((res) => {
+        //const url = "http://localhost:5000/api/v1/khach-hang/dang-ky"
+        khachHang.getRegister(values).then((res) => {
             message.success("Register successfully!")
             setTimeout(() => { history.push('/login') }, 2000)
         })

@@ -4,6 +4,9 @@ import Meta from "antd/lib/card/Meta";
 import { useHistory } from "react-router-dom";
 import axios from "axios";
 import "./components-css/Form.scss";
+import firebase from 'firebase';
+import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
+import khachHang from '../API/khachHang';
 //import cookies from "react-cookies";
 //import HeaderPage from '../components/include/HeaderPage';
 const layout = {
@@ -37,18 +40,34 @@ const tailLayout = {
     },
 };
 
+
+
+const uiConfig = {
+    // Popup signin flow rather than redirect flow.
+    signInFlow: 'redirect',
+    signInSuccessUrl: '/',
+    // We will display Google and Facebook as auth providers.
+    signInOptions: [
+        firebase.auth.GoogleAuthProvider.PROVIDER_ID
+        //firebase.auth.FacebookAuthProvider.PROVIDER_ID
+    ],
+};
+
+
 const Login = () => {
     const history = useHistory();
 
     const login = (values) => {
-        const url = "http://localhost:5000/api/v1/khach-hang/dang-nhap";
-        axios
-            .post(url, values)
-            .then(async (res) => {
+        //const url = "http://localhost:5000/api/v1/khach-hang/dang-nhap";
+        console.log(values);
+        khachHang
+        .getLogin(values)
+        .then(async (res) => {
+                console.log(res.data);
                 if (res.data.status === "LoginSuccess") {
                     message.success(`Xin chào, ${res.data.data.username}`)
                     console.log(res.data.data.username)
-                    localStorage.setItem('token',res.data.token)
+                    localStorage.setItem('token', res.data.token)
                     localStorage.setItem('user', JSON.stringify(res.data.data))
                     setTimeout(() => {
                         history.push("/")
@@ -65,41 +84,50 @@ const Login = () => {
     }
 
     return (
-        <Row className="login-container">
-            <Col className="login-form-wrapper">
-                <Meta id='register-title' className="register-title" title="Đăng Nhập" />
-                <Form
-                    
-                    name="basic"
-                    initialValues={{ remember: true }}
-                    onFinish={login}
-                >
-                    <Form.Item
-                        label="Email"
-                        name="email"
-                        rules={[{ required: true, message: 'Vui lòng nhập tài khoản!' }]}
-                    >
-                        <Input />
-                    </Form.Item>
-                    <Form.Item
-                        label="Mật khẩu"
-                        name="matkhau"
-                        rules={[{ required: true, message: 'Vui lòng nhập mật khẩu!' }]}
-                    >
-                        <Input.Password />
-                    </Form.Item>
-                    <Form.Item {...tailLayout} name="remember" valuePropName="checked">
-                        <Checkbox>Remember me</Checkbox>
-                    </Form.Item>
+        <div className="btn-wrapper">
+            <Row className="login-container">
+                <Col className="login-form-wrapper">
+                    <Meta id='register-title' className="register-title" title="Đăng Nhập" />
+                    <Form
 
-                    <Form.Item {...tailLayout}>
-                        <Button type="primary" htmlType="submit">
-                            Đăng nhập
-                        </Button>
-                    </Form.Item>
-                </Form>
-            </Col>
-        </Row>
+                        name="basic"
+                        initialValues={{ remember: true }}
+                        //initialValues={{ email: `${user.displayName}`,  }} map data usser 
+                        onFinish={login}
+                        
+                    >
+                        <Form.Item
+                            label="Email"
+                            name="email"
+                            rules={[{ required: true, message: 'Vui lòng nhập tài khoản!' }]}
+                        >
+                            <Input />
+                        </Form.Item>
+                        <Form.Item
+                            label="Mật khẩu"
+                            name="matkhau"
+                            rules={[{ required: true, message: 'Vui lòng nhập mật khẩu!' }]}
+                        >
+                            <Input.Password />
+                        </Form.Item>
+
+                        <div className="btn-wrapper">
+                            <Form.Item {...tailLayout} name="remember" valuePropName="checked">
+                                <Checkbox>Remember me</Checkbox>
+                            </Form.Item>
+
+                            <Form.Item {...tailLayout}>
+                                <Button type="primary" htmlType="submit">
+                                    Submit
+                                </Button>
+                            </Form.Item>
+                        </div>
+                    </Form>
+                    <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()} />
+                </Col>
+            </Row>
+        </div>
+
     );
 }
 

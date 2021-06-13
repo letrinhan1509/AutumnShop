@@ -1,11 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { Form, Input, Row, Col, Button, message, Select, Checkbox, DatePicker } from "antd";
-import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
-import axios from "axios"
+import React from 'react';
+import { Form, Input,Button, message, Select } from "antd";
 import { useHistory, Link } from "react-router-dom"
-import Meta from "antd/lib/card/Meta";
 import "./scss/addpro.scss"
-
+import admin from '../API_Call/Api_admin/admin';
 const { Option } = Select;
 const formItemLayout = {
     labelCol: {
@@ -44,12 +41,10 @@ const AddNV = (props) => {
 
 
     const register = (values) => {
-        console.log(values)
-        let a = JSON.stringify({ admin: "adas@gmail.com" });
 
+        let a = JSON.stringify({ admin: "adas@gmail.com" });
         console.log(a);
-        const url = "http://127.0.0.1:5000/api/v1/admin/dang-ky"
-        axios.post(url, values).then((res) => {
+        admin.register(values).then((res) => {
             if (res.data.status ==="Success") {
                 message.success(res.data.message)
                 setTimeout(() => {

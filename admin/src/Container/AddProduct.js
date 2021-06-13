@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from "axios"
-import { Form, Input, Button, Upload, InputNumber, Select, Checkbox } from 'antd';
+import { Form, Input, Button, Upload, InputNumber, Select, message } from 'antd';
 import { useHistory } from "react-router-dom"
 import { UploadOutlined, } from '@ant-design/icons';
 import { storage } from "../firebase"
 import "./scss/addpro.scss"
+import product from '../API_Call/Api_product/product';
+
 const { Option } = Select;
 const formItemLayout = {
     labelCol: {
@@ -88,28 +90,26 @@ const AddProduct = (props) => {
         );
         console.log(a);
 
-        setUrldown(a);
+        //setUrldown(a);
         values["img"] = a;
-        console.log(urldown);
         console.log(values)
 
 
 
         //let nameImg =urldown;
-        /*   values["img"] = urldown;
+        //values["img"] = urldown;
           
-          console.log(values) */
-        /* const url = "http://127.0.0.1:5000/api/v1/add-product"
-        axios.post(url, values).then((res) => {
+
+        product.addproduct(values).then((res) => {
             message.success(res.data.message)
             setTimeout(() => {
-                history.push('/all');
+                history.push('/tat-ca-san-pham');
             }, 2000)
         })
             .catch(err => {
                 console.log(err.response);
                 message.error(`Login fail!\n ${err.response.data}`)
-            }) */
+            })
     };
     console.log(urldown);
     const [fileList, setFileList] = useState([]);
@@ -300,7 +300,6 @@ const AddProduct = (props) => {
 
                             name='hinh'
                             multiple='true'
-                            //action='http://127.0.0.1:5000/api/v1/add-img'
                             beforeUpload={beforeUpload}
                             onChange={handleChange}
                             fileList

@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from "axios"
-import { Form, Input, Button, Select } from 'antd';
+import { Form, Input, Button, Select, message} from 'antd';
 import { useHistory } from "react-router-dom"
 import "./scss/addpro.scss"
+import catalog from '../API_Call/Api_catalog/catalog';
 const { Option } = Select;
 const formItemLayout = {
     labelCol: {
@@ -41,20 +42,20 @@ const AddProductType = (props) => {
 
 
         //let nameImg =urldown;
-        /*   values["img"] = urldown;
+
           
-          console.log(values) */
-        /* const url = "http://127.0.0.1:5000/api/v1/add-product"
-        axios.post(url, values).then((res) => {
+        console.log(values);
+
+        catalog.addProtype(values).then((res) => {
             message.success(res.data.message)
             setTimeout(() => {
-                history.push('/all');
+                history.push('/danh-sach-loai');
             }, 2000)
         })
             .catch(err => {
                 console.log(err.response);
                 message.error(`Login fail!\n ${err.response.data}`)
-            }) */
+            })
     };
     const [fileList, setFileList] = useState([]);
     const [listProduct, setlistProduct] = useState([]);

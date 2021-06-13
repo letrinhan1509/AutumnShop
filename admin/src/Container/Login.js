@@ -1,15 +1,41 @@
 import React from 'react';
-import { Form, Input, Button, message, Row, Col } from 'antd';
+import { Form, Input, Button, message } from 'antd';
 import { useHistory } from "react-router-dom";
-import axios from "axios";
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
+import admin from '../API_Call/Api_admin/admin';
+
+
+const formItemLayout = {
+  labelCol: {
+      xs: { span: 22 },
+      sm: { span: 6 },
+  },
+  wrapperCol: {
+      xs: { span: 20 },
+      sm: { span: 15 },
+  },
+};
+const tailFormItemLayout = {
+  wrapperCol: {
+    xs: {
+      span: 22,
+      offset: 0,
+    },
+    sm: {
+      span: 16,
+      offset: 10,
+    },
+  },
+};
+
+
+
 const Login = () => {
+  const [form] = Form.useForm();
   let history = useHistory()
   const login = (values) => {
     console.log('Received values of form: ', values);
-    const url = "http://127.0.0.1:5000/api/v1/admin/dang-nhap";
-    axios
-      .post(url, values)
+    admin.login(values)
       .then(async (res) => {
         console.log(res.data.message);
         if (res.data.status === "LoginSuccess") {
@@ -18,15 +44,15 @@ const Login = () => {
           //localStorage.setItem('token', res.data.token)
           localStorage.setItem('user', JSON.stringify(res.data.admin))
           setTimeout(() => {
-            
+
             history.push("/Dashboard")
             window.location.reload()
-        }, 2000)
+          }, 2000)
         }
-        if(res.data.status ==="lockUser") {
+        if (res.data.status === "lockUser") {
           message.error(res.data.message)
         }
-        if(res.data.status ==="LoginFail") {
+        if (res.data.status === "LoginFail") {
           message.error(res.data.message)
         }
       })
@@ -36,41 +62,43 @@ const Login = () => {
   };
   return (
     <>
-      <Row className="login-container">
-        <Col style={{ height: '100vh', marginTop: '200px' }} className="login-form-wrapper" offset={7} span={10}>
-          <h2 style={{ textAlign: 'center', fontSize: '30px' }}>Đăng nhập</h2>
-          <Form
-
-            name="normal_login"
-            className="login-form"
-            initialValues={{ remember: true }}
-            onFinish={login}
+      <div className="form-wrapper">
+        <h2 style={{ textAlign: 'center', fontSize: '30px' }}>Đăng nhập</h2>
+        <Form
+          {...formItemLayout}
+          form={form}
+          name="normal_login"
+          className="login-form"
+          initialValues={{ remember: true }}
+          onFinish={login}
+        >
+          <Form.Item
+            label="email"
+            name="email"
+            rules={[{ required: true, message: 'Chưa nhập Email bạn êiii !!!' }]}
           >
-            <Form.Item
-              name="email"
-              rules={[{ required: true, message: 'Chưa nhập Email bạn êiii !!!' }]}
-            >
-              <Input prefix={<UserOutlined className="site-form-item-icon" />} placeholder="Email" />
-            </Form.Item>
-            <Form.Item
-              name="password"
-              rules={[{ required: true, message: 'Nhập mật khẩu đi bạn !!!' }]}
-            >
-              <Input
-                prefix={<LockOutlined className="site-form-item-icon" />}
-                type="password"
-                placeholder="Password"
-              />
-            </Form.Item>
+            <Input prefix={<UserOutlined className="site-form-item-icon" />} placeholder="Email" />
+          </Form.Item>
+          <Form.Item
+            label="password"
+            name="password"
+            rules={[{ required: true, message: 'Nhập mật khẩu đi bạn !!!' }]}
+          >
+            <Input
+              prefix={<LockOutlined className="site-form-item-icon" />}
+              type="password"
+              placeholder="Password"
+            />
+          </Form.Item>
 
-            <Form.Item>
-                <Button type="primary" htmlType="submit" className="login-form-button">
-                    Đăng nhập
-                </Button>
-            </Form.Item>
-          </Form>
-        </Col>
-      </Row>
+          <Form.Item {...tailFormItemLayout}>
+            <Button type="primary" htmlType="submit" className="login-form-button">
+              Đăng nhập
+            </Button>
+          </Form.Item>
+        </Form>
+      </div>
+
 
     </>
   );
