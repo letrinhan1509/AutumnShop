@@ -162,33 +162,25 @@ router.put('/cap-nhat-tra-loi-bluan', async function(req, res) {
     }
 });
     // Xoá bình luận:
-router.delete('/xoa-binh-luan', async function(req, res) {
-    let mabl = req.body.mabl;
+router.delete('/xoa-binh-luan/:id', async function(req, res) {
+    let mabl = req.params.id;
 
-    if(mabl == ''){
-      res.json({"status": "Fail", "message": "Không có mã bình luận...Xoá không thành công!"});
-    }else{
-        try {
-            let query = await modelComment.delete_Comment(mabl);
-            res.json({"status": "Success", "message": "Xoá bình luận thành công!", "result": query});
-        } catch (error) {
-            res.json({"status": "Fail", "message": "Lỗi cú pháp! Xoá bình luận không thành công!", "error": error});
-        }
+    try {
+        let query = await modelComment.delete_Comment(mabl);
+        res.json({"status": "Success", "message": "Xoá bình luận thành công!", "result": query});
+    } catch (error) {
+        res.json({"status": "Fail", "message": "Lỗi cú pháp! Xoá bình luận không thành công!", "error": error});
     }
 });
     // Xoá chi tiết bình luận:
-router.delete('/xoa-tra-loi-bluan', async function(req, res) {
-    let mact = req.body.mact;
+router.delete('/xoa-tra-loi-bluan/:id', async function(req, res) {
+    let mact = req.params.id;
     
-    if(mact == ''){
-      res.json({"status": "Fail", "message": "Không có mã bình luận...Xoá không thành công!"});
-    }else{
-        try {
-            let query = await modelComment.delete_RepComment(mact);
-            res.json({"status": "Success", "message": "Xoá bình luận thành công!", "result": query});
-        } catch (error) {
-            res.json({"status": "Fail", "message": "Lỗi cú pháp! Xoá bình luận không thành công!", "error": error});
-        }
+    try {
+        let query = await modelComment.delete_RepComment(mact);
+        res.json({"status": "Success", "message": "Xoá bình luận thành công!", "result": query});
+    } catch (error) {
+        res.json({"status": "Fail", "message": "Lỗi cú pháp! Xoá bình luận không thành công!", "error": error});
     }
 });
     // Khoá bình luận:  

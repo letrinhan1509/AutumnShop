@@ -20,8 +20,8 @@ const ListUserKH = (props) => {
       "userId": id,
       "stt": unLock
     };
-    const url = "http://127.0.0.1:5000/api/v1/khach-hang/trang-thai-khach-hang/cap-nhat"
-    axios.post(url, values).then((res) => {
+    const url = "http://127.0.0.1:5000/api/v1/khach-hang/cap-nhat-trang-thai"
+    axios.put(url, values).then((res) => {
         if (res.data.status === "Success") {
           message.success(res.data.message)
           setTimeout(() => {
@@ -36,7 +36,7 @@ const ListUserKH = (props) => {
     }) 
         .catch(err => {
             console.log(err.response);
-            message.error(`Login fail!\n ${err.response.data}`)
+            message.error(`Lỗi...! Mở khoá tài khoản thất bại!\n ${err.response.data}`)
         })
     
   }
@@ -48,8 +48,8 @@ const ListUserKH = (props) => {
       "userId": id,
       "stt": shutdown
     };
-    const url = "http://127.0.0.1:5000/api/v1/khach-hang/trang-thai-khach-hang/cap-nhat"
-    axios.post(url, values).then((res) => {
+    const url = "http://127.0.0.1:5000/api/v1/khach-hang/cap-nhat-trang-thai"
+    axios.put(url, values).then((res) => {
         if (res.data.status === "Success") {
             message.success(res.data.message)
             setTimeout(() => {
@@ -62,7 +62,7 @@ const ListUserKH = (props) => {
     }) 
         .catch(err => {
             console.log(err.response);
-            message.error(`Login fail!\n ${err.response.data}`)
+            message.error(`Lỗi...! Khoá tài khoản thất bại!\n ${err.response.data}`)
         })
   };
 

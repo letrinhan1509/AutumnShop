@@ -93,12 +93,13 @@ router.post('/them-san-pham', async function(req, res) {
   let size = req.body.size;
   let mau = req.body.mau;
   let gia = req.body.gia;
-  let hinh = req.body.hinh;
+  let hinh = req.body.img;
   let hinhchitiet = req.body.hinhchitiet;
   let mota = req.body.mota;
   let mansx = req.body.mansx;
   let maloai = req.body.maloai;
   let madm = req.body.madm;
+  console.log(req.body);
 
   if(code == '' || tensp == '' || soluong == '' || size == '' || mau == '' || gia == '' || hinh == '' || maloai == '' || madm == ''){
     res.json({"status": "Fail", "message": "Thêm sản phẩm không thành công! Thiếu thông tin sản phẩm"});

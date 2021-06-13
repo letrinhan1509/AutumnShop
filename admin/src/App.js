@@ -24,6 +24,8 @@ import AddCategory from "./Container/AddCategory";
 import AddVoucher from "./Container/AddVoucher";
 import AddSale from "./Container/AddSale";
 import UserInf from "./Container/UserInf";
+import ListProductType from "./Container/ListProductType";
+import EditProductType from "./Container/EditProductType";
 import ProtectedRoute from "./Container/ProtectedRoute";
 
 
@@ -86,8 +88,14 @@ function App() {
                   <Route exact path="/tat-ca-san-pham">
                     <AllProduct />
                   </Route>
+                  <Route exact path="/danh-sach-loai">
+                    <ListProductType />
+                  </Route>
                   <Route exact path="/them-loai-san-pham">
                     <AddProductType />
+                  </Route>
+                  <Route exact path="/danh-sach-loai/sua-loai">
+                    <EditProductType />
                   </Route>
                   <Route exact path="/them-nha-san-xuat">
                     <AddProducer />

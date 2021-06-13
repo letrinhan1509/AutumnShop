@@ -46,8 +46,8 @@ const EditNV = (props) => {
         console.log(values)
         let a = JSON.stringify({ admin: "adas@gmail.com" });
         console.log(a);
-        const url = "http://127.0.0.1:5000/api/v1/admin/tai-khoan-admin/cap-nhat"
-        axios.post(url, values).then((res) => {
+        const url = "http://127.0.0.1:5000/api/v1/admin/cap-nhat-tai-khoan"
+        axios.put(url, values).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message)
                 setTimeout(() => {
@@ -70,7 +70,7 @@ const EditNV = (props) => {
     return (
         <Row className="register-container">
             <Col className="register-form-wrapper" offset={6} span={10}>
-                <h2 style={{ textAlign: 'center' }}>Sửa  nhân viên</h2>
+                <h2 style={{ textAlign: 'center' }}>SỬA THÔNG TIN NHÂN VIÊN</h2>
 
                 <Form
                     {...formItemLayout}
@@ -87,7 +87,7 @@ const EditNV = (props) => {
                         pass1:`${Admin.data.matkhau}`,
                         phone:`${Admin.data.sodienthoai}`,
                         address:`${Admin.data.diachi}`,
-                        permission: `${Admin.data.maquyen}`
+                        permission: `${Admin.data.quyen}`
                     }}
                     scrollToFirstError
                     className="register-form"

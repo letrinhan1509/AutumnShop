@@ -121,14 +121,24 @@ const AddProduct = (props) => {
 
     console.log(image);
 
-    const [listProduct, setlistProduct] = useState([]);
-
-    /*     useEffect(() => {
-            axios.get("http://127.0.0.1:5000/api/v1/producer").then((res) => {
-                setlistProduct(res.data.data)
-            })
-        }, []) */
-    console.log(listProduct);
+    const [listProducer, setlistProducer] = useState([]);
+    useEffect(() => {
+        axios.get("http://127.0.0.1:5000/api/v1/nha-sx/danh-sach").then((res) => {
+            setlistProducer(res.data.data)
+        })
+    }, []);
+    const [listTypes, setlistTypes] = useState([]);
+    useEffect(() => {
+        axios.get("http://127.0.0.1:5000/api/v1/danh-muc/danh-sach-loai").then((res) => {
+            setlistTypes(res.data.data)
+        })
+    }, []);
+    const [listCategory, setlistCategory] = useState([]);
+    useEffect(() => {
+        axios.get("http://127.0.0.1:5000/api/v1/danh-muc/danh-sach-dm").then((res) => {
+            setlistCategory(res.data.data)
+        })
+    }, []);
     console.log(props.listType);
 
     const listType = [
@@ -153,6 +163,23 @@ const AddProduct = (props) => {
             key: 2,
             mansx: 'rt',
             tennsx: 'Routine',
+        }
+    ];
+    const size = [
+        {
+            key: 1,
+            masize: 'S',
+            tensize: 'S',
+        },
+        {
+            key: 2,
+            masize: 'M',
+            tensize: 'M',
+        },
+        {
+            key: 3,
+            masize: 'L',
+            tensize: 'L',
         }
     ];
     const mau = [
@@ -230,7 +257,7 @@ const AddProduct = (props) => {
                         <Input />
                     </Form.Item>
                     <Form.Item
-                        name="name"
+                        name="ten"
                         label="Tên sản phẩm"
                         rules={[
                             {
@@ -252,7 +279,15 @@ const AddProduct = (props) => {
                         label="Size"
                     //rules={[{ required: false }]}
                     >
-                        <Input />
+                        <Select>
+                            {size.map((item) => {
+                                return (
+                                    <>
+                                        <Option value={item.masize}>{item.tensize}</Option>
+                                    </>
+                                )
+                            })}
+                        </Select>
                     </Form.Item>
                     <Form.Item
                         name="mau"
@@ -321,18 +356,22 @@ const AddProduct = (props) => {
                     >
                         <Input />
                     </Form.Item>
-                    {/* <Form.Item name="trangthai"
+                    <Form.Item name="trangthai"
                         label="Trạng thái"
                     //rules={[{ required: true, message: 'Chọn trạng thái!' }]}
                     >
-                        <Checkbox.Group options={options} onChange={onChange} />
-                    </Form.Item> */}
+                        {/* <Checkbox.Group options={options} onChange={onChange} /> */}
+                        <Select>
+                            <Option value="1" >Hiện</Option>
+                            <Option value="0" >Ẩn</Option>
+                        </Select>
+                    </Form.Item>
                     <Form.Item name="mansx"
                         label="Nhà sản xuất"
                     //rules={[{ required: true, message: 'Chọn nhà sản xuất!' }]}
                     >
                         <Select>
-                            {nsx.map((item) => {
+                            {listProducer.map((item) => {
                                 return (
                                     <>
                                         <Option value={item.mansx}>{item.tennsx}</Option>
@@ -347,7 +386,7 @@ const AddProduct = (props) => {
                     //rules={[{ required: true, message: 'Chọn mã loại!' }]}
                     >
                         <Select>
-                            {listType.map((item) => {
+                            {listTypes.map((item) => {
                                 return (
                                     <>
                                         <Option value={item.maloai}>{item.tenloai}</Option>
@@ -362,7 +401,7 @@ const AddProduct = (props) => {
                     //rules={[{ required: true, message: 'Chọn mã loại!' }]}
                     >
                         <Select>
-                            {danhmuc.map((item) => {
+                            {listCategory.map((item) => {
                                 return (
                                     <>
                                         <Option value={item.madm}>{item.tendm}</Option>

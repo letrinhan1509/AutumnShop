@@ -50,12 +50,12 @@ const UserInf = (props) => {
         let a = JSON.stringify({ admin: "adas@gmail.com" });
 
         console.log(a);
-        const url = "http://127.0.0.1:5000/api/v1/admin/dang-ky"
-        axios.post(url, values).then((res) => {
+        const url = "http://127.0.0.1:5000/api/v1/admin/cap-nhat-tai-khoan"
+        axios.put(url, values).then((res) => {
             if (res.data.status ==="Success") {
                 message.success(res.data.message)
                 setTimeout(() => {
-                    history.push('/danh-sach-admin');
+                    history.push('/');
                 }, 2000)
             }
             else{
@@ -194,9 +194,9 @@ const UserInf = (props) => {
                     </Form.Item> */}
                 <Form.Item {...tailFormItemLayout}>
                     <Link to={'/danh-sach-admin'} ><p style={{ marginRight: "20px", }} className="ant-btn ant-btn-dashed ">Trở về</p></Link>
-                    <Button value="submit" onClick={() => props.handleCreateUser()} type="primary" htmlType="submit">
+                    <Button value="submit" type="primary" htmlType="submit">
                         Chỉnh sửa
-                        </Button>
+                    </Button>
                 </Form.Item>
             </Form>
         </div>

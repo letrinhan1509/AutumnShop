@@ -9,9 +9,7 @@ var dataListPro=[];
     // Danh sách các danh mục:
 exports.list_Categorys = async () => {
     return new Promise( (hamOK, hamLoi) => {
-        let sql = `SELECT danhmuc.tendm, loaisp.tenloai
-        FROM ((sanpham JOIN danhmuc ON sanpham.madm = danhmuc.madm)
-        JOIN loaisp ON sanpham.maloai = loaisp.maloai)`;
+        let sql = `SELECT * FROM danhmuc`;
         db.query(sql, (err, result) => {
             if(err){
                 console.log("Error!!!");
@@ -151,9 +149,11 @@ exports.delete_Type = (typeId) => {
         let sql_type = `SELECT sanpham.code, sanpham.tensp 
         FROM sanpham JOIN loaisp 
         ON sanpham.maloai = loaisp.maloai 
-        WHERE loaisp.maloai = '${typeId}'`;
+        WHERE sanpham.maloai = '${typeId}'`;
         db.query(sql_type, (err, result) => {
-            if(result[0] == null){
+            if(err)
+                hamLoi(err);
+            else if(result[0] == null){
                 console.log("Xoá được!");
                 let sql = `DELETE FROM loaisp WHERE maloai='${typeId}'`;
                 db.query(sql, (err, result) => {

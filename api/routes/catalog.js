@@ -54,30 +54,25 @@ router.get('/loai-id/:id', async function (req, res) {
       // API POST:
   // Thêm loại:
 router.post('/them-loai', async function(req, res) {
-  let typeId = req.body.typeId;
-  let name = req.body.name;
-  if(typeId == '' || name == ''){
-    res.json({"status": "Fail", "message": "Thiếu thông tin loại!"});
-  }else{
-    let data = {
-        maloai: typeId,
-        tenloai: name
-    }
-    try {
-        let query = await modelCatalog.insert_Type(data);
-        res.json({"status": "Success", "message": "Thêm loại thành công!", "result": query});
-    } catch (error) {
-        res.json({"status": "Fail", "message": "Lỗi cú pháp! Thêm loại không thành công!", "error": error});
-    }
+  let typeId = req.body.maloai;
+  let name = req.body.tenloai;
+  let data = {
+    maloai: typeId,
+    tenloai: name
+  }
+
+  try {
+      let query = await modelCatalog.insert_Type(data);
+      res.status(200).json({ "status": "Success", "message": "Thêm loại thành công!", "result": query });
+  } catch (error) {
+      res.status(400).json({ "status": "Fail", "message": "Lỗi cú pháp! Thêm loại không thành công!", "error": error });
   }
 });
   // Cập nhật tên loại:
 router.put('/cap-nhat-loai', async function(req, res) {
   let typeId = req.body.typeId;
   let name = req.body.name;
-  if(typeId == ''){
-      res.json({"status": "Fail", "message": "Không có id loại!"});
-  }
+  
   try {
       let query = await modelCatalog.update_Type(typeId, name);
       res.json({"status": "Success", "message": "Cập nhật tên loại thành công!"});
@@ -86,15 +81,14 @@ router.put('/cap-nhat-loai', async function(req, res) {
   }
 });
   // Xoá loại sản phẩm:
-router.delete('/xoa-loai', async function(req, res) {
-  let typeId = req.body.typeId;
-  if(typeId == ''){
-      res.json({"status": "Fail", "message": "Không có id loại!"});
-  }
+router.delete('/xoa-loai/:id', async function(req, res) {
+  //let typeId = req.body.typeId;
+  let typeId = req.params.id;
+
   try {
       let query = await modelCatalog.delete_Type(typeId);
       if(query == 1){
-          res.json({"status": "Success", "message": "Xoá loại thành công!"});
+          res.json({"status": "Success", "message": "Xoá loại thành công!!!"});
       }else
           res.json({"status": "Fail", "message": "Có ràng buộc khoá ngoại. Không thể xoá loại!"});
   } catch (error) {
@@ -105,21 +99,18 @@ router.delete('/xoa-loai', async function(req, res) {
 
   // Thêm danh mục:
 router.post('/them-danh-muc', async function(req, res) {
-  let categoryId = req.body.categoryId;
-  let name = req.body.name;
-  if(categoryId == '' || name == ''){
-    res.json({"status": "Fail", "message": "Sai hoặc thiếu thông tin danh mục!"});
-  }else{
+  let ma = req.body.madm;
+  let ten = req.body.tendm;
+  console.log(req.body);
+  try {
     let data = {
-      madm: categoryId,
-      tendm: name
+      madm: ma,
+      tendm: ten
     }
-    try {
-        let query = await modelCatalog.insert_category(data);
-        res.json({"status": "Success", "message": "Thêm danh mục thành công!", "result": query});
-    } catch (error) {
-        res.json({"status": "Fail", "message": "Lỗi cú pháp! Thêm danh mục không thành công!", "error": error});
-    }
+    let query = await modelCatalog.insert_category(data);
+    res.json({"status": "Success", "message": "Thêm danh mục thành công!", "result": query});
+  } catch (error) {
+    res.status(400).json({"status": "Fail", "message": "Lỗi cú pháp! Thêm danh mục không thành công!", "error": error});
   }
 })
   // Cập nhật tên danh mục:

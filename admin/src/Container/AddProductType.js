@@ -54,7 +54,7 @@ const AddProductType = (props) => {
         })
             .catch(err => {
                 console.log(err.response);
-                message.error(`Login fail!\n ${err.response.data}`)
+                message.error(`Thêm loại thất bại!\n ${err.response.data}`)
             })
     };
     const [fileList, setFileList] = useState([]);

@@ -33,27 +33,24 @@ router.get('/nha-sx-id/:id', async function (req, res) {
             // API POST:
     // Thêm nhà sản xuất:
 router.post('/them-nha-sx', async function(req, res) {
-    let producerId = req.body.producerId;
-    let name = req.body.name;
-    let origin = req.body.origin;
-    if(producerId == '' || name == ''){
-        res.json({"status": "Fail", "message": "Thiếu thông tin nhà sản xuất!"});
-    }else{
-        let data = {
-            mansx: producerId,
-            tennsx: name,
-            xuatxu: origin
-        }
-        try {
-            let query = await modelProducer.insert_producer(data);
-            res.json({"status": "Success", "message": "Thêm nhà sản xuất thành công!"});
-        } catch (error) {
-            res.json({"status": "Fail", "message": "Lỗi cú pháp! Thêm nhà sản xuất không thành công!", "error": error});
-        }
+    let producerId = req.body.mansx;
+    let name = req.body.tennsx;
+    let origin = req.body.xuatxu;
+    
+    let data = {
+        mansx: producerId,
+        tennsx: name,
+        xuatxu: origin
+    }
+    try {
+        let query = await modelProducer.insert_producer(data);
+        res.status(200).json({ "status": "Success", "message": "Thêm nhà sản xuất thành công!" });
+    } catch (error) {
+        res.status(400).json({ "status": "Fail", "message": "Lỗi cú pháp! Thêm nhà sản xuất không thành công!", "error": error });
     }
 });
     // Cập nhật thông tin nhà sản xuất:
-router.post('/cap-nhat-nha-sx', async function(req, res) {
+router.put('/cap-nhat-nha-sx', async function(req, res) {
     let producerId = req.body.producerId;
     let name = req.body.name;
     let origin = req.body.origin;
@@ -69,20 +66,17 @@ router.post('/cap-nhat-nha-sx', async function(req, res) {
     }
 });
     // Xoá nhà sản xuất:
-router.post('/xoa-nha-sx', async function(req, res) {
-    let producerId = req.body.producerId;
-    if(producerId == ''){
-        res.json({"status": "Fail", "message": "Không có id nhà sản xuất!"});
-    }else{
-        try {
-            let query = await modelProducer.delete_producer(producerId);
-            if(query == 1){
-                res.json({"status": "Success", "message": "Xoá nhà sản xuất thành công!"});
-            }else
-                res.json({"status": "Fail", "message": "Có ràng buộc khoá ngoại. Không thể xoá nhà sản xuất!"});
-        } catch (error) {
-            res.json({"status": "Fail", "message": "Lỗi cú pháp! Xoá nhà sản xuất không thành công!", "error": error});
-        }
+router.delete('/xoa-nha-sx/:id', async function(req, res) {
+    let producerId = req.params.id;
+    
+    try {
+        let query = await modelProducer.delete_producer(producerId);
+        if(query == 1){
+            res.json({"status": "Success", "message": "Xoá nhà sản xuất thành công!"});
+        }else
+            res.json({"status": "Fail", "message": "Có ràng buộc khoá ngoại. Không thể xoá nhà sản xuất!"});
+    } catch (error) {
+        res.json({"status": "Fail", "message": "Lỗi cú pháp! Xoá nhà sản xuất không thành công!", "error": error});
     }
 });
 

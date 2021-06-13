@@ -23,7 +23,6 @@ router.get('/test', async(req, res, next) => {
 router.post('/dang-nhap', function (req, res, next) {
     let em = req.body.email;
     let mk = req.body.password;
-    console.log(req.body);
 
     let sql = `SELECT * FROM admin WHERE admin = '${em}'`;
     db.query(sql, (err, rows) => {
@@ -49,7 +48,7 @@ router.post('/dang-nhap', function (req, res, next) {
             //Remove password from output
             //user.password = undefined;
             if (kq) {
-                res.json({
+                res.status(200).json({
                     status: "LoginSuccess",
                     message: "Đăng nhập thành công!",
                     admin: {
@@ -64,7 +63,6 @@ router.post('/dang-nhap', function (req, res, next) {
                     token
                 });
             }else{
-                console.log("Not OK");
                 res.json({status: "LoginFail", message: "Đăng nhập không thành công! Vui lòng kiểm tra lại mật khẩu."});
             }
         }
@@ -99,27 +97,34 @@ router.get('/admin-id/:id', async function (req, res) {
 router.post('/dang-ky', async function(req, res) {
     let email = req.body.email;
     let pass = req.body.pass;
+    let pass1 = req.body.pass1;
     let name = req.body.name;
     let address = req.body.address;
     let phone = req.body.phone;
     let permission = req.body.permission;
 
-    var salt = bcrypt.genSaltSync(10); // Chuỗi cộng thêm vào mật khẩu để mã hoá.
-    var pass_mahoa = bcrypt.hashSync(pass, salt);   // Mã hoá password.
-    
-    let data = {
-        admin: email,
-        matkhau: pass_mahoa,
-        tennv: name,
-        diachi: address,
-        sodienthoai: phone,
-        maquyen: permission
-    }
-    try {
-        let query = await modelAdmin.insertAdmin(data);
-        res.json({"status": "Success", "message": "Đăng ký tài khoản admin thành công!"});
-    } catch (error) {
-        res.json({"status": "Fail", "message": "Lỗi cú pháp! Đăng ký không thành công!", "error": error});
+    if (pass == pass1){
+        var salt = bcrypt.genSaltSync(10); // Chuỗi cộng thêm vào mật khẩu để mã hoá.
+        var pass_mahoa = bcrypt.hashSync(pass, salt);   // Mã hoá password.
+        
+        let data = {
+            admin: email,
+            matkhau: pass_mahoa,
+            tennv: name,
+            diachi: address,
+            sodienthoai: phone,
+            quyen: permission
+        }
+        console.log("ok");
+        try {
+            let query = await modelAdmin.insertAdmin(data);
+            console.log(query);
+            res.status(200).json({ "status": "Success", "message": "Đăng ký tài khoản admin thành công!" });
+        } catch (error) {
+            res.status(400).json({ "status": "Fail", "message": "Lỗi cú pháp! Đăng ký không thành công!", "error": error });
+        }
+    } else{
+        res.status(400).json({ "status": "Fail", "message": "Hai mật khẩu ko trùng khớp! Đăng ký không thành công!" });
     }
 });
     // Cập nhật thông tin tài khoản admin:
@@ -130,18 +135,23 @@ router.put('/cap-nhat-tai-khoan', async function(req, res) {
     let address = req.body.address;
     let phone = req.body.phone;
     let permission = req.body.permission;
-
-    var salt = bcrypt.genSaltSync(10); // Chuỗi cộng thêm vào mật khẩu để mã hoá.
-    var pass_mahoa = bcrypt.hashSync(pass, salt);
-
-    if(adminId == ''){
-        res.json({"status": "Fail", "message": "Thiếu id admin!"});
+    console.log(req.body);
+    
+    if(permission == undefined || pass == ''){
+        res.status(400).json({ "status": "Fail", "message": "Thiếu thông tin admin!" });
     }else{
         try {
-            let query = await modelAdmin.updateProfileAdmin(adminId, pass_mahoa, name, address, phone, permission);
-            res.json({"status": "Success", "message": "Sửa thông tin tài khoản admin thành công!"});
+            let ad = await modelAdmin.get_Admin_Id(adminId);
+            if(pass == ad.matkhau){
+                let query = await modelAdmin.updateProfileAdmin(adminId, pass, name, address, phone, permission);
+            } else{
+                var salt = bcrypt.genSaltSync(10);              // Chuỗi cộng thêm vào mật khẩu để mã hoá.
+                var pass_mahoa = bcrypt.hashSync(pass, salt);   // password đã mã hoá.
+                let query = await modelAdmin.updateProfileAdmin(adminId, pass_mahoa, name, address, phone, permission);
+            }
+            res.status(200).json({ "status": "Success", "message": "Sửa thông tin tài khoản admin thành công!" });
         } catch (error) {
-            res.json({"status": "Fail", "message": "Lỗi cú pháp!", "error": error});
+            res.status(400).json({ "status": "Fail", "message": "Lỗi cú pháp!", "error": error });
         }
     }
 });
@@ -169,7 +179,32 @@ router.put('/cap-nhat-trang-thai', async function(req, res) {
             }
         }
     }
-});  
+});
+    // Cập nhật mật khẩu:
+router.put('/doi-mat-khau', async function(req, res) {
+    let adminId = req.body.adminId;
+    let email = req.body.email;
+    let password = req.body.password;
+    let newPassword = req.body.newPassword;
+    let confirmPassword = req.body.confirmPassword;
+
+    let ad = await modelAdmin.get_Admin_Id(adminId);
+    let kq = bcrypt.compareSync(password, ad.matkhau);
+    try {
+        if(email == ad.admin && kq == true){
+            if(newPassword == confirmPassword){
+                var salt = bcrypt.genSaltSync(10);
+                var pass_mahoa = bcrypt.hashSync(newPassword, salt);
+                let query = await modelAdmin.update_Password(adminId, pass_mahoa);
+                res.status(200).json({ "status": "Success", "message": "Đổi mật khẩu thành công!" });
+            } else
+                res.status(400).json({ "status": "Fail", "message": "Mật khẩu cũ và mật khẩu mới không trùng nhau!" });
+        } else
+            res.status(400).json({ "status": "Fail", "message": "Sai Email hoặc mật khẩu cũ không đúng! Vui lòng kiểm tra lại thông tin!" });
+    } catch (error) {
+        res.status(400).json({ "status": "Fail", "message": "Lỗi...! Đổi mật khẩu không thành công!" });
+    }
+});
 
 
 

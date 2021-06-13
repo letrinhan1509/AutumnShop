@@ -25,8 +25,12 @@ exports.get_Admin_Id = (adminId) => {
     return new Promise( (hamOk, hamLoi) => {
         let sql = `SELECT * FROM admin WHERE manv = ${adminId}`;
         db.query(sql, (err, result) => {
-            dataName = result[0];
-            hamOk(dataName);
+            if(err)
+                hamLoi(err)
+            else{
+                dataName = result[0];
+                hamOk(dataName);
+            }
         });
     });
 };
@@ -62,18 +66,22 @@ exports.check_Admin = (email) => {
 }
     // Thêm tài khoản admin:
 exports.insertAdmin = (data) => {
+    console.log(data);
     return new Promise( (resolve, reject) => {
         let sql = "INSERT INTO admin SET ?";
         db.query(sql, data, (err, result) => {
-            console.log('Insert Admin successfully')
-            resolve(result);    // trả về kết quả nếu promise hoàn thành.
+            if(err){
+                reject(err);
+            } else{
+                resolve(result);    // trả về kết quả nếu promise hoàn thành.
+            }
         })
     })
 }
     // Cập nhật thông tin tài khoản admin:
 exports.updateProfileAdmin = (adminId, pas, name, address, phone, permission) => {
     return new Promise( (resolve, reject) => {
-        let sql = `UPDATE admin SET matkhau = '${pas}', tennv = '${name}', diachi = '${address}', sodienthoai = '${phone}', maquyen = '${permission}' WHERE manv = '${adminId}'`;
+        let sql = `UPDATE admin SET matkhau = '${pas}', tennv = '${name}', diachi = '${address}', sodienthoai = '${phone}', quyen = '${permission}' WHERE manv = '${adminId}'`;
         db.query(sql, (err, result) => {
             if(err){
                 console.log('Fail');
@@ -85,13 +93,28 @@ exports.updateProfileAdmin = (adminId, pas, name, address, phone, permission) =>
         })
     })
 }
+    // Đổi mật khẩu tài khoản admin:
+exports.update_Password = (adminId, pas) => {
+    return new Promise( (resolve, reject) => {
+        let sql = `UPDATE admin SET matkhau = '${pas}' WHERE manv = '${adminId}'`;
+        db.query(sql, (err, result) => {
+            if(err){
+                reject(err)
+            }else{
+                resolve(result)
+            }     
+        })
+    })
+}
     // Khoá tài khoản admin:
 exports.lockAdmin = (adminId) => {
     return new Promise( (resolve, reject) => {
         let sql = `UPDATE admin SET trangthai = 0 WHERE manv = '${adminId}'`;
         db.query(sql, (err, result) => {
-            console.log('Lock admin success');
-            resolve(result);
+            if(err)
+                reject(err);
+            else
+                resolve(result);
         })
     })
 }
@@ -100,8 +123,10 @@ exports.unlockAdmin = (adminId) => {
     return new Promise( (resolve, reject) => {
         let sql = `UPDATE admin SET trangthai = 1 WHERE manv = '${adminId}'`;
         db.query(sql, (err, result) => {
-            console.log('Unlock admin success');
-            resolve(result);
+            if(err)
+                reject(err);
+            else
+                resolve(result);
         })
     })
 }

@@ -90,7 +90,7 @@ const AddProducer = (props) => {
                         <Input />
                     </Form.Item>
                     <Form.Item
-                        name="tenloai"
+                        name="tennsx"
                         label="Tên nhà sản xuất"
                         rules={[
                             {

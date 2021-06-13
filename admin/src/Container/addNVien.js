@@ -179,9 +179,9 @@ const AddNV = (props) => {
                     label="Mã quyền"
                 >
                     <Select>
-                        <Option value="1">Admin</Option>
-                        <Option value="2">Nhân viên bán hàng</Option>
-                        <Option value="3">Nhân viên giao hàng</Option>
+                        <Option value="Admin">Admin</Option>
+                        <Option value="NVBH">Nhân viên bán hàng</Option>
+                        <Option value="NVGH">Nhân viên giao hàng</Option>
                     </Select>
                 </Form.Item>
                 {/* <Form.Item
@@ -192,9 +192,9 @@ const AddNV = (props) => {
                     </Form.Item> */}
                 <Form.Item {...tailFormItemLayout}>
                     <Link to={'/danh-sach-admin'} ><p style={{ marginRight: "20px", }} className="ant-btn ant-btn-dashed ">Trở về</p></Link>
-                    <Button value="submit" onClick={() => props.handleCreateUser()} type="primary" htmlType="submit">
+                    <Button value="submit" type="primary" htmlType="submit">
                         Đăng kí
-                        </Button>
+                    </Button>
                 </Form.Item>
             </Form>
         </div>
