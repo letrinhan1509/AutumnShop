@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from "axios"
 import { Form, Input, Button, Select, message } from 'antd';
-import { useHistory } from "react-router-dom"
+import { useHistory, Link } from "react-router-dom"
 import "./scss/addpro.scss"
 import catalog from '../API_Call/Api_catalog/catalog';
 const { Option } = Select;
@@ -43,9 +43,9 @@ const AddCategory = (props) => {
 
         //let nameImg =urldown;
 
-          console.log(values);
-        
-          catalog.addCatalog(values).then((res) => {
+        console.log(values);
+
+        catalog.addCatalog(values).then((res) => {
             message.success(res.data.message)
             setTimeout(() => {
                 history.push('/danh-muc-san-pham');
@@ -101,9 +101,14 @@ const AddCategory = (props) => {
                         <Input />
                     </Form.Item>
                     <Form.Item {...tailFormItemLayout}>
-                        <Button type="primary" htmlType="submit">
+                        <Link to={'/danh-muc-san-pham'} >
+                            <Button className="ant-btn ant-btn-dashed " htmlType="submit" style={{ marginLeft: -30 }}>
+                                Trở về
+                            </Button>
+                        </Link>
+                        <Button type="primary" htmlType="submit" style={{marginLeft: 30}}>
                             Thêm danh mục
-                    </Button>
+                        </Button>
                     </Form.Item>
                 </Form>
             </div>

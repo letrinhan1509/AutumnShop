@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import axios from "axios";
 import { useHistory } from 'react-router';
 import product from '../API_Call/Api_product/product';
-
+import "./scss/addpro.scss"
 const AllProduct = () => {
   let link = useHistory()
   const [idPro, setIdPro] = useState([]);
@@ -193,16 +193,19 @@ const AllProduct = () => {
 
   return (
     <>
-      <Table dataSource={ListProductHome} rowKey="uid" columns={columns} pagination={{ pageSize: 6 }} size="middle"
-
-      />
-      <Modal title="Thông báo" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
-
-        <p>Bạn có muốn xoá sản phẩm này không ?</p>
-      </Modal>
-
-
-      <Link to={'/them-san-pham'}><p className="ant-btn ant-btn-primary" type="primary">Thêm sản phẩm</p></Link>
+      <div className="product-wrapper">
+        <Table dataSource={ListProductHome} rowKey="uid" columns={columns} pagination={{ pageSize: 6 }} style={{ padding: 10 }} size="middle" />
+        <Modal title="Thông báo" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
+          <p>Bạn có muốn xoá sản phẩm này không ?</p>
+        </Modal>
+        <div className="btn-wrapper">
+          <Link to={'/them-san-pham'}>
+            <Button type="primary">
+              Thêm sản phẩm
+            </Button>
+          </Link>
+        </div>
+      </div>
     </>
   );
 }

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from "axios"
-import { Form, Input, Button, Select, message} from 'antd';
-import { useHistory } from "react-router-dom"
+import { Form, Input, Button, Select, message } from 'antd';
+import { useHistory, Link } from "react-router-dom"
 import "./scss/addpro.scss"
 import catalog from '../API_Call/Api_catalog/catalog';
 const { Option } = Select;
@@ -43,7 +43,7 @@ const AddProductType = (props) => {
 
         //let nameImg =urldown;
 
-          
+
         console.log(values);
 
         catalog.addProtype(values).then((res) => {
@@ -102,9 +102,14 @@ const AddProductType = (props) => {
                         <Input />
                     </Form.Item>
                     <Form.Item {...tailFormItemLayout}>
-                        <Button type="primary" htmlType="submit">
+                        <Link to={'/danh-sach-loai'} >
+                            <Button className="ant-btn ant-btn-dashed " htmlType="submit" style={{ marginLeft: -30 }}>
+                                Trở về
+                            </Button>
+                        </Link>
+                        <Button type="primary" htmlType="submit" style={{marginLeft: 30}}>
                             Thêm loại sảm phẩm
-                    </Button>
+                        </Button>
                     </Form.Item>
                 </Form>
             </div>

@@ -1,7 +1,5 @@
-import logo from './logo.svg';
 import './App.css';
 import "antd/dist/antd.css";
-import axios from "axios";
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
 import { Col, Row } from "antd";
@@ -26,7 +24,8 @@ import AddSale from "./Container/AddSale";
 import UserInf from "./Container/UserInf";
 import ListProductType from "./Container/ListProductType";
 import EditProductType from "./Container/EditProductType";
-import ProtectedRoute from "./Container/ProtectedRoute";
+import ListCatalog from "./Container/listCatalog";
+import ListProducer from "./Container/listProducer";
 
 
 
@@ -100,8 +99,14 @@ function App() {
                   <Route exact path="/them-nha-san-xuat">
                     <AddProducer />
                   </Route>
+                  <Route exact path="/danh-sach-nha-sx">
+                    <ListProducer />
+                  </Route>
                   <Route exact path="/them-danh-muc">
                     <AddCategory />
+                  </Route>
+                  <Route exact path="/danh-muc-san-pham">
+                    <ListCatalog />
                   </Route>
                   <Route exact path="/them-voucher">
                     <AddVoucher />

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from "axios"
 import { Form, Input, Button, Upload, InputNumber, Select, message } from 'antd';
-import { useHistory } from "react-router-dom"
-import { UploadOutlined, } from '@ant-design/icons';
+import { useHistory, Link } from "react-router-dom"
+import { UploadOutlined, DownloadOutlined } from '@ant-design/icons';
 import { storage } from "../firebase"
 import "./scss/addpro.scss"
 import product from '../API_Call/Api_product/product';
@@ -64,10 +64,9 @@ const AddProduct = (props) => {
         }
     };
 
-    console.log(image);
+    const [link, setLink] = useState("");
 
-    const addProduct = (values) => {
-        let a = [];
+    const upfirebase = () => {
         const upload = storage.ref(`Product_Img/${image.name}`).put(image);
         upload.on(
             "state_changed",
@@ -80,26 +79,24 @@ const AddProduct = (props) => {
                     .ref("Product_Img")
                     .child(image.name)
                     .getDownloadURL()
-                    .then(async url => {
+                    .then(url => {
                         console.log("ulr:", url);
-
-                        a.push(url);
-                        console.log(a);
+                        setLink(url);
                     });
+                message.success("download link thành công!");
             }
         );
-        console.log(a);
 
-        //setUrldown(a);
-        values["img"] = a;
-        console.log(values)
+    };
+
+    console.log(link);
+    const addProduct = (values) => {
 
 
-
-        //let nameImg =urldown;
-        //values["img"] = urldown;
-          
-
+        console.log(link);
+        values['img'] = link;
+        console.log(values.img);
+        console.log(values);
         product.addproduct(values).then((res) => {
             message.success(res.data.message)
             setTimeout(() => {
@@ -111,7 +108,10 @@ const AddProduct = (props) => {
                 message.error(`Login fail!\n ${err.response.data}`)
             })
     };
-    console.log(urldown);
+
+    console.log(link);
+
+
     const [fileList, setFileList] = useState([]);
     const meta = {
         title: 'title 1',
@@ -141,30 +141,7 @@ const AddProduct = (props) => {
     }, []);
     console.log(props.listType);
 
-    const listType = [
-        {
-            key: 1,
-            maloai: 'at',
-            tenloai: 'Áo thun',
-        },
-        {
-            key: 2,
-            maloai: 'ak',
-            tenloai: 'Áo khoát',
-        }
-    ];
-    const nsx = [
-        {
-            key: 1,
-            mansx: 'ym',
-            tennsx: 'YaMe',
-        },
-        {
-            key: 2,
-            mansx: 'rt',
-            tennsx: 'Routine',
-        }
-    ];
+
     const size = [
         {
             key: 1,
@@ -204,45 +181,20 @@ const AddProduct = (props) => {
             tenmau: 'Trắng',
         }
     ];
-    const options = [
-        { label: '0', value: '0' },
-        { label: '1', value: '1' },
-    ];
-    const danhmuc = [
-        {
-            key: 1,
-            madm: 'bl',
-            tendm: 'Balo'
-        },
-        {
-            key: 2,
-            madm: 'ao',
-            tendm: 'Áo'
-        },
-        {
-            key: 3,
-            madm: 'giay',
-            tendm: 'Giày'
-        },
-        {
-            key: 4,
-            madm: 'pk',
-            tendm: 'Phụ Kiện'
-        }
-    ];
-    function onChange(checkedValues) {
-        console.log('checked = ', checkedValues);
-    }
+
     return (
         <>
             <div className="form-wrapper">
                 <h2 style={{ textAlign: 'center' }}> Nhập thông tin sản phẩm</h2>
+
                 <Form
                     {...formItemLayout}
                     form={form}
                     name="register"
                     onFinish={addProduct}
                     scrollToFirstError
+                //initialValues={{img: link}}
+
                 >
                     <Form.Item
                         name="code"
@@ -342,6 +294,17 @@ const AddProduct = (props) => {
                             <Button icon={<UploadOutlined />} >Click to upload</Button>
                         </Upload>
                     </Form.Item>
+
+                    <Form.Item label="Downloat link Firebase">
+                        <Button icon={<DownloadOutlined />} onClick={upfirebase} >Downlink</Button>
+                    </Form.Item>
+                    <Form.Item
+                        name="img"
+                        label="img"
+                        hidden
+                    >
+                        <Input />
+                    </Form.Item>
                     {/* <input type="file" onChange={handleChange}/>
                 <button onClick={handleUpload}>Upload</button> */}
                     <Form.Item
@@ -411,9 +374,15 @@ const AddProduct = (props) => {
                         </Select>
                     </Form.Item>
                     <Form.Item {...tailFormItemLayout}>
-                        <Button type="primary" htmlType="submit">
-                            Thêm sảm phẩm
-                    </Button>
+                        <Link to={'/tat-ca-san-pham'} >
+                            <Button className="ant-btn ant-btn-dashed " htmlType="submit" style={{marginLeft: -30}}>
+                                Trở về
+                            </Button>
+                        </Link>
+                        <Button type="primary" htmlType="submit" style={{marginLeft: 30}}>
+                            Thêm sản phẩm
+                        </Button>
+
                     </Form.Item>
                 </Form>
             </div>

@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { LockOutlined, UnlockOutlined } from '@ant-design/icons';
 import { Button, Table, Tag, message } from 'antd';
-import { useHistory,Link } from 'react-router-dom';
+import { useHistory, Link } from 'react-router-dom';
 import axios from 'axios'
 import "./scss/addpro.scss"
-const ListProductType = () => {
+const ListCata = () => {
   const link = useHistory();
   const [a, setA] = useState([]);
 
   const [ListType, setListType] = useState([]);
   useEffect(() => {
-    axios.get("http://127.0.0.1:5000/api/v1/danh-muc/danh-sach-loai").then((res) => {
+    axios.get("http://127.0.0.1:5000/api/v1/danh-muc/danh-sach-dm").then((res) => {
       setListType(res.data.data);
     })
   }, []);
@@ -77,20 +77,16 @@ const ListProductType = () => {
 
   const columns = [
     {
-      title: 'Mã loại',
-      dataIndex: 'maloai',
-      key: 'maloai',
-    },
-    {
-      title: 'Tên loại',
-      dataIndex: 'tenloai',
-      key: 'admin',
-    },
-    {
-      title: 'Mã danh mục',
+      title: 'Mã danh mục',
       dataIndex: 'madm',
       key: 'madm',
     },
+    {
+      title: 'Tên danh mục',
+      dataIndex: 'tendm',
+      key: 'tendm',
+    },
+
     /* result.permission === 'Admin' ?
       {
         title: 'Hành động',
@@ -112,12 +108,12 @@ const ListProductType = () => {
   return (
     <>
       <div className="form-wrapper">
-        <h2 style={{ textAlign: 'center', marginTop: "30px" }}>DANH SÁCH LOẠI SẢN PHẨM</h2>
+        <h2 style={{ textAlign: 'center', marginTop: "30px" }}>DANH SÁCH DANH MỤC</h2>
         <Table dataSource={ListType} columns={columns} pagination={{ pageSize: 10 }} style={{padding: 10}} size="middle" />
         <div className="btn-wrapper">
-          <Link to={'/them-loai-san-pham'}>
+          <Link to={'/them-danh-muc'}>
             <Button type="primary">
-              Thêm loại sản phẩm
+              Thêm danh mục
             </Button>
           </Link>
         </div>
@@ -128,4 +124,4 @@ const ListProductType = () => {
   );
 }
 
-export default ListProductType;
+export default ListCata;
