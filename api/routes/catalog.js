@@ -5,7 +5,7 @@ const modelCatalog = require('../models/model_catalog.js'); //nhúng model catal
 
       // API
   // Danh mục sản phẩm:
-router.get('/danh-sach-dm', async function (req, res) {
+router.get('/', async function (req, res) {
   try {
     let listCategory = await modelCatalog.list_Categorys();
     res.json({ "status": "Success", "data": listCategory });
@@ -14,7 +14,7 @@ router.get('/danh-sach-dm', async function (req, res) {
   }
 });
   // Danh sách loại sản phẩm:
-router.get('/danh-sach-loai', async function (req, res) {
+router.get('/loai', async function (req, res) {
   try {
     let listPro = await modelCatalog.list_types();
     res.json({ "status": "Success", "data": listPro });
@@ -23,7 +23,7 @@ router.get('/danh-sach-loai', async function (req, res) {
   }
 });
   // Danh mục theo id:
-router.get('/danh-muc-id/:id', async function (req, res) {
+router.get('/:id', async function (req, res) {
   try {
     let typeId = req.params.id;
     let type = await modelCatalog.get_Category_Id(typeId);
@@ -32,11 +32,11 @@ router.get('/danh-muc-id/:id', async function (req, res) {
     } else
       res.json({ "status": "Success", "data": type });
   } catch (error) {
-    res.json({ "status": "Fail", "error": error })
+    res.json({ "status": "Fail", "error": error });
   }
 });
   // Loại theo id:
-router.get('/loai-id/:id', async function (req, res) {
+router.get('/loai/:id', async function (req, res) {
   try {
     let typeId = req.params.id;
     let type = await modelCatalog.get_Type_Id(typeId);
@@ -45,7 +45,20 @@ router.get('/loai-id/:id', async function (req, res) {
     } else
       res.json({ "status": "Success", "data": type });
   } catch (error) {
-    res.json({ "status": "Fail", "error": error })
+    res.json({ "status": "Fail", "message": "Lỗi cú pháp...! ", "error": error });
+  }
+});
+  // Loại theo mã danh mục:
+router.get('/ma-danh-muc/:id', async function (req, res) {
+  try {
+    let madm = req.params.id;
+    let type = await modelCatalog.get_Type_Catalog(madm);
+    if (type == -1) {
+      res.status(404).json({ "status": "Fail", "message": "Không tìm thấy loại thuộc danh mục này!" });
+    } else
+      res.status(200).json({ "status": "Success", "data": type });
+  } catch (error) {
+    res.status(404).json({ "status": "Fail", "message": "Lỗi...! ", "error": error })
   }
 });
   
@@ -88,7 +101,7 @@ router.delete('/xoa-loai/:id', async function(req, res) {
   try {
       let query = await modelCatalog.delete_Type(typeId);
       if(query == 1){
-          res.json({"status": "Success", "message": "Xoá loại thành công!!!"});
+          res.status(200).json({"status": "Success", "message": "Xoá loại thành công!!!"});
       }else
           res.json({"status": "Fail", "message": "Có ràng buộc khoá ngoại. Không thể xoá loại!"});
   } catch (error) {
@@ -117,15 +130,35 @@ router.post('/them-danh-muc', async function(req, res) {
 router.put('/cap-nhat-danh-muc', async function(req, res) {
   let categoryId = req.body.categoryId;
   let name = req.body.name;
+
   if(categoryId == '' || name == ''){
-      res.json({"status": "Fail", "message": "Sai hoặc thiếu thông tin danh mục!"});
+      res.status(404).json({"status": "Fail", "message": "Sai hoặc thiếu thông tin danh mục!"});
   }else{
     try {
       let query = await modelCatalog.update_category(categoryId, name);
-      res.json({"status": "Success", "message": "Cập nhật danh mục thành công!"});
+      res.status(200).json({ "status": "Success", "message": "Cập nhật danh mục thành công!" });
     } catch (error) {
-        res.json({"status": "Fail", "message": "Lỗi cú pháp! Cập nhật danh mục không thành công!", "error": error});
+      res.status(404).json({ "status": "Fail", "message": "Lỗi cú pháp! Cập nhật danh mục không thành công!", "error": error });
     }
+  }
+});
+  // Cập nhật trạng thái danh mục:
+router.put('/cap-nhat-trang-thai/dm/', async function(req, res) {
+  let madm = req.body.madm;
+  let trangthai = req.body.trangthai;
+  console.log(req.body);
+  try {
+    if(madm != '' && trangthai == 1){
+      let query = await modelCatalog.unlock_category(madm);
+      res.status(200).json({ "status": "Success", "message": "Hiện danh mục thành công!" });
+    } else if(madm != '' && trangthai == 0){
+      console.log("ok");
+      let query = await modelCatalog.lock_category(madm);
+      res.status(200).json({ "status": "Success", "message": "Ẩn danh mục thành công!" });
+    } else
+      res.status(404).json({ "status": "Fail", "message": "Thiếu thông tin cập nhật trạng thái danh mục!!!" })
+  } catch (error) {
+    res.status(404).json({ "status": "Fail", "message": "Lỗi cú pháp! Cập nhật trạng thái danh mục không thành công!", "error": error })
   }
 });
 

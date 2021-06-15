@@ -102,6 +102,7 @@ router.post('/dang-ky', async function(req, res) {
     let address = req.body.address;
     let phone = req.body.phone;
     let permission = req.body.permission;
+    console.log(req.body);
 
     if (pass == pass1){
         var salt = bcrypt.genSaltSync(10); // Chuỗi cộng thêm vào mật khẩu để mã hoá.
@@ -116,13 +117,13 @@ router.post('/dang-ky', async function(req, res) {
             quyen: permission
         }
         console.log("ok");
-        try {
+        /* try {
             let query = await modelAdmin.insertAdmin(data);
             console.log(query);
             res.status(200).json({ "status": "Success", "message": "Đăng ký tài khoản admin thành công!" });
         } catch (error) {
             res.status(400).json({ "status": "Fail", "message": "Lỗi cú pháp! Đăng ký không thành công!", "error": error });
-        }
+        } */
     } else{
         res.status(400).json({ "status": "Fail", "message": "Hai mật khẩu ko trùng khớp! Đăng ký không thành công!" });
     }

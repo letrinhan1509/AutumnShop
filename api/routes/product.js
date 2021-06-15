@@ -7,7 +7,7 @@ var breadcrumb = 'Tất cả sản phẩm';
 
       // API GET:
   // Danh sách tất cả sản phẩm:
-router.get('/danh-sach', async function(req, res) { 
+router.get('/', async function(req, res) { 
   try {
     let listPro = await modelProduct.list_products();
     res.json({ "status": "Success", "data": listPro });
@@ -25,19 +25,18 @@ router.get('/api/new-product', async function(req, res) {
 })
 
   // Lọc sản phẩm theo id:
-router.get('/id=:id', async function(req, res) {
+router.get('/:id', async function(req, res) {
   let idSpham = req.params.id;
+
   try {
     let sanPham = await modelProduct.get_By_Id(idSpham);
     let listCmt = await modelComment.get_by_productId(idSpham);
     if (sanPham == -1) {
-      res.json({ "status": "Fail", "message": "Không tìm thấy sản phẩm này trong DB!" });
-    } else if(sanPham == 0){
-      res.json({ "status": "Fail", "message": "Sản phẩm này hiện đang ẩn!" });
+      res.status(404).json({ "status": "Fail", "message": "Không tìm thấy sản phẩm này trong DB!" });
     } else
-      res.json({ "status": "Success", "data_Spham": sanPham, "data_Cmt": listCmt });
+      res.status(200).json({ "status": "Success", "dataSpham": sanPham, "dataCmt": listCmt });
   } catch (error) {
-    res.json({ "status": "Fail", "message": "Lỗi !!!", "error": error });
+    res.status(404).json({ "status": "Fail", "message": "Lỗi cú pháp!!!", "error": error });
   }
 })
   // Lọc sản phẩm theo loại:
@@ -96,34 +95,41 @@ router.post('/them-san-pham', async function(req, res) {
   let hinh = req.body.img;
   let hinhchitiet = req.body.hinhchitiet;
   let mota = req.body.mota;
+  let trangthai = req.body.trangthai;
   let mansx = req.body.mansx;
   let maloai = req.body.maloai;
   let madm = req.body.madm;
-  console.log(req.body);
-
-  if(code == '' || tensp == '' || soluong == '' || size == '' || mau == '' || gia == '' || hinh == '' || maloai == '' || madm == ''){
-    res.json({"status": "Fail", "message": "Thêm sản phẩm không thành công! Thiếu thông tin sản phẩm"});
-  }else{
-    let data = {
-      code: code,
-      tensp: tensp,
-      soluong: soluong,
-      size: size,
-      mau: mau,
-      gia: gia,
-      hinh: hinh,
-      hinhchitiet: hinhchitiet,
-      mota: mota,
-      mansx: mansx,
-      maloai: maloai,
-      madm: madm,
-    };
-    try {
-        let query = await modelProduct.create_product(data);
-        res.json({"status": "Success", "message": "Thêm sản phẩm thành công!", "result": query});
-    } catch (error) {
-        res.json({"status": "Fail", "message": "Lỗi cú pháp! Thêm sản phẩm không thành công!", "error": error});
+  let sanPham = await modelProduct.check_Code(code);
+  console.log(sanPham.length);
+  
+  try {
+    if(sanPham.length >= 0){
+      res.status(404).json({"status": "Fail", "message": "Mã code của sản phẩm đã tồn tại! Vui lòng nhập mã code khác!"});
+    } else if(code == '' && tensp == '' && soluong == '' && size == '' && mau == '' && gia == '' && hinh == '' && maloai == '' && madm == ''){
+      res.status(404).json({"status": "Fail", "message": "Thêm sản phẩm không thành công! Thiếu thông tin sản phẩm"});
+    } else{
+      let data = {
+        code: code,
+        tensp: tensp,
+        soluong: soluong,
+        size: size,
+        mau: mau,
+        gia: gia,
+        hinh: hinh,
+        hinhchitiet: hinhchitiet,
+        mota: mota,
+        mansx: mansx,
+        maloai: maloai,
+        madm: madm,
+      };
+      let query = await modelProduct.create_product(data);
+      if(query == 1)
+        res.status(200).json({ "status": "Success", "message": "Thêm sản phẩm thành công!", "result": query });
+      else
+      res.status(404).json({ "status": "Fail", "message": "Thêm sản phẩm không thành công!" });
     }
+  } catch (error) {
+    res.status(404).json({ "status": "Fail", "message": "Lỗi cú pháp! Thêm sản phẩm không thành công!", "error": error });
   }
 });
   // Sửa sản phẩm:
@@ -168,6 +174,20 @@ router.put('/cap-nhat-trang-thai', async function(req, res) {
     } catch (error) {
         res.json({"status": "Fail", "message": "Lỗi cú pháp! Cập nhật sản phẩm không thành công!", "error": error});
     }
+  }
+});
+  // Xoá sản phẩm:
+router.delete('/xoa-san-pham/:id', async function(req, res) {
+  let masp = req.params.id;
+
+  try {
+    let query = await modelProduct.delete(masp);
+    if(query == -1)
+      res.status(404).json({ "status": "Fail", "message": "Sản phẩm có trong chi tiết đơn hàng! Không thể xoá sản phẩm" });
+    else
+      res.status(200).json({ "status": "Success", "message": "Xoá sản phẩm thành công!", "result": query });
+  } catch (error) {
+    res.status(404).json({ "status": "Fail", "message": "Lỗi cú pháp - có khoá ngoại! Xoá sản phẩm không thành công!", "error": error });
   }
 });
 

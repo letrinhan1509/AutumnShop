@@ -6,26 +6,26 @@ const modelProducer = require('../models/model_producer');
 
             // API GET:
     // Danh sách tất cả nhà sản xuất:
-router.get('/danh-sach', async function (req, res) {
+router.get('/', async function (req, res) {
     try {
       let listProducer = await modelProducer.list_producer();
-      res.json({ "status": "Success", "data": listProducer });
+      res.status(200).json({ "status": "Success", "data": listProducer });
     } catch (error) {
-      res.json({ "status": "Fail", "error": error })
+      res.status(404).json({ "status": "Fail", "error": error })
     }
   });
     // Nhà sản xuất theo id:
-router.get('/nha-sx-id/:id', async function (req, res) {
+router.get('/:id', async function (req, res) {
     try {
         let producerId = req.params.id;
         let producer = await modelProducer.get_By_Id(producerId);
         console.log(producer.mansx);
         if(producer == -1){
-            res.json({"status": "Fail", "message": "Không tìm thấy nhà sản xuất này trong DB!"});
+            res.status(404).json({ "status": "Fail", "message": "Không tìm thấy nhà sản xuất này trong DB!" });
         }else
-            res.json({"status": "Success", "data": producer});
+            res.status(200).json({ "status": "Success", "data": producer });
     } catch (error) {
-        res.json({"status": "Fail", "error": error})
+        res.status(404).json({ "status": "Fail", "error": error });
     }
 });
 
@@ -51,11 +51,12 @@ router.post('/them-nha-sx', async function(req, res) {
 });
     // Cập nhật thông tin nhà sản xuất:
 router.put('/cap-nhat-nha-sx', async function(req, res) {
-    let producerId = req.body.producerId;
-    let name = req.body.name;
-    let origin = req.body.origin;
+    let producerId = req.body.mansx;
+    let name = req.body.tennsx;
+    let origin = req.body.xuatxu;
+
     if(producerId == '' || name == ''){
-        res.json({"status": "Fail", "message": "Không có id nhà sản xuất!"});
+        res.json({"status": "Fail", "message": "Thiếu thông tin nhà sản xuất!"});
     }else{
         try {
             let query = await modelProducer.update_producer(producerId, name, origin);
@@ -68,15 +69,15 @@ router.put('/cap-nhat-nha-sx', async function(req, res) {
     // Xoá nhà sản xuất:
 router.delete('/xoa-nha-sx/:id', async function(req, res) {
     let producerId = req.params.id;
-    
+
     try {
         let query = await modelProducer.delete_producer(producerId);
         if(query == 1){
-            res.json({"status": "Success", "message": "Xoá nhà sản xuất thành công!"});
+            res.status(200).json({"status": "Success", "message": "Xoá nhà sản xuất thành công!"});
         }else
-            res.json({"status": "Fail", "message": "Có ràng buộc khoá ngoại. Không thể xoá nhà sản xuất!"});
+            res.status(404).json({"status": "Fail", "message": "Có ràng buộc khoá ngoại. Không thể xoá nhà sản xuất!"});
     } catch (error) {
-        res.json({"status": "Fail", "message": "Lỗi cú pháp! Xoá nhà sản xuất không thành công!", "error": error});
+        res.status(404).json({"status": "Fail", "message": "Lỗi cú pháp! Xoá nhà sản xuất không thành công!", "error": error});
     }
 });
 

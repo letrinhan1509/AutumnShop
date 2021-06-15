@@ -1,5 +1,7 @@
 import React from 'react';
+import axios from "axios";
 import { Form, Input,Button, message, Select } from "antd";
+import { useState, useEffect } from 'react';
 import { useHistory, Link } from "react-router-dom"
 import "./scss/addpro.scss"
 import admin from '../API_Call/Api_admin/admin';
@@ -39,6 +41,45 @@ const AddNV = (props) => {
         </Form.Item>
     );
 
+    const [listCity, setlistCity] = useState([]);
+    useEffect(() => {
+        axios.get("https://thongtindoanhnghiep.co/api/city").then((res) => {
+            setlistCity(res.data.LtsItem);
+        })
+    }, []);
+    console.log(listCity);
+
+    const [a, setA] = useState([]);
+    const linktoCity = (e) => {
+        let id = e.currentTarget.dataset.id
+        setA(id);
+        console.log(id);
+    }
+    const [listDistrict, setlistDistrict] = useState([]);
+    useEffect(() => {
+        if(a != ""){
+            axios.get("https://thongtindoanhnghiep.co/api/city/" + a +"/district").then((res) => {
+                setlistDistrict(res.data);
+            })
+        }
+    }, [a]);
+    console.log(listDistrict);
+
+    const [b, setB] = useState([]);
+    const linktoWard = (e) => {
+        let id = e.currentTarget.dataset.id
+        setB(id);
+        console.log(id);
+    }
+    const [listWard, setlistWard] = useState([]);
+    useEffect(() => {
+        if(b != ""){
+            axios.get("https://thongtindoanhnghiep.co/api/district/" + b +"/ward").then((res) => {
+                setlistWard(res.data);
+            })
+        }
+    }, [b]);
+    console.log(listWard);
 
     const register = (values) => {
 
@@ -155,10 +196,54 @@ const AddNV = (props) => {
                     <Input.Password />
                 </Form.Item>
                 <Form.Item
+                    name="city"
+                    id="city"
+                    label="Thành phố"
+                >
+                    <Select>
+                        {listCity.map((item) => {
+                            return (
+                                <>
+                                    <Option value={item.ID}>{item.Title}</Option>
+                                </>
+                            )
+                        })}
+                    </Select>
+                </Form.Item>
+                <Form.Item
+                    name="district"
+                    id="district"
+                    label="Quận - Huyện"
+                >
+                    <Select>
+                        {listDistrict.map((item) => {
+                            return (
+                                <>
+                                    <Option value={item.ID}>{item.Title}</Option>
+                                </>
+                            )
+                        })}
+                    </Select>
+                </Form.Item>
+                <Form.Item
+                    name="ward"
+                    id="ward"
+                    label="Phường - Xã"
+                >
+                    <Select>
+                        {/* {listDistrict.map((item) => {
+                            return (
+                                <>
+                                    <Option value={item.ID}>{item.Title}</Option>
+                                </>
+                            )
+                        })} */}
+                    </Select>
+                </Form.Item>
+                <Form.Item
                     name="address"
                     id="address"
                     label="Địa chỉ"
-
                 >
                     <Input />
                 </Form.Item>

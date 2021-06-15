@@ -4,16 +4,20 @@ import { Button, Table, Tag, message } from 'antd';
 import { useHistory,Link } from 'react-router-dom';
 import axios from 'axios'
 import "./scss/addpro.scss"
+
+
 const ListProductType = () => {
   const link = useHistory();
-  const [a, setA] = useState([]);
-
+  let result = JSON.parse(localStorage.getItem('user'));
+  
   const [ListType, setListType] = useState([]);
   useEffect(() => {
-    axios.get("http://127.0.0.1:5000/api/v1/danh-muc/danh-sach-loai").then((res) => {
+    axios.get("http://127.0.0.1:5000/api/v1/danh-muc/loai").then((res) => {
       setListType(res.data.data);
     })
   }, []);
+  
+  const [a, setA] = useState([]);
   const linkto = (e) => {
     let id = e.currentTarget.dataset.id
     setA(id);
@@ -25,15 +29,16 @@ const ListProductType = () => {
   const [Type, setType] = useState([]);
   useEffect(() => {
     if (a != "") {
-      let url = "http://127.0.0.1:5000/api/v1/danh-muc/loai-id/" + a
+      let url = "http://127.0.0.1:5000/api/v1/danh-muc/loai/" + a;
       axios.get(url).then((res) => {
         setType(res.data);
       });
     }
   }, [a]);
-  localStorage.setItem('type', JSON.stringify(Type))
-  let result = JSON.parse(localStorage.getItem('user'))
-
+  if(Type != ''){
+    localStorage.setItem('type', JSON.stringify(Type));
+  }
+  
   const deleteType = (e) => {
     let id = e.currentTarget.dataset.id;
     console.log("Id:", id);
@@ -46,11 +51,10 @@ const ListProductType = () => {
       if (res.data.status === "Success") {
         message.success(res.data.message)
         setTimeout(() => {
-          link.go({ pathname: '/danh-sach-admin' });
+          link.go({ pathname: '/danh-sach-loai' });
         }, 800)
       }
       else {
-        //message.error("Xoá loại thất bại!")
         message.error(res.data.message)
       }
     })
@@ -60,20 +64,18 @@ const ListProductType = () => {
       })
   }
 
-
-  /* ListAdmin.forEach(element => {
+  ListType.forEach(element => {
     if(element.trangthai === 1){
       element.trangthai = [];
-      element.trangthai.stt = ["Hoạt động"];
-      element.trangthai.id = element.manv;
+      element.trangthai.stt = ["Hiện"];
+      element.trangthai.id = element.maloai;
     }
     if(element.trangthai === 0 ){
       element.trangthai = [];
-      element.trangthai.stt = ["Khoá"];
-      element.trangthai.id = element.manv;
+      element.trangthai.stt = ["Ẩn"];
+      element.trangthai.id = element.maloai;
     }
-  }) */
-  console.log(ListType);
+  })
 
   const columns = [
     {
@@ -91,13 +93,13 @@ const ListProductType = () => {
       dataIndex: 'madm',
       key: 'madm',
     },
-    /* result.permission === 'Admin' ?
+    result.permission === 'Admin' ?
       {
-        title: 'Hành động',
+        title: '',
         dataIndex: 'maloai',
         key: 'maloai',
-        render: maloai => (<Button data-id={maloai} key={maloai} type="primary" onClick={linkto}>Sửa</Button>)
-      } : (<> </>), */
+        render: maloai => (<Button data-id={maloai} key={maloai} onClick={linkto}> Sửa </Button>)
+      } : (<> </>),
     result.permission === 'Admin' ?
       {
         title: 'Hành động',

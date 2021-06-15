@@ -2,12 +2,12 @@ import AxiosProduct from "./AxiosProduct"
 
 const product = {
     getAll: () => {
-        const url = "/danh-sach";
+        const url = "/";
         return AxiosProduct.get(url);
     },
     //(Sản phẩm theo id)
     getid: (id) => {
-        const url = `/id=${id}`;
+        const url = `/${id}`;
         return AxiosProduct.get(url);
     },
     //(DSách sản phẩm theo loại)
@@ -36,7 +36,11 @@ const product = {
     updateStatus: (values) => {
         const url = "/cap-nhat-trang-thai";
         return AxiosProduct.put(url, values);
-    }
+    },
+    deletePro: (id) => {
+        const url = `/xoa-san-pham/${id}`;
+        return AxiosProduct.delete(url);
+    },
 };
 
 export default product;

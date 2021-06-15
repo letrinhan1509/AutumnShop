@@ -9,14 +9,14 @@ const AllProduct = () => {
   let link = useHistory()
   const [idPro, setIdPro] = useState([]);
   const [a, setA] = useState([]);
-
+  let result = JSON.parse(localStorage.getItem('user'))
 
   const loadEdit = (e) => {
     let i = e.currentTarget.dataset.id;
     console.log(i);
     setA(i);
     setTimeout(() => {
-      link.push('/Editsanpham');
+      link.push('/sua-san-pham');
     }, 100)
 
   }
@@ -28,42 +28,41 @@ const AllProduct = () => {
     setIsModalVisible(true);
   }
 
-  const masp = window.localStorage.getItem("masp");
-  //const [product, setProduct] = useState([]);
-  /* let url = "http://127.0.0.1:5000/api/v1/product-id/" +a
+  //const masp = window.localStorage.getItem("masp");
+  const [productEdit, setProductEdit] = useState([]);
   useEffect(() => {
+    if(a != ''){
+      let url = "http://127.0.0.1:5000/api/v1/san-pham/" + a;
       axios.get(url).then((res) => {
-          if(res.data.status ==="Success"){
-              setProduct(res.data.data)
-              console.log(res.data.data);
-          }
-         
-         
-
+        if(res.data.status ==="Success"){
+            setProductEdit(res.data.dataSpham);
+        }
       })
-
-  }, [a]) */
+    }
+  }, [a]);
   //window.localStorage.setItem('Product', JSON.stringify(product));
-  let result = JSON.parse(localStorage.getItem('user'))
-  console.log(result.permission);
+  if(productEdit != ''){
+    localStorage.setItem('product', JSON.stringify(productEdit));
+  }
+
   ///Modal Xoá
   const [isModalVisible, setIsModalVisible] = useState(false);
 
 
   const handleOk = () => {
-    let url = "http://127.0.0.1:5000/api/v1/del-product/" + idPro;
+    let url = "http://127.0.0.1:5000/api/v1/san-pham/xoa-san-pham/" + idPro;
     console.log(url);
-    axios.get(url).then((res) => {
+    axios.delete(url).then((res) => {
       if (res.data.status === "Success") {
         message.success(res.data.message);
         window.location.reload()
-      }
-      if (res.data.status === "Fail") {
+      } if (res.data.status === "Fail") {
         message.error(res.data.message);
       }
-
-
     })
+      .catch(err => {
+        message.error(`Lỗi...!\n ${err.response.data.message}`);
+      })
 
     setIsModalVisible(false);
 
@@ -177,15 +176,14 @@ const AllProduct = () => {
       title: 'Action',
       dataIndex: "masp",
       key: "masp",
-      render: text => result.permission === 'Admin' ? (<Button data-id={text} onClick={onClick}>Xoá</Button>) : (<p></p>)
-
+      render: text => result.permission === 'Admin' ? (<Button data-id={text} onClick={loadEdit} >Sửa</Button>) : (<p></p>)
     },
     {
       title: '',
       dataIndex: "masp",
       key: "masp",
-      render: text => result.permission === 'Admin' ? (<Button data-id={text} onClick={loadEdit} >Sửa</Button>) : (<p></p>)
-    }
+      render: text => result.permission === 'Admin' ? (<Button data-id={text} onClick={onClick} type="danger" >Xoá</Button>) : (<p></p>)
+    } 
   ];
 
 

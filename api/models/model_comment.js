@@ -5,7 +5,7 @@ var dataList=[]; // biến để chứa dữ liệu đổ về cho controller
     // Danh sách tất cả comment:
 exports.list_Comments = async () => {
     return new Promise( (hamOK, hamLoi) => {
-        let sql = `SELECT binhluan.mabl, binhluan.masp, sanpham.tensp, binhluan.makh, khachhang.tenkh,
+        let sql = `SELECT binhluan.mabl, binhluan.masp, sanpham.tensp, binhluan.makh, khachhang.tenkh, binhluan.noidung,
         binhluan.ngaybl, binhluan.trangthai FROM ((binhluan JOIN khachhang ON binhluan.makh = khachhang.makh)
         JOIN sanpham ON binhluan.masp = sanpham.masp)`;
         db.query(sql, (err, result) => {
@@ -58,12 +58,33 @@ exports.get_by_productId = async (productId) => {
         let sql = `SELECT binhluan.mabl, binhluan.masp, sanpham.tensp, binhluan.makh, khachhang.tenkh,
         binhluan.ngaybl, binhluan.trangthai FROM ((binhluan JOIN khachhang ON binhluan.makh = khachhang.makh)
         JOIN sanpham ON binhluan.masp = sanpham.masp) WHERE binhluan.masp = '${productId}'`;    
+        db.query(sql, (err, result) => {
+            if(err){
+                hamLoi(err);
+            }else{
+                if(result.length > 0){
+                    //dataList = result;
+                    hamOK(result);
+                }else{
+                    hamOK(-1);
+                }
+            }
+        })
+    })
+}
+
+exports.test = async (productId) => {
+    return new Promise( async (hamOK, hamLoi) => {
+        const data = [];
+        let sql = `SELECT binhluan.mabl, binhluan.masp, sanpham.tensp, binhluan.makh, khachhang.tenkh,
+        binhluan.ngaybl, binhluan.trangthai FROM ((binhluan JOIN khachhang ON binhluan.makh = khachhang.makh)
+        JOIN sanpham ON binhluan.masp = sanpham.masp) WHERE binhluan.masp = '${productId}'`;    
         const queryResponse = await db.query(sql, async function(err, result) {
             //dataList = result;
             result.forEach(async (element) => {
                 let sql_detail = `SELECT chitietbl.mact, chitietbl.ten, chitietbl.noidung, chitietbl.ngaybl, chitietbl.mabl
                 FROM (chitietbl JOIN binhluan ON chitietbl.mabl = binhluan.mabl) WHERE chitietbl.mabl = '${element.mabl}'`;
-                const queryResponse = await db.query(sql_detail, async function(err, result1) {
+                const queryResponse = await db.query(sql_detail, (err, result1) => {
                     element.traLoiBL = result1;
                     console.log("mã bluan:", element.mabl);
                     data.push(element);
@@ -112,7 +133,7 @@ exports.get_by_userId = async (userId) => {
 exports.get_detailComment = async (commentId) => {
     return new Promise( (hamOK, hamLoi) => {
         let sql = `SELECT chitietbl.mact, chitietbl.ten, chitietbl.noidung, chitietbl.ngaybl, chitietbl.mabl
-        FROM (chitietbl JOIN binhluan ON chitietbl.mabl = binhluan.mabl) WHERE chitietbl.mabl = '${commentId}'`;
+        FROM (chitietbl JOIN binhluan ON chitietbl.mabl = binhluan.mabl) WHERE chitietbl.mabl = '${commentId}' AND binhluan.trangthai=1`;
         db.query(sql, (err, result) => {
             if(err){
                 hamLoi(err);
@@ -230,10 +251,36 @@ exports.lock_Comment = (mabl) => {
         });
     });
 };
+    // Mở khoá comment:
+exports.unlock_Comment = (mabl) => {
+    return new Promise( (hamOK, hamLoi) => {
+        let sql = `UPDATE binhluan SET trangthai=1 WHERE mabl='${mabl}'`;
+        let query = db.query(sql, (err, result) => {
+            if(err){
+                hamLoi(err);
+            }else{
+                hamOK(result);
+            }
+        });
+    });
+};
     // Khoá chi tiết comment:
 exports.lock_RepComment = (mact) => {
     return new Promise( (hamOK, hamLoi) => {
         let sql = `UPDATE chitietbl SET trangthai=0 WHERE mact='${mact}'`;
+        let query = db.query(sql, (err, result) => {
+            if(err){
+                hamLoi(err);
+            }else{
+                hamOK(result);
+            }
+        });
+    });
+};
+    // Mở khoá chi tiết comment:
+exports.unlock_RepComment = (mact) => {
+    return new Promise( (hamOK, hamLoi) => {
+        let sql = `UPDATE chitietbl SET trangthai=1 WHERE mact='${mact}'`;
         let query = db.query(sql, (err, result) => {
             if(err){
                 hamLoi(err);

@@ -39,7 +39,7 @@ exports.get_Category_Id = async (id) => {
     })
 }
     // Thêm danh mục:
-exports.insert_category = (data) => {
+exports.insert_category = async (data) => {
     return new Promise( (resolve, reject) => {
         let sql = "INSERT INTO danhmuc SET ?";
         db.query(sql, data, (err, result) => {
@@ -53,25 +53,40 @@ exports.insert_category = (data) => {
     })
 }
     // Sửa danh mục:
-exports.update_category = (categoryId, name) => {
-    let sql = `UPDATE danhmuc SET tendm = '${name}' WHERE madm = '${categoryId}'`;
-    db.query(sql, (err, result) => {
-        console.log('Update type success');
-    })
+exports.update_category = async (categoryId, name) => {
+    return new Promise( (hamOK, hamLoi) => {
+        let sql = `UPDATE danhmuc SET tendm = '${name}' WHERE madm = '${categoryId}'`;
+        db.query(sql, (err, result) => {
+            if(err)
+                hamLoi(err);
+            else
+                hamOK(result);
+        })
+    });
 }
     // Khoá danh mục:
-exports.lock_category = (categoryId) => {
-    let sql = `UPDATE danhmuc SET trangthai = 0 WHERE madm = '${categoryId}'`;
-    db.query(sql, (err, result) => {
-        console.log('Lock type success');
-    })
+exports.lock_category = async (categoryId) => {
+    return new Promise( (hamOK, hamLoi) => {
+        let sql = `UPDATE danhmuc SET trangthai = 0 WHERE madm = '${categoryId}'`;
+        db.query(sql, (err, result) => {
+            if(err)
+                hamLoi(err);
+            else
+                hamOK(result);
+        })
+    });
 }
     // Mở khoá danh mục:
-exports.unlock_category = (categoryId) => {
-    let sql = `UPDATE danhmuc SET trangthai = 1 WHERE madm = '${categoryId}'`;
-    db.query(sql, (err, result) => {
-        console.log('Unlock type success');
-    })
+exports.unlock_category = async (categoryId) => {
+    return new Promise( (hamOK, hamLoi) => {
+        let sql = `UPDATE danhmuc SET trangthai = 1 WHERE madm = '${categoryId}'`;
+        db.query(sql, (err, result) => {
+            if(err)
+                hamLoi(err);
+            else
+                hamOK(result);
+        })
+    });
 }
 // Delete danh mục:
 
@@ -117,6 +132,25 @@ exports.get_Type_Id = async (typeId) => {
                     hamOK(-1)
                 }else{
                     hamOK(result[0]);
+                }
+            }
+        })
+    })
+}
+    // Get loại theo mã danh mục:
+exports.get_Type_Catalog = async (madm) => {
+    let data = [];
+    return new Promise( (hamOK, hamLoi) => {
+        let sql = `SELECT * FROM loaisp WHERE madm='${madm}'`;
+        db.query(sql, (err, result) => {
+            if(err)
+                hamLoi(err);
+            else{
+                if(result.length <= 0){
+                    hamOK(-1);
+                }else{
+                    data = result;
+                    hamOK(data);
                 }
             }
         })

@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
-//import { LeftOutlined } from '@ant-design/icons';
-import { Form, Input, Button, message, Select } from "antd";
+//import React, { useEffect, useState } from 'react';
+import { LeftOutlined } from '@ant-design/icons';
+import { Form, Input, Row, Col, Button, message, Select } from "antd";
 import axios from "axios"
 import { Link, useHistory } from "react-router-dom"
 import "./scss/addpro.scss"
@@ -37,41 +37,29 @@ const tailFormItemLayout = {
     },
 };
 
-const EditProductType = (props) => {
+const EditProducer = (props) => {
     const [form] = Form.useForm();
     const history = useHistory();
-    const Type = JSON.parse(localStorage.getItem("type"))
-
+    const Producer = JSON.parse(localStorage.getItem("producer"))
+    
     const back = ()=>{
-        localStorage.removeItem("type")
+        localStorage.removeItem("producer")
         history.goBack();
     }
 
-    const [listCategory, setlistCategory] = useState([]);
-    useEffect(() => {
-        axios.get("http://127.0.0.1:5000/api/v1/danh-muc").then((res) => {
-            setlistCategory(res.data.data)
-        })
-    }, []);
-
-    const register = (values) => {
+    const update = (values) => {
         console.log(values)
-        const url = "http://127.0.0.1:5000/api/v1/danh-muc/cap-nhat-loai"
+        const url = "http://127.0.0.1:5000/api/v1/nha-sx/cap-nhat-nha-sx";
         axios.put(url, values).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message)
                 setTimeout(() => {
-                    history.push('/danh-sach-loai');
+                    history.push('/danh-sach-nha-sx');
                 }, 2000)
-            }
-            else {
-                //message.error("Sửa thông tin thất bại")
-                message.error(res.data.message)
             }
         }) 
             .catch(err => {
-                console.log(err.response);
-                message.error(`Lỗi...! Sửa loại thất bại!\n ${err.response.data}`)
+                message.error(`Lỗi...! Sửa nhà sản xuất thất bại!\n ${err.response.data.message}`);
             })
     };
     /*  const loadpage= ()=>{
@@ -79,37 +67,37 @@ const EditProductType = (props) => {
      } */
     return (
         <div className="form-wrapper">
-            <h2 style={{ textAlign: 'center' }}>SỬA THÔNG TIN LOẠI SẢN PHẨM</h2>
-
+            <h2 style={{ textAlign: 'center' }}>SỬA THÔNG TIN NHÀ SẢN XUẤT</h2>
+            
             <Form
                 {...formItemLayout}
                 form={form}
                 name="register"
-                onFinish={register}
+                onFinish={update}
                 initialValues={{
-                    maloai:`${Type.data.maloai}`,
-                    name:`${Type.data.tenloai}`,
-                    madm:`${Type.data.madm}`,
+                    mansx:`${Producer.data.mansx}`,
+                    tennsx:`${Producer.data.tennsx}`,
+                    xuatxu:`${Producer.data.xuatxu}`,
                 }}
                 scrollToFirstError
                 className="register-form"
             >
-
                 <Form.Item
-                    name="maloai"
-                    id="maloai"
-                    label="Mã loại"
+                    name="mansx"
+                    id="mansx"
+                    label="Mã nhà sản xuất"
 
                 >
                     <Input disabled />
                 </Form.Item>
                 <Form.Item
-                    name="name"
-                    label="Tên loại"
+                    name="tennsx"
+                    id="tennsx"
+                    label="Tên nhà sản xuất"
                     rules={[
                         {
                             required: true,
-                            message: "Vui lòng nhập tên loại !!!",
+                            message: "Vui lòng nhập tên nhà sản xuất !!!",
                             whitespace: true,
                         },
                     ]}
@@ -117,19 +105,12 @@ const EditProductType = (props) => {
                     <Input />
                 </Form.Item>
                 <Form.Item
-                    name="madm"
-                    id="madm"
-                    label="Mã danh mục"
+                    name="xuatxu"
+                    id="xuatxu"
+                    label="Xuất xứ"
+                    
                 >
-                    <Select>
-                            {listCategory.map((item) => {
-                                return (
-                                    <>
-                                        <Option value={item.madm}>{item.tendm}</Option>
-                                    </>
-                                )
-                            })}
-                        </Select>
+                    <Input />
                 </Form.Item>
                 <Form.Item {...tailFormItemLayout}>
                     <Link onClick={back} ><p style={{marginRight:"20px",}} className="ant-btn ant-btn-dashed ">Trở về</p></Link>
@@ -142,4 +123,4 @@ const EditProductType = (props) => {
     );
 }
 
-export default EditProductType;
+export default EditProducer;

@@ -98,14 +98,16 @@ const AddProduct = (props) => {
         console.log(values.img);
         console.log(values);
         product.addproduct(values).then((res) => {
-            message.success(res.data.message)
-            setTimeout(() => {
-                history.push('/tat-ca-san-pham');
-            }, 2000)
+            if (res.data.status ==="Success") {
+                message.success(res.data.message)
+                setTimeout(() => {
+                    history.push('/tat-ca-san-pham');
+                }, 2000)
+            };
         })
             .catch(err => {
                 console.log(err.response);
-                message.error(`Login fail!\n ${err.response.data}`)
+                message.error(`Thêm thất bại!\n ${err.response.data.message}`)
             })
     };
 
@@ -123,19 +125,19 @@ const AddProduct = (props) => {
 
     const [listProducer, setlistProducer] = useState([]);
     useEffect(() => {
-        axios.get("http://127.0.0.1:5000/api/v1/nha-sx/danh-sach").then((res) => {
+        axios.get("http://127.0.0.1:5000/api/v1/nha-sx").then((res) => {
             setlistProducer(res.data.data)
         })
     }, []);
     const [listTypes, setlistTypes] = useState([]);
     useEffect(() => {
-        axios.get("http://127.0.0.1:5000/api/v1/danh-muc/danh-sach-loai").then((res) => {
+        axios.get("http://127.0.0.1:5000/api/v1/danh-muc/loai").then((res) => {
             setlistTypes(res.data.data)
         })
     }, []);
     const [listCategory, setlistCategory] = useState([]);
     useEffect(() => {
-        axios.get("http://127.0.0.1:5000/api/v1/danh-muc/danh-sach-dm").then((res) => {
+        axios.get("http://127.0.0.1:5000/api/v1/danh-muc").then((res) => {
             setlistCategory(res.data.data)
         })
     }, []);
@@ -231,7 +233,7 @@ const AddProduct = (props) => {
                         label="Size"
                     //rules={[{ required: false }]}
                     >
-                        <Select>
+                        <Select style={{ width: 150 }}>
                             {size.map((item) => {
                                 return (
                                     <>
@@ -246,7 +248,7 @@ const AddProduct = (props) => {
                         label="Màu"
                     //rules={[{ required: false }]}
                     >
-                        <Select>
+                        <Select style={{ width: 150 }}>
                             {mau.map((item) => {
                                 return (
                                     <>
@@ -324,7 +326,7 @@ const AddProduct = (props) => {
                     //rules={[{ required: true, message: 'Chọn trạng thái!' }]}
                     >
                         {/* <Checkbox.Group options={options} onChange={onChange} /> */}
-                        <Select>
+                        <Select style={{ width: 150 }}>
                             <Option value="1" >Hiện</Option>
                             <Option value="0" >Ẩn</Option>
                         </Select>
@@ -344,6 +346,21 @@ const AddProduct = (props) => {
                         </Select>
                     </Form.Item>
                     <Form.Item
+                        name="madm"
+                        label="Danh mục"
+                    //rules={[{ required: true, message: 'Chọn mã loại!' }]}
+                    >
+                        <Select>
+                            {listCategory.map((item) => {
+                                return (
+                                    <>
+                                        <Option value={item.madm}>{item.tendm}</Option>
+                                    </>
+                                )
+                            })}
+                        </Select>
+                    </Form.Item>
+                    <Form.Item
                         name="maloai"
                         label="Loại sản phẩm"
                     //rules={[{ required: true, message: 'Chọn mã loại!' }]}
@@ -353,21 +370,6 @@ const AddProduct = (props) => {
                                 return (
                                     <>
                                         <Option value={item.maloai}>{item.tenloai}</Option>
-                                    </>
-                                )
-                            })}
-                        </Select>
-                    </Form.Item>
-                    <Form.Item
-                        name="madm"
-                        label="danh mục"
-                    //rules={[{ required: true, message: 'Chọn mã loại!' }]}
-                    >
-                        <Select>
-                            {listCategory.map((item) => {
-                                return (
-                                    <>
-                                        <Option value={item.madm}>{item.tendm}</Option>
                                     </>
                                 )
                             })}

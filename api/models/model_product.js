@@ -18,6 +18,25 @@ exports.list_products = async () => {
         })
     })
 }
+    // Check code:
+exports.check_Code = async (code) => {
+    let data = [];
+    return new Promise( (hamOK, hamLoi) => {
+        let sql = `SELECT * FROM sanpham WHERE code='${code}'`;
+        db.query(sql, (err, result) => {
+            if(err){
+                hamLoi(err);
+            }else{
+                if(result.length < 0){
+                    hamOK(-1);
+                } else{
+                    data = result;
+                    hamOK(data);
+                }
+            }
+        })
+    })
+};
     // Lọc sản phẩm theo ID:
 exports.get_By_Id = async (productId) => {
     return new Promise( (hamOK, hamLoi) => {
@@ -31,15 +50,13 @@ exports.get_By_Id = async (productId) => {
             }else{
                 if(result[0] == null){
                     hamOK(-1);
-                } else if(result[0].trangthai == 0){
-                    hamOK(0);
                 } else{
                     hamOK(result[0]);
                 }
             }
         })
     })
-}
+};
     // Lọc danh sách sản phẩm theo danh mục:
 exports.get_by_category = async (madm) => {
     return new Promise( (hamOK, hamLoi) => {
@@ -115,21 +132,33 @@ exports.detailByName = async (name) => {
 }
     // Thêm sản phẩm:
 exports.create_product = (data) => {
-    let sql = "INSERT INTO sanpham SET ?";
-    let query = db.query(sql, data, (err, result) => {
-        console.log('Create product success');
-    });
-    let sql_productId = "SELECT LAST_INSERT_ID() as LastID;";
-    let query1 = db.query(sql_productId, (err, result1) => {
-        console.log("ID sản phẩm vừa tạo: ", result1[0].LastID);
-        let dataCTDM = {
-            masp: result1[0].LastID,
-            madm: data.madm,
-        }
-        let sql_CTDM = `INSERT INTO chitietdm SET ?`;
-        let query = db.query(sql_CTDM, dataCTDM, (err, result) => {
-            console.log(result);
+    return new Promise( (hamOK, hamLoi) => {
+        let sql = "INSERT INTO sanpham SET ?";
+        let query = db.query(sql, data, (err, result) => {
+            if(err)
+                hamLoi(err);
             console.log('Create product success');
+        });
+        let sql_productId = "SELECT LAST_INSERT_ID() as LastID;";
+        let query1 = db.query(sql_productId, (err, result1) => {
+            console.log("ID sản phẩm vừa tạo: ", result1[0].LastID);
+            if(err)
+                hamLoi(err);
+            else{
+                let dataCTDM = {
+                    masp: result1[0].LastID,
+                    madm: data.madm,
+                }
+                let sql_CTDM = `INSERT INTO chitietdm SET ?`;
+                let query2 = db.query(sql_CTDM, dataCTDM, (err, result) => {
+                    if(err)
+                        hamLoi(err);
+                    else{
+                        console.log('Create chi tiết danh mục success');
+                        hamOK(1);
+                    }
+                });
+            }
         });
     });
 }
@@ -188,10 +217,33 @@ exports.unlock_product = (masp) => {
 }
     // Xoá sản phẩm:
 exports.delete = (idProduct) => {
-    let sql = `DELETE FROM sanpham WHERE masp='${idProduct}'`;
-    let query = db.query(sql, (err, result) => {
-        console.log('Delete success');
-    })
+    return new Promise( (hamOK, hamLoi) => {
+        let sql_donhang = `SELECT * FROM chitietdh WHERE masp='${idProduct}'`;
+        let query = db.query(sql_donhang, (err, result) => {
+            if(err)
+                hamLoi(err);
+            else{
+                if(result.length > 0){
+                    hamOK(-1);  // Có sản phẩm trong chi tiết đơn hàng nên ko thể xoá;
+                }
+            }
+        });
+        console.log("continue");
+        let sql = `DELETE FROM chitietdm WHERE masp='${idProduct}'`;
+        let query1 = db.query(sql, (err, result) => {
+            if(err)
+                hamLoi(err);
+        });
+        let sql_sp = `DELETE FROM sanpham WHERE masp='${idProduct}'`;
+        let query2 = db.query(sql_sp, (err, result) => {
+            if(err)
+                hamLoi(err);
+            else {
+                console.log('Delete success');
+                hamOK(result);
+            }
+        });
+    });
 }
 
 

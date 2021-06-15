@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
-//import { LeftOutlined } from '@ant-design/icons';
-import { Form, Input, Button, message, Select } from "antd";
+//import React, { useEffect, useState } from 'react';
+import { LeftOutlined } from '@ant-design/icons';
+import { Form, Input, Row, Col, Button, message, Select } from "antd";
 import axios from "axios"
 import { Link, useHistory } from "react-router-dom"
 import "./scss/addpro.scss"
@@ -37,41 +37,29 @@ const tailFormItemLayout = {
     },
 };
 
-const EditProductType = (props) => {
+const EditCategory = (props) => {
     const [form] = Form.useForm();
     const history = useHistory();
-    const Type = JSON.parse(localStorage.getItem("type"))
+    const Category = JSON.parse(localStorage.getItem("category"))
 
     const back = ()=>{
-        localStorage.removeItem("type")
+        localStorage.removeItem("category")
         history.goBack();
     }
 
-    const [listCategory, setlistCategory] = useState([]);
-    useEffect(() => {
-        axios.get("http://127.0.0.1:5000/api/v1/danh-muc").then((res) => {
-            setlistCategory(res.data.data)
-        })
-    }, []);
-
-    const register = (values) => {
+    const update = (values) => {
         console.log(values)
-        const url = "http://127.0.0.1:5000/api/v1/danh-muc/cap-nhat-loai"
+        const url = "http://127.0.0.1:5000/api/v1/danh-muc/cap-nhat-danh-muc";
         axios.put(url, values).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message)
                 setTimeout(() => {
-                    history.push('/danh-sach-loai');
+                    history.push('/danh-sach-nha-sx');
                 }, 2000)
-            }
-            else {
-                //message.error("Sửa thông tin thất bại")
-                message.error(res.data.message)
             }
         }) 
             .catch(err => {
-                console.log(err.response);
-                message.error(`Lỗi...! Sửa loại thất bại!\n ${err.response.data}`)
+                message.error(`Lỗi...! Sửa danh mục thất bại!\n ${err.response.data.message}`);
             })
     };
     /*  const loadpage= ()=>{
@@ -79,57 +67,41 @@ const EditProductType = (props) => {
      } */
     return (
         <div className="form-wrapper">
-            <h2 style={{ textAlign: 'center' }}>SỬA THÔNG TIN LOẠI SẢN PHẨM</h2>
-
+            <h2 style={{ textAlign: 'center' }}>SỬA THÔNG TIN DANH MỤC</h2>
+            
             <Form
                 {...formItemLayout}
                 form={form}
                 name="register"
-                onFinish={register}
+                onFinish={update}
                 initialValues={{
-                    maloai:`${Type.data.maloai}`,
-                    name:`${Type.data.tenloai}`,
-                    madm:`${Type.data.madm}`,
+                    madm:`${Category.data.madm}`,
+                    tendm:`${Category.data.tendm}`
                 }}
                 scrollToFirstError
                 className="register-form"
             >
-
                 <Form.Item
-                    name="maloai"
-                    id="maloai"
-                    label="Mã loại"
+                    name="madm"
+                    id="madm"
+                    label="Mã danh mục"
 
                 >
                     <Input disabled />
                 </Form.Item>
                 <Form.Item
-                    name="name"
-                    label="Tên loại"
+                    name="tendm"
+                    id="tendm"
+                    label="Tên danh mục"
                     rules={[
                         {
                             required: true,
-                            message: "Vui lòng nhập tên loại !!!",
+                            message: "Vui lòng nhập tên danh mục !!!",
                             whitespace: true,
                         },
                     ]}
                 >
                     <Input />
-                </Form.Item>
-                <Form.Item
-                    name="madm"
-                    id="madm"
-                    label="Mã danh mục"
-                >
-                    <Select>
-                            {listCategory.map((item) => {
-                                return (
-                                    <>
-                                        <Option value={item.madm}>{item.tendm}</Option>
-                                    </>
-                                )
-                            })}
-                        </Select>
                 </Form.Item>
                 <Form.Item {...tailFormItemLayout}>
                     <Link onClick={back} ><p style={{marginRight:"20px",}} className="ant-btn ant-btn-dashed ">Trở về</p></Link>
@@ -142,4 +114,4 @@ const EditProductType = (props) => {
     );
 }
 
-export default EditProductType;
+export default EditCategory;

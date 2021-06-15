@@ -49,9 +49,16 @@ exports.insert_producer = (data) => {
 }
     // Cập nhật nhà sản xuất:
 exports.update_producer = (producerId, name, origin) => {
-    let sql = `UPDATE nhasx SET tennsx = '${name}', xuatxu = '${origin}' WHERE mansx = '${producerId}'`;
-    db.query(sql, (err, result) => {
-        console.log('Update type success');
+    return new Promise( (hamOK, hamLoi) => {
+        let sql = `UPDATE nhasx SET tennsx = '${name}', xuatxu = '${origin}' WHERE mansx = '${producerId}'`;
+        db.query(sql, (err, result) => {
+            if(err)
+                hamLoi(err);
+            else{
+                console.log('Update type success');
+                hamOK(result);
+            }
+        })
     })
 }
     // Xoá nhà sản xuất:
@@ -62,16 +69,20 @@ exports.delete_producer = (producerId) => {
         ON sanpham.mansx = nhasx.mansx
         WHERE sanpham.mansx='${producerId}'`;
         db.query(sql_type, (err, result) => {
-            if(result[0] == null){
-                console.log("Xoá được!");
-                let sql = `DELETE FROM nhasx WHERE mansx='${producerId}'`;
-                db.query(sql, (err, result) => {
-                    console.log('Delete type success');
-                    hamOK(1);
-                })
-            }else{
-                console.log("Không xoá được!");
-                hamOK(-1);
+            if(err)
+                hamLoi(err);
+            else{
+                if(result[0] == null){
+                    console.log("Xoá được!");
+                    let sql = `DELETE FROM nhasx WHERE mansx='${producerId}'`;
+                    db.query(sql, (err, result) => {
+                        console.log('Delete type success');
+                        hamOK(1);
+                    })
+                }else{
+                    console.log("Không xoá được!");
+                    hamOK(-1);
+                }
             }
         })
     })  

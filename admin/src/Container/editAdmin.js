@@ -34,6 +34,11 @@ const EditNV = (props) => {
     const Admin = JSON.parse(localStorage.getItem("admin"))
     console.log(Admin);
 
+    const back = ()=>{
+        localStorage.removeItem("admin")
+        history.goBack();
+    }
+
     const register = (values) => {
         console.log(values)
         let a = JSON.stringify({ admin: "adas@gmail.com" });
@@ -202,7 +207,7 @@ const EditNV = (props) => {
                     <Input value="123" id={"123"} defaultValue={"123"} />
                 </Form.Item>
                 <Form.Item {...tailFormItemLayout}>
-                    <Link to={'/danh-sach-admin'} ><p style={{ marginRight: "20px", }} className="ant-btn ant-btn-dashed ">Trở về</p></Link>
+                    <Link onClick={back} ><p style={{ marginRight: "20px", }} className="ant-btn ant-btn-dashed ">Trở về</p></Link>
                     <Button value="submit" type="primary" htmlType="submit">
                         Xác nhận
                     </Button>

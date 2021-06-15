@@ -26,7 +26,9 @@ import ListProductType from "./Container/ListProductType";
 import EditProductType from "./Container/EditProductType";
 import ListCatalog from "./Container/listCatalog";
 import ListProducer from "./Container/listProducer";
-
+import EditProducer from "./Container/editProducer";
+import EditCatalog from "./Container/editCategory";
+import ListComment from "./Container/listComment";
 
 
 
@@ -87,6 +89,9 @@ function App() {
                   <Route exact path="/tat-ca-san-pham">
                     <AllProduct />
                   </Route>
+                  <Route exact path="/sua-san-pham">
+                    
+                  </Route>
                   <Route exact path="/danh-sach-loai">
                     <ListProductType />
                   </Route>
@@ -102,17 +107,26 @@ function App() {
                   <Route exact path="/danh-sach-nha-sx">
                     <ListProducer />
                   </Route>
+                  <Route exact path="/danh-sach-nha-sx/sua-nha-sx">
+                    <EditProducer />
+                  </Route>
                   <Route exact path="/them-danh-muc">
                     <AddCategory />
                   </Route>
                   <Route exact path="/danh-muc-san-pham">
                     <ListCatalog />
                   </Route>
+                  <Route exact path="/danh-muc-san-pham/sua-danh-muc">
+                    <EditCatalog />
+                  </Route>
                   <Route exact path="/them-voucher">
                     <AddVoucher />
                   </Route>
                   <Route exact path="/them-khuyen-mai">
                     <AddSale />
+                  </Route>
+                  <Route exact path="/danh-sach-binh-luan">
+                    <ListComment />
                   </Route>
                   <Route exact path="/thong-tin-tai-khoan">
                     <UserInf />

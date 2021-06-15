@@ -8,40 +8,38 @@ const ListProducer = () => {
   const link = useHistory();
   const [a, setA] = useState([]);
 
-  const [ListType, setListType] = useState([]);
+  const [listProducer, setListProducer] = useState([]);
   useEffect(() => {
-    axios.get("http://127.0.0.1:5000/api/v1/danh-muc/danh-sach").then((res) => {
-      setListType(res.data.data);
+    axios.get("http://127.0.0.1:5000/api/v1/nha-sx").then((res) => {
+      setListProducer(res.data.data);
     })
   }, []);
-  const linkto = (e) => {
+
+  const edit = (e) => {
     let id = e.currentTarget.dataset.id
     setA(id);
     console.log(id);
     setTimeout(() => {
-      link.push('/danh-sach-loai/sua-loai');
+      link.push('/danh-sach-nha-sx/sua-nha-sx');
     }, 100)
   }
-  const [Type, setType] = useState([]);
+  const [producer, setProducer] = useState([]);
   useEffect(() => {
     if (a != "") {
-      let url = "http://127.0.0.1:5000/api/v1/danh-muc/loai-id/" + a
+      let url = "http://127.0.0.1:5000/api/v1/nha-sx/" + a;
       axios.get(url).then((res) => {
-        setType(res.data);
+        setProducer(res.data);
       });
     }
   }, [a]);
-  localStorage.setItem('type', JSON.stringify(Type))
-  let result = JSON.parse(localStorage.getItem('user'))
+  if(producer != ''){
+    localStorage.setItem('producer', JSON.stringify(producer));
+  }
+  let result = JSON.parse(localStorage.getItem('user'));
 
   const deleteType = (e) => {
     let id = e.currentTarget.dataset.id;
-    console.log("Id:", id);
-    let values = {
-      "typeId": id
-    };
-    console.log(values);
-    const url = "http://127.0.0.1:5000/api/v1/danh-muc/xoa-loai/" + id
+    const url = "http://127.0.0.1:5000/api/v1/nha-sx/xoa-nha-sx/" + id;
     axios.delete(url).then((res) => {
       if (res.data.status === "Success") {
         message.success(res.data.message)
@@ -49,14 +47,10 @@ const ListProducer = () => {
           link.go({ pathname: '/danh-sach-admin' });
         }, 800)
       }
-      else {
-        //message.error("Xoá loại thất bại!")
-        message.error(res.data.message)
-      }
     })
       .catch(err => {
-        console.log(err.response);
-        message.error(`Lỗi...! Xoá loại thất bại!\n ${err.response.data}`)
+        //message.error(`${err.response.data.message}\n Có sản phẩm chứa nhà sản xuất nên không thể xoá!!! `);
+        message.error(`Lỗi!!! Có sản phẩm chứa nhà sản xuất nên không thể xoá!!! `);
       })
   }
 
@@ -73,7 +67,6 @@ const ListProducer = () => {
       element.trangthai.id = element.manv;
     }
   }) */
-  console.log(ListType);
 
   const columns = [
     {
@@ -91,20 +84,19 @@ const ListProducer = () => {
       dataIndex: 'xuatxu',
       key: 'xuatxu',
     },
-
-    /* result.permission === 'Admin' ?
-      {
-        title: 'Hành động',
-        dataIndex: 'maloai',
-        key: 'maloai',
-        render: maloai => (<Button data-id={maloai} key={maloai} type="primary" onClick={linkto}>Sửa</Button>)
-      } : (<> </>), */
     result.permission === 'Admin' ?
       {
         title: 'Hành động',
-        dataIndex: 'maloai',
-        key: 'maloai',
-        render: maloai => (<Button data-id={maloai} key={maloai} type="danger" onClick={deleteType}> Xoá </Button>)
+        dataIndex: 'mansx',
+        key: 'mansx',
+        render: mansx => (<Button data-id={mansx} key={mansx} onClick={edit}> Sửa </Button>)
+      } : (<> </>),
+    result.permission === 'Admin' ?
+      {
+        title: '',
+        dataIndex: 'mansx',
+        key: 'mansx',
+        render: mansx => (<Button data-id={mansx} key={mansx} type="danger" onClick={deleteType}> Xoá </Button>)
       } : (<> </>)
 
   ];
@@ -114,7 +106,7 @@ const ListProducer = () => {
     <>
       <div className="form-wrapper">
         <h2 style={{ textAlign: 'center', marginTop: "30px" }}>DANH SÁCH NHÀ SẢN XUẤT</h2>
-        <Table dataSource={ListType} columns={columns} pagination={{ pageSize: 10 }} style={{padding: 10}} size="middle" />
+        <Table dataSource={listProducer} columns={columns} pagination={{ pageSize: 10 }} style={{padding: 10}} size="middle" />
         <div className="btn-wrapper">
           <Link to={'/them-nha-san-xuat'}>
             <Button type="primary">

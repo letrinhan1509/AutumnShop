@@ -8,10 +8,10 @@ const ListCata = () => {
   const link = useHistory();
   const [a, setA] = useState([]);
 
-  const [ListType, setListType] = useState([]);
+  const [listCategory, setListCategory] = useState([]);
   useEffect(() => {
-    axios.get("http://127.0.0.1:5000/api/v1/danh-muc/danh-sach-dm").then((res) => {
-      setListType(res.data.data);
+    axios.get("http://127.0.0.1:5000/api/v1/danh-muc").then((res) => {
+      setListCategory(res.data.data);
     })
   }, []);
   const linkto = (e) => {
@@ -19,61 +19,93 @@ const ListCata = () => {
     setA(id);
     console.log(id);
     setTimeout(() => {
-      link.push('/danh-sach-loai/sua-loai');
+      link.push('/danh-muc-san-pham/sua-danh-muc');
     }, 100)
   }
-  const [Type, setType] = useState([]);
+  const [category, setCategory] = useState([]);
   useEffect(() => {
     if (a != "") {
-      let url = "http://127.0.0.1:5000/api/v1/danh-muc/loai-id/" + a
+      let url = "http://127.0.0.1:5000/api/v1/danh-muc/" + a
       axios.get(url).then((res) => {
-        setType(res.data);
+        setCategory(res.data);
       });
     }
   }, [a]);
-  localStorage.setItem('type', JSON.stringify(Type))
-  let result = JSON.parse(localStorage.getItem('user'))
+  if(category != ''){
+    localStorage.setItem('category', JSON.stringify(category));
+  }
+  let result = JSON.parse(localStorage.getItem('user'));
 
-  const deleteType = (e) => {
+  const deleteCategory = (e) => {
     let id = e.currentTarget.dataset.id;
-    console.log("Id:", id);
-    let values = {
-      "typeId": id
-    };
-    console.log(values);
-    const url = "http://127.0.0.1:5000/api/v1/danh-muc/xoa-loai/" + id
+    const url = "http://127.0.0.1:5000/api/v1/danh-muc/xoa-danh-muc/" + id
     axios.delete(url).then((res) => {
       if (res.data.status === "Success") {
         message.success(res.data.message)
         setTimeout(() => {
-          link.go({ pathname: '/danh-sach-admin' });
+          link.go({ pathname: '/danh-muc-san-pham' });
         }, 800)
       }
       else {
-        //message.error("Xoá loại thất bại!")
         message.error(res.data.message)
       }
     })
       .catch(err => {
-        console.log(err.response);
-        message.error(`Lỗi...! Xoá loại thất bại!\n ${err.response.data}`)
+        message.error(`Lỗi...! Xoá danh mục thất bại!\n ${err.response.data}`)
       })
   }
 
+  const unlock = (e) => {
+    let id = e.currentTarget.dataset.id;
+    let values = {
+      "madm": id,
+      "trangthai": 1
+    };
+    const url = "http://127.0.0.1:5000/api/v1/danh-muc/cap-nhat-trang-thai/dm/"
+    axios.put(url, values).then((res) => {
+        if (res.data.status === "Success") {
+          message.success(res.data.message)
+          setTimeout(() => {
+            link.go({ pathname: '/danh-sach-admin' });
+          }, 800) 
+        }
+    }) 
+        .catch(err => {
+            message.error(`Lỗi...! Hiện danh mục thất bại!\n ${err.response.data}`)
+        })
+  };
+  const lock = (e) => {
+    let id = e.currentTarget.dataset.id;
+    let values = {
+      "madm": id,
+      "trangthai": 0
+    };
+    const url = "http://127.0.0.1:5000/api/v1/danh-muc/cap-nhat-trang-thai/dm/"
+    axios.put(url, values).then((res) => {
+        if (res.data.status === "Success") {
+            message.success(res.data.message)
+            setTimeout(() => {
+              link.go('/danh-sach-admin')
+            }, 800)
+        }
+    }) 
+        .catch(err => {
+            message.error(`Lỗi...! Ẩn danh mục thất bại! \n ${err.response.data}`)
+        })
+  };
 
-  /* ListAdmin.forEach(element => {
+  listCategory.forEach(element => {
     if(element.trangthai === 1){
       element.trangthai = [];
-      element.trangthai.stt = ["Hoạt động"];
-      element.trangthai.id = element.manv;
+      element.trangthai.stt = ["Hiện"];
+      element.trangthai.id = element.madm;
     }
     if(element.trangthai === 0 ){
       element.trangthai = [];
-      element.trangthai.stt = ["Khoá"];
-      element.trangthai.id = element.manv;
+      element.trangthai.stt = ["Ẩn"];
+      element.trangthai.id = element.madm;
     }
-  }) */
-  console.log(ListType);
+  });
 
   const columns = [
     {
@@ -86,30 +118,73 @@ const ListCata = () => {
       dataIndex: 'tendm',
       key: 'tendm',
     },
-
+    {
+      title: 'Trạng thái',
+      dataIndex: 'trangthai',
+      key: 'trangthai',
+      render: (trangthai) => (
+        <>
+          {trangthai.stt.map(tragth => {
+            let color = 'green';
+            if (tragth === 'Ẩn') {
+              color = 'red';
+            }
+            return (
+              <Tag color={color} key={tragth}>
+                {tragth.toUpperCase()}
+              </Tag>
+            );
+          })}
+          
+        </>
+      )
+    },
+    result.permission === 'Admin' ?
+      {
+        title: '',
+        dataIndex: 'trangthai',
+        key: 'trangthai',
+        render: (trangthai) =>
+          (
+            <>
+              {trangthai.stt.map(tragth => {
+                if (tragth === 'Ẩn') {
+                  return (
+                    <Button data-id={trangthai.id} type="primary" icon={<UnlockOutlined />} onClick={unlock}>
+                    </Button>
+                  );
+                }else{
+                  return (
+                    <Button data-id={trangthai.id} type="danger" icon={<LockOutlined />} onClick={lock}>
+                    </Button>
+                  )
+                }  
+              })}
+            </>
+          )
+      } : (<> </>),
+    result.permission === 'Admin' ?
+      {
+        title: 'Hành động',
+        dataIndex: 'madm',
+        key: 'madm',
+        render: madm => (<Button data-id={madm} key={madm} type="primary" onClick={linkto}> Sửa </Button>)
+      } : (<> </>),
     /* result.permission === 'Admin' ?
       {
         title: 'Hành động',
         dataIndex: 'maloai',
         key: 'maloai',
-        render: maloai => (<Button data-id={maloai} key={maloai} type="primary" onClick={linkto}>Sửa</Button>)
-      } : (<> </>), */
-    result.permission === 'Admin' ?
-      {
-        title: 'Hành động',
-        dataIndex: 'maloai',
-        key: 'maloai',
-        render: maloai => (<Button data-id={maloai} key={maloai} type="danger" onClick={deleteType}> Xoá </Button>)
-      } : (<> </>)
-
+        render: maloai => (<Button data-id={maloai} key={maloai} type="danger" onClick={deleteCategory}> Xoá </Button>)
+      } : (<> </>) */
   ];
 
 
   return (
     <>
       <div className="form-wrapper">
-        <h2 style={{ textAlign: 'center', marginTop: "30px" }}>DANH SÁCH DANH MỤC</h2>
-        <Table dataSource={ListType} columns={columns} pagination={{ pageSize: 10 }} style={{padding: 10}} size="middle" />
+        <h2 style={{ textAlign: 'center', marginTop: "30px" }}>DANH SÁCH CÁC DANH MỤC</h2>
+        <Table dataSource={listCategory} columns={columns} pagination={{ pageSize: 10 }} style={{padding: 10}} size="middle" />
         <div className="btn-wrapper">
           <Link to={'/them-danh-muc'}>
             <Button type="primary">

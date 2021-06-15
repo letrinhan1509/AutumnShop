@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { LockOutlined, UnlockOutlined} from '@ant-design/icons';
 import { Button, Table, Tag, message } from 'antd';
-import { useHistory } from 'react-router-dom';
+import { useHistory, Link } from 'react-router-dom';
 import axios from 'axios'
 
 const ListUserAdmin = () => {
@@ -30,8 +30,10 @@ const ListUserAdmin = () => {
       });
     }
   }, [a]);
-  localStorage.setItem('admin', JSON.stringify(Admin))
-  let result = JSON.parse(localStorage.getItem('user'))
+  if(Admin != ''){
+    localStorage.setItem('admin', JSON.stringify(Admin))
+  }
+  let result = JSON.parse(localStorage.getItem('user'));
 
   const unlock = (e) => {
     let id = e.currentTarget.dataset.id;
@@ -152,13 +154,6 @@ const ListUserAdmin = () => {
     },
     result.permission === 'Admin' ?
       {
-        title: 'Hành động',
-        dataIndex: 'manv',
-        key: 'manv',
-        render: manv => (<Button data-id={manv} key={manv} type="primary" onClick={linkto}>Sửa</Button>)
-      } : (<> </>),
-    result.permission === 'Admin' ?
-      {
         title: '',
         dataIndex: 'trangthai',
         key: 'trangthai',
@@ -180,6 +175,13 @@ const ListUserAdmin = () => {
               })}
             </>
           )
+      } : (<> </>),
+      result.permission === 'Admin' ?
+      {
+        title: 'Hành động',
+        dataIndex: 'manv',
+        key: 'manv',
+        render: manv => (<Button data-id={manv} key={manv} type="primary" onClick={linkto}>Sửa</Button>)
       } : (<> </>)
     
   ];
@@ -190,11 +192,18 @@ const ListUserAdmin = () => {
 
   return (
     <>
-      <h2 style={{ textAlign: 'center', marginTop: "50px" }}>DANH SÁCH TÀI KHOẢN NHÂN VIÊN</h2>
-      <Table dataSource={ListAdmin} columns={columns} pagination={{ pageSize: 6 }} size="middle"
-      />
-      {/* <Link to={'/Themnhanvien'}><p className="ant-btn ant-btn-primary" type="primary">Thêm nhân viên</p></Link> */}
-
+      <div className="form-wrapper" >
+        <h2 style={{ textAlign: 'center', marginTop: "20px", marginBottom: "20px" }}>DANH SÁCH TÀI KHOẢN NHÂN VIÊN</h2>
+        <Table dataSource={ListAdmin} columns={columns} pagination={{ pageSize: 6 }} size="middle"/>
+        <div className="btn-wrapper" >
+          <Link to={'/them-nhan-vien'}>
+            <Button type="primary">
+              Thêm tài khoản nhân viên
+            </Button>
+          </Link>
+        </div>
+        {/* <Link to={'/Themnhanvien'}><p className="ant-btn ant-btn-primary" type="primary">Thêm nhân viên</p></Link> */}
+      </div>
     </>
   );
 }
