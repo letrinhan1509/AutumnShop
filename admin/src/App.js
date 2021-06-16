@@ -29,7 +29,7 @@ import ListProducer from "./Container/listProducer";
 import EditProducer from "./Container/editProducer";
 import EditCatalog from "./Container/editCategory";
 import ListComment from "./Container/listComment";
-
+import EditProduct from "./Container/editProduct";
 
 
 function App() {
@@ -89,8 +89,8 @@ function App() {
                   <Route exact path="/tat-ca-san-pham">
                     <AllProduct />
                   </Route>
-                  <Route exact path="/sua-san-pham">
-                    
+                  <Route exact path="/tat-ca-san-pham/sua-san-pham">
+                    <EditProduct />
                   </Route>
                   <Route exact path="/danh-sach-loai">
                     <ListProductType />

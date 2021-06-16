@@ -12,10 +12,11 @@ const rootSubmenuKeys = ['sub1', 'sub2', 'sub4'];
 
 const Shirt = (props) => {
   const { kieu } = useParams();
-  const ak = props.ListProductHome.filter(ListProductHome => ListProductHome.maloai === "ak" || ListProductHome.maloai === "asm" || ListProductHome.maloai === "at");
+  const ak = props.ListProductHome.filter(ListProductHome => ListProductHome.tendm === "Áo");
   console.log(kieu);
   let Ao = [];
   Ao = ak;
+  console.log(props.ListProductHome);
   console.log(Ao);
   const [visible, setVisible] = useState(6);
   const showMoreProduct = () => {
@@ -53,35 +54,11 @@ const Shirt = (props) => {
     }
   };
 
-  const handleUpload = () => {
-    const upload = storage.ref(`Product_Img/${image.name}`).put(image);
-    upload.on(
-      "state_changed",
-      snapshot => {},
-      error => {
-        console.log(error);
-      },
-      () => {
-        storage
-        .ref("Product_Img")
-        .child(image.name)
-        .getDownloadURL()
-        .then(url => {
-          setUrldown(url)
-        });
-      }
-    );
-  };
 
   console.log(urldown);
   return (
     <>
       <Row className="content-box">
-        <Col>
-          <input type="file" onChange={handleChange}/>
-          <button onClick={handleUpload}>Upload</button>
-          <img src={urldown} alt="fire-upload"/>
-        </Col>
         <Col className="left">
           <Menu mode="inline" openKeys={openKeys} onOpenChange={onOpenChange} style={{ width: 300 }}>
             <SubMenu key="sub1" title="Navigation One">
@@ -132,7 +109,7 @@ const Shirt = (props) => {
                       <div className="img-box">
                         <Image
                           width={'100%'}
-                          src={`../images/test/${productItem.hinh}`}
+                          src={productItem.hinh}
                           preview={{
                             visible: false,
                             /* onVisibleChange: () => { onClick() }, */

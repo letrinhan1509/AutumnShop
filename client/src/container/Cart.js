@@ -55,7 +55,7 @@ const Cart = (props) => {
                     props.cart.map((item) => (
                         <Row className="cart-product">
                             <Col className="cart-imgProduct" key={item.masp}>
-                                <img src={`./images/test/${item.hinh}`} alt="imgProduct" />
+                                <img src={item.hinh} alt="imgProduct" />
                             </Col>
                             <Col className="cart-deProduct">
                                 <p>{item.tensp}</p>

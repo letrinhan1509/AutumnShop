@@ -14,6 +14,7 @@ const ListProductType = () => {
   useEffect(() => {
     axios.get("http://127.0.0.1:5000/api/v1/danh-muc/loai").then((res) => {
       setListType(res.data.data);
+      console.log(ListType);
     })
   }, []);
   
@@ -86,26 +87,26 @@ const ListProductType = () => {
     {
       title: 'Tên loại',
       dataIndex: 'tenloai',
-      key: 'admin',
+      key: 'tenloai',
     },
     {
-      title: 'Mã danh mục',
+      title: 'Danh mục',
       dataIndex: 'madm',
       key: 'madm',
     },
     result.permission === 'Admin' ?
       {
-        title: '',
+        
         dataIndex: 'maloai',
         key: 'maloai',
-        render: maloai => (<Button data-id={maloai} key={maloai} onClick={linkto}> Sửa </Button>)
+        render: maloai => (<div className="btn-box"><Button data-id={maloai} key={maloai} onClick={linkto}> Sửa </Button></div>)
       } : (<> </>),
     result.permission === 'Admin' ?
       {
-        title: 'Hành động',
+        
         dataIndex: 'maloai',
         key: 'maloai',
-        render: maloai => (<Button data-id={maloai} key={maloai} type="danger" onClick={deleteType}> Xoá </Button>)
+        render: maloai => (<div className="btn-box"><Button data-id={maloai} key={maloai} type="danger" onClick={deleteType}> Xoá </Button></div>)
       } : (<> </>)
 
   ];
@@ -115,7 +116,7 @@ const ListProductType = () => {
     <>
       <div className="form-wrapper">
         <h2 style={{ textAlign: 'center', marginTop: "30px" }}>DANH SÁCH LOẠI SẢN PHẨM</h2>
-        <Table dataSource={ListType} columns={columns} pagination={{ pageSize: 10 }} style={{padding: 10}} size="middle" />
+        <Table className="item" dataSource={ListType} columns={columns} pagination={{ pageSize: 10 }} style={{padding: 10}} size="middle" />
         <div className="btn-wrapper">
           <Link to={'/them-loai-san-pham'}>
             <Button type="primary">

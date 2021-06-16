@@ -60,7 +60,12 @@ const AddProductType = (props) => {
     const [fileList, setFileList] = useState([]);
     const [listProduct, setlistProduct] = useState([]);
 
-
+    const [listCategory, setlistCategory] = useState([]);
+    useEffect(() => {
+        axios.get("http://127.0.0.1:5000/api/v1/danh-muc").then((res) => {
+            setlistCategory(res.data.data)
+        })
+    }, []);
 
     return (
         <>
@@ -100,6 +105,21 @@ const AddProductType = (props) => {
                         ]}
                     >
                         <Input />
+                    </Form.Item>
+                    <Form.Item
+                        name="madm"
+                        label="Danh mục"
+                    //rules={[{ required: true, message: 'Chọn mã loại!' }]}
+                    >
+                        <Select>
+                            {listCategory.map((item) => {
+                                return (
+                                    <>
+                                        <Option value={item.madm}>{item.tendm}</Option>
+                                    </>
+                                )
+                            })}
+                        </Select>
                     </Form.Item>
                     <Form.Item {...tailFormItemLayout}>
                         <Link to={'/danh-sach-loai'} >

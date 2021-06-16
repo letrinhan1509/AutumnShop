@@ -35,7 +35,7 @@ const EditNV = (props) => {
     console.log(Admin);
 
     const back = ()=>{
-        localStorage.removeItem("admin")
+        localStorage.removeItem("admin");
         history.goBack();
     }
 
@@ -47,6 +47,7 @@ const EditNV = (props) => {
         axios.put(url, values).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message)
+                localStorage.removeItem("admin");
                 setTimeout(() => {
                     history.push('/danh-sach-admin');
                 }, 2000)

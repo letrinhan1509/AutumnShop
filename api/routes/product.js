@@ -103,7 +103,7 @@ router.post('/them-san-pham', async function(req, res) {
   console.log(sanPham.length);
   
   try {
-    if(sanPham.length >= 0){
+    if(sanPham.length > 0){
       res.status(404).json({"status": "Fail", "message": "Mã code của sản phẩm đã tồn tại! Vui lòng nhập mã code khác!"});
     } else if(code == '' && tensp == '' && soluong == '' && size == '' && mau == '' && gia == '' && hinh == '' && maloai == '' && madm == ''){
       res.status(404).json({"status": "Fail", "message": "Thêm sản phẩm không thành công! Thiếu thông tin sản phẩm"});

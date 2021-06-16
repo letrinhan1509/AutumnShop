@@ -41,14 +41,7 @@ const normFile = (e: any) => {
 
 const AddProduct = (props) => {
     const [image, setImage] = useState("");
-    const [urldown, setUrldown] = useState("");
 
-
-
-
-    const handleUpload = () => {
-
-    };
     const [form] = Form.useForm();
     const history = useHistory();
 
@@ -88,7 +81,6 @@ const AddProduct = (props) => {
         );
 
     };
-
     console.log(link);
     const addProduct = (values) => {
 
@@ -98,7 +90,7 @@ const AddProduct = (props) => {
         console.log(values.img);
         console.log(values);
         product.addproduct(values).then((res) => {
-            if (res.data.status ==="Success") {
+            if (res.data.status === "Success") {
                 message.success(res.data.message)
                 setTimeout(() => {
                     history.push('/tat-ca-san-pham');
@@ -110,39 +102,6 @@ const AddProduct = (props) => {
                 message.error(`Thêm thất bại!\n ${err.response.data.message}`)
             })
     };
-
-    console.log(link);
-
-
-    const [fileList, setFileList] = useState([]);
-    const meta = {
-        title: 'title 1',
-        contents: 'contents 1',
-    }
-
-
-    console.log(image);
-
-    const [listProducer, setlistProducer] = useState([]);
-    useEffect(() => {
-        axios.get("http://127.0.0.1:5000/api/v1/nha-sx").then((res) => {
-            setlistProducer(res.data.data)
-        })
-    }, []);
-    const [listTypes, setlistTypes] = useState([]);
-    useEffect(() => {
-        axios.get("http://127.0.0.1:5000/api/v1/danh-muc/loai").then((res) => {
-            setlistTypes(res.data.data)
-        })
-    }, []);
-    const [listCategory, setlistCategory] = useState([]);
-    useEffect(() => {
-        axios.get("http://127.0.0.1:5000/api/v1/danh-muc").then((res) => {
-            setlistCategory(res.data.data)
-        })
-    }, []);
-    console.log(props.listType);
-
 
     const size = [
         {
@@ -183,6 +142,44 @@ const AddProduct = (props) => {
             tenmau: 'Trắng',
         }
     ];
+
+
+    const [fileList, setFileList] = useState([]);
+
+    const [listProducer, setlistProducer] = useState([]);
+    useEffect(() => {
+        axios.get("http://127.0.0.1:5000/api/v1/nha-sx").then((res) => {
+            setlistProducer(res.data.data)
+        })
+    }, []);
+
+    const [listCategory, setlistCategory] = useState([]);
+
+    useEffect(() => {
+        axios.get("http://127.0.0.1:5000/api/v1/danh-muc").then((res) => {
+            setlistCategory(res.data.data);
+        })
+    }, []);
+
+    const [listTypes, setlistTypes] = useState([]);
+    useEffect(() => {
+        axios.get("http://127.0.0.1:5000/api/v1/danh-muc/loai").then((res) => {
+            setlistTypes(res.data.data);
+        })
+    }, []);
+
+
+    let id = "";
+    const onChange = (e) => {
+        id = e;
+        console.log(id);
+        axios.get("http://127.0.0.1:5000/api/v1/danh-muc/ma-danh-muc/" + id).then((res) => {
+            setlistTypes(res.data.data);
+        })
+    };
+    console.log(listTypes);
+
+
 
     return (
         <>
@@ -252,7 +249,7 @@ const AddProduct = (props) => {
                             {mau.map((item) => {
                                 return (
                                     <>
-                                        <Option value={item.mamau}>{item.tenmau}</Option>
+                                        <Option value={item.tenmau}>{item.tenmau}</Option>
                                     </>
                                 )
                             })}
@@ -298,7 +295,13 @@ const AddProduct = (props) => {
                     </Form.Item>
 
                     <Form.Item label="Downloat link Firebase">
-                        <Button icon={<DownloadOutlined />} onClick={upfirebase} >Downlink</Button>
+                        {
+                            link == "" ? (
+                                <Button icon={<DownloadOutlined />} onClick={upfirebase} >Downlink</Button>
+                            ) : (
+                                <Button icon={<DownloadOutlined />} onClick={upfirebase} disabled>Downlink</Button>
+                            )
+                        }
                     </Form.Item>
                     <Form.Item
                         name="img"
@@ -350,7 +353,7 @@ const AddProduct = (props) => {
                         label="Danh mục"
                     //rules={[{ required: true, message: 'Chọn mã loại!' }]}
                     >
-                        <Select>
+                        <Select onChange={onChange}>
                             {listCategory.map((item) => {
                                 return (
                                     <>
@@ -377,13 +380,17 @@ const AddProduct = (props) => {
                     </Form.Item>
                     <Form.Item {...tailFormItemLayout}>
                         <Link to={'/tat-ca-san-pham'} >
-                            <Button className="ant-btn ant-btn-dashed " htmlType="submit" style={{marginLeft: -30}}>
+                            <Button className="ant-btn ant-btn-dashed " htmlType="submit" style={{ marginLeft: -30 }}>
                                 Trở về
                             </Button>
                         </Link>
-                        <Button type="primary" htmlType="submit" style={{marginLeft: 30}}>
-                            Thêm sản phẩm
-                        </Button>
+                        {
+                            link == "" ? (
+                                <Button type="primary" htmlType="submit" style={{ marginLeft: 30 }} disabled>Thêm sản phẩm</Button>
+                            ) : (
+                                <Button type="primary" htmlType="submit" style={{ marginLeft: 30 }}>Thêm sản phẩm</Button>
+                            )
+                        }
 
                     </Form.Item>
                 </Form>

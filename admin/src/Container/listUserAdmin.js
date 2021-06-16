@@ -3,6 +3,7 @@ import { LockOutlined, UnlockOutlined} from '@ant-design/icons';
 import { Button, Table, Tag, message } from 'antd';
 import { useHistory, Link } from 'react-router-dom';
 import axios from 'axios'
+import "./scss/addpro.scss"
 
 const ListUserAdmin = () => {
   const link = useHistory();
@@ -192,9 +193,9 @@ const ListUserAdmin = () => {
 
   return (
     <>
-      <div className="form-wrapper" >
+      <div className="product-wrapper" >
         <h2 style={{ textAlign: 'center', marginTop: "20px", marginBottom: "20px" }}>DANH SÁCH TÀI KHOẢN NHÂN VIÊN</h2>
-        <Table dataSource={ListAdmin} columns={columns} pagination={{ pageSize: 6 }} size="middle"/>
+        <Table className="proItem" dataSource={ListAdmin} columns={columns} pagination={{ pageSize: 6 }} size="middle"/>
         <div className="btn-wrapper" >
           <Link to={'/them-nhan-vien'}>
             <Button type="primary">

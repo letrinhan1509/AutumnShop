@@ -86,17 +86,15 @@ const ListProducer = () => {
     },
     result.permission === 'Admin' ?
       {
-        title: 'Hành động',
         dataIndex: 'mansx',
         key: 'mansx',
-        render: mansx => (<Button data-id={mansx} key={mansx} onClick={edit}> Sửa </Button>)
+        render: mansx => (<div className="btn-box"><Button data-id={mansx} key={mansx} onClick={edit}> Sửa </Button></div>)
       } : (<> </>),
     result.permission === 'Admin' ?
       {
-        title: '',
         dataIndex: 'mansx',
         key: 'mansx',
-        render: mansx => (<Button data-id={mansx} key={mansx} type="danger" onClick={deleteType}> Xoá </Button>)
+        render: mansx => (<div className="btn-box"><Button data-id={mansx} key={mansx} type="danger" onClick={deleteType}> Xoá </Button></div>)
       } : (<> </>)
 
   ];

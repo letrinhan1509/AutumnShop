@@ -9,18 +9,18 @@ const { Option } = Select;
 const formItemLayout = {
     labelCol: {
         xs: {
-            span: 24,
+            span: 22,
         },
         sm: {
-            span: 8,
+            span: 6,
         },
     },
     wrapperCol: {
         xs: {
-            span: 24,
+            span: 20,
         },
         sm: {
-            span: 16,
+            span: 15,
         },
     },
 };
@@ -32,7 +32,7 @@ const tailFormItemLayout = {
         },
         sm: {
             span: 16,
-            offset: 8,
+            offset: 9,
         },
     },
 };
@@ -43,7 +43,7 @@ const EditProducer = (props) => {
     const Producer = JSON.parse(localStorage.getItem("producer"))
     
     const back = ()=>{
-        localStorage.removeItem("producer")
+        localStorage.removeItem("producer");
         history.goBack();
     }
 
@@ -53,6 +53,7 @@ const EditProducer = (props) => {
         axios.put(url, values).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message)
+                localStorage.removeItem("producer");
                 setTimeout(() => {
                     history.push('/danh-sach-nha-sx');
                 }, 2000)

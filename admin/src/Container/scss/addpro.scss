@@ -18,6 +18,11 @@
             text-align: center;
             margin-bottom: 10px;
         }
+        .item{
+            .ant-table-cell{
+                text-align: center;
+            }
+        }
     }
     .product-wrapper{
         margin-top: 50px;
@@ -35,6 +40,14 @@
             text-align: center;
             margin-bottom: 10px;
         }
-        
+        .proItem{
+            .ant-table-cell{
+                text-align: center;
+            }
+        }
     }
+}
+.btn-box{
+    display: flex;
+    justify-content: center;
 }

@@ -16,7 +16,7 @@ const AllProduct = () => {
     console.log(i);
     setA(i);
     setTimeout(() => {
-      link.push('/sua-san-pham');
+      link.push('/tat-ca-san-pham/sua-san-pham');
     }, 100)
 
   }
@@ -75,6 +75,7 @@ const AllProduct = () => {
   useEffect(() => {
     product.getAll().then((res) => {
       setListProductHome(res.data.data);
+      console.log(res.data.data);
     });
   }, []);
 
@@ -120,34 +121,19 @@ const AllProduct = () => {
       key: 'gia',
     },
     {
-      title: 'Hình',
-      dataIndex: 'hinh',
-      key: 'hinh',
-    },
-    {
-      title: 'Hình chi tiết',
-      dataIndex: 'hinhchitiet',
-      key: 'hinhchitiet',
-    },
-    {
-      title: 'Mô tả',
-      dataIndex: 'mota',
-      key: 'mota',
-    },
-    {
       title: 'Trạng thái',
       dataIndex: 'trangthai',
-      key: 'trangthai',
+      key: 'trangthai'
     },
     {
       title: 'Nhà sản xuất',
-      dataIndex: 'mansx',
-      key: 'mansx',
+      dataIndex: 'tennsx',
+      key: 'tennsx'
     },
     {
       title: 'Mã loại',
-      dataIndex: 'maloai',
-      key: 'maloai',
+      dataIndex: 'tenloai',
+      key: 'tenloai'
       /* filters: [
           { text: 'asm', value: 'asm' },
           { text: 'at', value: 'at' },
@@ -169,21 +155,21 @@ const AllProduct = () => {
     },
     {
       title: 'Mã danh mục',
-      dataIndex: 'madm',
-      key: 'madm',
+      dataIndex: 'tendm',
+      key: 'tendm'
     },
+    result.permission === 'Admin' ?
     {
-      title: 'Action',
       dataIndex: "masp",
       key: "masp",
-      render: text => result.permission === 'Admin' ? (<Button data-id={text} onClick={loadEdit} >Sửa</Button>) : (<p></p>)
-    },
+      render: masp => (<div className="btn-box"><Button data-id={masp} onClick={loadEdit} >Sửa</Button></div>)
+    } : (<> </>),
+    result.permission === 'Admin' ?
     {
-      title: '',
       dataIndex: "masp",
       key: "masp",
-      render: text => result.permission === 'Admin' ? (<Button data-id={text} onClick={onClick} type="danger" >Xoá</Button>) : (<p></p>)
-    } 
+      render: masp => (<div className="btn-box"><Button data-id={masp} onClick={onClick} type="danger" >Xoá</Button></div>)
+    } : (<> </>)
   ];
 
 
@@ -192,7 +178,7 @@ const AllProduct = () => {
   return (
     <>
       <div className="product-wrapper">
-        <Table dataSource={ListProductHome} rowKey="uid" columns={columns} pagination={{ pageSize: 6 }} style={{ padding: 10 }} size="middle" />
+        <Table className="proItem" dataSource={ListProductHome} rowKey="uid" columns={columns} pagination={{ pageSize: 6 }} style={{ padding: 10}} size="middle" />
         <Modal title="Thông báo" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
           <p>Bạn có muốn xoá sản phẩm này không ?</p>
         </Modal>

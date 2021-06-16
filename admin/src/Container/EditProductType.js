@@ -9,18 +9,18 @@ const { Option } = Select;
 const formItemLayout = {
     labelCol: {
         xs: {
-            span: 24,
+            span: 22,
         },
         sm: {
-            span: 8,
+            span: 6,
         },
     },
     wrapperCol: {
         xs: {
-            span: 24,
+            span: 20,
         },
         sm: {
-            span: 16,
+            span: 15,
         },
     },
 };
@@ -32,7 +32,7 @@ const tailFormItemLayout = {
         },
         sm: {
             span: 16,
-            offset: 8,
+            offset: 9,
         },
     },
 };
@@ -43,7 +43,7 @@ const EditProductType = (props) => {
     const Type = JSON.parse(localStorage.getItem("type"))
 
     const back = ()=>{
-        localStorage.removeItem("type")
+        localStorage.removeItem("type");
         history.goBack();
     }
 
@@ -60,6 +60,7 @@ const EditProductType = (props) => {
         axios.put(url, values).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message)
+                localStorage.removeItem("type");
                 setTimeout(() => {
                     history.push('/danh-sach-loai');
                 }, 2000)

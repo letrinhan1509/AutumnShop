@@ -28,7 +28,7 @@ const ProductDetail = (props) => {
                         </Col>
                     </Row>
                     <Row className="detail-related">
-                        {props.initRelatedItems.map((Items) => {
+                        {props.ListProductHome.map((Items) => {
                             return (
                                 <Col key={Items.masp} >
 
@@ -41,7 +41,7 @@ const ProductDetail = (props) => {
                                         <div className="img-box">
                                             <Image
                                                 width={'100%'}
-                                                src={`/images/test/${Items.hinh}`}
+                                                src={Items.hinh}
                                                 preview={{
                                                     visible: false,
                                                     /* onVisibleChange: () => { onClick() }, */

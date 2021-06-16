@@ -59,25 +59,7 @@ const Select_Product = (props) => {
     const product = [
         {
             key: "1",
-
             name: "Product Name",
-            src: [{
-                id: 'hinh1',
-                file: './images/giay/iconGray.jpg'
-            },
-            {
-                id: 'hinh2',
-                file: "./images/giay/lacoste.jpg"
-            },
-            {
-                id: 'hinh3',
-                file: "./images/giay/pumathunder.jpg"
-            },
-            {
-                id: 'hinh4',
-                file: "./images/giay/mlbNY.jpg",
-            }
-            ],
             color: [
                 "red",
                 "black",
@@ -130,7 +112,7 @@ const Select_Product = (props) => {
 
 
 
-    const [current, setCurrent] = useState(product[0].src[0].id);
+    /* const [current, setCurrent] = useState(product[0].src[0].id);
 
     const handleTab = (imgfile, e) => {
 
@@ -149,7 +131,7 @@ const Select_Product = (props) => {
                 }
         }
 
-    };
+    }; */
 
     let item = [];
     item = props.ListPro.filter(
@@ -168,13 +150,13 @@ const Select_Product = (props) => {
                             <Col className="img-box" key={e.key}>
                                 <Row>
                                     <Col>
-                                        <img src={`/images/test/${e.hinh}`} alt="product" />
+                                        <img src={e.hinh} alt="product" />
                                     </Col>
                                 </Row>
                                 <Row className="img-change">
                                     {item.map((e) => {
                                         return (
-                                            <Col className="hinh"><img name={e.id} src={`/images/test/${e.hinh}`} alt="product" onClick={(e) => handleTab(e.file, e)} /></Col>
+                                            <Col className="hinh"><img name={e.id} src={e.hinh} alt="product" /*onClick={(e) => handleTab(e.file, e)}*/ /></Col>
                                         );
                                     })}
                                 </Row>
@@ -211,13 +193,7 @@ const Select_Product = (props) => {
                                         <Col>
                                             <span>Select Color</span>
                                         </Col>
-                                        <Col>
-                                            {/* <Radio.Group onChange={onChange} value={value}>
-                                    <Radio value={1}></Radio>
-                                    <Radio value={2}></Radio>
-                                    <Radio value={3}></Radio>
-                                    <Radio value={4}></Radio>
-                                </Radio.Group> */}
+                                        <Col> 
                                             {
                                                 product.map((items) => {
                                                     return (
@@ -295,7 +271,7 @@ const Select_Product = (props) => {
                                                     className="card"
                                                     hoverable
                                                     style={{ width: 300 }}
-                                                    cover={<img alt="example" src={`/images/test/${item.hinh}`} />}
+                                                    cover={<img alt="example" src={item.hinh} />}
                                                 >
                                                     <Row>
                                                         <Col offset={5}>

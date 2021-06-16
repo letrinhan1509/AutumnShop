@@ -45,19 +45,6 @@ const Home = (props) => {
                 <div className="box-img">
                     <img src="../images/slider/slider4.jpg" alt="slider" />
                 </div>
-
-                {/* <Carousel className="slider__bg__title" autoplay dots={false}>
-                            <div>
-                                <h3 style={info_sale}>Super Flash Sale 30% Off</h3>
-                            </div>
-                            <div>
-                                <h3 style={info_sale}>Giảm 10% cho hóa đơn trên 700k</h3>
-                            </div>
-                            <div>
-                                <h3 style={info_sale}>Summer Collection<p>26-05-2021</p></h3>
-                            </div>
-                        </Carousel> */}
-
             </Carousel>
             <Row>
                 <Col span={22} offset={1}>

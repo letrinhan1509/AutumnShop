@@ -87,7 +87,7 @@ const SearchResult = (props) => {
                                                             <div className="img-box">
                                                                 <Image
                                                                     width={'100%'}
-                                                                    src={`./images/test/${productItem.hinh}`}
+                                                                    src={productItem.hinh}
                                                                     preview={{
                                                                         visible: false,
                                                                         /* onVisibleChange: () => { onClick() }, */

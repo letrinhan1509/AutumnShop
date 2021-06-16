@@ -95,9 +95,8 @@ const SearchBar = (props) => {
                 </div>
                 <Link to={`/Timkiem`}>
                     <Button className="btn-search" type="primary" icon={<SearchOutlined />} onClick={() => {
-                        xoaWord()
-                        props.receiveData(a)
-
+                        xoaWord();
+                        props.receiveDataa(a);
                     }} />
                 </Link>
             </div>

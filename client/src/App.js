@@ -57,19 +57,20 @@ useEffect(() => {
   return () => unregisterAuthObserver(); // Make sure we un-register Firebase observers when the component unmounts.
 }, []);
 
-console.log(userEmail);
+
 
 
   //Lấy Data bằng API
   const [ListProductHome, setListProductHome] = useState([]);
   const { confirm } = Modal;
   useEffect(() => {
-    axios.get("http://localhost:5000/api/v1/san-pham/danh-sach").then((res) => {
-      setListProductHome(res.data);
+    axios.get("http://localhost:5000/api/v1/san-pham").then((res) => {
+      setListProductHome(res.data.data);
+      
     });
   }, []);
 
-
+  console.log(ListProductHome);
   //Hàm random sản phẩm
   /* const shuffled = ListProductHome.sort(() => 0.5 - Math.random());
   const randomItem = shuffled.slice(0, 4); */
@@ -230,7 +231,7 @@ console.log(userEmail);
                   <Accessories ListProductHome={ListProductHome} link={link}  Thongbao_Them={Thongbao_Them} />
                 </Route>
                 <Route path="/Timkiem">
-                  <SearchResult kqSearch={kqSearch} countkqSearch={kqSearch.length} kqSearch={kqSearch} Thongbao_Them={Thongbao_Them} />
+                  <SearchResult kqSearch={kqSearch} countkqSearch={kqSearch.length} Thongbao_Them={Thongbao_Them} />
                 </Route>
                 <Route path="/UserInfo">
                   <UserInfo />

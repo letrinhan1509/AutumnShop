@@ -141,7 +141,6 @@ const ListCata = () => {
     },
     result.permission === 'Admin' ?
       {
-        title: '',
         dataIndex: 'trangthai',
         key: 'trangthai',
         render: (trangthai) =>
@@ -150,13 +149,11 @@ const ListCata = () => {
               {trangthai.stt.map(tragth => {
                 if (tragth === 'Ẩn') {
                   return (
-                    <Button data-id={trangthai.id} type="primary" icon={<UnlockOutlined />} onClick={unlock}>
-                    </Button>
+                    <div className="btn-box"><Button data-id={trangthai.id} type="primary" icon={<UnlockOutlined />} onClick={unlock}></Button></div>  
                   );
                 }else{
                   return (
-                    <Button data-id={trangthai.id} type="danger" icon={<LockOutlined />} onClick={lock}>
-                    </Button>
+                    <div className="btn-box"><Button data-id={trangthai.id} type="danger" icon={<LockOutlined />} onClick={lock}></Button></div>
                   )
                 }  
               })}
@@ -165,10 +162,9 @@ const ListCata = () => {
       } : (<> </>),
     result.permission === 'Admin' ?
       {
-        title: 'Hành động',
         dataIndex: 'madm',
         key: 'madm',
-        render: madm => (<Button data-id={madm} key={madm} type="primary" onClick={linkto}> Sửa </Button>)
+        render: madm => (<div className="btn-box"><Button data-id={madm} key={madm} type="primary" onClick={linkto}> Sửa </Button></div>)
       } : (<> </>),
     /* result.permission === 'Admin' ?
       {
