@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import axios from "axios"
-import { Form, Input, Button, Upload, InputNumber, Select, message } from 'antd';
-import { useHistory, Link } from "react-router-dom"
-import { UploadOutlined, DownloadOutlined } from '@ant-design/icons';
-import { storage } from "../firebase"
-import "./scss/addpro.scss"
-import product from '../API_Call/Api_product/product';
+import { DownloadOutlined, UploadOutlined } from '@ant-design/icons';
+import { Button, Form, Input, InputNumber, message, Select, Upload } from 'antd';
+import product from 'API_Call/Api_product/product';
+import axios from "axios";
+import {storage} from 'firebase/firebase'; 
+import React, { useEffect, useState } from 'react';
+import { Link, useHistory } from "react-router-dom";
+import "Container/scss/addpro.scss";
+
 
 const { Option } = Select;
 const formItemLayout = {

@@ -16,8 +16,8 @@ const Cart = (props) => {
 
     const [size, setSize] = useState('large');
 
-
-
+    const user = JSON.parse(localStorage.getItem("user"));
+    console.log(user);
 
     return (
         <Content className="cart-wrapper">
@@ -29,9 +29,10 @@ const Cart = (props) => {
                         <h1>Giỏ Hàng</h1>
                         <p className="Count_Cart">Có {props.CountCart} sản phẩm trong giỏ hàng</p>
                         <Row className="cart-title">
-                            <Col offset={2}>SẢN PHẨM</Col>
-                            <Col offset={4}>SỐ LƯỢNG</Col>
-                            <Col span={3}>GIÁ</Col>
+                            <Col >SẢN PHẨM</Col>
+                            <Col >GIÁ</Col>
+                            <Col >SỐ LƯỢNG</Col>
+                            <Col >THÀNH TIỀN</Col>
                         </Row>
                     </>
                 ) : ("")
@@ -57,11 +58,12 @@ const Cart = (props) => {
                             <Col className="cart-imgProduct" key={item.masp}>
                                 <img src={item.hinh} alt="imgProduct" />
                             </Col>
-                            <Col className="cart-deProduct">
+                            <Col span={4} className="cart-deProduct">
                                 <p>{item.tensp}</p>
-                                <p>Giá: {item.gia}Đ</p>
+                                <p>Màu: {item.mau}</p>
                             </Col>
-                            <Col className="quantity-price">
+                            <Col span={5} className="cart-price"><p>Giá: {item.gia}Đ</p></Col>
+                            <Col span={6} className="quantity-price">
                                 <div className="quantity-box">
 
                                     <button onClick={() => props.removeCart(item)} className="remove">-</button>
@@ -70,8 +72,8 @@ const Cart = (props) => {
 
                                 </div>
                             </Col>
-                            <Col className="price-box">
-                                <div>${item.qty * item.gia.toFixed(2)}Đ</div>
+                            <Col offset={1} className="pay-box">
+                                <p>${item.qty * item.gia.toFixed(2)}Đ</p>
                             </Col>
                             <Col className="btn-box">
                                 <Button onClick={() => props.removeCart(item)} type="primary" danger>

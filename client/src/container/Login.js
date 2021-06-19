@@ -2,7 +2,6 @@ import React from 'react';
 import { Form, Input, Button, Checkbox, Row, Col, message } from 'antd';
 import Meta from "antd/lib/card/Meta";
 import { useHistory } from "react-router-dom";
-import axios from "axios";
 import "./components-css/Form.scss";
 import firebase from 'firebase';
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
@@ -45,12 +44,12 @@ const tailLayout = {
 const uiConfig = {
     // Popup signin flow rather than redirect flow.
     signInFlow: 'redirect',
-    signInSuccessUrl: '/',
+    signInSuccessUrl: 'https://localhost:3000/',
     // We will display Google and Facebook as auth providers.
     signInOptions: [
-        firebase.auth.GoogleAuthProvider.PROVIDER_ID
-        //firebase.auth.FacebookAuthProvider.PROVIDER_ID
-    ],
+        firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+        firebase.auth.FacebookAuthProvider.PROVIDER_ID
+    ]
 };
 
 

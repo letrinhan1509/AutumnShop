@@ -116,16 +116,16 @@ const HeaderPage = (props) => {
                             Home
                         </Menu.Item>
                         <Menu.Item key="san-pham/ao" style={menu}>
-                            Áo
+                            Shirt
                                         </Menu.Item>
                         <Menu.Item key="san-pham/balo" style={menu}>
-                            Balo
+                            Bag
                                         </Menu.Item>
                         <Menu.Item key="san-pham/giay" style={menu}>
-                            Giày
+                            Shoes
                                         </Menu.Item>
                         <Menu.Item key="san-pham/phu-kien" style={menu}>
-                            Phụ kiện
+                            Acessories
                                         </Menu.Item>
                     </Menu>
                 </Col>

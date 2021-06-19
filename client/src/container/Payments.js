@@ -55,9 +55,9 @@ const Payments = (props) => {
       });
   };
 
-  useEffect(() => {
+  /* useEffect(() => {
     localStorage.setItem(...["cart", JSON.stringify(props.cart)]);
-  }, [props.cart]);
+  }, [props.cart]); */
 
   const user = JSON.parse(localStorage.getItem("user"));
 
@@ -104,10 +104,10 @@ const Payments = (props) => {
             <Row>
               <Col span={10} offset={1}>
                 <p>
-                  <Input placeholder="Firt Name" value={user.username} />
+                  {user != null ? (<Input placeholder="Firt Name" value={user.username} />) : (<Input placeholder="Firt Name" />)}
                 </p>
                 <p>
-                  <Input placeholder="Email Address" value={user.email} />
+                  {user != null ? (<Input placeholder="Email Address" value={user.email} />) : (<Input placeholder="Email Address" />)}
                 </p>
                 <p>
                   <h1>Select Method Of Payment</h1>
@@ -142,7 +142,7 @@ const Payments = (props) => {
                           </Col>
                           <Col span={20}>Thanh toán sau khi nhận hàng</Col>
                           <Col>
-                            <Checkbox  value="Bank"></Checkbox>
+                            <Checkbox value="Bank"></Checkbox>
                           </Col>
                         </Row>
                       </Col>
@@ -153,14 +153,19 @@ const Payments = (props) => {
               </Col>
               <Col span={10} offset={1}>
                 <p>
-                  <TextArea
+                  {user != null ? (<TextArea
                     placeholder="Address Delivery"
                     rows={5}
                     value={user.diachi}
-                  />
+                  />) : (<TextArea
+                    placeholder="Address Delivery"
+                    rows={5}
+                  />)}
+
                 </p>
                 <p>
-                  <Input placeholder="Mobile Phone" value={user.sdt} />
+                  {user != null ? (<Input placeholder="Mobile Phone" value={user.sdt} />) : (<Input placeholder="Mobile Phone" />)}
+                  
                 </p>
               </Col>
             </Row>

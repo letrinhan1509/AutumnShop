@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Row, Col, Carousel, Card, Tabs, Image } from 'antd';
 import { Link, useHistory } from "react-router-dom";
-import { ShoppingCartOutlined, EyeOutlined } from '@ant-design/icons';
 import "./components-css/Home.scss";
 import cookies from "react-cookies";
 import Sale from '../components/Sale';
 import HomeBestseller from "../components/HomeBestseller";
+import firebase from 'firebase';
 
 //import ProductDetail from "./Product-detail";
 
@@ -35,6 +35,7 @@ const Home = (props) => {
 
     return (
         <>
+            <button onClick={() => firebase.auth().signOut()}>SIGH - OUT</button>
             <Carousel className="slider__bg" autoplay dots={false}>
                 <div className="box-img">
                     <img src="../images/slider/slider5.jpg" alt="slider" />

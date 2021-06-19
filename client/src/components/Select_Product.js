@@ -137,7 +137,7 @@ const Select_Product = (props) => {
     item = props.ListPro.filter(
         ListPro => ListPro.masp.toString() === id
     );
-
+    console.log(item);
     let visible = 4;
 
     return (
@@ -169,23 +169,27 @@ const Select_Product = (props) => {
                                     <li><a href="#/">Submit a review</a></li>
                                 </ul>
                                 <div className="sale-imfo">
-                                    <ul className="price">
-                                        <li className="new">{`${e.gia - (e.gia * e.giamgia / 100)} VNĐ`}</li>
-                                        <li className="old">{e.gia}VNĐ</li>
-                                        <li className="percent">{e.giamgia}% OFF</li>
-                                    </ul>
+                                    <Row>
+                                        <Col><p>Price:</p></Col>
+                                        <Col offset={5}><p>{e.gia} VNĐ</p></Col>
+                                    </Row>
+                                    <Row>
+                                        <Col><p>Sale:</p></Col>
+                                        <Col offset={6}><p>{e.giamgia}% OFF</p></Col>
+                                    </Row>
                                     <Row>
                                         <Col>
-                                            <p>Availability:</p>
-                                            <p>Category:</p>
+                                            <p>Origin:</p>
+                                            <p>Type:</p>
                                         </Col>
                                         <Col offset={5}>
-                                            <p>In stock</p>
-                                            <p>Acessories</p>
+                                            <p>{e.tennsx}</p>
+                                            <p>{e.tenloai}</p>
                                         </Col>
                                     </Row>
                                     <Row>
-                                        <Col><p>Free shipping</p></Col>
+                                        <Col><p>Description:</p></Col>
+                                        <Col offset={3}><p>{e.mota}</p></Col>
                                     </Row>
                                 </div>
                                 <div className="size-color">

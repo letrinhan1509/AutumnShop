@@ -16,7 +16,7 @@ import axios from "axios";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import Shirt from "./container/Shirt";
 import firebase from 'firebase';
-import { storage } from "./container/firebase"
+//import { storage } from "./container/firebase";
 //import AllProduct from './container/All-Product';
 import UserInfo from "./container/UserInfo";
 import Backpack from "./container/Backpack";
@@ -53,6 +53,7 @@ useEffect(() => {
     userEmail["gmail"] = user.email;
     userEmail["uid"] = user.uid;
     userEmail["img"] = user.photoURL;
+    
   });
   return () => unregisterAuthObserver(); // Make sure we un-register Firebase observers when the component unmounts.
 }, []);
@@ -72,8 +73,8 @@ useEffect(() => {
 
   console.log(ListProductHome);
   //Hàm random sản phẩm
-  /* const shuffled = ListProductHome.sort(() => 0.5 - Math.random());
-  const randomItem = shuffled.slice(0, 4); */
+  const shuffled = ListProductHome.sort(() => 0.5 - Math.random());
+  const randomItem = shuffled.slice(0, 4);
 
 
   const storageItem = JSON.parse(localStorage.getItem("cart") || "[]");
@@ -152,35 +153,35 @@ useEffect(() => {
 
   //Firebase get image
   const [link, setLink] = useState([]);
-  useEffect(() => {
+/*   useEffect(() => {
     const fetchImages = async () => {
       let i = 0;
       let storageRef = storage.ref();
       let starsRef = await storageRef.child('img_product/').listAll();
       let urlPromises = starsRef.items.map(imageRef => imageRef.getDownloadURL());
-      /* starsRef.listAll().then(function (result) {
+      starsRef.listAll().then(function (result) {
         result.items.forEach(function (imageRef) {
           i++;
           displayImage(i, imageRef)
         })
       })
       let result = await storageRef.child('images').listAll();
-      let urlPromises = result.items.map(imageRef => imageRef.getDownloadURL()); */
+      let urlPromises = result.items.map(imageRef => imageRef.getDownloadURL());
 
       return Promise.all(urlPromises);
 
     }
-    /* function displayImage(row, images) {
+    function displayImage(row, images) {
       images.getDownloadURL().then(function (url) {
 
       })
-    } */
+    }
     const loadImages = async () => {
       const urls = await fetchImages();
       setLink(urls);
     }
     loadImages();
-  }, []);
+  }, []); */
 
   
 
@@ -204,7 +205,7 @@ useEffect(() => {
                 </Route>
                 <Route exact path="/san-pham/chi-tiet-san-pham/:id">
                   <ProductDetail
-                    //initRelatedItems={randomItem}
+                    initRelatedItems={randomItem}
                     ListProductHome={ListProductHome}
                     addCart={addCart}
                     link={link}

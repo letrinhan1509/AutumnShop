@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { LockOutlined, UnlockOutlined } from '@ant-design/icons';
 import { Button, Table, Tag, message } from 'antd';
 import { useHistory, Link } from 'react-router-dom';
-import axios from 'axios'
-import "./scss/addpro.scss"
+import axios from 'axios';
+import "Container/scss/addpro.scss";
+
 const ListCata = () => {
   const link = useHistory();
   const [a, setA] = useState([]);

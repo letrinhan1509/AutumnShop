@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import axios from "axios"
-import { Form, Input, Button, Select, message } from 'antd';
-import { useHistory, Link } from "react-router-dom"
-import "./scss/addpro.scss"
-import catalog from '../API_Call/Api_catalog/catalog';
+import { Button, Form, Input, message, Select } from 'antd';
+import catalog from 'API_Call/Api_catalog/catalog';
+import axios from "axios";
+import React, { useEffect, useState } from 'react';
+import { Link, useHistory } from "react-router-dom";
+import "Container/scss/addpro.scss";
+
 const { Option } = Select;
 const formItemLayout = {
     labelCol: {

@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import axios from "axios"
-import { Form, Input, Button, Select, message } from 'antd';
-import { useHistory, Link } from "react-router-dom"
-import "./scss/addpro.scss"
-import producer from '../API_Call/Api_producer/producer';
-const { Option } = Select;
+import { Button, Form, Input, message } from 'antd';
+import producer from 'API_Call/Api_producer/producer';
+import React, { useState } from 'react';
+import { Link, useHistory } from "react-router-dom";
+import "Container/scss/addpro.scss";
+
+
 const formItemLayout = {
     labelCol: {
         xs: { span: 22 },

@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { LockOutlined, UnlockOutlined} from '@ant-design/icons';
-import { Button, Table, Tag, message } from 'antd';
-import { useHistory, Link } from 'react-router-dom';
-import axios from 'axios'
-import "./scss/addpro.scss"
+import { LockOutlined, UnlockOutlined } from '@ant-design/icons';
+import { Button, message, Table, Tag } from 'antd';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import { Link, useHistory } from 'react-router-dom';
+import "Container/scss/addpro.scss";
 
 const ListUserAdmin = () => {
   const link = useHistory();

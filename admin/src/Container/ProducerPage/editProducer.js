@@ -1,11 +1,9 @@
-//import React, { useEffect, useState } from 'react';
-import { LeftOutlined } from '@ant-design/icons';
-import { Form, Input, Row, Col, Button, message, Select } from "antd";
-import axios from "axios"
-import { Link, useHistory } from "react-router-dom"
-import "./scss/addpro.scss"
+import { Button, Form, Input, message } from "antd";
+import axios from "axios";
+import React from 'react';
+import { Link, useHistory } from "react-router-dom";
+import "Container/scss/addpro.scss";
 
-const { Option } = Select;
 const formItemLayout = {
     labelCol: {
         xs: {

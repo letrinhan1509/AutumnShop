@@ -1,10 +1,9 @@
-import React from 'react';
+import { Button, Form, Input, message, Select } from "antd";
 import axios from "axios";
-import { Form, Input,Button, message, Select } from "antd";
-import { useState, useEffect } from 'react';
-import { useHistory, Link } from "react-router-dom"
-import "./scss/addpro.scss"
-import admin from '../API_Call/Api_admin/admin';
+import React from 'react';
+import { Link, useHistory } from "react-router-dom";
+import "Container/scss/addpro.scss";
+
 const { Option } = Select;
 const formItemLayout = {
     labelCol: {
@@ -28,7 +27,9 @@ const tailFormItemLayout = {
         },
     },
 };
-const AddNV = (props) => {
+const user = JSON.parse(localStorage.getItem("user"));
+//console.log(user.address);
+const UserInf = (props) => {
     const [form] = Form.useForm();
     const history = useHistory();
 
@@ -41,55 +42,18 @@ const AddNV = (props) => {
         </Form.Item>
     );
 
-    const [listCity, setlistCity] = useState([]);
-    useEffect(() => {
-        axios.get("https://thongtindoanhnghiep.co/api/city").then((res) => {
-            setlistCity(res.data.LtsItem);
-        })
-    }, []);
-    console.log(listCity);
-
-    const [a, setA] = useState([]);
-    const linktoCity = (e) => {
-        let id = e.currentTarget.dataset.id
-        setA(id);
-        console.log(id);
-    }
-    const [listDistrict, setlistDistrict] = useState([]);
-    useEffect(() => {
-        if(a != ""){
-            axios.get("https://thongtindoanhnghiep.co/api/city/" + a +"/district").then((res) => {
-                setlistDistrict(res.data);
-            })
-        }
-    }, [a]);
-    console.log(listDistrict);
-
-    const [b, setB] = useState([]);
-    const linktoWard = (e) => {
-        let id = e.currentTarget.dataset.id
-        setB(id);
-        console.log(id);
-    }
-    const [listWard, setlistWard] = useState([]);
-    useEffect(() => {
-        if(b != ""){
-            axios.get("https://thongtindoanhnghiep.co/api/district/" + b +"/ward").then((res) => {
-                setlistWard(res.data);
-            })
-        }
-    }, [b]);
-    console.log(listWard);
 
     const register = (values) => {
-
+        console.log(values)
         let a = JSON.stringify({ admin: "adas@gmail.com" });
+
         console.log(a);
-        admin.register(values).then((res) => {
+        const url = "http://127.0.0.1:5000/api/v1/admin/cap-nhat-tai-khoan"
+        axios.put(url, values).then((res) => {
             if (res.data.status ==="Success") {
                 message.success(res.data.message)
                 setTimeout(() => {
-                    history.push('/danh-sach-admin');
+                    history.push('/');
                 }, 2000)
             }
             else{
@@ -108,21 +72,16 @@ const AddNV = (props) => {
      } */
     return (
         <div className="form-wrapper">
-            <h2 style={{ textAlign: 'center' }}>THÊM NHÂN VIÊN</h2>
+            <h2 style={{ textAlign: 'center' }}>thông tin NHÂN VIÊN</h2>
             <Form
                 {...formItemLayout}
                 form={form}
                 name="register"
                 onFinish={register}
-                initialValues={{
-                    residence: ["zhejiang", "hangzhou", "xihu"],
-                    prefix: "86",
-                }}
-                scrollToFirstError
                 className="register-form"
             >
                 <Form.Item
-                    name="email"
+                    //name="email"
                     id="email"
                     label="E-mail"
                     rules={[
@@ -136,10 +95,10 @@ const AddNV = (props) => {
                         },
                     ]}
                 >
-                    <Input />
+                    <Input value={user.email}/>
                 </Form.Item>
                 <Form.Item
-                    name="name"
+                    //name="name"
                     id="name"
                     label="Tên nhân viên"
                     tooltip="Đây là tên đăng nhập của bạn."
@@ -151,7 +110,7 @@ const AddNV = (props) => {
                         },
                     ]}
                 >
-                    <Input />
+                    <Input value={user.username}/>
                 </Form.Item>
                 <Form.Item
                     id="pass"
@@ -193,62 +152,18 @@ const AddNV = (props) => {
                         }),
                     ]}
                 >
-                    <Input.Password />
+                    <Input.Password/>
                 </Form.Item>
                 <Form.Item
-                    name="city"
-                    id="city"
-                    label="Thành phố"
-                >
-                    <Select>
-                        {listCity.map((item) => {
-                            return (
-                                <>
-                                    <Option value={item.ID}>{item.Title}</Option>
-                                </>
-                            )
-                        })}
-                    </Select>
-                </Form.Item>
-                <Form.Item
-                    name="district"
-                    id="district"
-                    label="Quận - Huyện"
-                >
-                    <Select>
-                        {listDistrict.map((item) => {
-                            return (
-                                <>
-                                    <Option value={item.ID}>{item.Title}</Option>
-                                </>
-                            )
-                        })}
-                    </Select>
-                </Form.Item>
-                <Form.Item
-                    name="ward"
-                    id="ward"
-                    label="Phường - Xã"
-                >
-                    <Select>
-                        {/* {listDistrict.map((item) => {
-                            return (
-                                <>
-                                    <Option value={item.ID}>{item.Title}</Option>
-                                </>
-                            )
-                        })} */}
-                    </Select>
-                </Form.Item>
-                <Form.Item
-                    name="address"
+                    //name="address"
                     id="address"
                     label="Địa chỉ"
+
                 >
-                    <Input />
+                    <Input  value={user.address}/>
                 </Form.Item>
                 <Form.Item
-                    name="phone"
+                    //name="phone"
                     id="phone"
                     label="Phone Number"
                     rules={[{
@@ -256,17 +171,17 @@ const AddNV = (props) => {
                         message: 'Vui lòng nhập số điện thoại !'
                     }]}
                 >
-                    <Input addonBefore={prefixSelector} style={{ width: '100%' }} />
+                    <Input addonBefore={prefixSelector} style={{ width: '100%' }} value={user.phone}/>
                 </Form.Item>
                 <Form.Item
-                    name="permission"
+                    //name="permission"
                     id="permission"
                     label="Mã quyền"
                 >
-                    <Select>
-                        <Option value="Admin">Admin</Option>
-                        <Option value="NVBH">Nhân viên bán hàng</Option>
-                        <Option value="NVGH">Nhân viên giao hàng</Option>
+                    <Select value={user.permission}>
+                        <Option value="1">Admin</Option>
+                        <Option value="2">Nhân viên bán hàng</Option>
+                        <Option value="3">Nhân viên giao hàng</Option>
                     </Select>
                 </Form.Item>
                 {/* <Form.Item
@@ -278,7 +193,7 @@ const AddNV = (props) => {
                 <Form.Item {...tailFormItemLayout}>
                     <Link to={'/danh-sach-admin'} ><p style={{ marginRight: "20px", }} className="ant-btn ant-btn-dashed ">Trở về</p></Link>
                     <Button value="submit" type="primary" htmlType="submit">
-                        Đăng kí
+                        Chỉnh sửa
                     </Button>
                 </Form.Item>
             </Form>
@@ -286,4 +201,4 @@ const AddNV = (props) => {
     );
 }
 
-export default AddNV;
+export default UserInf;

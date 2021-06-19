@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { Table, Image, Button, message, Tag } from 'antd';
 import { LockOutlined, UnlockOutlined } from '@ant-design/icons';
-import { useHistory } from "react-router-dom";
+import { Button, message, Table, Tag } from 'antd';
 import axios from 'axios';
-import "./scss/addpro.scss"
+import React, { useEffect, useState } from 'react';
+import { useHistory } from "react-router-dom";
+import "Container/scss/addpro.scss";
 
 const ListUserKH = (props) => {
   const [ListUser, setListUser] = useState([]);

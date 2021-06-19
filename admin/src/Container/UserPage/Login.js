@@ -2,7 +2,8 @@ import React from 'react';
 import { Form, Input, Button, message } from 'antd';
 import { useHistory } from "react-router-dom";
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
-import admin from '../API_Call/Api_admin/admin';
+import admin from 'API_Call/Api_admin/admin';
+
 
 
 const formItemLayout = {
@@ -41,10 +42,9 @@ const Login = () => {
         if (res.data.status === "LoginSuccess") {
           message.success(`Đăng nhập thành công, Xin chào ${res.data.admin.username}`)
           console.log(res.data.admin)
-          //localStorage.setItem('token', res.data.token)
+          localStorage.setItem('token', res.data.token)
           localStorage.setItem('user', JSON.stringify(res.data.admin))
           setTimeout(() => {
-
             history.push("/Dashboard")
             window.location.reload()
           }, 2000)

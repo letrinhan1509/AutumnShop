@@ -40,7 +40,7 @@
         .cart-title{
             display: flex;
             justify-content: space-evenly;
-            width: 90%;
+            width: 92%;
             font-size: 20px;
             font-weight: 700;
             margin-bottom: 30px;    
@@ -58,15 +58,17 @@
                     width: 100px;
                 }
             }
-            .cart-deProduct{
-                width: 40%;
+            .cart-deProduct, .cart-price, .pay-box{
+                //margin-right: 10px;
                 padding-top: 20px;
                 p{
-                    font-size: 20px;
                     
+                    font-size: 20px;
+                    margin-bottom: 5px;
                     
                 }  
             }
+
             .quantity-price{
                 width: 20%;
                 padding-top: 20px;

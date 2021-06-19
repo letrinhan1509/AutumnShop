@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { Button, Table, Modal, message } from 'antd';
-import { Link } from 'react-router-dom';
+import { Button, message, Modal, Table } from 'antd';
+import product from 'API_Call/Api_product/product';
 import axios from "axios";
+import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
-import product from '../API_Call/Api_product/product';
-import "./scss/addpro.scss"
+import { Link } from 'react-router-dom';
+import "Container/scss/addpro.scss";
+
 const AllProduct = () => {
   let link = useHistory()
   const [idPro, setIdPro] = useState([]);

@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import axios from "axios"
-import { Form, Input, Button, Select, message } from 'antd';
-import { useHistory, Link } from "react-router-dom"
-import "./scss/addpro.scss"
-import catalog from '../API_Call/Api_catalog/catalog';
-const { Option } = Select;
+import { Button, Form, Input, message } from 'antd';
+import catalog from 'API_Call/Api_catalog/catalog';
+import React from 'react';
+import { Link, useHistory } from "react-router-dom";
+import "Container/scss/addpro.scss";
+
 const formItemLayout = {
     labelCol: {
         xs: { span: 22 },
@@ -56,9 +55,6 @@ const AddCategory = (props) => {
                 message.error(`Thêm danh mục thất bại!\n ${err.response.data}`)
             })
     };
-    const [fileList, setFileList] = useState([]);
-    const [listProduct, setlistProduct] = useState([]);
-
 
 
     return (

@@ -28,7 +28,7 @@ const ProductDetail = (props) => {
                         </Col>
                     </Row>
                     <Row className="detail-related">
-                        {props.ListProductHome.map((Items) => {
+                        {props.initRelatedItems.map((Items) => {
                             return (
                                 <Col key={Items.masp} >
 

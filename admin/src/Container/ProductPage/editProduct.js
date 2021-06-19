@@ -1,12 +1,11 @@
+import { DownloadOutlined, UploadOutlined } from '@ant-design/icons';
+import { Button, Form, Input, InputNumber, message, Select, Upload } from "antd";
+import product from 'API_Call/Api_product/product';
+import { storage } from "firebase/firebase";
+import axios from "axios";
 import React, { useEffect, useState } from 'react';
-import { LeftOutlined } from '@ant-design/icons';
-import { Form, Input, Row, Col, Button, message, Select, Upload, InputNumber } from "antd";
-import { UploadOutlined, DownloadOutlined } from '@ant-design/icons';
-import { storage } from "../firebase"
-import axios from "axios"
-import { Link, useHistory } from "react-router-dom"
-import "./scss/addpro.scss"
-import product from '../API_Call/Api_product/product';
+import { Link, useHistory } from "react-router-dom";
+import "Container/scss/addpro.scss";
 
 const { Option } = Select;
 const formItemLayout = {
