@@ -31,10 +31,12 @@
         border-radius: 10px;
         width: 1200px;
         h2{
-            font-size: 25px;
-            margin: 40px 0px;
+            font-size: 30px;
+            margin: 20px 0px;
             text-transform: uppercase;
             font-weight: 700;
+            text-align: center;
+            margin-top: 30px;
         }
         .btn-wrapper{
             text-align: center;
@@ -45,9 +47,42 @@
                 text-align: center;
             }
         }
+        .View-layout{
+            //margin: 30px 0px;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            border-top: 1px solid #ccc;
+            border-bottom: 1px solid #ccc;
+            span{
+                font-weight: 600;
+
+            }
+            .search-box{
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                border: 1px solid #ccc;
+                border-radius: 15px;
+                box-shadow: 1px 2px 3px #888;
+                width: 400px;
+                height: 70px;
+                span{
+                    margin-right: 10px;
+                }
+                input{
+                    background: rgb(212, 212, 212);
+                    border: none;
+                    outline: none;
+                    height: 30px;
+                    border-radius: 5px;
+                }
+            }
+        }
     }
 }
 .btn-box{
     display: flex;
     justify-content: center;
+
 }

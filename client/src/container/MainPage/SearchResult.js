@@ -1,8 +1,8 @@
-import React, { useState } from "react";
-import { Row, Col, Card, Image, Button, Carousel, Menu } from "antd";
-import { Link, useHistory } from "react-router-dom";
+import React from "react";
+import { Row, Col, Card, Image, Menu } from "antd";
+import { Link } from "react-router-dom";
 import { ShoppingCartOutlined, EyeOutlined } from "@ant-design/icons";
-import "./components-css/ProductType.scss";
+import "container/components-css/ProductType.scss";
 
 
 const { Meta } = Card;
@@ -66,7 +66,7 @@ const SearchResult = (props) => {
 
                     <div className="site-card-wrapper product_home">
                         <Row>
-                            {props.kqSearch != "" ?
+                            {props.kqSearch !== "" ?
                                 (
                                     <>
                                         <Row className="SearchResult">

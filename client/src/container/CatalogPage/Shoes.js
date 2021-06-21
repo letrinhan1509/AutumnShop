@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Row, Col, Card, Image, Button, Carousel, Menu } from "antd";
-import { Link, useHistory } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { ShoppingCartOutlined, EyeOutlined } from "@ant-design/icons";
-import "./components-css/ProductType.scss";
+import "container/components-css/ProductType.scss";
 
 const { Meta } = Card;
 const { SubMenu } = Menu;
@@ -26,10 +26,6 @@ const Shoes = (props) => {
       document.getElementById("load").style.display = "none";
     }
   }
-
-  const history = useHistory();
-
-
 
   const [openKeys, setOpenKeys] = React.useState(['sub1']);
 

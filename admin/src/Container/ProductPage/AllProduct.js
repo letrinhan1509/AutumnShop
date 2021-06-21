@@ -1,4 +1,4 @@
-import { Button, message, Modal, Table } from 'antd';
+import { Button, message, Modal, Table, Tag, Select } from 'antd';
 import product from 'API_Call/Api_product/product';
 import axios from "axios";
 import React, { useEffect, useState } from 'react';
@@ -6,6 +6,7 @@ import { useHistory } from 'react-router';
 import { Link } from 'react-router-dom';
 import "Container/scss/addpro.scss";
 
+const { Option } = Select;
 const AllProduct = () => {
   let link = useHistory()
   const [idPro, setIdPro] = useState([]);
@@ -32,17 +33,17 @@ const AllProduct = () => {
   //const masp = window.localStorage.getItem("masp");
   const [productEdit, setProductEdit] = useState([]);
   useEffect(() => {
-    if(a != ''){
+    if (a != '') {
       let url = "http://127.0.0.1:5000/api/v1/san-pham/" + a;
       axios.get(url).then((res) => {
-        if(res.data.status ==="Success"){
-            setProductEdit(res.data.dataSpham);
+        if (res.data.status === "Success") {
+          setProductEdit(res.data.dataSpham);
         }
       })
     }
   }, [a]);
   //window.localStorage.setItem('Product', JSON.stringify(product));
-  if(productEdit != ''){
+  if (productEdit != '') {
     localStorage.setItem('product', JSON.stringify(productEdit));
   }
 
@@ -76,7 +77,7 @@ const AllProduct = () => {
   useEffect(() => {
     product.getAll().then((res) => {
       setListProductHome(res.data.data);
-      console.log(res.data.data);
+      setWordSearch(res.data.data);
     });
   }, []);
 
@@ -86,7 +87,7 @@ const AllProduct = () => {
 
   const columns = [
     {
-      title: 'Mã sản phẩm',
+      title: 'Mã',
       dataIndex: 'masp',
       key: 'masp',
 
@@ -100,6 +101,12 @@ const AllProduct = () => {
       title: 'Tên sản phẩm',
       dataIndex: 'tensp',
       key: 'tensp',
+    },
+    {
+      title: 'Ảnh',
+      dataIndex: 'hinh',
+      key: 'hinh',
+      render: text => <img src={text} width={70} />,
     },
     {
       title: 'Số lượng',
@@ -124,7 +131,16 @@ const AllProduct = () => {
     {
       title: 'Trạng thái',
       dataIndex: 'trangthai',
-      key: 'trangthai'
+      key: 'trangthai',
+      render: trangthai => trangthai === 1 ? (
+        <Tag color={'green'} key={trangthai}>
+          {trangthai}
+        </Tag>
+      ) : (
+        <Tag color={'red'} key={trangthai}>
+          {trangthai}
+        </Tag>
+      )
     },
     {
       title: 'Nhà sản xuất',
@@ -132,7 +148,7 @@ const AllProduct = () => {
       key: 'tennsx'
     },
     {
-      title: 'Mã loại',
+      title: 'Loại',
       dataIndex: 'tenloai',
       key: 'tenloai'
       /* filters: [
@@ -155,31 +171,107 @@ const AllProduct = () => {
       //ellipsis: true,
     },
     {
-      title: 'Mã danh mục',
+      title: 'Danh mục',
       dataIndex: 'tendm',
       key: 'tendm'
     },
     result.permission === 'Admin' ?
-    {
-      dataIndex: "masp",
-      key: "masp",
-      render: masp => (<div className="btn-box"><Button data-id={masp} onClick={loadEdit} >Sửa</Button></div>)
-    } : (<> </>),
+      {
+        dataIndex: "masp",
+        key: "masp",
+        render: masp => (<div className="btn-box"><Button data-id={masp} onClick={loadEdit} type="primary">Sửa</Button></div>)
+      } : (<> </>),
     result.permission === 'Admin' ?
-    {
-      dataIndex: "masp",
-      key: "masp",
-      render: masp => (<div className="btn-box"><Button data-id={masp} onClick={onClick} type="danger" >Xoá</Button></div>)
-    } : (<> </>)
+      {
+        dataIndex: "masp",
+        key: "masp",
+        render: masp => (<div className="btn-box"><Button data-id={masp} onClick={onClick} type="danger" >Xoá</Button></div>)
+      } : (<> </>)
   ];
 
+  //Tìm kiếm
+  function removeAccents(str) {
+    return str.normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/đ/g, 'd').replace(/Đ/g, 'D');
+  }
+  function filterItems(arr, query) {
+    return arr.filter(function (el) {
+      if (removeAccents(el.tensp.toLowerCase()).indexOf(removeAccents(query.toLowerCase())) !== -1) {
+        return el;
+      } else {
+        return "";
+      }
 
+    });
+  }
+  let demo = ListProductHome;
+  const [wordSearch, setWordSearch] = useState(...demo);
+  console.log(wordSearch);
+  function onChange(e) {
+    if (e.target.value !== "") {
+      let filter = filterItems(ListProductHome, e.target.value);
+      if (filter !== "") {
+        demo = filter;
+        setWordSearch(demo);
+      } else {
+        demo = ListProductHome;
+        setWordSearch(demo);
+      }
+    } else {
+      demo = ListProductHome;
+      setWordSearch(demo);
+    }
+    console.log(demo);
+  }
+  //let PSize = 6;
+  const [pageSize, setPageSize] = useState(4);
+  const size = [
+    {
+      key: 1,
+      PSize: 4,
 
+    },
+    {
+      key: 2,
+      PSize: 6,
+    },
+    {
+      key: 3,
+      PSize: 8,
+    },
+    {
+      key: 3,
+      PSize: 10,
+    }
+  ];
+  const ChangeSize = (e) => {
+    setPageSize(e);
+  };
 
   return (
     <>
       <div className="product-wrapper">
-        <Table className="proItem" dataSource={ListProductHome} rowKey="uid" columns={columns} pagination={{ pageSize: 6 }} style={{ padding: 10}} size="middle" />
+        <h2>Danh sách sản phẩm</h2>
+        <div className="View-layout">
+          <div>
+            <span>Sản phẩm hiển thị: </span>
+            <Select defaultValue="4" Option style={{ width: 70 }} onChange={e => ChangeSize(e)}>
+              {size.map((item) => {
+                return (
+                  <>
+                    <Option value={item.PSize}>{item.PSize}</Option>
+                  </>
+                )
+              })}
+            </Select>
+          </div>
+          <div className="search-box">
+            <span>Tìm kiếm: </span>
+            <input placeholder='Nhập tên sản phẩm' style={{ width: 300 }} onChange={e => onChange(e)} />
+          </div>
+        </div>
+        <Table className="proItem" dataSource={wordSearch} rowKey="uid" columns={columns} pagination={{ pageSize: `${pageSize}` }} style={{ padding: 10 }} size="middle" />
         <Modal title="Thông báo" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
           <p>Bạn có muốn xoá sản phẩm này không ?</p>
         </Modal>

@@ -1,37 +1,31 @@
 import React, { useState } from "react";
 import { Row, Col, Card, Image, Button, Carousel, Menu } from "antd";
-import { Link, useHistory, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { ShoppingCartOutlined, EyeOutlined } from "@ant-design/icons";
-import "./components-css/ProductType.scss";
-import { storage } from "./firebase"
+import "container/components-css/ProductType.scss";
+
 
 
 const { Meta } = Card;
 const { SubMenu } = Menu;
 const rootSubmenuKeys = ['sub1', 'sub2', 'sub4'];
 
-const Shirt = (props) => {
-  const { kieu } = useParams();
-  const ak = props.ListProductHome.filter(ListProductHome => ListProductHome.tendm === "Áo");
-  console.log(kieu);
-  let Ao = [];
-  Ao = ak;
-  console.log(props.ListProductHome);
-  console.log(Ao);
+const Backpack = (props) => {
+  
+  const bl = props.ListProductHome.filter(ListProductHome => ListProductHome.maloai === "bl");
+  let Balo = [];
+  Balo = bl;
+
   const [visible, setVisible] = useState(6);
   const showMoreProduct = () => {
     setVisible((preValueProduct) => preValueProduct + 6);
   };
 
   const onChange = () => {
-    if (visible > Ao.length) {
+    if (visible > Balo.length) {
       document.getElementById("load").style.display = "none";
     }
   }
-
-  const history = useHistory();
-
-
 
   const [openKeys, setOpenKeys] = React.useState(['sub1']);
 
@@ -45,29 +39,21 @@ const Shirt = (props) => {
   };
 
 
-  const [image, setImage] = useState(null);
-  const [urldown, setUrldown] = useState("");
-
-  const handleChange = e => {
-    if(e.target.files[0]){
-      setImage(e.target.files[0]);
-    }
-  };
-
-
-  console.log(urldown);
   return (
     <>
+      {/* <p style={{ textAlign: "center", fontSize: "26px", fontWeight: "bold" }}>
+        Tổng số lượng sản phẩm : {props.countBalo}
+      </p> */}
       <Row className="content-box">
         <Col className="left">
           <Menu mode="inline" openKeys={openKeys} onOpenChange={onOpenChange} style={{ width: 300 }}>
-            <SubMenu key="sub1" title="Navigation One">
+            <SubMenu key="sub1"  title="Navigation One">
               <Menu.Item key="1">Option 1</Menu.Item>
               <Menu.Item key="2">Option 2</Menu.Item>
               <Menu.Item key="3">Option 3</Menu.Item>
               <Menu.Item key="4">Option 4</Menu.Item>
             </SubMenu>
-            <SubMenu key="sub2" title="Navigation Two">
+            <SubMenu key="sub2"  title="Navigation Two">
               <Menu.Item key="5">Option 5</Menu.Item>
               <Menu.Item key="6">Option 6</Menu.Item>
               <SubMenu key="sub3" title="Submenu">
@@ -75,7 +61,7 @@ const Shirt = (props) => {
                 <Menu.Item key="8">Option 8</Menu.Item>
               </SubMenu>
             </SubMenu>
-            <SubMenu key="sub4" title="Navigation Three">
+            <SubMenu key="sub4"  title="Navigation Three">
               <Menu.Item key="9">Option 9</Menu.Item>
               <Menu.Item key="10">Option 10</Menu.Item>
               <Menu.Item key="11">Option 11</Menu.Item>
@@ -86,18 +72,18 @@ const Shirt = (props) => {
         <Col className="right">
           <Carousel dots="" autoplay className="carousel">
             <div>
-              <img src="../images/slider/slider_aokhoac.png" alt="slider" />
+              <img src="../images/slider/slider_balo1.jpg" alt="slider" />
             </div>
             <div>
-              <img src="../images/slider/slider_aothun.jpg" alt="slider" />
+              <img src="../images/slider/slider_balo2.jpg" alt="slider" />
             </div>
             <div>
-              <img src="../images/slider/slider_somi.jpg" alt="slider" />
+              <img src="../images/slider/slider_balo3.jpg" alt="slider" />
             </div>
           </Carousel>
           <div className="site-card-wrapper product_home">
             <Row>
-              {Ao.slice(0, visible).map((productItem) => {
+              {Balo.slice(0, visible).map((productItem) => {
                 return (
                   <Col key={productItem.masp} span={7} offset={1}>
                     <Card
@@ -109,7 +95,7 @@ const Shirt = (props) => {
                       <div className="img-box">
                         <Image
                           width={'100%'}
-                          src={productItem.hinh}
+                          src={`../images/test/${productItem.hinh}`}
                           preview={{
                             visible: false,
                             /* onVisibleChange: () => { onClick() }, */
@@ -148,29 +134,29 @@ const Shirt = (props) => {
                 );
               })}
             </Row>
-            {
-              Ao.length > 6 ? (
-                <Row className="btn-box">
-                  <Col>
-                    <Button
-                      id="load"
-                      type="primary"
-                      onChange={onChange()}
-                      onClick={showMoreProduct}
-                      className="btn-load"
-                    >
-                      Xem thêm
-                </Button>
-                  </Col>
-                </Row>
-              ) : ("")
-
-            }
           </div>
         </Col>
       </Row>
+      {
+        Balo.length > 6 ? (
+          <Row>
+            <Col offset={12}>
+              <Button
+                id="load"
+                type="primary"
+                onChange={onChange()}
+                onClick={showMoreProduct}
+                className="btn-load"
+              >
+                Xem thêm
+                </Button>
+            </Col>
+          </Row>
+        ) : ("")
+
+      }
 
     </>
   );
 };
-export default Shirt;
+export default Backpack;

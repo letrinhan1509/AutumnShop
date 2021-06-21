@@ -1,10 +1,10 @@
 import { Col, Layout, Row, Image, Card } from "antd";
 import { ShoppingCartOutlined, EyeOutlined } from '@ant-design/icons';
-import React, { useState, useEffect } from 'react';
-import "../container/components-css/ProductDetail.scss"
-import "../components/Select_Product"
-import SelectProduct from "../components/Select_Product";
-import LinkPage from "../components/Link_Page";
+import React from 'react';
+import "container/components-css/ProductDetail.scss"
+import "components/Select_Product"
+import SelectProduct from "components/Select_Product";
+import LinkPage from "components/Link_Page";
 import { Link } from "react-router-dom";
 const { Content } = Layout;
 

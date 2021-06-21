@@ -1,10 +1,9 @@
 import React from 'react';
 import { Container, Row, Col, Form } from 'react-bootstrap';
-import { Image, Space, Input, Button } from 'antd';
+import { Image, Input, Button } from 'antd';
 import Meta from "antd/lib/card/Meta";
 import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
-import LinkPage from "../components/Link_Page";
-import "./components-css/Form.scss";
+import "container/components-css/Form.scss";
 const { TextArea } = Input;
 
 const user = JSON.parse(localStorage.getItem("user"));
