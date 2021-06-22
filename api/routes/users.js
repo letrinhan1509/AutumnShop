@@ -12,36 +12,6 @@ const signToken = (id) => {
 	});
 };
 
-router.post('/doi-mat-khau', function (req, res, next) {
-    let password = req.body.password;
-    let newPassword = req.body.newPassword;
-    let confirmPassword = req.body.confirmPassword;
-    let email = req.body.email;
-    let sql = `SELECT * FROM khachhang WHERE email='${email}'`;
-    db.query(sql, (err, rows) => {
-        if (rows.length <= 0) {
-            res.json({"status": "Fail", "message": "Email không tồn tại!"}); 
-            return;
-        }
-        let user = rows[0];
-        let pass_fromdb = user.matkhau;
-        var kq = bcrypt.compareSync(password, pass_fromdb);
-        if (kq) {
-            if (newPassword === confirmPassword) {
-                var salt = bcrypt.genSaltSync(10);
-                var pass_mahoa = bcrypt.hashSync(newPassword, salt);
-                let sql2 = `UPDATE khachhang SET matkhau='${pass_mahoa}' WHERE email='${email}'`;
-                db.query(sql2, (err, result) => {
-                    console.log('Update success');
-                    res.json({"status": "Success", "message": "Đổi mật khẩu thành công!"});
-                });
-            }
-        }else{
-            res.json({"status": "Fail", "message": "Mật khẩu cũ không đúng! Vui lòng kiểm tra lại mật khẩu cũ!"});
-        }
-    });
-})
-
 router.post('/quen-mat-khau', async (req, res) => {
     let email = req.body.email;
     let checkEmail = await modelUser.checkEmail(email); // Kiểm tra email có trong database hay không
@@ -93,30 +63,30 @@ router.post('/quen-mat-khau', async (req, res) => {
 
             // API
     // Danh sách tất cả khách hàng:
-router.get('/danh-sach', async function (req, res) {
+router.get('/', async function (req, res) {
     try {
         let listUsers = await modelUser.list();
-        res.json({"status": "Success", "data": listUsers});
+        res.status(200).json({"status": "Success", "data": listUsers});
     } catch (error) {
-        res.json({"status": "Fail", "error": error})
+        res.status(400).json({"status": "Fail", "error": error})
     }
 });
     // Khách hàng bằng id:
-router.get('/kh-id/:id', async function (req, res) {
+router.get('/:id', async function (req, res) {
     try {
         let userId = req.params.id;
         let user = await modelUser.getById(userId);
         if(user == -1){     // Kiểm tra user_id trong DB.
-            res.json({"status": "Fail", "message": "Không tìm thấy user này trong DB!"});
+            res.status(400).json({"status": "Fail", "message": "Không tìm thấy user này trong DB!"});
         }else{
-            res.json({"status": "Success", "data": user});
+            res.status(200).json({"status": "Success", "data": user});
         }  
     } catch (error) {
-        res.json({"status": "Fail", "error": error});
+        res.status(400).json({"status": "Fail", "error": error});
     }
 });
     // Tìm khách hàng bằng tên: "async"->Bất đồng bộ.
-router.get('/khach-hang-ten/:name', async function (req, res) {
+router.get('/ten/:name', async function (req, res) {
     let nameUser = req.params.name;
     let User = await modelUser.detailByName(nameUser);
     console.log(User);
@@ -134,8 +104,8 @@ router.post('/dang-ky', async function(req, res) {
     let address = req.body.diachi;
     let phone = req.body.sodienthoai;
     
-    if(email == '' || pass == '' || name == '' || address == '' || phone == ''){
-        res.json({"status": "Fail", "message": "Thiếu thông tin!"});
+    if(email == '' && pass == '' && name == '' && address == '' && phone == ''){
+        res.status(400).json({"status": "Fail", "message": "Thiếu thông tin!"});
     }else{ 
         try {
             var salt = bcrypt.genSaltSync(10); // Chuỗi cộng thêm vào mật khẩu để mã hoá.
@@ -148,9 +118,9 @@ router.post('/dang-ky', async function(req, res) {
                 diachi: address,   
             }
             let query = await modelUser.insertUser(data);
-            res.json({ "status": "Success", "message": "Thêm tài khoản user thành công!" });
+            res.status(200).json({ "status": "Success", "message": "Thêm tài khoản user thành công!" });
         } catch (error) {
-            res.json({ "status": "Fail", "message": "Lỗi cú pháp! Thêm không thành công!", "error": error });
+            res.status(400).json({ "status": "Fail", "message": "Lỗi cú pháp! Thêm không thành công!", "error": error });
         }
     } 
 })
@@ -158,12 +128,11 @@ router.post('/dang-ky', async function(req, res) {
 router.post('/dang-nhap', function (req, res, next) {
     let em = req.body.email;
     let mk = req.body.matkhau;
-    console.log(req.body);
-
+    
     let sql = `SELECT * FROM khachhang WHERE email = '${em}'`;
     db.query(sql, (err, rows) => {
         if (rows.length <= 0) {
-            res.json({"status": "LoginFail", "error": err, message: "Đăng nhập thất bại. Không tìm thấy tài khoản!"});
+            res.status(400).json({"status": "LoginFail", "error": err, message: "Đăng nhập thất bại. Không tìm thấy tài khoản!"});
         }else{
             let user = rows[0];
             let pass_fromdb = user.matkhau;
@@ -179,7 +148,7 @@ router.post('/dang-nhap', function (req, res, next) {
             res.cookie("jwt", token, cookieOptions);
             if (kq) {
                 console.log("OK!!! Đăng nhập thành công");
-                res.json({
+                res.status(200).json({
                     status: "LoginSuccess",
                     data: {
                         makh: user.makh, 
@@ -193,13 +162,39 @@ router.post('/dang-nhap', function (req, res, next) {
                 });
             }
             else {
-                res.json({
+                res.status(400).json({
                     status: "LoginFail",
                     message: "Đăng nhập thất bại. Sai mật khẩu!!!"
                 });
             }
         }
     });
+});
+    // Đổi mật khẩu:
+router.put('/doi-mat-khau', async function(req, res) {
+    //let adminId = req.body.adminId;
+    let email = req.body.email;
+    let password = req.body.password;
+    let newPassword = req.body.newPassword;
+    let confirmPassword = req.body.confirmPassword;
+    console.log(req.body);
+
+    let user = await modelUser.checkEmail(email);
+    let kq = bcrypt.compareSync(password, user.matkhau);
+    try {
+        if(email == user.email && kq == true){
+            if(newPassword == confirmPassword){
+                var salt = bcrypt.genSaltSync(10);
+                var pass_mahoa = bcrypt.hashSync(newPassword, salt);
+                let query = await modelUser.updatePasswordUser(email, pass_mahoa);
+                res.status(200).json({ "status": "Success", "message": "Đổi mật khẩu thành công!" });
+            } else
+                res.status(400).json({ "status": "Fail", "message": "Mật khẩu mới và xác nhận mật khẩu mới không trùng nhau!" });
+        } else
+            res.status(400).json({ "status": "Fail", "message": "Sai Email hoặc mật khẩu cũ không đúng! Vui lòng kiểm tra lại thông tin!" });
+    } catch (error) {
+        res.status(400).json({ "status": "Fail", "message": "Lỗi...! Đổi mật khẩu không thành công!" });
+    }
 });
     // Cập nhật thông tin tài khoản user:
 router.put('/cap-nhat-tai-khoan', async function(req, res) {
@@ -212,14 +207,14 @@ router.put('/cap-nhat-tai-khoan', async function(req, res) {
     var salt = bcrypt.genSaltSync(10); // Chuỗi cộng thêm vào mật khẩu để mã hoá.
     var pass_mahoa = bcrypt.hashSync(pass, salt);
     
-    if(userId == null){
-        res.json({"status": "Fail", "message": "Thiếu id user!"});
-    }
     try {
+        if(userId == ''){
+            res.status(400).json({"status": "Fail", "message": "Thiếu id user!"});
+        }
         let query = await modelUser.updateProfileUser(userId, name, pass_mahoa, phone, address);
-        res.json({"status": "Success", "message": "Sửa thông tin tài khoản user thành công!"});
+        res.status(200).json({"status": "Success", "message": "Sửa thông tin tài khoản user thành công!"});
     } catch (error) {
-        res.json({"status": "Fail", "message": "Lỗi cú pháp!", "error": error});
+        res.status(400).json({"status": "Fail", "message": "Lỗi cú pháp!", "error": error});
     }
 });
     // Cập nhật trạng thái user:
@@ -227,17 +222,21 @@ router.put('/cap-nhat-trang-thai', async function(req, res) {
     let userId = req.body.userId;
     let stt = req.body.stt;
 
-    if(userId == null){
-        res.json({"status": "Fail", "message": "Không có id user!"});
-    }else{
-        if(stt == 0){
-            let query = await modelUser.lockUser(userId);
-            res.json({"status": "Success", "message": "Khoá tài khoản khách hàng thành công!"});
+    try {
+        if(userId == ''){
+            res.status(400).json({ "status": "Fail", "message": "Không có id user!" });
         }else{
-            let query = await modelUser.unlockUser(userId);
-            res.json({"status": "Success", "message": "Mở khoá tài khoản khách hàng thành công!"});
+            if(stt == 0){
+                let query = await modelUser.lockUser(userId);
+                res.status(200).json({ "status": "Success", "message": "Khoá tài khoản khách hàng thành công!" });
+            }else{
+                let query = await modelUser.unlockUser(userId);
+                res.status(200).json({ "status": "Success", "message": "Mở khoá tài khoản khách hàng thành công!" });
+            }
         }
-    }
+    } catch (error) {
+        res.status(400).json({ "status": "Fail", "message": "Lỗi! Cập nhật trạng thái khách hàng thất bại!", "error": error });
+    };
 });
 
     

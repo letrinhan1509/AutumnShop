@@ -7,12 +7,14 @@ exports.checkEmail = (email) => {
     return new Promise( (hamOK, hamLoi) => {
         let sql = `SELECT * FROM khachhang WHERE email = '${email}'`;
         db.query(sql, (err, d) => {
-            console.log('List success');
-            data = d[0];
-            hamOK(data);
+            if(err)
+                hamLoi(err);
+            else{
+                dataList = d[0];
+                hamOK(dataList);
+            }
         })
-        }
-    )
+    })
 }
     //Danh sách khách hàng
 exports.list = () => {
@@ -31,7 +33,7 @@ exports.list = () => {
     // Lọc khách hàng theo tên:
 exports.detailByName = (nameUser) => {
     return new Promise( (hamOK, hamLoi) => {
-        let sql = `SELECT tenkh, email, sodienthoai, diachi FROM khachhang WHERE tenkh='${nameUser}'`;
+        let sql = `SELECT tenkh, email, sodienthoai, diachi FROM khachhang WHERE tenkh LIKE '${nameUser}'`;
         db.query(sql, (err, result) => {
             console.log('User Success!');
             hamOK(result[0]);

@@ -4,9 +4,11 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const session = require('express-session');
-var nodemailer = require('nodemailer');
+const nodemailer = require('nodemailer');
+const rateLimit = require('express-rate-limit');
 const cors = require('cors');
 
+const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const adminRouter = require('./routes/admin');
 const catalogRouter = require('./routes/catalog');
@@ -15,6 +17,7 @@ const orderRouter = require('./routes/order');
 const producerRouter = require('./routes/producer');
 const commentRouter = require('./routes/comment');
 const discountRouter = require('./routes/discount');
+const cartRouter = require('./routes/cart');
 
 var app = express();
 
@@ -34,13 +37,23 @@ app.use(session({
   cookie: { maxAge: 1200000 }
 }));
 app.use(cors());
+// Limit requests from same API
+const limiter = rateLimit({
+  max: 100,
+  windowMs: 60 * 60 * 1000,
+  message: 'Too many requests from this IP, please try again in an hour!'
+});
+app.use('/api', limiter);
 
+
+app.use('/api', indexRouter);
 app.use('/api/v1/admin', adminRouter);
 app.use('/api/v1/khach-hang', usersRouter);
+app.use('/api/v1/gio-hang', cartRouter);
 app.use('/api/v1/danh-muc', catalogRouter);
 app.use('/api/v1/san-pham', productRouter);
 app.use('/api/v1/don-hang', orderRouter);
-app.use('/api/v1/nha-sx', producerRouter);
+app.use('/api/v1/nha-san-xuat', producerRouter);
 app.use('/api/v1/binh-luan', commentRouter);
 app.use('/api/v1/khuyen-mai', discountRouter);
 

@@ -6,48 +6,48 @@ const modelOrder = require('../models/model_order');    //nhúng model products 
 
             // API GET
     // Danh sách hoá đơn:
-router.get('/danh-sach-dh', async function(req, res) { 
+router.get('/', async function(req, res) { 
     try {
         let listOrder = await modelOrder.list_Orders();
-        res.json({"status": "Success", "data": listOrder});
+        res.status(200).json({ "status": "Success", "data": listOrder });
     } catch (error) {
-        res.json({"status": "Fail", "error": error});
+        res.status(400).json({ "status": "Fail", "message": "Lỗi! Lấy danh sách đơn hàng thất bại!", "error": error });
     }
 })
     // Đơn hàng theo mã đơn hàng:
-router.get('/id=:id', async function (req, res) {
+router.get('/:id', async function (req, res) {
     try {
         let orderId = req.params.id;
         let order = await modelOrder.get_By_Id(orderId);
         if(order == -1)
-            res.json({ "status": "Fail", "message": "Không tìm thấy mã đơn hàng này!"});
+            res.status(400).json({ "status": "Fail", "message": "Không tìm thấy mã đơn hàng này!" });
         else
-            res.json({"status": "Success", "data": order});
+            res.status(200).json({ "status": "Success", "data": order });
     } catch (error) {
-        res.json({"status": "Fail", "error": error})
+        res.status(400).json({ "status": "Fail", "message": "Lỗi! Lấy chi tiết 1 đơn hàng thất bại!", "error": error })
     }
 });
-    // Chi tiết đơn hàng theo mã đơn hàng:
-router.get('/chi-tiet-dhang/id=:id', async function (req, res) {
+    // Danh sách chi tiết đơn hàng theo mã đơn hàng:
+router.get('/:id/chi-tiet-dhang', async function (req, res) {
     try {
         let orderId = req.params.id;
         let order = await modelOrder.get_detailOrder(orderId);
-        res.json({"status": "Success", "data": order});
+        res.status(200).json({"status": "Success", "data": order});
     } catch (error) {
-        res.json({"status": "Fail", "error": error})
+        res.status(400).json({"status": "Fail", "error": error})
     }
 });
 // Đơn hàng theo mã khách hàng:
-router.get('/khach-hang/id=:id', async function (req, res) {
+router.get('/khach-hang/:id', async function (req, res) {
     try {
         let userId = req.params.id;
         let order = await modelOrder.get_By_userId(userId);
         if(order == -1)
-            res.json({ "status": "Fail", "message": "Không có đơn hàng nào!" });
+            res.status(400).json({ "status": "Fail", "message": "Không có đơn hàng nào!" });
         else
-            res.json({ "status": "Success", "data": order});
+            res.status(200).json({ "status": "Success", "data": order});
     } catch (error) {
-        res.json({ "status": "Fail", "message": "Lỗi cú pháp...!", "error": error })
+        res.status(400).json({ "status": "Fail", "message": "Lỗi cú pháp...!", "error": error })
     }
 });
 
@@ -61,8 +61,8 @@ router.post('/tao-don-hang', async function(req, res) {
     var today = new Date();
     var ngaydat = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
     
-    if(makh == '' || tongtien == ''){
-        res.json({"status": "Fail", "message": "Tạo đơn hàng không thành công! Thiếu thông tin!"});
+    if(makh == '' && tongtien == ''){
+        res.status(400).json({"status": "Fail", "message": "Tạo đơn hàng không thành công! Thiếu thông tin!"});
     }else{
         try {
             let data = {
@@ -72,9 +72,9 @@ router.post('/tao-don-hang', async function(req, res) {
                 ngaybl: ngaybl,
             };
             let query = await modelOrder.insert_Order(makh, tongtien, makm, ngaydat);
-            res.json({"status": "Success", "message": "Tạo đơn hàng thành công!", "result": query});
+            res.status(200).json({"status": "Success", "message": "Tạo đơn hàng thành công!", "result": query});
         } catch (error) {
-            res.json({"status": "Fail", "error": error });
+            res.status(400).json({"status": "Fail", "error": error });
         }
     }
 });
@@ -87,13 +87,13 @@ router.put('/cap-nhat-trang-thai', async function(req, res) {
     let delivery = req.body.delivery;
     let status = req.body.status;
     if(orderId == ''){
-        res.json({"status": "Fail", "message": "Không có id đơn hàng!"});
+        res.status(400).json({"status": "Fail", "message": "Không có id đơn hàng!"});
     }else{
         try {
             let query = await modelOrder.updateOrder(orderId, delivery, status);
-            res.json({"status": "Success", "message": "Cập nhật đơn hàng thành công!"});
+            res.status(200).json({"status": "Success", "message": "Cập nhật đơn hàng thành công!"});
         } catch (error) {
-            res.json({"status": "Fail", "message": "Lỗi cú pháp!", "error": error});
+            res.status(400).json({"status": "Fail", "message": "Lỗi cú pháp!", "error": error});
         }
     }
 });

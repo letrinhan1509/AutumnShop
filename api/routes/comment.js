@@ -13,7 +13,7 @@ router.get('/', async function(req, res) {
         let listCmt = await modelComment.list_Comments();
         res.status(200).json({ "status": "Success", "data": listCmt });
     } catch (error) {
-        res.status(404).json({ "status": "Fail", "error": error })
+        res.status(400).json({ "status": "Fail", "error": error })
     }
 });
     // Bình luận theo id:
@@ -23,52 +23,51 @@ router.get('/:id', async function(req, res) {
     try {
         let listCmt = await modelComment.get_by_Id(idCmt);
         if(listCmt == -1)
-            res.status(404).json({ "status": "Fail", "message": "Không có bình luận nào!"});
+            res.status(400).json({ "status": "Fail", "message": "Không có bình luận nào!"});
         else
             res.status(200).json({ "status": "Success", "dataCmt": listCmt });
     } catch (error) {
-        res.status(404).json({ "status": "Fail", "message": "Lỗi...Không thể lấy bình luận!","error": error })
+        res.status(400).json({ "status": "Fail", "message": "Lỗi...Không thể lấy bình luận!","error": error })
     }
 });
     // Bình luận theo mã khách hàng:
-router.get('/:id/khach-hang', async function(req, res) { 
+router.get('/khach-hang/:id', async function(req, res) { 
     let idUser = req.params.id;
 
     try {
         let listCmt = await modelComment.get_by_userId(idUser);
         if(listCmt == -1)
-            res.json({ "status": "Fail", "message": "Không có bình luận nào!"});
+            res.status(400).json({ "status": "Fail", "message": "Không có bình luận nào!"});
         else
-            res.json({ "status": "Success", "data": listCmt });
+            res.status(200).json({ "status": "Success", "data": listCmt });
     } catch (error) {
-        res.json({ "status": "Fail", "message": "Lỗi...Không thể lấy danh sách bình luận!","error": error })
+        res.status(400).json({ "status": "Fail", "message": "Lỗi...Không thể lấy danh sách bình luận!","error": error })
     }
 });
     // Bình luận theo mã sản phẩm:
-router.get('/:idPro/san-pham', async function(req, res) { 
+router.get('/san-pham/:idPro', async function(req, res) { 
     let idSpham = await req.params.idPro;
     try {
         let listCmt = await modelComment.get_by_productId(idSpham);
-        //console.log("Router: ", listCmt);
         if(listCmt == -1)
-            res.json({ "status": "Fail", "message": "Sản phẩm này không có bình luận nào!"});
+            res.status(400).json({ "status": "Fail", "message": "Sản phẩm này không có bình luận nào!"});
         else
-            res.json({ "status": "Success", "data": listCmt });
+            res.status(200).json({ "status": "Success", "data": listCmt });
     } catch (error) {
-        res.json({ "status": "Fail", "message": "Lỗi...Không thể lấy danh sách bình luận!", "error": error })
+        res.status(400).json({ "status": "Fail", "message": "Lỗi...Không thể lấy danh sách bình luận!", "error": error })
     }
 });
-    // Danh sách chi tiết bình luận:
+    // Danh sách chi tiết bình luận theo mã bình luận:
 router.get('/:id/chi-tiet-bluan', async function(req, res) { 
     let idCmt = req.params.id;
     try {
         let listCmt = await modelComment.get_detailComment(idCmt);
         if(listCmt == -1)
-            res.json({ "status": "Fail", "message": "Không có chi tiết bình luận nào! Hoặc bình luận đó đã bị khoá"});
+            res.status(400).json({ "status": "Fail", "message": "Không có chi tiết bình luận nào! Hoặc bình luận đó đã bị khoá"});
         else
-            res.json({ "status": "Success", "data": listCmt });
+            res.status(200).json({ "status": "Success", "data": listCmt });
     } catch (error) {
-        res.json({ "status": "Fail", "message": "Lỗi...Không thể lấy danh sách bình luận!", "error": error })
+        res.status(400).json({ "status": "Fail", "message": "Lỗi...Không thể lấy danh sách bình luận!", "error": error })
     }
 });
 
@@ -84,7 +83,7 @@ router.post('/them-binh-luan', async function(req, res) {
     console.log(ngaybl);
   
     if(masp == '' && makh == '' && noidung == ''){
-      res.json({"status": "Fail", "message": "Thêm bình luận không thành công! Thiếu thông tin!"});
+      res.status(400).json({"status": "Fail", "message": "Thêm bình luận không thành công! Thiếu thông tin!"});
     }else{
         let data = {
             masp: masp,
@@ -94,9 +93,9 @@ router.post('/them-binh-luan', async function(req, res) {
         };
         try {
             let query = await modelComment.create_Comment(data);
-            res.json({"status": "Success", "message": "Thêm bình luận thành công!", "result": query});
+            res.status(200).json({"status": "Success", "message": "Thêm bình luận thành công!", "result": query});
         } catch (error) {
-            res.json({"status": "Fail", "message": "Lỗi cú pháp! Thêm bình luận không thành công!", "error": error});
+            res.status(400).json({"status": "Fail", "message": "Lỗi cú pháp! Thêm bình luận không thành công!", "error": error});
         }
     }
 });
@@ -113,7 +112,7 @@ router.post('/tra-loi-binh-luan', async function(req, res) {
     console.log(khachHang.tenkh);
 
     if(mabl == '' && noidung == ''){
-      res.json({"status": "Fail", "message": "Trả lời bình luận không thành công! Thiếu thông tin!"});
+      res.status(400).json({ "status": "Fail", "message": "Trả lời bình luận không thành công! Thiếu thông tin!" });
     }else{
         let data = {
             makh: makh,
@@ -125,9 +124,9 @@ router.post('/tra-loi-binh-luan', async function(req, res) {
         };
         try {
             let query = await modelComment.create_RepComment(data);
-            res.json({"status": "Success", "message": "Trả lời bình luận thành công!", "result": query});
+            res.status(200).json({"status": "Success", "message": "Trả lời bình luận thành công!", "result": query});
         } catch (error) {
-            res.json({"status": "Fail", "message": "Lỗi cú pháp! Trả lời bình luận không thành công!", "error": error});
+            res.status(400).json({"status": "Fail", "message": "Lỗi cú pháp! Trả lời bình luận không thành công!", "error": error});
         }
     }
 });
@@ -137,13 +136,13 @@ router.put('/cap-nhat-binh-luan', async function(req, res) {
     let noidung = req.body.noidung;
     
     if(noidung == ''){
-      res.json({"status": "Fail", "message": "Chỉnh sửa bình luận không thành công!"});
+      res.status(400).json({"status": "Fail", "message": "Chỉnh sửa bình luận không thành công!"});
     }else{
         try {
             let query = await modelComment.update_Comment(mabl, noidung);
-            res.json({"status": "Success", "message": "Chỉnh sửa bình luận thành công!", "result": query});
+            res.status(200).json({"status": "Success", "message": "Chỉnh sửa bình luận thành công!", "result": query});
         } catch (error) {
-            res.json({"status": "Fail", "message": "Lỗi cú pháp! Chỉnh sửa bình luận không thành công!", "error": error});
+            res.status(400).json({"status": "Fail", "message": "Lỗi cú pháp! Chỉnh sửa bình luận không thành công!", "error": error});
         }
     }
 });
@@ -153,13 +152,13 @@ router.put('/cap-nhat-tra-loi-bluan', async function(req, res) {
     let noidung = req.body.noidung;
     
     if(noidung == ''){
-      res.json({"status": "Fail", "message": "Chỉnh sửa bình luận không thành công!"});
+      res.status(400).json({"status": "Fail", "message": "Chỉnh sửa bình luận không thành công!"});
     }else{
         try {
             let query = await modelComment.update_RepComment(mact, noidung);
-            res.json({"status": "Success", "message": "Chỉnh sửa bình luận thành công!", "result": query});
+            res.status(200).json({"status": "Success", "message": "Chỉnh sửa bình luận thành công!", "result": query});
         } catch (error) {
-            res.json({"status": "Fail", "message": "Lỗi cú pháp! Chỉnh sửa bình luận không thành công!", "error": error});
+            res.status(400).json({"status": "Fail", "message": "Lỗi cú pháp! Chỉnh sửa bình luận không thành công!", "error": error});
         }
     }
 });
@@ -169,9 +168,9 @@ router.delete('/xoa-binh-luan/:id', async function(req, res) {
 
     try {
         let query = await modelComment.delete_Comment(mabl);
-        res.json({"status": "Success", "message": "Xoá bình luận thành công!", "result": query});
+        res.status(200).json({"status": "Success", "message": "Xoá bình luận thành công!", "result": query});
     } catch (error) {
-        res.json({"status": "Fail", "message": "Lỗi cú pháp! Xoá bình luận không thành công!", "error": error});
+        res.status(400).json({"status": "Fail", "message": "Lỗi cú pháp! Xoá bình luận không thành công!", "error": error});
     }
 });
     // Xoá chi tiết bình luận:
@@ -180,18 +179,18 @@ router.delete('/xoa-tra-loi-bluan/:id', async function(req, res) {
     
     try {
         let query = await modelComment.delete_RepComment(mact);
-        res.json({"status": "Success", "message": "Xoá bình luận thành công!", "result": query});
+        res.status(200).json({"status": "Success", "message": "Xoá bình luận thành công!", "result": query});
     } catch (error) {
-        res.json({"status": "Fail", "message": "Lỗi cú pháp! Xoá bình luận không thành công!", "error": error});
+        res.status(400).json({"status": "Fail", "message": "Lỗi cú pháp! Xoá bình luận không thành công!", "error": error});
     }
 });
     // Cập nhật trạng thái bình luận:  
-router.put('/cap-nhat/trang-thai-bluan', async function(req, res) {
+router.put('/cap-nhat-trang-thai', async function(req, res) {
     let mabl = req.body.mabl;
     let trangthai = req.body.trangthai;
     console.log(req.body);
     if(mabl == '' && trangthai == '' ){
-      res.status(404).json({ "status": "Fail", "message": "Lỗi...! Thiếu thông tin để cập nhật trạng thái bình luận!" });
+      res.status(400).json({ "status": "Fail", "message": "Lỗi...! Thiếu thông tin để cập nhật trạng thái bình luận!" });
     }else{
         try {
             if(trangthai == 0){
@@ -202,9 +201,9 @@ router.put('/cap-nhat/trang-thai-bluan', async function(req, res) {
                 let query = await modelComment.unlock_Comment(mabl);
                 res.status(200).json({ "status": "Success", "message": "Hiện bình luận thành công!", "result": query });
             } else
-                res.status(404).json({ "status": "Fail", "message": "Lỗi...! Cập nhật trạng thái bình luận không thành công!" });
+                res.status(400).json({ "status": "Fail", "message": "Lỗi...! Cập nhật trạng thái bình luận không thành công!" });
         } catch (error) {
-            res.status(404).json({ "status": "Fail", "message": "Lỗi cú pháp! Cập nhật trạng thái bình luận không thành công!", "error": error });
+            res.status(400).json({ "status": "Fail", "message": "Lỗi cú pháp! Cập nhật trạng thái bình luận không thành công!", "error": error });
         }
     }
 });

@@ -8,60 +8,59 @@ const modelCatalog = require('../models/model_catalog.js'); //nhúng model catal
 router.get('/', async function (req, res) {
   try {
     let listCategory = await modelCatalog.list_Categorys();
-    res.json({ "status": "Success", "data": listCategory });
+    res.status(200).json({ "status": "Success", "data": listCategory });
   } catch (error) {
-    res.json({ "status": "Fail", "error": error })
+    res.status(400).json({ "status": "Fail", "error": error })
   }
 });
   // Danh sách loại sản phẩm:
 router.get('/loai', async function (req, res) {
   try {
     let listPro = await modelCatalog.list_types();
-    res.json({ "status": "Success", "data": listPro });
+    res.status(200).json({ "status": "Success", "data": listPro });
   } catch (error) {
-    res.json({ "status": "Fail", "error": error })
+    res.status(400).json({ "status": "Fail", "error": error })
   }
 });
-  // Danh mục theo id:
+  // Danh mục theo mã danh mục:
 router.get('/:id', async function (req, res) {
   try {
     let typeId = req.params.id;
     let type = await modelCatalog.get_Category_Id(typeId);
     if (type == -1) {
-      res.json({ "status": "Fail", "message": "Không tìm thấy danh mục này trong DB!" });
+      res.status(400).json({ "status": "Fail", "message": "Không tìm thấy danh mục này trong DB!" });
     } else
-      res.json({ "status": "Success", "data": type });
+      res.status(200).json({ "status": "Success", "data": type });
   } catch (error) {
-    res.json({ "status": "Fail", "error": error });
+    res.status(400).json({ "status": "Fail", "error": error });
   }
 });
-  // Loại theo id:
+  // Chi tiết 1 loại theo mã loại:
 router.get('/loai/:id', async function (req, res) {
   try {
     let typeId = req.params.id;
     let type = await modelCatalog.get_Type_Id(typeId);
     if (type == -1) {
-      res.json({ "status": "Fail", "message": "Không tìm thấy loại này trong DB!" });
+      res.status(400).json({ "status": "Fail", "message": "Không tìm thấy loại này trong DB!" });
     } else
-      res.json({ "status": "Success", "data": type });
+      res.status(200).json({ "status": "Success", "data": type });
   } catch (error) {
-    res.json({ "status": "Fail", "message": "Lỗi cú pháp...! ", "error": error });
+    res.status(400).json({ "status": "Fail", "message": "Lỗi cú pháp...! ", "error": error });
   }
 });
-  // Loại theo mã danh mục:
-router.get('/ma-danh-muc/:id', async function (req, res) {
+  // Tất cả loại theo mã danh mục:
+router.get('/:id/loai', async function (req, res) {
   try {
     let madm = req.params.id;
     let type = await modelCatalog.get_Type_Catalog(madm);
     if (type == -1) {
-      res.status(404).json({ "status": "Fail", "message": "Không tìm thấy loại thuộc danh mục này!" });
+      res.status(400).json({ "status": "Fail", "message": "Không tìm thấy loại thuộc danh mục này!" });
     } else
       res.status(200).json({ "status": "Success", "data": type });
   } catch (error) {
-    res.status(404).json({ "status": "Fail", "message": "Lỗi...! ", "error": error })
+    res.status(400).json({ "status": "Fail", "message": "Lỗi...! ", "error": error })
   }
-});
-  
+}); 
 
 
       // API POST:
@@ -88,14 +87,13 @@ router.put('/cap-nhat-loai', async function(req, res) {
   
   try {
       let query = await modelCatalog.update_Type(typeId, name);
-      res.json({"status": "Success", "message": "Cập nhật tên loại thành công!"});
+      res.status(200).json({"status": "Success", "message": "Cập nhật tên loại thành công!"});
   } catch (error) {
-      res.json({"status": "Fail", "message": "Lỗi cú pháp! Cập nhật tên loại không thành công!", "error": error});
+      res.status(400).json({"status": "Fail", "message": "Lỗi cú pháp! Cập nhật tên loại không thành công!", "error": error});
   }
 });
   // Xoá loại sản phẩm:
 router.delete('/xoa-loai/:id', async function(req, res) {
-  //let typeId = req.body.typeId;
   let typeId = req.params.id;
 
   try {
@@ -103,9 +101,9 @@ router.delete('/xoa-loai/:id', async function(req, res) {
       if(query == 1){
           res.status(200).json({"status": "Success", "message": "Xoá loại thành công!!!"});
       }else
-          res.json({"status": "Fail", "message": "Có ràng buộc khoá ngoại. Không thể xoá loại!"});
+          res.status(400).json({"status": "Fail", "message": "Có ràng buộc khoá ngoại. Không thể xoá loại!"});
   } catch (error) {
-      res.json({"status": "Fail", "message": "Lỗi cú pháp! Xoá loại không thành công!", "error": error});
+      res.status(400).json({"status": "Fail", "message": "Lỗi cú pháp! Xoá loại không thành công!", "error": error});
   }
 });
 
@@ -121,7 +119,7 @@ router.post('/them-danh-muc', async function(req, res) {
       tendm: ten
     }
     let query = await modelCatalog.insert_category(data);
-    res.json({"status": "Success", "message": "Thêm danh mục thành công!", "result": query});
+    res.status(200).json({"status": "Success", "message": "Thêm danh mục thành công!", "result": query});
   } catch (error) {
     res.status(400).json({"status": "Fail", "message": "Lỗi cú pháp! Thêm danh mục không thành công!", "error": error});
   }
@@ -132,18 +130,18 @@ router.put('/cap-nhat-danh-muc', async function(req, res) {
   let name = req.body.name;
 
   if(categoryId == '' || name == ''){
-      res.status(404).json({"status": "Fail", "message": "Sai hoặc thiếu thông tin danh mục!"});
+      res.status(400).json({"status": "Fail", "message": "Sai hoặc thiếu thông tin danh mục!"});
   }else{
     try {
       let query = await modelCatalog.update_category(categoryId, name);
       res.status(200).json({ "status": "Success", "message": "Cập nhật danh mục thành công!" });
     } catch (error) {
-      res.status(404).json({ "status": "Fail", "message": "Lỗi cú pháp! Cập nhật danh mục không thành công!", "error": error });
+      res.status(400).json({ "status": "Fail", "message": "Lỗi cú pháp! Cập nhật danh mục không thành công!", "error": error });
     }
   }
 });
   // Cập nhật trạng thái danh mục:
-router.put('/cap-nhat-trang-thai/dm/', async function(req, res) {
+router.put('/cap-nhat-trang-thai/dmuc', async function(req, res) {
   let madm = req.body.madm;
   let trangthai = req.body.trangthai;
   console.log(req.body);
@@ -156,9 +154,9 @@ router.put('/cap-nhat-trang-thai/dm/', async function(req, res) {
       let query = await modelCatalog.lock_category(madm);
       res.status(200).json({ "status": "Success", "message": "Ẩn danh mục thành công!" });
     } else
-      res.status(404).json({ "status": "Fail", "message": "Thiếu thông tin cập nhật trạng thái danh mục!!!" })
+      res.status(400).json({ "status": "Fail", "message": "Thiếu thông tin cập nhật trạng thái danh mục!!!" })
   } catch (error) {
-    res.status(404).json({ "status": "Fail", "message": "Lỗi cú pháp! Cập nhật trạng thái danh mục không thành công!", "error": error })
+    res.status(400).json({ "status": "Fail", "message": "Lỗi cú pháp! Cập nhật trạng thái danh mục không thành công!", "error": error })
   }
 });
 

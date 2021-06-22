@@ -27,10 +27,10 @@ router.post('/dang-nhap', function (req, res, next) {
     let sql = `SELECT * FROM admin WHERE admin = '${em}'`;
     db.query(sql, (err, rows) => {
         if(err){
-            res.json({"status": "LoginFail", "message": "Không tìm thấy tài khoản!", "error": err});
+            res.status(400).json({"status": "LoginFail", "message": "Không tìm thấy tài khoản!", "error": err});
         }
         if (rows.length == 0) {
-            res.json({"status": "LoginFail", "message": "Không tìm thấy tài khoản admin này! Vui lòng kiểm tra lại email!", "error": err});
+            res.status(400).json({"status": "LoginFail", "message": "Không tìm thấy tài khoản admin này! Vui lòng kiểm tra lại email!", "error": err});
         }else{
             let admin = rows[0];
             let pass_fromdb = admin.matkhau;
@@ -63,7 +63,7 @@ router.post('/dang-nhap', function (req, res, next) {
                     token
                 });
             }else{
-                res.json({status: "LoginFail", message: "Đăng nhập không thành công! Vui lòng kiểm tra lại mật khẩu."});
+                res.status(400).json({status: "LoginFail", message: "Đăng nhập không thành công! Vui lòng kiểm tra lại mật khẩu."});
             }
         }
     });
@@ -72,22 +72,22 @@ router.post('/dang-nhap', function (req, res, next) {
 
             // API GET:
     // Danh sách tất cả admins:
-router.get('/danh-sach', async function (req, res) {
+router.get('/', async function (req, res) {
     try {
         let listAdmins = await modelAdmin.listAdmins();
-        res.json({"status": "Success", "data": listAdmins});
+        res.status(200).json({ "status": "Success", "data": listAdmins });
     } catch (error) {
-        res.json({"status": "Fail", "error": error});
+        res.status(400).json({ "status": "Fail", "error": error });
     }
 });
 
-router.get('/admin-id/:id', async function (req, res) {
+router.get('/:id', async function (req, res) {
     try {
         let adminId = req.params.id;
         let admin = await modelAdmin.get_Admin_Id(adminId);
-        res.json({"status": "Success", "data": admin});
+        res.status(200).json({ "status": "Success", "data": admin });
     } catch (error) {
-        res.json({"status": "Fail", "error": error});
+        res.status(400).json({ "status": "Fail", "error": error });
     }
 });
 
@@ -117,13 +117,13 @@ router.post('/dang-ky', async function(req, res) {
             quyen: permission
         }
         console.log("ok");
-        /* try {
+        try {
             let query = await modelAdmin.insertAdmin(data);
             console.log(query);
             res.status(200).json({ "status": "Success", "message": "Đăng ký tài khoản admin thành công!" });
         } catch (error) {
             res.status(400).json({ "status": "Fail", "message": "Lỗi cú pháp! Đăng ký không thành công!", "error": error });
-        } */
+        }
     } else{
         res.status(400).json({ "status": "Fail", "message": "Hai mật khẩu ko trùng khớp! Đăng ký không thành công!" });
     }
@@ -138,7 +138,7 @@ router.put('/cap-nhat-tai-khoan', async function(req, res) {
     let permission = req.body.permission;
     console.log(req.body);
     
-    if(permission == undefined || pass == ''){
+    if(permission == undefined && pass == ''){
         res.status(400).json({ "status": "Fail", "message": "Thiếu thông tin admin!" });
     }else{
         try {
@@ -160,25 +160,26 @@ router.put('/cap-nhat-tai-khoan', async function(req, res) {
 router.put('/cap-nhat-trang-thai', async function(req, res) {
     let adminId = req.body.adminId;
     let stt = req.body.stt;
-
+    
     if(adminId == ''){
         res.json({"status": "Fail", "message": "Không có id admin!"});
     }else{
         if(stt == 0){
             try {
                 let query = await modelAdmin.lockAdmin(adminId);
-                res.json({"status": "Success", "message": "Khoá tài khoản admin thành công!"});
+                res.status(200).json({"status": "Success", "message": "Khoá tài khoản admin thành công!"});
             } catch (error) {
-                res.json({"status": "Fail", "message": "Lỗi... Không thể khoá tài khoản admin!", "error": error});
+                res.status(400).json({"status": "Fail", "message": "Lỗi... Không thể khoá tài khoản admin!", "error": error});
             }
-        }else{
+        } else if(stt == 1){
             try {
                 let query = await modelAdmin.unlockAdmin(adminId);
-                res.json({"status": "Success", "message": "Mở khoá tài khoản admin thành công!"});
+                res.status(200).json({"status": "Success", "message": "Mở khoá tài khoản admin thành công!"});
             } catch (error) {
-                res.json({"status": "Fail", "message": "Lỗi... Không thể mở khoá tài khoản admin!", "error": error});
+                res.status(400).json({"status": "Fail", "message": "Lỗi... Không thể mở khoá tài khoản admin!", "error": error});
             }
-        }
+        } else
+            res.status(400).json({"status": "Fail", "message": "Lỗi... Không cập nhật trạng thái tài khoản admin!", "error": error});
     }
 });
     // Cập nhật mật khẩu:

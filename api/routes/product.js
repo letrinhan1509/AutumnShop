@@ -40,8 +40,8 @@ router.get('/:id', async function(req, res) {
   }
 })
   // Lọc sản phẩm theo loại:
-router.get('/spham-loai/:loai', async function(req, res) {
-  let idLoai = req.params.loai;
+router.get('/loai/:id', async function(req, res) {
+  let idLoai = req.params.id;
   try {
     let listPro = await modelProduct.get_by_type(idLoai);  
     if(listPro.length > 0){
@@ -54,7 +54,7 @@ router.get('/spham-loai/:loai', async function(req, res) {
   }
 })
   // lọc sản phẩm theo danh mục:
-router.get('/spham-danh-muc/:dmuc', async function(req, res) {
+router.get('/danh-muc/:dmuc', async function(req, res) {
   let idDMuc = req.params.dmuc;
   try {
     let listPro = await modelProduct.get_by_category(idDMuc);
@@ -68,7 +68,7 @@ router.get('/spham-danh-muc/:dmuc', async function(req, res) {
   }
 })
   // Lọc sản phẩm theo nhà sản xuất:
-router.get('/spham-nha-sx/:nhasx', async function(req, res) {
+router.get('/nha-san-xuat/:nhasx', async function(req, res) {
   let idNSX = req.params.nhasx;
   try {
     let listPro = await modelProduct.get_by_producer(idNSX);
@@ -104,9 +104,9 @@ router.post('/them-san-pham', async function(req, res) {
   
   try {
     if(sanPham.length > 0){
-      res.status(404).json({"status": "Fail", "message": "Mã code của sản phẩm đã tồn tại! Vui lòng nhập mã code khác!"});
+      res.status(400).json({"status": "Fail", "message": "Mã code của sản phẩm đã tồn tại! Vui lòng nhập mã code khác!"});
     } else if(code == '' && tensp == '' && soluong == '' && size == '' && mau == '' && gia == '' && hinh == '' && maloai == '' && madm == ''){
-      res.status(404).json({"status": "Fail", "message": "Thêm sản phẩm không thành công! Thiếu thông tin sản phẩm"});
+      res.status(400).json({"status": "Fail", "message": "Thêm sản phẩm không thành công! Thiếu thông tin sản phẩm"});
     } else{
       let data = {
         code: code,
@@ -126,10 +126,10 @@ router.post('/them-san-pham', async function(req, res) {
       if(query == 1)
         res.status(200).json({ "status": "Success", "message": "Thêm sản phẩm thành công!", "result": query });
       else
-      res.status(404).json({ "status": "Fail", "message": "Thêm sản phẩm không thành công!" });
+      res.status(400).json({ "status": "Fail", "message": "Thêm sản phẩm không thành công!" });
     }
   } catch (error) {
-    res.status(404).json({ "status": "Fail", "message": "Lỗi cú pháp! Thêm sản phẩm không thành công!", "error": error });
+    res.status(400).json({ "status": "Fail", "message": "Lỗi cú pháp! Thêm sản phẩm không thành công!", "error": error });
   }
 });
   // Sửa sản phẩm:
@@ -144,14 +144,14 @@ router.put('/cap-nhat-san-pham', async function(req, res) {
   let hinh = req.body.hinh;
   let hinhchitiet = req.body.hinhchitiet;
   let mota = req.body.mota;
-  if(masp == '' || code == '' || tensp == '' || soluong == '' || size == '' || mau == '' || gia == '' || hinh == ''){
-    res.json({"status": "Fail", "message": "Cập nhật sản phẩm không thành công! Thiếu thông tin sản phẩm"});
+  if(masp == '' && code == '' && tensp == '' && soluong == '' && size == '' && mau == '' && gia == '' && hinh == ''){
+    res.status(400).json({"status": "Fail", "message": "Cập nhật sản phẩm không thành công! Thiếu thông tin sản phẩm"});
   }else{
     try {
         let query = await modelProduct.update_product(masp, code, tensp, soluong, size, mau, gia, hinh, hinhchitiet, mota);
-        res.json({"status": "Success", "message": "Cập nhật sản phẩm thành công!", "result": query});
+        res.status(200).json({"status": "Success", "message": "Cập nhật sản phẩm thành công!", "result": query});
     } catch (error) {
-        res.json({"status": "Fail", "message": "Lỗi cú pháp! Cập nhật sản phẩm không thành công!", "error": error});
+        res.status(400).json({"status": "Fail", "message": "Lỗi cú pháp! Cập nhật sản phẩm không thành công!", "error": error});
     }
   }
 });
@@ -161,33 +161,33 @@ router.put('/cap-nhat-trang-thai', async function(req, res) {
   let trangthai = req.body.trangthai;
 
   if(masp == '' || trangthai == ''){
-    res.json({"status": "Fail", "message": "Cập nhật trạng thái sản phẩm không thành công! Thiếu thông tin sản phẩm"});
+    res.status(400).json({"status": "Fail", "message": "Cập nhật trạng thái sản phẩm không thành công! Thiếu thông tin sản phẩm"});
   }else{
     try {
       if(trangthai == 1){
         let query = await modelProduct.unlock_product(masp);
-        res.json({"status": "Success", "message": "Hiện sản phẩm thành công!", "result": query});
+        res.status(200).json({"status": "Success", "message": "Hiện sản phẩm thành công!", "result": query});
       }else{
         let query = await modelProduct.lock_product(masp);
-        res.json({"status": "Success", "message": "Ẩn sản phẩm thành công!", "result": query});
+        res.status(200).json({"status": "Success", "message": "Ẩn sản phẩm thành công!", "result": query});
       }
     } catch (error) {
-        res.json({"status": "Fail", "message": "Lỗi cú pháp! Cập nhật sản phẩm không thành công!", "error": error});
+        res.status(400).json({"status": "Fail", "message": "Lỗi cú pháp! Cập nhật sản phẩm không thành công!", "error": error});
     }
   }
 });
   // Xoá sản phẩm:
-router.delete('/xoa-san-pham/:id', async function(req, res) {
+router.delete('/xoa/:id', async function(req, res) {
   let masp = req.params.id;
 
   try {
     let query = await modelProduct.delete(masp);
     if(query == -1)
-      res.status(404).json({ "status": "Fail", "message": "Sản phẩm có trong chi tiết đơn hàng! Không thể xoá sản phẩm" });
+      res.status(400).json({ "status": "Fail", "message": "Sản phẩm có trong chi tiết đơn hàng! Không thể xoá sản phẩm" });
     else
       res.status(200).json({ "status": "Success", "message": "Xoá sản phẩm thành công!", "result": query });
   } catch (error) {
-    res.status(404).json({ "status": "Fail", "message": "Lỗi cú pháp - có khoá ngoại! Xoá sản phẩm không thành công!", "error": error });
+    res.status(400).json({ "status": "Fail", "message": "Lỗi cú pháp - có khoá ngoại! Xoá sản phẩm không thành công!", "error": error });
   }
 });
 

@@ -1,3 +1,4 @@
+const axios = require('axios');
 var db = require('./database.js');
 var data = [];
 var dataNewArrivel = [];
@@ -70,4 +71,27 @@ exports.listCart = async (user) => {
             })
         }
     )
+}
+
+exports.listCity = async () => {
+    let data = [];
+    console.log("đã vào listCity");
+    var url = "https://thongtindoanhnghiep.co/api/city";
+    axios.get(url)
+        .then(function (response) {
+            // handle success
+            //console.log("data: ");
+            //console.log(response.data.LtsItem);
+            data = response.data.LtsItem;
+            console.log(data);
+            return data;
+        })
+        .catch(function (error) {
+            // handle error
+            console.log(error);
+            return error;
+        })
+        .then(function () {
+            // always executed
+        });
 }

@@ -24,7 +24,7 @@ exports.list_Comments = async () => {
 exports.get_by_Id = async (cmtId) => {
     return new Promise( (hamOK, hamLoi) => {
         const data = [];
-        let sql = `SELECT * FROM binhluan WHERE mabl = '${cmtId}'`;
+        let sql = `SELECT * FROM binhluan WHERE mabl = '${cmtId}' AND trangthai = 1`;
         db.query(sql, (err, result) => {
             console.log(result);
             if(err){
@@ -55,9 +55,9 @@ exports.get_by_Id = async (cmtId) => {
 exports.get_by_productId = async (productId) => {
     return new Promise( async (hamOK, hamLoi) => {
         const data = [];
-        let sql = `SELECT binhluan.mabl, binhluan.masp, sanpham.tensp, binhluan.makh, khachhang.tenkh,
+        let sql = `SELECT binhluan.mabl, binhluan.masp, sanpham.tensp, binhluan.makh, khachhang.tenkh, binhluan.noidung,
         binhluan.ngaybl, binhluan.trangthai FROM ((binhluan JOIN khachhang ON binhluan.makh = khachhang.makh)
-        JOIN sanpham ON binhluan.masp = sanpham.masp) WHERE binhluan.masp = '${productId}'`;    
+        JOIN sanpham ON binhluan.masp = sanpham.masp) WHERE binhluan.masp = '${productId}' AND binhluan.trangthai = 1`;    
         db.query(sql, (err, result) => {
             if(err){
                 hamLoi(err);
@@ -72,49 +72,12 @@ exports.get_by_productId = async (productId) => {
         })
     })
 }
-
-exports.test = async (productId) => {
-    return new Promise( async (hamOK, hamLoi) => {
-        const data = [];
-        let sql = `SELECT binhluan.mabl, binhluan.masp, sanpham.tensp, binhluan.makh, khachhang.tenkh,
-        binhluan.ngaybl, binhluan.trangthai FROM ((binhluan JOIN khachhang ON binhluan.makh = khachhang.makh)
-        JOIN sanpham ON binhluan.masp = sanpham.masp) WHERE binhluan.masp = '${productId}'`;    
-        const queryResponse = await db.query(sql, async function(err, result) {
-            //dataList = result;
-            result.forEach(async (element) => {
-                let sql_detail = `SELECT chitietbl.mact, chitietbl.ten, chitietbl.noidung, chitietbl.ngaybl, chitietbl.mabl
-                FROM (chitietbl JOIN binhluan ON chitietbl.mabl = binhluan.mabl) WHERE chitietbl.mabl = '${element.mabl}'`;
-                const queryResponse = await db.query(sql_detail, (err, result1) => {
-                    element.traLoiBL = result1;
-                    console.log("mã bluan:", element.mabl);
-                    data.push(element);
-                    //hamOK(element);
-                    //console.log(data); 
-                }) 
-                //console.log(element);
-                console.log("Mảng data ngoài query: ", data);    
-            });
-            //console.log("Mảng dataList ngoài vòng lặp: ", data);
-            
-            /* if(err){
-                hamLoi(err);
-            }else{
-                if(result.length > 0){
-                    //dataList = result;
-                    hamOK(result);
-                }else{
-                    hamOK(-1);
-                }
-            } */
-        })
-    })
-}
     // Danh sách comment theo id khách hàng:
 exports.get_by_userId = async (userId) => {
     return new Promise( (hamOK, hamLoi) => {
-        let sql = `SELECT binhluan.mabl, binhluan.masp, sanpham.tensp, binhluan.makh, khachhang.tenkh,
-        binhluan.ngaybl, binhluan.trangthai FROM ((binhluan JOIN khachhang ON binhluan.makh = khachhang.makh)
-        JOIN sanpham ON binhluan.masp = sanpham.masp) WHERE binhluan.makh = '${userId}'`;
+        let sql = `SELECT binhluan.mabl, binhluan.masp, sanpham.tensp, binhluan.makh, khachhang.tenkh, binhluan.noidung,
+        binhluan.ngaybl FROM ((binhluan JOIN khachhang ON binhluan.makh = khachhang.makh)
+        JOIN sanpham ON binhluan.masp = sanpham.masp) WHERE binhluan.makh = '${userId}' AND binhluan.trangthai = 1`;
         db.query(sql, (err, result) => {
             if(err){
                 hamLoi(err);
