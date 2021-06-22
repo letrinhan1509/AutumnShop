@@ -1,12 +1,13 @@
-import { Col, Layout, Row, Button, Modal } from "antd";
+import { Col, Layout, Row, Button } from "antd";
 import React, { useState, useEffect } from 'react';
-import "../container/components-css/cart.scss"
+import "container/components-css/cart.scss"
 import { DeleteOutlined, RollbackOutlined } from '@ant-design/icons';
 import Paycart from "./Paycart";
 import { Link } from "react-router-dom";
-import LinkPage from "../components/Link_Page";
+import LinkPage from "../../components/Link_Page";
+
+
 const { Content } = Layout;
-const { confirm } = Modal;
 const Cart = (props) => {
 
     useEffect(() => {

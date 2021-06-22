@@ -2,30 +2,12 @@ import React from 'react';
 import { Form, Input, Button, Checkbox, Row, Col, message } from 'antd';
 import Meta from "antd/lib/card/Meta";
 import { useHistory } from "react-router-dom";
-import "./components-css/Form.scss";
+import "container/components-css/Form.scss";
 import firebase from 'firebase';
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
-import khachHang from '../API/khachHang';
-//import cookies from "react-cookies";
+import user from 'container/API_Call/Api_user/user';
 //import HeaderPage from '../components/include/HeaderPage';
-const layout = {
-    labelCol: {
-        xs: {
-            span: 24,
-        },
-        sm: {
-            span: 8,
-        },
-    },
-    wrapperCol: {
-        xs: {
-            span: 24,
-        },
-        sm: {
-            span: 16,
-        },
-    },
-};
+
 const tailLayout = {
     wrapperCol: {
         xs: {
@@ -57,10 +39,9 @@ const Login = () => {
     const history = useHistory();
 
     const login = (values) => {
-        //const url = "http://localhost:5000/api/v1/khach-hang/dang-nhap";
         console.log(values);
-        khachHang
-        .getLogin(values)
+        user
+        .login(values)
         .then(async (res) => {
                 console.log(res.data);
                 if (res.data.status === "LoginSuccess") {

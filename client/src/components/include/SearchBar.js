@@ -30,8 +30,8 @@ const SearchBar = (props) => {
 
 
     function handlerClick(e) {
-        if (e.target.value != "") {
-            if (filterItems(wordData, e.target.value) != "") {
+        if (e.target.value !== "") {
+            if (filterItems(wordData, e.target.value) !== "") {
                 setWordSearch(e.target.value);
                 setHidden(true);
                 setVisible(true);
@@ -85,13 +85,11 @@ const SearchBar = (props) => {
                             )
                         }
                     <div hidden>
-
                         {
                             wordSearch != '' ? (a = filterItems(wordData, wordSearch)) : (""),
                             console.log(a)
                         }
                     </div>
-
                 </div>
                 <Link to={`/Timkiem`}>
                     <Button className="btn-search" type="primary" icon={<SearchOutlined />} onClick={() => {

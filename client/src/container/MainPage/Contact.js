@@ -1,9 +1,9 @@
 import React from "react";
-import "./components-css/Register.scss";
-import "./components-css/contact.scss";
+import "container/components-css/Register.scss";
+import "container/components-css/contact.scss";
 import {  Form, Input,Button} from "antd";
 //import emailjs from "emailjs-com";
-const swal = require('react-swal');
+//const swal = require('react-swal');
 
 
 const layout = {

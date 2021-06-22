@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
-import { Row, Col, Carousel, Card, Tabs, Image } from 'antd';
-import { Link, useHistory } from "react-router-dom";
-import "./components-css/Home.scss";
+import React, { useEffect } from "react";
+import { Row, Col, Carousel } from 'antd';
+import { useHistory } from "react-router-dom";
+import "container/components-css/Home.scss";
 import cookies from "react-cookies";
-import Sale from '../components/Sale';
-import HomeBestseller from "../components/HomeBestseller";
+import Sale from 'components/Sale';
+import HomeBestseller from "components/HomeBestseller";
 import firebase from 'firebase';
 
 //import ProductDetail from "./Product-detail";
@@ -22,12 +22,6 @@ const Home = (props) => {
             //window.location.reload()
         }
     })
-
-    const info_sale = {
-        height: '300px',
-        color: '#fff',
-        textAlign: 'center',
-    };
 
     useEffect(() => {
         localStorage.setItem(...['cart', JSON.stringify(props.cart)]);

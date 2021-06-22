@@ -5,27 +5,27 @@ import React, { useState, useEffect } from "react";
 import { Layout, Modal } from "antd";
 import HeaderPage from "./components/include/HeaderPage";
 import { Content } from "antd/lib/layout/layout";
-import ProductDetail from "./container/Product-detail";
-import Home from "./container/Home";
+import ProductDetail from "container/MainPage/Product-detail";
+import Home from "container/MainPage/Home";
 import Footer from "./components/include/Footer";
-import Register from "./container/Register";
-import Login from "./container/Login";
-import Cart from "./container/Cart";
-import Contact from "./container/Contact";
+import Register from "container/UserPage/Register";
+import Login from "container/UserPage/Login";
+import Cart from "container/CartPage/Cart";
+import Contact from "container/MainPage/Contact";
 import axios from "axios";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import Shirt from "./container/Shirt";
-import firebase from 'firebase';
+import Shirt from "container/CatalogPage/Shirt";
+import firebase from 'container/Config/firebase';
 //import { storage } from "./container/firebase";
 //import AllProduct from './container/All-Product';
-import UserInfo from "./container/UserInfo";
-import Backpack from "./container/Backpack";
-import Shoes from "./container/Shoes";
-import SearchResult from "./container/SearchResult";
-import Accessories from "./container/Acessories";
-import Error404 from "./container/Error404";
-import ScrollToTop from "./ScrollToTop";
-
+import UserInfo from "container/UserPage/UserInfo";
+import Backpack from "container/CatalogPage/Backpack";
+import Shoes from "container/CatalogPage/Shoes";
+import SearchResult from "container/MainPage/SearchResult";
+import Accessories from "container/CatalogPage/Acessories";
+import Error404 from "container/MainPage/Error404";
+import ScrollToTop from "container/Config/ScrollToTop";
+import product from "container/API_Call/Api_product/product";
 
 
 
@@ -65,7 +65,7 @@ useEffect(() => {
   const [ListProductHome, setListProductHome] = useState([]);
   const { confirm } = Modal;
   useEffect(() => {
-    axios.get("http://localhost:5000/api/v1/san-pham").then((res) => {
+    product.getAll().then((res) => {
       setListProductHome(res.data.data);
       
     });

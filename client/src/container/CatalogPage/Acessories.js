@@ -1,20 +1,20 @@
 import React, { useState } from "react";
 import { Row, Col, Card, Image, Button, Carousel, Menu } from "antd";
-import { Link, useHistory } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { ShoppingCartOutlined, EyeOutlined } from "@ant-design/icons";
-import "./components-css/ProductType.scss";
-
+import "container/components-css/ProductType.scss";
 
 
 const { Meta } = Card;
 const { SubMenu } = Menu;
 const rootSubmenuKeys = ['sub1', 'sub2', 'sub4'];
 
-const Backpack = (props) => {
-  
-  const bl = props.ListProductHome.filter(ListProductHome => ListProductHome.maloai === "bl");
-  let Balo = [];
-  Balo = bl;
+
+const Accessories = (props) => {
+
+  const pk = props.ListProductHome.filter(ListProductHome => ListProductHome.maloai === "no" || ListProductHome.maloai === "tl" || ListProductHome.maloai === "vo");
+  let Phukien = [];
+  Phukien = pk;
 
   const [visible, setVisible] = useState(6);
   const showMoreProduct = () => {
@@ -22,14 +22,10 @@ const Backpack = (props) => {
   };
 
   const onChange = () => {
-    if (visible > Balo.length) {
+    if (visible > Phukien.length) {
       document.getElementById("load").style.display = "none";
     }
   }
-
-  const history = useHistory();
-
-
 
   const [openKeys, setOpenKeys] = React.useState(['sub1']);
 
@@ -42,12 +38,8 @@ const Backpack = (props) => {
     }
   };
 
-
   return (
     <>
-      {/* <p style={{ textAlign: "center", fontSize: "26px", fontWeight: "bold" }}>
-        Tổng số lượng sản phẩm : {props.countBalo}
-      </p> */}
       <Row className="content-box">
         <Col className="left">
           <Menu mode="inline" openKeys={openKeys} onOpenChange={onOpenChange} style={{ width: 300 }}>
@@ -76,18 +68,18 @@ const Backpack = (props) => {
         <Col className="right">
           <Carousel dots="" autoplay className="carousel">
             <div>
-              <img src="../images/slider/slider_balo1.jpg" alt="slider" />
+              <img src="../images/slider/slider_pk1.jpg" alt="slider" />
             </div>
             <div>
-              <img src="../images/slider/slider_balo2.jpg" alt="slider" />
+              <img src="../images/slider/slider_pk2.jpg" alt="slider" />
             </div>
             <div>
-              <img src="../images/slider/slider_balo3.jpg" alt="slider" />
+              <img src="../images/slider/slider_pk3.jpg" alt="slider" />
             </div>
           </Carousel>
           <div className="site-card-wrapper product_home">
             <Row>
-              {Balo.slice(0, visible).map((productItem) => {
+              {Phukien.slice(0, visible).map((productItem) => {
                 return (
                   <Col key={productItem.masp} span={7} offset={1}>
                     <Card
@@ -142,7 +134,7 @@ const Backpack = (props) => {
         </Col>
       </Row>
       {
-        Balo.length > 6 ? (
+        Phukien.length > 6 ? (
           <Row>
             <Col offset={12}>
               <Button
@@ -159,8 +151,7 @@ const Backpack = (props) => {
         ) : ("")
 
       }
-
     </>
   );
 };
-export default Backpack;
+export default Accessories;
