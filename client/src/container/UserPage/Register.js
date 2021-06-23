@@ -1,6 +1,6 @@
 import React from "react";
 import { Form, Input, Row, Col, Button, message,Select } from "antd";
-import user from 'container/API_Call/Api_user/user';
+import user from 'API_Call/Api_user/user';
 import { useHistory } from "react-router-dom"
 import Meta from "antd/lib/card/Meta";
 import "container/components-css/Form.scss";
@@ -20,7 +20,6 @@ const RegisterForm = () => {
         </Form.Item>
       );
     const register = (values) => {
-        //const url = "http://localhost:5000/api/v1/khach-hang/dang-ky"
         user.register(values).then((res) => {
             message.success("Register successfully!")
             setTimeout(() => { history.push('/login') }, 2000)

@@ -4,17 +4,21 @@ import { Button, Table, Tag, message } from 'antd';
 import { useHistory, Link } from 'react-router-dom';
 import axios from 'axios';
 import "Container/scss/addpro.scss";
+import catalog from 'API_Call/Api_catalog/catalog';
 
 const ListCata = () => {
   const link = useHistory();
   const [a, setA] = useState([]);
 
+  //API ListCategory
   const [listCategory, setListCategory] = useState([]);
   useEffect(() => {
-    axios.get("http://127.0.0.1:5000/api/v1/danh-muc").then((res) => {
+    catalog.getAll().then((res) => {
       setListCategory(res.data.data);
     })
   }, []);
+
+  //Redirect sửa danh mục theo ID
   const linkto = (e) => {
     let id = e.currentTarget.dataset.id
     setA(id);
@@ -23,11 +27,12 @@ const ListCata = () => {
       link.push('/danh-muc-san-pham/sua-danh-muc');
     }, 100)
   }
+
+  //Lấy thông tin danh mục theo ID
   const [category, setCategory] = useState([]);
   useEffect(() => {
     if (a != "") {
-      let url = "http://127.0.0.1:5000/api/v1/danh-muc/" + a
-      axios.get(url).then((res) => {
+      catalog.getDanhmucID(a).then((res) => {
         setCategory(res.data);
       });
     }
@@ -37,9 +42,9 @@ const ListCata = () => {
   }
   let result = JSON.parse(localStorage.getItem('user'));
 
-  const deleteCategory = (e) => {
+  /* const deleteCategory = (e) => {
     let id = e.currentTarget.dataset.id;
-    const url = "http://127.0.0.1:5000/api/v1/danh-muc/xoa-danh-muc/" + id
+    //const url = "http://127.0.0.1:5000/api/v1/danh-muc/xoa-danh-muc/" + id
     axios.delete(url).then((res) => {
       if (res.data.status === "Success") {
         message.success(res.data.message)
@@ -54,16 +59,16 @@ const ListCata = () => {
       .catch(err => {
         message.error(`Lỗi...! Xoá danh mục thất bại!\n ${err.response.data}`)
       })
-  }
+  } */
 
+  //Cập nhật trạng thái danh mục
   const unlock = (e) => {
     let id = e.currentTarget.dataset.id;
     let values = {
       "madm": id,
       "trangthai": 1
     };
-    const url = "http://127.0.0.1:5000/api/v1/danh-muc/cap-nhat-trang-thai/dm/"
-    axios.put(url, values).then((res) => {
+    catalog.updateStatus(values).then((res) => {
         if (res.data.status === "Success") {
           message.success(res.data.message)
           setTimeout(() => {
@@ -81,8 +86,7 @@ const ListCata = () => {
       "madm": id,
       "trangthai": 0
     };
-    const url = "http://127.0.0.1:5000/api/v1/danh-muc/cap-nhat-trang-thai/dm/"
-    axios.put(url, values).then((res) => {
+    catalog.updateStatus(values).then((res) => {
         if (res.data.status === "Success") {
             message.success(res.data.message)
             setTimeout(() => {
@@ -138,7 +142,12 @@ const ListCata = () => {
           })}
           
         </>
-      )
+      ),
+      filters: [
+        { text: "Ẩn", value: "Ẩn" },
+        { text: "Hiện", value: "Hiện" },
+      ],
+      onFilter: (value, record) => record.trangthai.stt.includes(value),
     },
     result.permission === 'Admin' ?
       {
@@ -181,7 +190,7 @@ const ListCata = () => {
     <>
       <div className="form-wrapper">
         <h2 style={{ textAlign: 'center', marginTop: "30px" }}>DANH SÁCH CÁC DANH MỤC</h2>
-        <Table dataSource={listCategory} columns={columns} pagination={{ pageSize: 10 }} style={{padding: 10}} size="middle" />
+        <Table className="item" dataSource={listCategory} columns={columns} pagination={{ pageSize: 10 }} style={{padding: 10}} size="middle" />
         <div className="btn-wrapper">
           <Link to={'/them-danh-muc'}>
             <Button type="primary">
@@ -190,8 +199,6 @@ const ListCata = () => {
           </Link>
         </div>
       </div>
-      {/* <Link to={'/Themnhanvien'}><p className="ant-btn ant-btn-primary" type="primary">Thêm nhân viên</p></Link> */}
-
     </>
   );
 }

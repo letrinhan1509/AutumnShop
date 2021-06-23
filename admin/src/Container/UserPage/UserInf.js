@@ -3,6 +3,7 @@ import axios from "axios";
 import React from 'react';
 import { Link, useHistory } from "react-router-dom";
 import "Container/scss/addpro.scss";
+import admin from 'API_Call/Api_admin/admin';
 
 const { Option } = Select;
 const formItemLayout = {
@@ -28,11 +29,9 @@ const tailFormItemLayout = {
     },
 };
 const user = JSON.parse(localStorage.getItem("user"));
-//console.log(user.address);
 const UserInf = (props) => {
     const [form] = Form.useForm();
     const history = useHistory();
-
 
     const prefixSelector = (
         <Form.Item name="prefix" noStyle>
@@ -42,14 +41,10 @@ const UserInf = (props) => {
         </Form.Item>
     );
 
-
-    const register = (values) => {
+    const update = (values) => {
         console.log(values)
         let a = JSON.stringify({ admin: "adas@gmail.com" });
-
-        console.log(a);
-        const url = "http://127.0.0.1:5000/api/v1/admin/cap-nhat-tai-khoan"
-        axios.put(url, values).then((res) => {
+        admin.updateInfo(values).then((res) => {
             if (res.data.status ==="Success") {
                 message.success(res.data.message)
                 setTimeout(() => {
@@ -76,8 +71,8 @@ const UserInf = (props) => {
             <Form
                 {...formItemLayout}
                 form={form}
-                name="register"
-                onFinish={register}
+                name="update"
+                onFinish={update}
                 className="register-form"
             >
                 <Form.Item

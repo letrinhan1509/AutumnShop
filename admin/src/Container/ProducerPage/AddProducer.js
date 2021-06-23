@@ -1,9 +1,8 @@
 import { Button, Form, Input, message } from 'antd';
 import producer from 'API_Call/Api_producer/producer';
-import React, { useState } from 'react';
+import React from 'react';
 import { Link, useHistory } from "react-router-dom";
 import "Container/scss/addpro.scss";
-
 
 const formItemLayout = {
     labelCol: {
@@ -28,24 +27,12 @@ const tailFormItemLayout = {
     },
 };
 
-
 const AddProducer = (props) => {
-
     const [form] = Form.useForm();
     const history = useHistory();
 
-
-    const addProduct = (values) => {
-
-        console.log(values)
-
-
-
-        //let nameImg =urldown;
-
-
+    const addProducer = (values) => {
         console.log(values);
-
         producer.addProducer(values).then((res) => {
             message.success(res.data.message)
             setTimeout(() => {
@@ -57,10 +44,6 @@ const AddProducer = (props) => {
                 message.error(`Login fail!\n ${err.response.data}`)
             })
     };
-    const [fileList, setFileList] = useState([]);
-    const [listProduct, setlistProduct] = useState([]);
-
-
 
     return (
         <>
@@ -69,8 +52,8 @@ const AddProducer = (props) => {
                 <Form
                     {...formItemLayout}
                     form={form}
-                    name="register"
-                    onFinish={addProduct}
+                    name="addProducer"
+                    onFinish={addProducer}
                     scrollToFirstError
                 >
                     <Form.Item

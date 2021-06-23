@@ -3,6 +3,7 @@ import axios from "axios";
 import React from 'react';
 import { Link, useHistory } from "react-router-dom";
 import "Container/scss/addpro.scss";
+import admin from "API_Call/Api_admin/admin";
 
 const { Option } = Select;
 const formItemLayout = {
@@ -38,13 +39,12 @@ const EditNV = (props) => {
         localStorage.removeItem("admin");
         history.goBack();
     }
-
-    const register = (values) => {
+    
+    const update = (values) => {
         console.log(values)
         let a = JSON.stringify({ admin: "adas@gmail.com" });
         console.log(a);
-        const url = "http://127.0.0.1:5000/api/v1/admin/cap-nhat-tai-khoan"
-        axios.put(url, values).then((res) => {
+        admin.updateInfo(values).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message)
                 localStorage.removeItem("admin");
@@ -62,9 +62,7 @@ const EditNV = (props) => {
                 message.error(`Login fail!\n ${err.response.data}`)
             })
     };
-    /*  const loadpage= ()=>{
-         props.handleCreateUser();
-     } */
+
     return (
         <div className="form-wrapper">
             <h2 style={{ textAlign: 'center' }}>SỬA THÔNG TIN NHÂN VIÊN</h2>
@@ -72,8 +70,8 @@ const EditNV = (props) => {
             <Form
                 {...formItemLayout}
                 form={form}
-                name="register"
-                onFinish={register}
+                name="update"
+                onFinish={update}
                 initialValues={{
                     adminId: `${Admin.data.manv}`,
                     prefix: "86",

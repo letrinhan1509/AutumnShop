@@ -1,22 +1,21 @@
 import { Button, message, Table } from 'antd';
-import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import "Container/scss/addpro.scss";
-
+import catalog from 'API_Call/Api_catalog/catalog';
 
 const ListProductType = () => {
   const link = useHistory();
   let result = JSON.parse(localStorage.getItem('user'));
-  
+
   const [ListType, setListType] = useState([]);
   useEffect(() => {
-    axios.get("http://127.0.0.1:5000/api/v1/danh-muc/loai").then((res) => {
+    catalog.getAllType().then((res) => {
       setListType(res.data.data);
       console.log(ListType);
     })
   }, []);
-  
+
   const [a, setA] = useState([]);
   const linkto = (e) => {
     let id = e.currentTarget.dataset.id
@@ -29,16 +28,15 @@ const ListProductType = () => {
   const [Type, setType] = useState([]);
   useEffect(() => {
     if (a != "") {
-      let url = "http://127.0.0.1:5000/api/v1/danh-muc/loai/" + a;
-      axios.get(url).then((res) => {
+      catalog.getTypeID(a).then((res) => {
         setType(res.data);
       });
     }
   }, [a]);
-  if(Type != ''){
+  if (Type != '') {
     localStorage.setItem('type', JSON.stringify(Type));
   }
-  
+
   const deleteType = (e) => {
     let id = e.currentTarget.dataset.id;
     console.log("Id:", id);
@@ -46,8 +44,7 @@ const ListProductType = () => {
       "typeId": id
     };
     console.log(values);
-    const url = "http://127.0.0.1:5000/api/v1/danh-muc/xoa-loai/" + id
-    axios.delete(url).then((res) => {
+    catalog.deleteProtype(id).then((res) => {
       if (res.data.status === "Success") {
         message.success(res.data.message)
         setTimeout(() => {
@@ -65,12 +62,12 @@ const ListProductType = () => {
   }
 
   ListType.forEach(element => {
-    if(element.trangthai === 1){
+    if (element.trangthai === 1) {
       element.trangthai = [];
       element.trangthai.stt = ["Hiện"];
       element.trangthai.id = element.maloai;
     }
-    if(element.trangthai === 0 ){
+    if (element.trangthai === 0) {
       element.trangthai = [];
       element.trangthai.stt = ["Ẩn"];
       element.trangthai.id = element.maloai;
@@ -86,23 +83,32 @@ const ListProductType = () => {
     {
       title: 'Tên loại',
       dataIndex: 'tenloai',
-      key: 'tenloai',
+      key: 'tenloai'
     },
     {
       title: 'Danh mục',
       dataIndex: 'madm',
       key: 'madm',
+      filters: [
+        { text: 'DMA', value: 'DMA' },
+        { text: 'DMB', value: 'DMB' },
+        { text: 'DMD', value: 'DMD' },
+        { text: 'DMG', value: 'DMG' },
+        { text: 'DMPK', value: 'DMPK' },
+        { text: 'DMQ', value: 'DMQ' },
+      ],
+      onFilter: (value, record) => record.madm.includes(value),
     },
     result.permission === 'Admin' ?
       {
-        
+
         dataIndex: 'maloai',
         key: 'maloai',
         render: maloai => (<div className="btn-box"><Button data-id={maloai} key={maloai} onClick={linkto}> Sửa </Button></div>)
       } : (<> </>),
     result.permission === 'Admin' ?
       {
-        
+
         dataIndex: 'maloai',
         key: 'maloai',
         render: maloai => (<div className="btn-box"><Button data-id={maloai} key={maloai} type="danger" onClick={deleteType}> Xoá </Button></div>)
@@ -115,7 +121,7 @@ const ListProductType = () => {
     <>
       <div className="form-wrapper">
         <h2 style={{ textAlign: 'center', marginTop: "30px" }}>DANH SÁCH LOẠI SẢN PHẨM</h2>
-        <Table className="item" dataSource={ListType} columns={columns} pagination={{ pageSize: 10 }} style={{padding: 10}} size="middle" />
+        <Table className="item" dataSource={ListType} columns={columns} pagination={{ pageSize: 10 }} style={{ padding: 10 }} size="middle" />
         <div className="btn-wrapper">
           <Link to={'/them-loai-san-pham'}>
             <Button type="primary">

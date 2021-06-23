@@ -34,16 +34,7 @@ const AddCategory = (props) => {
     const history = useHistory();
 
 
-    const addProduct = (values) => {
-
-        console.log(values)
-
-
-
-        //let nameImg =urldown;
-
-        console.log(values);
-
+    const addCatalog = (values) => {
         catalog.addCatalog(values).then((res) => {
             message.success(res.data.message)
             setTimeout(() => {
@@ -64,8 +55,8 @@ const AddCategory = (props) => {
                 <Form
                     {...formItemLayout}
                     form={form}
-                    name="register"
-                    onFinish={addProduct}
+                    name="addCatalog"
+                    onFinish={addCatalog}
                     scrollToFirstError
                 >
                     <Form.Item

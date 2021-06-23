@@ -1,8 +1,8 @@
 import { Button, Form, Input, message } from "antd";
-import axios from "axios";
 import React from 'react';
 import { Link, useHistory } from "react-router-dom";
 import "Container/scss/addpro.scss";
+import catalog from "API_Call/Api_catalog/catalog";
 
 const formItemLayout = {
     labelCol: {
@@ -47,13 +47,12 @@ const EditCategory = (props) => {
 
     const update = (values) => {
         console.log(values)
-        const url = "http://127.0.0.1:5000/api/v1/danh-muc/cap-nhat-danh-muc";
-        axios.put(url, values).then((res) => {
+        catalog.updateCatalog(values).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message)
                 localStorage.removeItem("category");
                 setTimeout(() => {
-                    history.push('/danh-sach-nha-sx');
+                    history.push('/danh-muc-san-pham');
                 }, 2000)
             }
         }) 
@@ -61,9 +60,7 @@ const EditCategory = (props) => {
                 message.error(`Lỗi...! Sửa danh mục thất bại!\n ${err.response.data.message}`);
             })
     };
-    /*  const loadpage= ()=>{
-         props.handleCreateUser();
-     } */
+
     return (
         <div className="form-wrapper">
             <h2 style={{ textAlign: 'center' }}>SỬA THÔNG TIN DANH MỤC</h2>
@@ -71,7 +68,7 @@ const EditCategory = (props) => {
             <Form
                 {...formItemLayout}
                 form={form}
-                name="register"
+                name="update"
                 onFinish={update}
                 initialValues={{
                     madm:`${Category.data.madm}`,

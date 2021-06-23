@@ -1,8 +1,9 @@
 import { DownloadOutlined, UploadOutlined } from '@ant-design/icons';
 import { Button, Form, Input, InputNumber, message, Select, Upload } from 'antd';
 import product from 'API_Call/Api_product/product';
-import axios from "axios";
-import {storage} from 'firebase/firebase'; 
+import catalog from 'API_Call/Api_catalog/catalog';
+import producer from 'API_Call/Api_producer/producer';
+import { storage } from 'firebase/firebase';
 import React, { useEffect, useState } from 'react';
 import { Link, useHistory } from "react-router-dom";
 import "Container/scss/addpro.scss";
@@ -42,9 +43,9 @@ const normFile = (e: any) => {
 
 const AddProduct = (props) => {
     const [image, setImage] = useState("");
-
     const [form] = Form.useForm();
     const history = useHistory();
+    const [fileList, setFileList] = useState([]);
 
     const beforeUpload = file => {
         setFileList(fileList.concat(file));
@@ -52,14 +53,13 @@ const AddProduct = (props) => {
         return false;
     }
     const handleChange = file => {
-
         if (fileList != "") {
             setImage(fileList[0]);
         }
     };
 
+    //Download link từ Firebase
     const [link, setLink] = useState("");
-
     const upfirebase = () => {
         const upload = storage.ref(`Product_Img/${image.name}`).put(image);
         upload.on(
@@ -83,9 +83,8 @@ const AddProduct = (props) => {
 
     };
     console.log(link);
+
     const addProduct = (values) => {
-
-
         console.log(link);
         values['img'] = link;
         console.log(values.img);
@@ -144,43 +143,37 @@ const AddProduct = (props) => {
         }
     ];
 
-
-    const [fileList, setFileList] = useState([]);
-
+    //API NSX - DM - Loại
     const [listProducer, setlistProducer] = useState([]);
     useEffect(() => {
-        axios.get("http://127.0.0.1:5000/api/v1/nha-sx").then((res) => {
+        producer.getAll().then((res) => {
             setlistProducer(res.data.data)
         })
     }, []);
 
     const [listCategory, setlistCategory] = useState([]);
-
     useEffect(() => {
-        axios.get("http://127.0.0.1:5000/api/v1/danh-muc").then((res) => {
+        catalog.getAll().then((res) => {
             setlistCategory(res.data.data);
         })
     }, []);
 
     const [listTypes, setlistTypes] = useState([]);
     useEffect(() => {
-        axios.get("http://127.0.0.1:5000/api/v1/danh-muc/loai").then((res) => {
+        catalog.getAllType().then((res) => {
             setlistTypes(res.data.data);
         })
     }, []);
 
-
-    let id = "";
+    //Hiển thị loại theo danh mục
     const onChange = (e) => {
+        let id = "";
         id = e;
         console.log(id);
-        axios.get("http://127.0.0.1:5000/api/v1/danh-muc/ma-danh-muc/" + id).then((res) => {
+        catalog.getTypeDanhmucID(id).then((res) => {
             setlistTypes(res.data.data);
         })
     };
-    console.log(listTypes);
-
-
 
     return (
         <>
@@ -190,7 +183,7 @@ const AddProduct = (props) => {
                 <Form
                     {...formItemLayout}
                     form={form}
-                    name="register"
+                    name="addProduct"
                     onFinish={addProduct}
                     scrollToFirstError
                 //initialValues={{img: link}}

@@ -1,19 +1,24 @@
 import { LockOutlined, UnlockOutlined } from '@ant-design/icons';
-import { Button, message, Table, Tag } from 'antd';
-import axios from 'axios';
+import { Button, message, Table, Tag, Select } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import "Container/scss/addpro.scss";
+import admin from 'API_Call/Api_admin/admin';
 
+const { Option } = Select;
 const ListUserAdmin = () => {
   const link = useHistory();
   const [a, setA] = useState([]);
   const [ListAdmin, setListAdmin] = useState([]);
+  //API ListAdmin
   useEffect(() => {
-    axios.get("http://127.0.0.1:5000/api/v1/admin/danh-sach").then((res) => {
+    admin.getAll().then((res) => {
       setListAdmin(res.data.data);
+      setWordSearch(res.data.data);
     })
   }, []);
+
+  //Redirect sua thong tin tai khoan
   const linkto = (e) => {
     let id = e.currentTarget.dataset.id
     setA(id);
@@ -22,20 +27,22 @@ const ListUserAdmin = () => {
       link.push('/danh-sach-admin/sua-thong-tin-tai-khoan');
     }, 100)
   }
+
+  //Lấy thông tin Admin theo ID
   const [Admin, setAdmin] = useState([]);
   useEffect(() => {
-    if(a != ""){
-      let url = "http://127.0.0.1:5000/api/v1/admin/admin-id/" + a
-      axios.get(url).then((res) => {
+    if (a != "") {
+      admin.getID(a).then((res) => {
         setAdmin(res.data);
       });
     }
   }, [a]);
-  if(Admin != ''){
+  if (Admin != '') {
     localStorage.setItem('admin', JSON.stringify(Admin))
   }
   let result = JSON.parse(localStorage.getItem('user'));
 
+  //Cập nhật trạng thái admin
   const unlock = (e) => {
     let id = e.currentTarget.dataset.id;
     let unLock = 1;
@@ -44,22 +51,21 @@ const ListUserAdmin = () => {
       "adminId": id,
       "stt": unLock
     };
-    const url = "http://127.0.0.1:5000/api/v1/admin/cap-nhat-trang-thai"
-    axios.put(url, values).then((res) => {
-        if (res.data.status === "Success") {
-          message.success(res.data.message)
-          setTimeout(() => {
-            link.go({ pathname: '/danh-sach-admin' });
-          }, 800) 
-        }
-        else {
-            message.error("Mở khoá tài khoản thất bại")
-        }
-    }) 
-        .catch(err => {
-            console.log(err.response);
-            message.error(`Lỗi...! Mở khoá tài khoản thất bại!\n ${err.response.data}`)
-        })
+    admin.updateStatus(values).then((res) => {
+      if (res.data.status === "Success") {
+        message.success(res.data.message)
+        setTimeout(() => {
+          link.go({ pathname: '/danh-sach-admin' });
+        }, 800)
+      }
+      else {
+        message.error("Mở khoá tài khoản thất bại")
+      }
+    })
+      .catch(err => {
+        console.log(err.response);
+        message.error(`Lỗi...! Mở khoá tài khoản thất bại!\n ${err.response.data}`)
+      })
   }
   const lock = (e) => {
     let id = e.currentTarget.dataset.id;
@@ -69,37 +75,39 @@ const ListUserAdmin = () => {
       "adminId": id,
       "stt": shutdown
     };
-    const url = "http://127.0.0.1:5000/api/v1/admin/cap-nhat-trang-thai"
-    axios.put(url, values).then((res) => {
-        if (res.data.status === "Success") {
-            message.success(res.data.message)
-            setTimeout(() => {
-              link.go('/danh-sach-admin')
-            }, 800)
-        }
-        else {
-            message.error("Khoá tài khoản thất bại!")
-        }
-    }) 
-        .catch(err => {
-            console.log(err.response);
-            message.error(`Lỗi...! Khoá tài khoản thất bại! \n ${err.response.data}`)
-        })
+    admin.updateStatus(values).then((res) => {
+      if (res.data.status === "Success") {
+        message.success(res.data.message)
+        setTimeout(() => {
+          link.go('/danh-sach-admin')
+        }, 800)
+      }
+      else {
+        message.error("Khoá tài khoản thất bại!")
+      }
+    })
+      .catch(err => {
+        console.log(err.response);
+        message.error(`Lỗi...! Khoá tài khoản thất bại! \n ${err.response.data}`)
+      })
   };
 
+  //xét trạng thái ADmin
   ListAdmin.forEach(element => {
-    if(element.trangthai === 1){
+    if (element.trangthai === 1) {
       element.trangthai = [];
       element.trangthai.stt = ["Hoạt động"];
       element.trangthai.id = element.manv;
     }
-    if(element.trangthai === 0 ){
+    if (element.trangthai === 0) {
       element.trangthai = [];
       element.trangthai.stt = ["Khoá"];
       element.trangthai.id = element.manv;
     }
   })
 
+
+  //DataTable
   const columns = [
     {
       title: 'Mã nhân viên',
@@ -130,12 +138,16 @@ const ListUserAdmin = () => {
       title: 'Chức vụ',
       dataIndex: 'quyen',
       key: 'quyen',
-      
+      filters: [
+        { text: 'Admin', value: 'Admin' },
+      ],
+      onFilter: (value, record) => record.quyen.includes(value),
     },
     {
       title: 'Trạng thái',
       dataIndex: 'trangthai',
       key: 'trangthai',
+
       render: (trangthai) => (
         <>
           {trangthai.stt.map(tragth => {
@@ -149,9 +161,14 @@ const ListUserAdmin = () => {
               </Tag>
             );
           })}
-          
+
         </>
-      )
+      ),
+      filters: [
+        { text: "Khoá", value: "Khoá" },
+        { text: "Hoạt động", value: "Hoạt động" },
+      ],
+      onFilter: (value, record) => record.trangthai.stt.includes(value),
     },
     result.permission === 'Admin' ?
       {
@@ -159,43 +176,116 @@ const ListUserAdmin = () => {
         dataIndex: 'trangthai',
         key: 'trangthai',
         render: (trangthai) =>
-          (
-            <>
-              {trangthai.stt.map(tragth => {
-                if (tragth === 'Khoá') {
-                  return (
-                    <Button data-id={trangthai.id} type="primary" icon={<UnlockOutlined />} onClick={unlock}>
-                    </Button>
-                  );
-                }else{
-                  return (
-                    <Button data-id={trangthai.id} type="danger" icon={<LockOutlined />} onClick={lock}>
-                    </Button>
-                  )
-                }  
-              })}
-            </>
-          )
+        (
+          <>
+            {trangthai.stt.map(tragth => {
+              if (tragth === 'Khoá') {
+                return (
+                  <Button data-id={trangthai.id} type="primary" icon={<UnlockOutlined />} onClick={unlock}>
+                  </Button>
+                );
+              } else {
+                return (
+                  <Button data-id={trangthai.id} type="danger" icon={<LockOutlined />} onClick={lock}>
+                  </Button>
+                )
+              }
+            })}
+          </>
+        )
       } : (<> </>),
-      result.permission === 'Admin' ?
+    result.permission === 'Admin' ?
       {
         title: 'Hành động',
         dataIndex: 'manv',
         key: 'manv',
         render: manv => (<Button data-id={manv} key={manv} type="primary" onClick={linkto}>Sửa</Button>)
       } : (<> </>)
-    
+
   ];
 
 
+  //Tìm kiếm
+  function removeAccents(str) {
+    return str.normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/đ/g, 'd').replace(/Đ/g, 'D');
+  }
+  function filterItems(arr, query) {
+    return arr.filter(function (el) {
+      if (removeAccents(el.tennv.toLowerCase()).indexOf(removeAccents(query.toLowerCase())) !== -1) {
+        return el;
+      } else {
+        return "";
+      }
 
+    });
+  }
+  let demo = ListAdmin;
+  const [wordSearch, setWordSearch] = useState([]);
+  function onChange(e) {
+    if (e.target.value !== "") {
+      let filter = filterItems(ListAdmin, e.target.value);
+      if (filter !== "") {
+        demo = filter;
+        setWordSearch(demo);
+      } else {
+        demo = ListAdmin;
+        setWordSearch(demo);
+      }
+    } else {
+      demo = ListAdmin;
+      setWordSearch(demo);
+    }
+    console.log(demo);
+  }
+  const [pageSize, setPageSize] = useState(6);
+  const size = [
+    {
+      key: 1,
+      PSize: 4,
 
+    },
+    {
+      key: 2,
+      PSize: 6,
+    },
+    {
+      key: 3,
+      PSize: 8,
+    },
+    {
+      key: 3,
+      PSize: 10,
+    }
+  ];
+  const ChangeSize = (e) => {
+    setPageSize(e);
+  };
 
   return (
     <>
       <div className="product-wrapper" >
         <h2 style={{ textAlign: 'center', marginTop: "20px", marginBottom: "20px" }}>DANH SÁCH TÀI KHOẢN NHÂN VIÊN</h2>
-        <Table className="proItem" dataSource={ListAdmin} columns={columns} pagination={{ pageSize: 6 }} size="middle"/>
+        <div className="View-layout">
+          <div>
+            <span>Sản phẩm hiển thị: </span>
+            <Select defaultValue="6" Option style={{ width: 70 }} onChange={e => ChangeSize(e)}>
+              {size.map((item) => {
+                return (
+                  <>
+                    <Option value={item.PSize}>{item.PSize}</Option>
+                  </>
+                )
+              })}
+            </Select>
+          </div>
+          <div className="search-box">
+            <span>Tìm kiếm: </span>
+            <input placeholder='Nhập tên nhân viên' style={{ width: 300 }} onChange={e => onChange(e)} />
+          </div>
+        </div>
+        <Table className="proItem" dataSource={wordSearch} columns={columns} pagination={{ pageSize: `${pageSize}` }} size="middle" />
         <div className="btn-wrapper" >
           <Link to={'/them-nhan-vien'}>
             <Button type="primary">

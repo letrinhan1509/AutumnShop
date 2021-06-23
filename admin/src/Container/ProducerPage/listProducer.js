@@ -3,18 +3,21 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import "Container/scss/addpro.scss";
+import producers from 'API_Call/Api_producer/producer';
 
 const ListProducer = () => {
   const link = useHistory();
   const [a, setA] = useState([]);
 
+  //API ListProducer
   const [listProducer, setListProducer] = useState([]);
   useEffect(() => {
-    axios.get("http://127.0.0.1:5000/api/v1/nha-sx").then((res) => {
+    producers.getAll().then((res) => {
       setListProducer(res.data.data);
     })
   }, []);
 
+  //Redirect sửa nhà sản xuất theo ID
   const edit = (e) => {
     let id = e.currentTarget.dataset.id
     setA(id);
@@ -23,11 +26,12 @@ const ListProducer = () => {
       link.push('/danh-sach-nha-sx/sua-nha-sx');
     }, 100)
   }
+
+  //Lấy thông tin nhà sản xuất theo ID
   const [producer, setProducer] = useState([]);
   useEffect(() => {
     if (a != "") {
-      let url = "http://127.0.0.1:5000/api/v1/nha-sx/" + a;
-      axios.get(url).then((res) => {
+      producers.getid(a).then((res) => {
         setProducer(res.data);
       });
     }
@@ -37,10 +41,11 @@ const ListProducer = () => {
   }
   let result = JSON.parse(localStorage.getItem('user'));
 
+
+  //Xóa nhà sản xuất
   const deleteType = (e) => {
     let id = e.currentTarget.dataset.id;
-    const url = "http://127.0.0.1:5000/api/v1/nha-sx/xoa-nha-sx/" + id;
-    axios.delete(url).then((res) => {
+    producers.deleteProducer(id).then((res) => {
       if (res.data.status === "Success") {
         message.success(res.data.message)
         setTimeout(() => {
@@ -83,6 +88,14 @@ const ListProducer = () => {
       title: 'Xuất xứ',
       dataIndex: 'xuatxu',
       key: 'xuatxu',
+      filters: [
+        { text: 'Đức', value: 'Đức' },
+        { text: 'Việt Nam', value: 'Việt Nam' },
+        { text: 'Mỹ', value: 'Mỹ' },
+        { text: 'Pháp', value: 'Pháp' },
+        { text: 'Hàn Quốc', value: 'Hàn Quốc' },
+      ],
+      onFilter: (value, record) => record.xuatxu.includes(value),
     },
     result.permission === 'Admin' ?
       {
@@ -104,7 +117,7 @@ const ListProducer = () => {
     <>
       <div className="form-wrapper">
         <h2 style={{ textAlign: 'center', marginTop: "30px" }}>DANH SÁCH NHÀ SẢN XUẤT</h2>
-        <Table dataSource={listProducer} columns={columns} pagination={{ pageSize: 10 }} style={{padding: 10}} size="middle" />
+        <Table className="item" dataSource={listProducer} columns={columns} pagination={{ pageSize: 10 }} style={{padding: 10}} size="middle" />
         <div className="btn-wrapper">
           <Link to={'/them-nha-san-xuat'}>
             <Button type="primary">

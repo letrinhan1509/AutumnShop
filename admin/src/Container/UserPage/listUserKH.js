@@ -1,18 +1,25 @@
 import { LockOutlined, UnlockOutlined } from '@ant-design/icons';
-import { Button, message, Table, Tag } from 'antd';
+import { Button, message, Table, Tag, Select } from 'antd';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useHistory } from "react-router-dom";
 import "Container/scss/addpro.scss";
+import user from 'API_Call/Api_user/user';
 
+const { Option } = Select;
 const ListUserKH = (props) => {
   const [ListUser, setListUser] = useState([]);
   const history = useHistory();
+
+  //API ListUser
   useEffect(() => {
-    axios.get("http://127.0.0.1:5000/api/v1/khach-hang/danh-sach").then((res) => {
+    user.getAll().then((res) => {
       setListUser(res.data.data);
+      setWordSearch(res.data.data);
     })
   }, []);
+
+  //Cập nhật trạng thái User
   const unlock = (e) => {
     let id = e.currentTarget.dataset.id;
     let unLock = 1;
@@ -21,8 +28,7 @@ const ListUserKH = (props) => {
       "userId": id,
       "stt": unLock
     };
-    const url = "http://127.0.0.1:5000/api/v1/khach-hang/cap-nhat-trang-thai"
-    axios.put(url, values).then((res) => {
+    user.updateStatus(values).then((res) => {
       if (res.data.status === "Success") {
         message.success(res.data.message)
         setTimeout(() => {
@@ -49,8 +55,7 @@ const ListUserKH = (props) => {
       "userId": id,
       "stt": shutdown
     };
-    const url = "http://127.0.0.1:5000/api/v1/khach-hang/cap-nhat-trang-thai"
-    axios.put(url, values).then((res) => {
+    user.updateStatus(values).then((res) => {
       if (res.data.status === "Success") {
         message.success(res.data.message)
         setTimeout(() => {
@@ -68,6 +73,8 @@ const ListUserKH = (props) => {
   };
 
   let result = JSON.parse(localStorage.getItem('user'));
+
+  //Setup trạng thái cho datatable
   ListUser.forEach(element => {
     if (element.trangthai === 1) {
       element.trangthai = [];
@@ -80,11 +87,7 @@ const ListUserKH = (props) => {
       element.trangthai.id = element.makh;
     }
   })
-  //console.log(ListUser);
 
-  /* let { sortedInfo, filteredInfo } = useState([]);
-  sortedInfo = sortedInfo || {};
-  filteredInfo = filteredInfo || {}; */
   const columns = [
     {
       title: 'Mã khách hàng',
@@ -130,7 +133,12 @@ const ListUserKH = (props) => {
           })}
 
         </>
-      )
+      ),
+      filters: [
+        { text: "Khoá", value: "Khoá" },
+        { text: "Hoạt động", value: "Hoạt động" },
+      ],
+      onFilter: (value, record) => record.trangthai.stt.includes(value),
     },
 
     result.permission === 'Admin' ? (
@@ -158,14 +166,91 @@ const ListUserKH = (props) => {
           </>
         )
       }) : (<> </>)
-
   ];
+
+
+  //Tìm kiếm
+  function removeAccents(str) {
+    return str.normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/đ/g, 'd').replace(/Đ/g, 'D');
+  }
+  function filterItems(arr, query) {
+    return arr.filter(function (el) {
+      if (removeAccents(el.tenkh.toLowerCase()).indexOf(removeAccents(query.toLowerCase())) !== -1) {
+        return el;
+      } else {
+        return "";
+      }
+
+    });
+  }
+  let demo = ListUser;
+  const [wordSearch, setWordSearch] = useState([]);
+  console.log(wordSearch);
+  function onChange(e) {
+    if (e.target.value !== "") {
+      let filter = filterItems(ListUser, e.target.value);
+      if (filter !== "") {
+        demo = filter;
+        setWordSearch(demo);
+      } else {
+        demo = ListUser;
+        setWordSearch(demo);
+      }
+    } else {
+      demo = ListUser;
+      setWordSearch(demo);
+    }
+    console.log(demo);
+  }
+  const [pageSize, setPageSize] = useState(6);
+  const size = [
+    {
+      key: 1,
+      PSize: 4,
+
+    },
+    {
+      key: 2,
+      PSize: 6,
+    },
+    {
+      key: 3,
+      PSize: 8,
+    },
+    {
+      key: 3,
+      PSize: 10,
+    }
+  ];
+  const ChangeSize = (e) => {
+    setPageSize(e);
+  };
 
   return (
     <>
       <div className="product-wrapper">
         <h2 style={{ textAlign: 'center', marginTop: "50px" }}>DANH SÁCH TÀI KHOẢN KHÁCH HÀNG</h2>
-        <Table className="proItem" dataSource={ListUser} columns={columns} pagination={{ pageSize: 7 }} size="middle" />
+        <div className="View-layout">
+          <div>
+            <span>Sản phẩm hiển thị: </span>
+            <Select defaultValue="6" Option style={{ width: 70 }} onChange={e => ChangeSize(e)}>
+              {size.map((item) => {
+                return (
+                  <>
+                    <Option value={item.PSize}>{item.PSize}</Option>
+                  </>
+                )
+              })}
+            </Select>
+          </div>
+          <div className="search-box">
+            <span>Tìm kiếm: </span>
+            <input placeholder='Nhập tên nhân viên' style={{ width: 300 }} onChange={e => onChange(e)} />
+          </div>
+        </div>
+        <Table className="proItem" dataSource={wordSearch} columns={columns} pagination={{ pageSize: `${pageSize}` }} size="middle" />
       </div>
 
       {/* <a className="ant-btn ant-btn-primary" href='/Themsanpham'  type="primary">Thêm sản phẩm</a> */}

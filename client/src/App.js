@@ -25,7 +25,7 @@ import SearchResult from "container/MainPage/SearchResult";
 import Accessories from "container/CatalogPage/Acessories";
 import Error404 from "container/MainPage/Error404";
 import ScrollToTop from "container/Config/ScrollToTop";
-import product from "container/API_Call/Api_product/product";
+import product from "API_Call/Api_product/product";
 
 
 
@@ -213,10 +213,10 @@ useEffect(() => {
                     Thongbao_Them={Thongbao_Them}
                   />
                 </Route>
-                <Route path="/Register">
+                <Route path="/dang-ky">
                   <Register />
                 </Route>
-                <Route path="/Login">
+                <Route path="/dang-nhap">
                   <Login />
                 </Route>
                 <Route path="/san-pham/ao">
@@ -234,7 +234,7 @@ useEffect(() => {
                 <Route path="/Timkiem">
                   <SearchResult kqSearch={kqSearch} countkqSearch={kqSearch.length} Thongbao_Them={Thongbao_Them} />
                 </Route>
-                <Route path="/UserInfo">
+                <Route path="/Thong-tin-tai-khoan">
                   <UserInfo />
                 </Route>
                 <Route path="/gio-hang">

@@ -86,14 +86,14 @@ const HeaderPage = (props) => {
 
                         {JSON.parse(localStorage.getItem('user')) === null ? (
                             <>
-                                <Menu.Item key="register" style={menu} icon={<UserAddOutlined style={{ fontSize: 20 }} />}>
+                                <Menu.Item key="dang-ky" style={menu} icon={<UserAddOutlined style={{ fontSize: 20 }} />}>
                                 </Menu.Item>
-                                <Menu.Item key="login" style={menu} icon={<LoginOutlined style={{ fontSize: 20 }} />}>
+                                <Menu.Item key="dang-nhap" style={menu} icon={<LoginOutlined style={{ fontSize: 20 }} />}>
                                 </Menu.Item>
                             </>
                         ) : (
                             <>
-                                <Menu.Item key="UserInfo" icon={<UserOutlined />}>
+                                <Menu.Item key="Thong-tin-tai-khoan" icon={<UserOutlined />}>
                                     <Dropdown overlay={drops}>
                                         <a className="ant-dropdown-link">
                                             {User.username}

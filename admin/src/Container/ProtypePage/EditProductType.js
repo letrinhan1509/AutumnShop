@@ -1,8 +1,8 @@
 import "Container/scss/addpro.scss";
 import { Button, Form, Input, message, Select } from "antd";
-import axios from "axios";
 import React, { useEffect, useState } from 'react';
 import { Link, useHistory } from "react-router-dom";
+import catalog from 'API_Call/Api_catalog/catalog';
 
 const { Option } = Select;
 const formItemLayout = {
@@ -48,15 +48,14 @@ const EditProductType = (props) => {
 
     const [listCategory, setlistCategory] = useState([]);
     useEffect(() => {
-        axios.get("http://127.0.0.1:5000/api/v1/danh-muc").then((res) => {
+        catalog.getAll().then((res) => {
             setlistCategory(res.data.data)
         })
     }, []);
 
     const register = (values) => {
         console.log(values)
-        const url = "http://127.0.0.1:5000/api/v1/danh-muc/cap-nhat-loai"
-        axios.put(url, values).then((res) => {
+        catalog.updateProtype(values).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message)
                 localStorage.removeItem("type");
@@ -125,7 +124,7 @@ const EditProductType = (props) => {
                             {listCategory.map((item) => {
                                 return (
                                     <>
-                                        <Option value={item.madm}>{item.tendm}</Option>
+                                        <Option value={item.madm}>{item.madm}</Option>
                                     </>
                                 )
                             })}

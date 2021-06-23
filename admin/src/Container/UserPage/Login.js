@@ -4,8 +4,6 @@ import { useHistory } from "react-router-dom";
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import admin from 'API_Call/Api_admin/admin';
 
-
-
 const formItemLayout = {
   labelCol: {
       xs: { span: 22 },
@@ -30,10 +28,11 @@ const tailFormItemLayout = {
 };
 
 
-
 const Login = () => {
   const [form] = Form.useForm();
   let history = useHistory()
+
+
   const login = (values) => {
     console.log('Received values of form: ', values);
     admin.login(values)
@@ -60,6 +59,7 @@ const Login = () => {
         message.error(`Sai tài khoản hoặc mật khẩu !!!`)
       })
   };
+  
   return (
     <>
       <div className="form-wrapper">

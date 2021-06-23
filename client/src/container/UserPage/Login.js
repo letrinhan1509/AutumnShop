@@ -5,7 +5,7 @@ import { useHistory } from "react-router-dom";
 import "container/components-css/Form.scss";
 import firebase from 'firebase';
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
-import user from 'container/API_Call/Api_user/user';
+import user from 'API_Call/Api_user/user';
 //import HeaderPage from '../components/include/HeaderPage';
 
 const tailLayout = {
@@ -22,7 +22,6 @@ const tailLayout = {
 };
 
 
-
 const uiConfig = {
     // Popup signin flow rather than redirect flow.
     signInFlow: 'redirect',
@@ -33,7 +32,6 @@ const uiConfig = {
         firebase.auth.FacebookAuthProvider.PROVIDER_ID
     ]
 };
-
 
 const Login = () => {
     const history = useHistory();

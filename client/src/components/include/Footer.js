@@ -1,4 +1,4 @@
-import { FacebookOutlined, TwitterOutlined } from '@ant-design/icons';
+import { FacebookOutlined, TwitterOutlined, InstagramOutlined } from '@ant-design/icons';
 import { Col, Row,Divider } from 'antd';
 import "../components-css/Footer.scss"
 import { Footer } from 'antd/lib/layout/layout';
@@ -26,9 +26,10 @@ const footer = () => {
                     lg={{ span: 6, offset: 2 }}>
                     <p className="footer-title">Follow Us</p>
                     <p>Since the 1500s, when an unknown printer took a galley of type and scrambled.</p>
-                    <p>
-                        <FacebookOutlined style={iconStyle} />
-                        <TwitterOutlined style={iconStyle} />
+                    <p className="social-network">
+                        <a href="https://www.facebook.com/Nemo07/"><FacebookOutlined style={iconStyle}/></a>
+                        <a href="https://www.instagram.com/ctain_nemo/"><InstagramOutlined style={iconStyle}/></a>
+                        <a href="#"><TwitterOutlined style={iconStyle}/></a>
                     </p>
                 </Col>
                 <Col

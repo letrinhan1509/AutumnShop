@@ -25,11 +25,6 @@ const order = {
         const url = "/tao-don-hang";
         return AxiosOrder.post(url, values);
     },
-    //(Cập nhật trạng thái đơn hàng)
-    updateStatus: (values) => {
-        const url = "/cap-nhat-trang-thai";
-        return AxiosOrder.put(url, values);
-    }
 };
 
 export default order;

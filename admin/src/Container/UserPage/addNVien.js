@@ -1,5 +1,6 @@
 import { Button, Form, Input, message, Select } from "antd";
 import admin from 'API_Call/Api_admin/admin';
+import city from 'API_Call/Api_city/city';
 import axios from "axios";
 import React, { useEffect, useState } from 'react';
 import { Link, useHistory } from "react-router-dom";
@@ -41,48 +42,35 @@ const AddNV = (props) => {
         </Form.Item>
     );
 
+    //API Thành Phố
     const [listCity, setlistCity] = useState([]);
     useEffect(() => {
-        axios.get("https://thongtindoanhnghiep.co/api/city").then((res) => {
-            setlistCity(res.data.LtsItem);
+        city.getAll().then((res) => {
+            setlistCity(res.data.city);
         })
     }, []);
-    console.log(listCity);
 
-    const [a, setA] = useState([]);
-    const linktoCity = (e) => {
-        let id = e.currentTarget.dataset.id
-        setA(id);
-        console.log(id);
-    }
+    //API Quận - Huyện
     const [listDistrict, setlistDistrict] = useState([]);
-    useEffect(() => {
-        if(a != ""){
-            axios.get("https://thongtindoanhnghiep.co/api/city/" + a +"/district").then((res) => {
-                setlistDistrict(res.data);
-            })
-        }
-    }, [a]);
-    console.log(listDistrict);
-
-    const [b, setB] = useState([]);
-    const linktoWard = (e) => {
-        let id = e.currentTarget.dataset.id
-        setB(id);
-        console.log(id);
-    }
+    let idCity = "";
+    const onChangeCity = (e) => {
+        idCity = e;
+        city.getCityDistrict(idCity).then((res) => {
+            setlistDistrict(res.data.district);
+        })
+    };
+    
+    //API Phường - Xã
     const [listWard, setlistWard] = useState([]);
-    useEffect(() => {
-        if(b != ""){
-            axios.get("https://thongtindoanhnghiep.co/api/district/" + b +"/ward").then((res) => {
-                setlistWard(res.data);
-            })
-        }
-    }, [b]);
-    console.log(listWard);
+    let idDistrict = "";
+    const onChangeDistrict = (e) => {
+        idDistrict = e;
+        city.getDistrictWard(idDistrict).then((res) => {
+            setlistWard(res.data.ward);
+        })
+    };
 
     const register = (values) => {
-
         let a = JSON.stringify({ admin: "adas@gmail.com" });
         console.log(a);
         admin.register(values).then((res) => {
@@ -103,9 +91,6 @@ const AddNV = (props) => {
             })
     };
 
-    /*  const loadpage= ()=>{
-         props.handleCreateUser();
-     } */
     return (
         <div className="form-wrapper">
             <h2 style={{ textAlign: 'center' }}>THÊM NHÂN VIÊN</h2>
@@ -200,7 +185,7 @@ const AddNV = (props) => {
                     id="city"
                     label="Thành phố"
                 >
-                    <Select>
+                    <Select onChange={onChangeCity}>
                         {listCity.map((item) => {
                             return (
                                 <>
@@ -215,7 +200,7 @@ const AddNV = (props) => {
                     id="district"
                     label="Quận - Huyện"
                 >
-                    <Select>
+                    <Select onChange={onChangeDistrict}>
                         {listDistrict.map((item) => {
                             return (
                                 <>
@@ -231,13 +216,13 @@ const AddNV = (props) => {
                     label="Phường - Xã"
                 >
                     <Select>
-                        {/* {listDistrict.map((item) => {
+                        {listWard.map((item) => {
                             return (
                                 <>
                                     <Option value={item.ID}>{item.Title}</Option>
                                 </>
                             )
-                        })} */}
+                        })}
                     </Select>
                 </Form.Item>
                 <Form.Item

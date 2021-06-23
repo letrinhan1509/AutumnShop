@@ -1,6 +1,5 @@
 import { Button, message, Modal, Table, Tag, Select } from 'antd';
 import product from 'API_Call/Api_product/product';
-import axios from "axios";
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
 import { Link } from 'react-router-dom';
@@ -13,6 +12,16 @@ const AllProduct = () => {
   const [a, setA] = useState([]);
   let result = JSON.parse(localStorage.getItem('user'))
 
+  //API ListProduct
+  const [ListProductHome, setListProductHome] = useState([]);
+  useEffect(() => {
+    product.getAll().then((res) => {
+      setListProductHome(res.data.data);
+      setWordSearch(res.data.data);
+    });
+  }, []);
+
+  //Redirect sua-san-pham 
   const loadEdit = (e) => {
     let i = e.currentTarget.dataset.id;
     console.log(i);
@@ -20,8 +29,25 @@ const AllProduct = () => {
     setTimeout(() => {
       link.push('/tat-ca-san-pham/sua-san-pham');
     }, 100)
-
   }
+
+
+  //Lấy thông tin SP theo ID
+  const [productEdit, setProductEdit] = useState([]);
+  useEffect(() => {
+    if (a != '') {
+      product.getid(a).then((res) => {
+        if (res.data.status === "Success") {
+          setProductEdit(res.data.dataSpham);
+        }
+      })
+    }
+  }, [a]);
+  if (productEdit != '') {
+    localStorage.setItem('product', JSON.stringify(productEdit));
+  }
+
+  ///Modal Xoá SP
   const onClick = (e) => {
     let id = e.currentTarget.dataset.id
     setIdPro(id)
@@ -29,32 +55,9 @@ const AllProduct = () => {
     console.log(idPro);
     setIsModalVisible(true);
   }
-
-  //const masp = window.localStorage.getItem("masp");
-  const [productEdit, setProductEdit] = useState([]);
-  useEffect(() => {
-    if (a != '') {
-      let url = "http://127.0.0.1:5000/api/v1/san-pham/" + a;
-      axios.get(url).then((res) => {
-        if (res.data.status === "Success") {
-          setProductEdit(res.data.dataSpham);
-        }
-      })
-    }
-  }, [a]);
-  //window.localStorage.setItem('Product', JSON.stringify(product));
-  if (productEdit != '') {
-    localStorage.setItem('product', JSON.stringify(productEdit));
-  }
-
-  ///Modal Xoá
   const [isModalVisible, setIsModalVisible] = useState(false);
-
-
   const handleOk = () => {
-    let url = "http://127.0.0.1:5000/api/v1/san-pham/xoa-san-pham/" + idPro;
-    console.log(url);
-    axios.delete(url).then((res) => {
+    product.deletePro(idPro).then((res) => {
       if (res.data.status === "Success") {
         message.success(res.data.message);
         window.location.reload()
@@ -65,26 +68,14 @@ const AllProduct = () => {
       .catch(err => {
         message.error(`Lỗi...!\n ${err.response.data.message}`);
       })
-
     setIsModalVisible(false);
-
   };
-
   const handleCancel = () => {
     setIsModalVisible(false);
   };
-  const [ListProductHome, setListProductHome] = useState([]);
-  useEffect(() => {
-    product.getAll().then((res) => {
-      setListProductHome(res.data.data);
-      setWordSearch(res.data.data);
-    });
-  }, []);
 
-  let { sortedInfo, filteredInfo } = useState([]);
-  sortedInfo = sortedInfo || {};
-  filteredInfo = filteredInfo || {};
 
+  //DataTable
   const columns = [
     {
       title: 'Mã',
@@ -117,11 +108,24 @@ const AllProduct = () => {
       title: 'Size',
       dataIndex: 'size',
       key: 'size',
+      filters: [
+        { text: 'S', value: 'S' },
+        { text: 'M', value: 'M' },
+        { text: 'L', value: 'L' },
+      ],
+      onFilter: (value, record) => record.size.includes(value),
     },
     {
       title: 'Màu',
       dataIndex: 'mau',
       key: 'mau',
+      filters: [
+        { text: 'Xanh', value: 'Xanh' },
+        { text: 'Đỏ', value: 'Đỏ' },
+        { text: 'Đen', value: 'Đen' },
+        { text: 'Trắng', value: 'Trắng' },
+      ],
+      onFilter: (value, record) => record.mau.includes(value),
     },
     {
       title: 'Giá',
@@ -145,35 +149,62 @@ const AllProduct = () => {
     {
       title: 'Nhà sản xuất',
       dataIndex: 'tennsx',
-      key: 'tennsx'
+      key: 'tennsx',
+      filters: [
+        { text: 'ADIDAS', value: 'ADIDAS' },
+        { text: 'BSK', value: 'BSK' },
+        { text: 'BOUTON', value: 'BOUTON' },
+        { text: 'DICKIES', value: 'DICKIES' },
+        { text: 'ICON', value: 'ICON' },
+        { text: 'LACOSTE', value: 'LACOSTE' },
+        { text: 'MASCUS', value: 'MASCUS' },
+        { text: 'MLB Korea', value: 'MLB Korea' },
+        { text: 'NBA', value: 'NBA' },
+        { text: 'NIKE', value: 'NIKE' },
+        { text: 'NOMOUS', value: 'NOMOUS' },
+        { text: 'PUMA', value: 'PUMA' },
+        { text: 'SUPREME', value: 'SUPREME' },
+        { text: 'T.MAN', value: 'T.MAN' },
+        { text: 'Yame', value: 'Yame' },
+      ],
+      onFilter: (value, record) => record.tennsx.includes(value),
     },
     {
       title: 'Loại',
       dataIndex: 'tenloai',
-      key: 'tenloai'
-      /* filters: [
-          { text: 'asm', value: 'asm' },
-          { text: 'at', value: 'at' },
-          { text: 'ak', value: 'ak' },
-          { text: 'Balo', value: 'bl' },
-          { text: 'Dép', value: 'dep' },
-          { text: 'Giày', value: 'giay' },
-          { text: 'Nón', value: 'no' },
+      key: 'tenloai',
+      filters: [
+          { text: 'ÁO KHOÁC', value: 'ÁO KHOÁC' },
+          { text: 'ÁO SƠ MI', value: 'ÁO SƠ MI' },
+          { text: 'ÁO THUN', value: 'ÁO THUN' },
+          { text: 'BALO - TÚI SÁCH', value: 'BALO - TÚI SÁCH' },
+          { text: 'DÉP', value: 'DÉP' },
+          { text: 'GIÀY', value: 'GIÀY' },
+          { text: 'NÓN', value: 'NÓN' },
+          { text: 'QUẦN JEAN', value: 'QUẦN JEAN' },
+          { text: 'QUẦN KAKI', value: 'QUẦN KAKI' },
+          { text: 'QUẦN SHORT', value: 'QUẦN SHORT' },
+          { text: 'QUẦN TÂY', value: 'QUẦN TÂY' },
+          { text: 'THẮT LƯNG', value: 'THẮT LƯNG' },
+          { text: 'Túii', value: 'Túii' },
+          { text: 'VỚ', value: 'VỚ' },
         ],
-      filteredValue: filteredInfo.maloai || null,
-  onFilter: (value, record) => record.maloai.includes(value), */
-
-      //Bỏ
-      //onFilter: (value, record) => record.maloai.indexOf(value) === 0,
-      /*  sorter: (a, b) => a.maloai.length - b.maloai.length,
-       sortOrder: sortedInfo.columnKey === 'maloai' && sortedInfo.order, */
-
-      //ellipsis: true,
+      //filteredValue: filteredInfo.maloai || null,
+      onFilter: (value, record) => record.tenloai.includes(value),
     },
     {
       title: 'Danh mục',
       dataIndex: 'tendm',
-      key: 'tendm'
+      key: 'tendm',
+      filters: [
+        { text: 'ÁO', value: 'ÁO' },
+        { text: 'Balo-Túi', value: 'Balo-Túi' },
+        { text: 'Dép', value: 'Dép' },
+        { text: 'Giày', value: 'Giày' },
+        { text: 'Phụ kiện', value: 'Phụ kiện' },
+        { text: 'Quần', value: 'Quần' },
+      ],
+      onFilter: (value, record) => record.tendm.includes(value),
     },
     result.permission === 'Admin' ?
       {
@@ -206,8 +237,7 @@ const AllProduct = () => {
     });
   }
   let demo = ListProductHome;
-  const [wordSearch, setWordSearch] = useState(...demo);
-  console.log(wordSearch);
+  const [wordSearch, setWordSearch] = useState([]);
   function onChange(e) {
     if (e.target.value !== "") {
       let filter = filterItems(ListProductHome, e.target.value);
@@ -222,9 +252,9 @@ const AllProduct = () => {
       demo = ListProductHome;
       setWordSearch(demo);
     }
-    console.log(demo);
   }
-  //let PSize = 6;
+
+  //Hiển thị SP
   const [pageSize, setPageSize] = useState(4);
   const size = [
     {

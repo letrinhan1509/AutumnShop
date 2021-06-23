@@ -2,11 +2,11 @@ import AxiosAdmin from "./AxiosAdmin"
 
 const admin = {
     getAll: () => {
-        const url = "/danh-sach";
+        const url = "/";
         return AxiosAdmin.get(url);
     },
-    get: (id) => {
-        const url = `/admin-id/:${id}`;
+    getID: (id) => {
+        const url = `/${id}`;
         return AxiosAdmin.get(url);
     },
     register: (values) => {
@@ -23,6 +23,10 @@ const admin = {
     },
     updateStatus: (values) => {
         const url = "/cap-nhat-trang-thai";
+        return AxiosAdmin.put(url, values);
+    },
+    updatePassword: (values) => {
+        const url = "/doi-mat-khau";
         return AxiosAdmin.put(url, values);
     }
 };

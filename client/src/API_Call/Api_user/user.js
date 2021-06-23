@@ -1,12 +1,12 @@
-import AxiosUser from "./AxiosUser"
+import AxiosUser from "./AxiosUser";
 
 const user = {
     getAll: () => {
-        const url = '/danh-sach';
+        const url = '/';
         return AxiosUser.get(url);
     },
-    get: (id) => {
-        const url = `/kh-id/:${id}`;
+    getID: (id) => {
+        const url = `/${id}`;
         return AxiosUser.get(url);
     },
     register: (values) => {
@@ -29,10 +29,6 @@ const user = {
         const url = "/cap-nhat-tai-khoan";
         return AxiosUser.put(url, values);
     },
-    updateStatus: (values) => {
-        const url = "/cap-nhat-trang-thai";
-        return AxiosUser.put(url, values);
-    }
 };
 
 export default user;

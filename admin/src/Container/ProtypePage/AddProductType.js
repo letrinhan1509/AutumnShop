@@ -1,6 +1,5 @@
 import { Button, Form, Input, message, Select } from 'antd';
 import catalog from 'API_Call/Api_catalog/catalog';
-import axios from "axios";
 import React, { useEffect, useState } from 'react';
 import { Link, useHistory } from "react-router-dom";
 import "Container/scss/addpro.scss";
@@ -36,17 +35,7 @@ const AddProductType = (props) => {
     const history = useHistory();
 
 
-    const addProduct = (values) => {
-
-        console.log(values)
-
-
-
-        //let nameImg =urldown;
-
-
-        console.log(values);
-
+    const addProductType = (values) => {
         catalog.addProtype(values).then((res) => {
             message.success(res.data.message)
             setTimeout(() => {
@@ -58,12 +47,9 @@ const AddProductType = (props) => {
                 message.error(`Thêm loại thất bại!\n ${err.response.data}`)
             })
     };
-    const [fileList, setFileList] = useState([]);
-    const [listProduct, setlistProduct] = useState([]);
-
     const [listCategory, setlistCategory] = useState([]);
     useEffect(() => {
-        axios.get("http://127.0.0.1:5000/api/v1/danh-muc").then((res) => {
+        catalog.getAll().then((res) => {
             setlistCategory(res.data.data)
         })
     }, []);
@@ -75,8 +61,8 @@ const AddProductType = (props) => {
                 <Form
                     {...formItemLayout}
                     form={form}
-                    name="register"
-                    onFinish={addProduct}
+                    name="addProductType"
+                    onFinish={addProductType}
                     scrollToFirstError
                 >
                     <Form.Item

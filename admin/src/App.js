@@ -7,7 +7,7 @@ import Layout from "antd/lib/layout/layout";
 import Content from 'antd/lib/layout/layout';
 import Login from "./Container/UserPage/Login";
 import HeaderPage from "./Container/Components/Header";
-import Dashboard from "./Container/Dashboard";
+import Dashboard from "./Container/MainPage/Dashboard";
 import Navigation from "./Container/Components/Navigation";
 import Footer from "./Container/Components/Footer";
 import ListUserKH from "./Container/UserPage/listUserKH";

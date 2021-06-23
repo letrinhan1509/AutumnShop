@@ -2,12 +2,12 @@ import AxiosProducer from "./AxiosProducer"
 
 const producer = {
     getAll: () => {
-        const url = "/danh-sach";
+        const url = "/";
         return AxiosProducer.get(url);
     },
     //(Nhà sản xuất theo id)
     getid: (id) => {
-        const url = `/nha-sx-id/:${id}`;
+        const url = `/${id}`;
         return AxiosProducer.get(url);
     },
     //(Thêm mới 1 nhà sản xuất)
@@ -22,7 +22,7 @@ const producer = {
     },
     //(Xoá 1 nhà sản xuất theo id)
     deleteProducer: (id) => {
-        const url = "/xoa-nha-sx";
+        const url = `/xoa-nha-sx/${id}`;
         return AxiosProducer.delete(url, id);
     },
 };
