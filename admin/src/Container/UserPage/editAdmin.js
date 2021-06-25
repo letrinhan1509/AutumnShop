@@ -194,9 +194,9 @@ const EditNV = (props) => {
                     label="Phân quyền"
                 >
                     <Select>
-                        <Option value="1">Admin</Option>
-                        <Option value="2">Nhân viên bán hàng</Option>
-                        <Option value="3">Nhân viên giao hàng</Option>
+                        <Option value="Admin">Admin</Option>
+                        <Option value="NVBH">Nhân viên bán hàng</Option>
+                        <Option value="NVGH">Nhân viên giao hàng</Option>
                     </Select>
                 </Form.Item>
                 <Form.Item

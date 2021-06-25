@@ -12,7 +12,6 @@ const ListProductType = () => {
   useEffect(() => {
     catalog.getAllType().then((res) => {
       setListType(res.data.data);
-      console.log(ListType);
     })
   }, []);
 
@@ -40,10 +39,6 @@ const ListProductType = () => {
   const deleteType = (e) => {
     let id = e.currentTarget.dataset.id;
     console.log("Id:", id);
-    let values = {
-      "typeId": id
-    };
-    console.log(values);
     catalog.deleteProtype(id).then((res) => {
       if (res.data.status === "Success") {
         message.success(res.data.message)
@@ -120,17 +115,21 @@ const ListProductType = () => {
   return (
     <>
       <div className="form-wrapper">
-        <h2 style={{ textAlign: 'center', marginTop: "30px" }}>DANH SÁCH LOẠI SẢN PHẨM</h2>
+        <h2 style={{ textAlign: 'center', marginTop: "30px", marginBottom:"5px" }}>DANH SÁCH LOẠI SẢN PHẨM</h2>
         <Table className="item" dataSource={ListType} columns={columns} pagination={{ pageSize: 10 }} style={{ padding: 10 }} size="middle" />
-        <div className="btn-wrapper">
-          <Link to={'/them-loai-san-pham'}>
-            <Button type="primary">
-              Thêm loại sản phẩm
-            </Button>
-          </Link>
-        </div>
+        {
+          result.permission === 'Admin' ? (
+            <div className="btn-wrapper">
+              <Link to={'/them-loai-san-pham'}>
+                <Button type="primary">
+                  Thêm loại sản phẩm
+                </Button>
+              </Link>
+            </div>
+          ) : (<div></div>)
+        }
+        
       </div>
-      {/* <Link to={'/Themnhanvien'}><p className="ant-btn ant-btn-primary" type="primary">Thêm nhân viên</p></Link> */}
 
     </>
   );

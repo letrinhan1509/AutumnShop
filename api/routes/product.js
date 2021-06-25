@@ -100,9 +100,10 @@ router.post('/them-san-pham', async function(req, res) {
   let maloai = req.body.maloai;
   let madm = req.body.madm;
   let sanPham = await modelProduct.check_Code(code);
+  let masp = maloai + mau + size
   console.log(sanPham.length);
   
-  try {
+  /* try {
     if(sanPham.length > 0){
       res.status(400).json({"status": "Fail", "message": "Mã code của sản phẩm đã tồn tại! Vui lòng nhập mã code khác!"});
     } else if(code == '' && tensp == '' && soluong == '' && size == '' && mau == '' && gia == '' && hinh == '' && maloai == '' && madm == ''){
@@ -130,7 +131,7 @@ router.post('/them-san-pham', async function(req, res) {
     }
   } catch (error) {
     res.status(400).json({ "status": "Fail", "message": "Lỗi cú pháp! Thêm sản phẩm không thành công!", "error": error });
-  }
+  } */
 });
   // Sửa sản phẩm:
 router.put('/cap-nhat-san-pham', async function(req, res) {

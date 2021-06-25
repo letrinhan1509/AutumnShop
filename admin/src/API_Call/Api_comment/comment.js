@@ -53,12 +53,12 @@ const comment = {
     //(Xoá 1 bình luận theo mabl)
     deleteCommentID: (id) => {
         const url = `/xoa-binh-luan/${id}`;
-        return AxiosComment.delete(url, id);
+        return AxiosComment.delete(url);
     },
     //(Xoá 1 chi tiết(trả lời) bình luận theo mã chitietbl)
     deleteCommentDe: (id) => {
         const url = `/xoa-tra-loi-bluan/${id}`;
-        return AxiosComment.delete(url, id);
+        return AxiosComment.delete(url);
     }
 };
 

@@ -41,7 +41,7 @@ router.get('/loai/:id', async function (req, res) {
     let typeId = req.params.id;
     let type = await modelCatalog.get_Type_Id(typeId);
     if (type == -1) {
-      res.status(400).json({ "status": "Fail", "message": "Không tìm thấy loại này trong DB!" });
+      res.status(400).json({ "status": "Fail", "message": "Không tìm thấy loại sản phẩm này trong DB!" });
     } else
       res.status(200).json({ "status": "Success", "data": type });
   } catch (error) {
@@ -54,7 +54,7 @@ router.get('/:id/loai', async function (req, res) {
     let madm = req.params.id;
     let type = await modelCatalog.get_Type_Catalog(madm);
     if (type == -1) {
-      res.status(400).json({ "status": "Fail", "message": "Không tìm thấy loại thuộc danh mục này!" });
+      res.status(400).json({ "status": "Fail", "message": "Không tìm thấy loại sản phẩm thuộc danh mục này!" });
     } else
       res.status(200).json({ "status": "Success", "data": type });
   } catch (error) {
@@ -68,28 +68,32 @@ router.get('/:id/loai', async function (req, res) {
 router.post('/them-loai', async function(req, res) {
   let typeId = req.body.maloai;
   let name = req.body.tenloai;
+  let madm = req.body.madm;
   let data = {
     maloai: typeId,
-    tenloai: name
+    tenloai: name,
+    madm: madm
   }
 
   try {
       let query = await modelCatalog.insert_Type(data);
-      res.status(200).json({ "status": "Success", "message": "Thêm loại thành công!", "result": query });
+      res.status(200).json({ "status": "Success", "message": "Thêm loại sản phẩm thành công!", "result": query });
   } catch (error) {
-      res.status(400).json({ "status": "Fail", "message": "Lỗi cú pháp! Thêm loại không thành công!", "error": error });
+      res.status(400).json({ "status": "Fail", "message": "Lỗi cú pháp! Thêm loại sản phẩm không thành công!", "error": error });
   }
 });
   // Cập nhật tên loại:
 router.put('/cap-nhat-loai', async function(req, res) {
-  let typeId = req.body.typeId;
-  let name = req.body.name;
+  let maloai = req.body.maloai;
+  let ten = req.body.tenloai;
+  let madm = req.body.madm;
+  console.log(req.body);
   
   try {
-      let query = await modelCatalog.update_Type(typeId, name);
-      res.status(200).json({"status": "Success", "message": "Cập nhật tên loại thành công!"});
+      let query = await modelCatalog.update_Type(maloai, ten, madm);
+      res.status(200).json({ "status": "Success", "message": "Cập nhật thông tin loại sản phẩm thành công!" });
   } catch (error) {
-      res.status(400).json({"status": "Fail", "message": "Lỗi cú pháp! Cập nhật tên loại không thành công!", "error": error});
+      res.status(400).json({ "status": "Fail", "message": "Lỗi cú pháp! Cập nhật thông tin loại sản phẩm không thành công!", "error": error });
   }
 });
   // Xoá loại sản phẩm:
@@ -99,7 +103,7 @@ router.delete('/xoa-loai/:id', async function(req, res) {
   try {
       let query = await modelCatalog.delete_Type(typeId);
       if(query == 1){
-          res.status(200).json({"status": "Success", "message": "Xoá loại thành công!!!"});
+          res.status(200).json({"status": "Success", "message": "Xoá loại sản phẩm thành công!!!"});
       }else
           res.status(400).json({"status": "Fail", "message": "Có ràng buộc khoá ngoại. Không thể xoá loại!"});
   } catch (error) {
@@ -134,9 +138,9 @@ router.put('/cap-nhat-danh-muc', async function(req, res) {
   }else{
     try {
       let query = await modelCatalog.update_category(categoryId, name);
-      res.status(200).json({ "status": "Success", "message": "Cập nhật danh mục thành công!" });
+      res.status(200).json({ "status": "Success", "message": "Cập nhật thông tin danh mục thành công!" });
     } catch (error) {
-      res.status(400).json({ "status": "Fail", "message": "Lỗi cú pháp! Cập nhật danh mục không thành công!", "error": error });
+      res.status(400).json({ "status": "Fail", "message": "Lỗi cú pháp! Cập nhật thông tin danh mục không thành công!", "error": error });
     }
   }
 });

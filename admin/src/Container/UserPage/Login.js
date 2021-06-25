@@ -44,7 +44,7 @@ const Login = () => {
           localStorage.setItem('token', res.data.token)
           localStorage.setItem('user', JSON.stringify(res.data.admin))
           setTimeout(() => {
-            history.push("/Dashboard")
+            history.push("/")
             window.location.reload()
           }, 2000)
         }

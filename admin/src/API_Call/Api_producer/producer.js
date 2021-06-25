@@ -23,7 +23,7 @@ const producer = {
     //(Xoá 1 nhà sản xuất theo id)
     deleteProducer: (id) => {
         const url = `/xoa-nha-sx/${id}`;
-        return AxiosProducer.delete(url, id);
+        return AxiosProducer.delete(url);
     },
 };
 

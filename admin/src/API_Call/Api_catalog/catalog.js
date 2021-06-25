@@ -53,7 +53,7 @@ const catalog = {
     //(Xoá loại sản phẩm theo id)
     deleteProtype: (id) => {
         const url = `/xoa-loai/${id}`;
-        return AxiosCatalog.delete(url, id);
+        return AxiosCatalog.delete(url);
     }
 };
 

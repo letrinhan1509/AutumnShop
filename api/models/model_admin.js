@@ -9,7 +9,7 @@ var dataName = [];
     // Danh sách tất cả admin:
 exports.listAdmins = async () => {
     return new Promise( (hamOk, hamLoi) => {
-        let sql = `SELECT A.manv,A.admin,A.tennv,A.diachi,A.sodienthoai,A.quyen,A.trangthai 
+        let sql = `SELECT A.manv, A.admin, A.tennv, A.hinh, A.diachi, A.sodienthoai, A.quyen, A.trangthai 
         FROM admin as A`;
         db.query(sql, (err, result) => {
             if(err) {
@@ -21,7 +21,7 @@ exports.listAdmins = async () => {
     });
 };
     // Tìm kiếm admin theo id:
-exports.get_Admin_Id = (adminId) => {
+exports.get_Admin_Id = async (adminId) => {
     return new Promise( (hamOk, hamLoi) => {
         let sql = `SELECT * FROM admin WHERE manv = ${adminId}`;
         db.query(sql, (err, result) => {
@@ -35,7 +35,7 @@ exports.get_Admin_Id = (adminId) => {
     });
 };
     // Tìm kiếm admin theo tên:
-exports.getByName = (admin_name) => {
+exports.getByName = async (admin_name) => {
     return new Promise( (hamOk, hamLoi) => {
         let sql = `SELECT * FROM admin WHERE tennv LIKE '%${admin_name}%'`;
         db.query(sql, (err, result) => {
@@ -45,7 +45,7 @@ exports.getByName = (admin_name) => {
     });
 };
     // Tìm kiếm admin bằng số điện thoại:
-exports.getByPhone = (phone) => {
+exports.getByPhone = async (phone) => {
     return new Promise( (hamOk, hamLoi) => {
         let sql = `SELECT * FROM admin WHERE sodienthoai=${phone}`;
         db.query(sql, (err, result) => {
@@ -53,7 +53,7 @@ exports.getByPhone = (phone) => {
         });
     });
 };
-exports.check_Admin = (email) => {
+exports.check_Admin = async (email) => {
     return new Promise( (hamOK, hamLoi) => {
         let sql = `SELECT * FROM admin WHERE admin = '${email}'`;
         db.query(sql, (err, result) => {
@@ -65,8 +65,7 @@ exports.check_Admin = (email) => {
     )
 }
     // Thêm tài khoản admin:
-exports.insertAdmin = (data) => {
-    console.log(data);
+exports.insert_Admin = (data) => {
     return new Promise( (resolve, reject) => {
         let sql = "INSERT INTO admin SET ?";
         db.query(sql, data, (err, result) => {
@@ -79,9 +78,9 @@ exports.insertAdmin = (data) => {
     })
 }
     // Cập nhật thông tin tài khoản admin:
-exports.updateProfileAdmin = (adminId, pas, name, address, phone, permission) => {
+exports.updateProfileAdmin = (adminId, pas, name, img, address, phone, permission) => {
     return new Promise( (resolve, reject) => {
-        let sql = `UPDATE admin SET matkhau = '${pas}', tennv = '${name}', diachi = '${address}', sodienthoai = '${phone}', quyen = '${permission}' WHERE manv = '${adminId}'`;
+        let sql = `UPDATE admin SET matkhau = '${pas}', tennv = '${name}', hinh = '${img}', diachi = '${address}', sodienthoai = '${phone}', quyen = '${permission}' WHERE manv = '${adminId}'`;
         db.query(sql, (err, result) => {
             if(err){
                 console.log('Fail');
@@ -139,7 +138,7 @@ exports.insertStatusOr = (data) => {
         let sql = "INSERT INTO trangthai SET ?";
         db.query(sql, data, (err, result) => {
             if(err)
-                hamLoi(err);
+                reject(err);
             else{
                 console.log('Insert status order successfully')
                 resolve(result);

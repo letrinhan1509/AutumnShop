@@ -87,7 +87,7 @@ const EditProductType = (props) => {
                 onFinish={register}
                 initialValues={{
                     maloai:`${Type.data.maloai}`,
-                    name:`${Type.data.tenloai}`,
+                    tenloai:`${Type.data.tenloai}`,
                     madm:`${Type.data.madm}`,
                 }}
                 scrollToFirstError
@@ -103,7 +103,7 @@ const EditProductType = (props) => {
                     <Input disabled />
                 </Form.Item>
                 <Form.Item
-                    name="name"
+                    name="tenloai"
                     label="Tên loại"
                     rules={[
                         {
@@ -124,7 +124,7 @@ const EditProductType = (props) => {
                             {listCategory.map((item) => {
                                 return (
                                     <>
-                                        <Option value={item.madm}>{item.madm}</Option>
+                                        <Option value={item.madm}>{item.tendm}</Option>
                                     </>
                                 )
                             })}

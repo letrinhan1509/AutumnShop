@@ -229,6 +229,10 @@ const AddNV = (props) => {
                     name="address"
                     id="address"
                     label="Địa chỉ"
+                    rules={[{
+                        required: true,
+                        message: 'Vui lòng nhập địa chỉ !'
+                    }]}
                 >
                     <Input />
                 </Form.Item>

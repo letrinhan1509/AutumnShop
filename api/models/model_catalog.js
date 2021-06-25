@@ -171,10 +171,15 @@ exports.insert_Type = (data) => {
     })
 }
     // Cập nhật loại sản phẩm:
-exports.update_Type = (typeId, name) => {
-    let sql = `UPDATE loaisp SET tenloai = '${name}' WHERE maloai = '${typeId}'`;
-    db.query(sql, (err, result) => {
-        console.log('Update type success');
+exports.update_Type = (maloai, ten, madm) => {
+    return new Promise( (resolve, reject) => {
+        let sql = `UPDATE loaisp SET tenloai = '${ten}', madm = '${madm}' WHERE maloai = '${maloai}'`;
+        db.query(sql, (err, result) => {
+            if(err)
+                reject(err);
+            else
+                resolve(result);
+        })
     })
 }
     // Xoá loại sản phẩm:
@@ -187,7 +192,7 @@ exports.delete_Type = (typeId) => {
         db.query(sql_type, (err, result) => {
             if(err)
                 hamLoi(err);
-            else if(result[0] == null){
+            else if(result.length <= 0){
                 console.log("Xoá được!");
                 let sql = `DELETE FROM loaisp WHERE maloai='${typeId}'`;
                 db.query(sql, (err, result) => {

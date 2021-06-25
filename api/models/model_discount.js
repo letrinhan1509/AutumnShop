@@ -6,14 +6,16 @@ var dataList=[]; // biến để chứa dữ liệu đổ về cho controller
 exports.list_Discounts = async () => {
     return new Promise( (hamOK, hamLoi) => {
         let sql = `SELECT * FROM khuyenmai`;
-        db.query(sql, (err, result) => {
+        let query = db.query(sql, (err, result) => {
             if(err){
                 hamLoi(err);
             }else{
                 dataList = result;
+                console.log(dataList);
                 hamOK(dataList);
             }
         })
+        console.log("KQ:", query);
     })
 }
     // Danh sách các voucher:
@@ -117,7 +119,10 @@ exports.update_Discount = (id, ten, dk, voucher, ngaykt, trangthai) => {
     let sql = `UPDATE trangthai SET tenkm='${ten}', dieukien='${dk}', voucher='${voucher}', ngaykt='${ngaykt}', trangthai='${trangthai}'
     WHERE makm = '${id}'`;
     db.query(sql, (err, result) => {
-        console.log('Update status success');
+        if(err)
+            return err;
+        else
+            return result;
     })
 }
     // Khoá khuyến mãi:
@@ -129,15 +134,27 @@ exports.lock_Discount = (id) => {
 }
     // Mở khoá sản phẩm:
 exports.unlock_Discount = (id) => {
-    let sql = `UPDATE khuyenmai SET trangthai = 1 WHERE makm = '${id}'`;
-    db.query(sql, (err, result) => {
-        console.log('Unlock product success');
-    })
-}
-// Xoá khuyến mãi:
+    return new Promise( (resolve, reject) => {
+        let sql = `UPDATE khuyenmai SET trangthai = 1 WHERE makm = '${id}'`;
+        db.query(sql, (err, result) => {
+            if(err)
+                reject(err);
+            else{
+                console.log('Unlock product success');
+                resolve(result);
+            }
+        })
+    });
+};
+    // Xoá khuyến mãi:
 exports.delete = (id) => {
-    let sql = `DELETE FROM khuyenmai WHERE makm='${id}'`;
-    let query = db.query(sql, (err, result) => {
-        console.log('Delete success');
-    })
-}
+    return new Promise( (resolve, reject) => {
+        let sql = `DELETE FROM khuyenmai WHERE makm='${id}'`;
+        let query = db.query(sql, (err, result) => {
+            if(err)
+                reject(err);
+            else
+                resolve(result);
+        })
+    });
+};
