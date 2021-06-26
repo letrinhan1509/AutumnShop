@@ -29,7 +29,7 @@ const Home = (props) => {
 
     return (
         <>
-            <button onClick={() => firebase.auth().signOut()}>SIGH - OUT</button>
+            {/* <button onClick={() => firebase.auth().signOut()}>SIGH - OUT</button> */}
             <Carousel className="slider__bg" autoplay dots={false}>
                 <div className="box-img">
                     <img src="../images/slider/slider5.jpg" alt="slider" />

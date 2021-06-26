@@ -1,36 +1,60 @@
 import React, { useState, useEffect } from "react";
-import {
-  Row,
-  Col,
-  Checkbox,
-  Modal,
-  Button,
-  Input,
-  Steps,
-  message,
-  Form,
-} from "antd";
-import Payments2 from "./Payments2";
-import {
-  BankOutlined,
-  CreditCardOutlined,
-  LoadingOutlined,
-  SmileOutlined,
-} from "@ant-design/icons";
-import "./Cart";
-import Payments3 from "./Payments3";
+import { Row, Col, Button, Input, Steps, message, Form, Layout, Select, Divider } from "antd";
+import { CloseOutlined, RollbackOutlined } from "@ant-design/icons";
 import axios from "axios";
-import { useHistory } from "react-router-dom";
+import { useHistory, Link } from "react-router-dom";
+import "container/components-css/payments.scss"
+import city from 'API_Call/Api_city/city';
+
 const { Step } = Steps;
-const { TextArea } = Input;
-
-
+const { Option } = Select;
 const Payments = (props) => {
   const history = useHistory();
+  const cart = JSON.parse(localStorage.getItem("cart"));
+  const [listCart, setListCart] = useState([]);
+  const [order, setOrder] = useState([]);
+  console.log(cart);
+  useEffect(() => {
+    if (cart !== "") {
+      setListCart(cart);
+    }
+  }, [])
+  console.log(listCart);
+
+
+  //API Thành Phố
+  const [listCity, setlistCity] = useState([]);
+  useEffect(() => {
+    city.getAll().then((res) => {
+      setlistCity(res.data.city);
+    })
+  }, []);
+  console.log(listCity);
+  //API Quận - Huyện
+  const [listDistrict, setlistDistrict] = useState([]);
+  let idCity = "";
+  const onChangeCity = (e) => {
+    idCity = e;
+    city.getCityDistrict(idCity).then((res) => {
+      setlistDistrict(res.data.district);
+    })
+  };
+
+  //API Phường - Xã
+  const [listWard, setlistWard] = useState([]);
+  let idDistrict = "";
+  const onChangeDistrict = (e) => {
+    idDistrict = e;
+    city.getDistrictWard(idDistrict).then((res) => {
+      setlistWard(res.data.ward);
+    })
+  };
 
   const pay = (values) => {
+    values['cart'] = listCart;
+    localStorage.setItem('order',  JSON.stringify(values));
     console.log(values);
-    const url = "http://localhost:3001/users/api/payment";
+    /* const url = "http://localhost:3001/users/api/payment";
     axios
       .post(url, values)
       .then(async (res) => {
@@ -52,129 +76,182 @@ const Payments = (props) => {
         message.error(
           `Đạt hàng thất bại, vui lòng đăng nhập để đặt hàng ! \n ${err}`
         );
-      });
+      }); */
+      setTimeout(() => {
+        history.push('/xac-nhan-don-hang');
+      }, 2000)
   };
 
   /* useEffect(() => {
     localStorage.setItem(...["cart", JSON.stringify(props.cart)]);
   }, [props.cart]); */
 
-  const user = JSON.parse(localStorage.getItem("user"));
+  let ship = 10000;
 
   const [isCitizen, setisCitizen] = useState(true);
   const onChange = (e) => {
     setisCitizen(e.target.checked);
   };
-  const [visible, setVisible] = useState(false);
-  /* const userlog = localStorage.getItem() */
-  console.log(props.visible);
+
+
   return (
     <>
-      <Form onFinish={pay}>
-        <Button
-          htmlType="submit"
-          type="primary"
-          size={props.size}
-          onClick={() => setVisible(true)}
-        >
-          Thanh Toán
-        </Button>
-        <Modal
-          title="Payments"
-          centered
-          visible={visible}
-          onOk={() => setVisible(false)}
-          onCancel={() => setVisible(false)}
-          width={1000}
-          footer={null}
-        >
-          <div>
-            <Steps>
-              <Step
-                status="finish"
-                title="Make Payment"
-                icon={<LoadingOutlined />}
-              />
-              <Step status="process" title="Card Infomation" />
-              <Step status="wait" title="Done" icon={<SmileOutlined />} />
+      <Layout className="container">
+        <div className="cart-form">
+          <h1>Quy trình đặt hàng</h1>
+          <Row className="step">
+            <Steps size="small" current={0}>
+              <Step title="Địa chỉ giao hàng" />
+              <Step title="Xác nhận và thanh toán" />
+              <Step title="Hoàn tất đơn hàng" />
             </Steps>
-          </div>
-
-          <div style={{ marginTop: "100px" }}>
-            <Row>
-              <Col span={10} offset={1}>
-                <p>
-                  {user != null ? (<Input placeholder="Firt Name" value={user.username} />) : (<Input placeholder="Firt Name" />)}
-                </p>
-                <p>
-                  {user != null ? (<Input placeholder="Email Address" value={user.email} />) : (<Input placeholder="Email Address" />)}
-                </p>
-                <p>
-                  <h1>Select Method Of Payment</h1>
-                </p>
-                <p>
-                  <Checkbox.Group style={{ width: "100%" }}>
-                    <Row>
-                      <Col span={24}>
-                        <Row>
-                          <Col span={2}>
-                            <CreditCardOutlined
-                              style={{ fontSize: "20px", color: "blue" }}
-                            />
-                          </Col>
-                          <Col span={20}>Credit Cart Or Debit</Col>
-                          <Col>
-                            <Checkbox
-                              value="Credit"
-                              checked={isCitizen}
-                              onChange={onChange}
-                            ></Checkbox>
-                          </Col>
-                        </Row>
-                      </Col>
-
-                      <Col span={24}>
-                        <Row>
-                          <Col span={2}>
-                            <BankOutlined
-                              style={{ fontSize: "20px", color: "blue" }}
-                            />
-                          </Col>
-                          <Col span={20}>Thanh toán sau khi nhận hàng</Col>
-                          <Col>
-                            <Checkbox value="Bank"></Checkbox>
-                          </Col>
-                        </Row>
-                      </Col>
+          </Row>
+          <Row className="cart-wrapper">
+            <Form
+              name="pay"
+              onFinish={pay}
+            >
+              <Col className="col-one">
+                <div className="col-one-box">
+                  <Divider orientation="left" plain><h3>Thông tin khách hàng</h3></Divider>
+                  <Form.Item
+                    name="tenkh"
+                    label="Họ và tên"
+                    //tooltip="Đây là tên đăng nhập của bạn."
+                    rules={[
+                      {
+                        required: true,
+                        message: "Vui lòng nhập tên tài khoảng !!!",
+                        whitespace: true,
+                      },
+                    ]}
+                  >
+                    <Input />
+                  </Form.Item>
+                  <Form.Item
+                    name="sodienthoai"
+                    label="Điện thoại"
+                    rules={[{
+                      required: true,
+                      message: 'Vui lòng nhập số điện thoại !'
+                    }]}
+                  >
+                    <Input style={{ width: '100%' }} />
+                  </Form.Item>
+                  <Form.Item
+                    name="email"
+                    id="email"
+                    label="E-mail"
+                    rules={[
+                      {
+                        type: "email",
+                        message: "Vui lòng nhập đúng E-mail!",
+                      },
+                      {
+                        required: true,
+                        message: "Bạn chưa nhập E-mail !",
+                      },
+                    ]}
+                  >
+                    <Input />
+                  </Form.Item>
+                  <Form.Item
+                    name="city"
+                    id="city"
+                    label="Thành phố"
+                  >
+                    <Select onChange={onChangeCity}>
+                      {listCity.map((item) => {
+                        return (
+                          <>
+                            <Option value={item.ID}>{item.Title}</Option>
+                          </>
+                        )
+                      })}
+                    </Select>
+                  </Form.Item>
+                  <Form.Item
+                    name="district"
+                    id="district"
+                    label="Quận - Huyện"
+                  >
+                    <Select onChange={onChangeDistrict}>
+                      {listDistrict.map((item) => {
+                        return (
+                          <>
+                            <Option value={item.ID}>{item.Title}</Option>
+                          </>
+                        )
+                      })}
+                    </Select>
+                  </Form.Item>
+                  <Form.Item
+                    name="ward"
+                    id="ward"
+                    label="Phường - Xã"
+                  >
+                    <Select>
+                      {listWard.map((item) => {
+                        return (
+                          <>
+                            <Option value={item.ID}>{item.Title}</Option>
+                          </>
+                        )
+                      })}
+                    </Select>
+                  </Form.Item>
+                  <Form.Item
+                    name="address"
+                    id="address"
+                    label="Địa chỉ"
+                    rules={[{
+                      required: true,
+                      message: 'Vui lòng nhập địa chỉ !'
+                    }]}
+                  >
+                    <Input />
+                  </Form.Item>
+                </div>
+              </Col>
+              <Col className="col-two">
+                <Row>
+                  <Col><h3>Tóm tắt đơn hàng</h3></Col>
+                </Row>
+                {cart.map(item => (
+                  <Row className="product-count">
+                    <Col className="title"><p>{item.qty}x {item.tensp}</p></Col>
+                    <Col><p>{item.qty * item.gia.toFixed(2)}Đ</p></Col>
+                  </Row>
+                ))}
+                <Row className="product-code">
+                  <Col className="abc">
+                    <Row className="sum-cart">
+                      <Col className="title"><p>Tổng đơn hàng</p></Col>
+                      <Col className="price"><p>{props.PriceCart.toFixed(2)}Đ</p></Col>
                     </Row>
-                  </Checkbox.Group>
-                  ,
-                </p>
+                    <Input placeholder="Nhập mã khuyến mãi" />
+                    <Button type="primary">Áp dụng</Button>
+                    <Row className="ship">
+                      <Col className="title"><p>Phí vận chuyển</p></Col>
+                      <Col className="price"><p>10000Đ</p></Col>
+                    </Row>
+                  </Col>
+                </Row>
+                <Row className="product-sum">
+                  <Col className="title"><p>Tổng Thanh toán</p></Col>
+                  <Col className="price"><p>{ship + Number(props.PriceCart)}Đ</p></Col>
+                </Row>
+                <Row className="button-group">
+                  <Button className="pay" value="submit" type="primary" htmlType="submit" >Tiếp tục</Button>
+                  <Button className="continue">
+                    <Link to="/gio-hang">Quay lại<RollbackOutlined /></Link>
+                  </Button>
+                </Row>
               </Col>
-              <Col span={10} offset={1}>
-                <p>
-                  {user != null ? (<TextArea
-                    placeholder="Address Delivery"
-                    rows={5}
-                    value={user.diachi}
-                  />) : (<TextArea
-                    placeholder="Address Delivery"
-                    rows={5}
-                  />)}
-
-                </p>
-                <p>
-                  {user != null ? (<Input placeholder="Mobile Phone" value={user.sdt} />) : (<Input placeholder="Mobile Phone" />)}
-                  
-                </p>
-              </Col>
-            </Row>
-            <div style={{ paddingLeft: "78%" }}>
-              <h1>{isCitizen ? <Payments2 /> : <Payments3 />}</h1>
-            </div>
-          </div>
-        </Modal>
-      </Form>
+            </Form>
+          </Row>
+        </div>
+      </Layout>
     </>
   );
 };

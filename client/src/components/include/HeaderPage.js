@@ -1,4 +1,4 @@
-import { Row, Col, Badge, Menu, Dropdown } from 'antd';
+import { Row, Col, Badge, Menu, Dropdown, Button } from 'antd';
 import React, { useState } from "react";
 import { ShoppingCartOutlined, UserOutlined, UserAddOutlined, LoginOutlined, LogoutOutlined } from '@ant-design/icons';
 import { Link, useHistory } from "react-router-dom";
@@ -34,20 +34,16 @@ const HeaderPage = (props) => {
 
     const drops = (
         <Menu>
-            <Menu.Item key="donhang">
-                <a target="_blank" rel="donhang">
-                    Đơn hàng
-                </a>
+            <Menu.Item key="don-hang">
+                <Link to={'/don-hang'}>Đơn hàng</Link>
             </Menu.Item>
-            <Menu.Item key="UserInfo">
-                <a target="_blank" rel="UserInfo">
-                    Profile
-            </a>
+            <Menu.Item key="thong-tin-tai-khoan">
+                <Link to={'/thong-tin-tai-khoan'}>Profile</Link>
             </Menu.Item>
             <Menu.Item key="logout" onClick={logout} icon={<LogoutOutlined />}>
                 <a target="_blank" rel="logout">
                     Log out
-            </a>
+                </a>
             </Menu.Item>
         </Menu>
     );
@@ -93,13 +89,9 @@ const HeaderPage = (props) => {
                             </>
                         ) : (
                             <>
-                                <Menu.Item key="Thong-tin-tai-khoan" icon={<UserOutlined />}>
-                                    <Dropdown overlay={drops}>
-                                        <a className="ant-dropdown-link">
-                                            {User.username}
-                                        </a>
-                                    </Dropdown>
-                                </Menu.Item>
+                                <Dropdown overlay={drops} placement="bottomLeft">
+                                    <a className="ant-dropdown-link"><UserOutlined />{User.username}</a>
+                                </Dropdown>
                             </>
                         )}
                     </Menu>
@@ -111,22 +103,22 @@ const HeaderPage = (props) => {
                         className="menu2"
                         onClick={handClick}
                         selectedKeys={[current]}>
-                        
+
                         <Menu.Item key="/" style={menu} >
                             Home
                         </Menu.Item>
                         <Menu.Item key="san-pham/ao" style={menu}>
                             Shirt
-                                        </Menu.Item>
+                        </Menu.Item>
                         <Menu.Item key="san-pham/balo" style={menu}>
                             Bag
-                                        </Menu.Item>
+                        </Menu.Item>
                         <Menu.Item key="san-pham/giay" style={menu}>
                             Shoes
-                                        </Menu.Item>
+                        </Menu.Item>
                         <Menu.Item key="san-pham/phu-kien" style={menu}>
                             Acessories
-                                        </Menu.Item>
+                        </Menu.Item>
                     </Menu>
                 </Col>
             </Row>

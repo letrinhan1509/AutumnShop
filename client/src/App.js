@@ -11,6 +11,8 @@ import Footer from "./components/include/Footer";
 import Register from "container/UserPage/Register";
 import Login from "container/UserPage/Login";
 import Cart from "container/CartPage/Cart";
+import Payments from "container/CartPage/Payments";
+import Payments2 from "container/CartPage/Payments2";
 import Contact from "container/MainPage/Contact";
 import axios from "axios";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
@@ -24,8 +26,10 @@ import Shoes from "container/CatalogPage/Shoes";
 import SearchResult from "container/MainPage/SearchResult";
 import Accessories from "container/CatalogPage/Acessories";
 import Error404 from "container/MainPage/Error404";
+import Order from "container/MainPage/Order";
 import ScrollToTop from "container/Config/ScrollToTop";
 import product from "API_Call/Api_product/product";
+
 
 
 
@@ -234,11 +238,20 @@ useEffect(() => {
                 <Route path="/Timkiem">
                   <SearchResult kqSearch={kqSearch} countkqSearch={kqSearch.length} Thongbao_Them={Thongbao_Them} />
                 </Route>
-                <Route path="/Thong-tin-tai-khoan">
+                <Route path="/thong-tin-tai-khoan">
                   <UserInfo />
                 </Route>
                 <Route path="/gio-hang">
-                  <Cart cart={cart} CountCart={cart.length} addCart={addCart} removeCart={removeCart} removeProduct={removeProduct} PriceCart={sumPrice} />
+                  <Cart cart={cart} CountCart={cart.length} addCart={addCart} removeCart={removeCart} showDeleteProduct={showDeleteProduct} PriceCart={sumPrice} />
+                </Route>
+                <Route path="/nhap-thong-tin-giao-hang">
+                  <Payments cart={cart} CountCart={cart.length} PriceCart={sumPrice} />
+                </Route>
+                <Route path="/xac-nhan-don-hang">
+                  <Payments2 cart={cart} CountCart={cart.length} PriceCart={sumPrice} />
+                </Route>
+                <Route path="/don-hang">
+                  <Order />
                 </Route>
                 <Route path="/lien-he">
                   <Contact />

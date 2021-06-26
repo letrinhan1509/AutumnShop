@@ -17,6 +17,15 @@ const Select_Product = (props) => {
         console.log(`selected ${value}`);
     }
 
+    let pro = [];
+    pro = props.ListPro.filter(
+        ListPro => ListPro.masp.toString() === id
+    );
+    console.log(pro);
+    let visible = 4;
+
+
+
     const [size] = useState('large');
     const { TabPane } = Tabs;
 
@@ -68,47 +77,38 @@ const Select_Product = (props) => {
             ],
         }
     ];
-
-    const TabsProduct = () => (
-
-        <Tabs defaultActiveKey="1" style={{ width: 900 }}>
-            <TabPane tab="Product Infomation" key="1">
-                <p>
-                    Lorem ipsum, dolor sit amet consectetur adipisicing elit. Rerum magni velit vero hic temporibus eveniet, distinctio quas nemo, qui porro ex
-                    sapiente molestiae provident reiciendis saepe. Voluptate nihil perferendis assumenda.Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                    Rerum magni velit vero hic temporibus eveniet, distinctio quas nemo, qui porro ex sapiente molestiae provident reiciendis saepe. Voluptate nihil perferendis assumenda.
-            </p>
-                <p>
-                    Voluptate nihil perferendis assumenda.Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                    Rerum magni velit vero hic temporibus eveniet, distinctio quas nemo, qui porro ex sapiente molestiae provident reiciendis saepe. Voluptate nihil perferendis assumenda.
-                    Lorem ipsum, dolor sit amet consectetur adipisicing elit. Rerum magni velit vero hic temporibus eveniet, distinctio quas nemo, qui porro ex
-                    sapiente molestiae provident reiciendis saepe.
-            </p>
-            </TabPane>
-            <TabPane tab="Reviews" key="2">
-                <List
-                    className="comment-list"
-                    header={`${data.length} replies`}
-                    itemLayout="horizontal"
-                    dataSource={data}
-                    renderItem={item => (
-                        <li>
-                            <Comment
-                                actions={item.actions}
-                                author={item.author}
-                                avatar={item.avatar}
-                                content={item.content}
-                                datetime={item.datetime}
-                            />
-                        </li>
-                    )}
-                />
-            </TabPane>
-            <TabPane tab="Another Tab" key="3">
-                Content of Tab Pane 3
-          </TabPane>
-        </Tabs>
-    );
+    let mt = pro;
+    const TabsProduct = () => {
+        return (
+            <Tabs defaultActiveKey="1" style={{ width: 900 }}>
+                <TabPane tab="Product Infomation" key="1">
+                    <p>{mt[0].mota}</p>
+                </TabPane>
+                <TabPane tab="Reviews" key="2">
+                    <List
+                        className="comment-list"
+                        header={`${data.length} replies`}
+                        itemLayout="horizontal"
+                        dataSource={data}
+                        renderItem={item => (
+                            <li>
+                                <Comment
+                                    actions={item.actions}
+                                    author={item.author}
+                                    avatar={item.avatar}
+                                    content={item.content}
+                                    datetime={item.datetime}
+                                />
+                            </li>
+                        )}
+                    />
+                </TabPane>
+                <TabPane tab="Another Tab" key="3">
+                    Content of Tab Pane 3
+                </TabPane>
+            </Tabs>
+        );
+    };
 
 
 
@@ -133,18 +133,12 @@ const Select_Product = (props) => {
 
     }; */
 
-    let item = [];
-    item = props.ListPro.filter(
-        ListPro => ListPro.masp.toString() === id
-    );
-    console.log(item);
-    let visible = 4;
+
 
     return (
-
-        <Content>
+        <div>
             <Row className="cover-one">
-                {item.map((e) => {
+                {pro.map((e) => {
                     return (
                         <>
                             <Col className="img-box" key={e.key}>
@@ -154,7 +148,7 @@ const Select_Product = (props) => {
                                     </Col>
                                 </Row>
                                 <Row className="img-change">
-                                    {item.map((e) => {
+                                    {pro.map((e) => {
                                         return (
                                             <Col className="hinh"><img name={e.id} src={e.hinh} alt="product" /*onClick={(e) => handleTab(e.file, e)}*/ /></Col>
                                         );
@@ -187,17 +181,13 @@ const Select_Product = (props) => {
                                             <p>{e.tenloai}</p>
                                         </Col>
                                     </Row>
-                                    <Row>
-                                        <Col><p>Description:</p></Col>
-                                        <Col offset={3}><p>{e.mota}</p></Col>
-                                    </Row>
                                 </div>
                                 <div className="size-color">
                                     <Row className="box-one">
                                         <Col>
                                             <span>Select Color</span>
                                         </Col>
-                                        <Col> 
+                                        <Col>
                                             {
                                                 product.map((items) => {
                                                     return (
@@ -244,12 +234,12 @@ const Select_Product = (props) => {
                                         <Col>
                                             <Button className="btn-facebook" type="primary" icon={<FacebookOutlined />} size={size}>
                                                 Share on Facebook
-                                </Button>
+                                            </Button>
                                         </Col>
                                         <Col>
                                             <Button className="btn-switter" type="primary" icon={<TwitterOutlined />} size={size}>
                                                 Share on Twitter
-                                </Button>
+                                            </Button>
                                         </Col>
                                     </Row>
                                 </div>
@@ -303,7 +293,7 @@ const Select_Product = (props) => {
                     <TabsProduct />
                 </Col>
             </Row>
-        </Content>
+        </div>
     );
 }
 

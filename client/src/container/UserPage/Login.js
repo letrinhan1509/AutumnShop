@@ -39,8 +39,8 @@ const Login = () => {
     const login = (values) => {
         console.log(values);
         user
-        .login(values)
-        .then(async (res) => {
+            .login(values)
+            .then(async (res) => {
                 console.log(res.data);
                 if (res.data.status === "LoginSuccess") {
                     message.success(`Xin chào, ${res.data.data.username}`)
@@ -72,7 +72,7 @@ const Login = () => {
                         initialValues={{ remember: true }}
                         //initialValues={{ email: `${user.displayName}`,  }} map data usser 
                         onFinish={login}
-                        
+
                     >
                         <Form.Item
                             label="Email"
@@ -101,7 +101,9 @@ const Login = () => {
                             </Form.Item>
                         </div>
                     </Form>
-                    <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()} />
+                    <div className="social-network">
+                        <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()} />
+                    </div>
                 </Col>
             </Row>
         </div>

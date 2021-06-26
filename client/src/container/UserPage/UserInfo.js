@@ -2,7 +2,6 @@ import React from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import { Image, Input, Button, message, Form } from 'antd';
 import Meta from "antd/lib/card/Meta";
-import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import { useHistory } from "react-router-dom";
 import "container/components-css/Form.scss";
 import users from 'API_Call/Api_user/user';

@@ -1,10 +1,8 @@
-import { Col, Layout, Row, Button } from "antd";
+import { Col, Layout, Row, Button, Input } from "antd";
 import React, { useState, useEffect } from 'react';
 import "container/components-css/cart.scss"
-import { DeleteOutlined, RollbackOutlined } from '@ant-design/icons';
-import Paycart from "./Paycart";
+import { CloseOutlined, RollbackOutlined } from '@ant-design/icons';
 import { Link } from "react-router-dom";
-import LinkPage from "../../components/Link_Page";
 
 
 const { Content } = Layout;
@@ -21,111 +19,99 @@ const Cart = (props) => {
     console.log(user);
 
     return (
-        <Content className="cart-wrapper">
-
-            {
-                props.cart.length !== 0 ? (
-                    <>
-                        <LinkPage />
-                        <h1>Giỏ Hàng</h1>
-                        <p className="Count_Cart">Có {props.CountCart} sản phẩm trong giỏ hàng</p>
-                        <Row className="cart-title">
-                            <Col >SẢN PHẨM</Col>
-                            <Col >GIÁ</Col>
-                            <Col >SỐ LƯỢNG</Col>
-                            <Col >THÀNH TIỀN</Col>
-                        </Row>
-                    </>
-                ) : ("")
-            }
-
+        <Layout className="container">
             {props.cart.length === 0 ? (
                 <div className="cart-empty">
-                    <p>Giỏ hàng của bạn chưa có sản phẩm nào !</p>
                     <div>
-                        <Link to="/">
-                            <Button type="primary" shape="round" size={size}>
-                                Mua Hàng
-                            </Button>
-                        </Link>
+                        <p>Giỏ hàng của bạn chưa có sản phẩm nào !</p>
+                        <div>
+                            <Link to="/">
+                                <Button type="primary" shape="round" size={size}>
+                                    Mua Hàng
+                                </Button>
+                            </Link>
 
+                        </div>
+                        <img src="https://chillydraji.files.wordpress.com/2015/08/empty_cart.jpeg" alt="empty" />
                     </div>
-                    <img src="https://chillydraji.files.wordpress.com/2015/08/empty_cart.jpeg" alt="empty" />
                 </div>
             ) :
                 (
-                    props.cart.map((item) => (
-                        <Row className="cart-product">
-                            <Col className="cart-imgProduct" key={item.masp}>
-                                <img src={item.hinh} alt="imgProduct" />
+                    <div className="cart-form">
+                        <h1>Giỏ Hàng</h1>
+                        <Row className="cart-wrapper">
+                            <Col className="col-one">
+                                {props.cart.map((item) => (
+                                    <Row>
+                                        <Col className="abc">
+                                            <Row className="product-name">
+                                                <Col>
+                                                    <h3>{item.tensp}</h3>
+                                                </Col>
+                                                <Col>
+                                                    <Button onClick={() => props.showDeleteProduct(item)} type="primary" danger>
+                                                        <CloseOutlined />
+                                                    </Button>
+                                                </Col>
+                                            </Row>
+                                            <Row className="product-detail">
+                                                <Col key={item.masp}>
+                                                    <img src={item.hinh} alt="imgProduct" />
+                                                </Col>
+                                                <Col>
+                                                    <ul>
+                                                        <li>Màu: {item.mau}</li>
+                                                        <li>Size: {item.size}</li>
+                                                        <li>Giá: {item.gia}Đ</li>
+                                                    </ul>
+                                                </Col>
+                                            </Row>
+                                            <Row className="product-quantity">
+                                                <Col>
+                                                    <div className="quantity-box">
+                                                        <button onClick={() => props.removeCart(item)} className="remove">-</button>
+                                                        <p>{item.qty}</p>
+                                                        <button onClick={() => props.addCart(item)} className="add">+</button>
+                                                    </div>
+                                                </Col>
+                                                <Col><p>{item.qty * item.gia.toFixed(2)}Đ</p></Col>
+                                            </Row>
+                                        </Col>
+                                    </Row>
+                                ))}
+                                <Row><textarea placeholder="Ghi chú" /></Row>
+                                <Row className="product-count">
+                                    <Col><p>{props.cart.length} Sản phẩm</p></Col>
+                                    <Col><p>{props.PriceCart.toFixed(2)}Đ</p></Col>
+                                </Row>
                             </Col>
-                            <Col span={4} className="cart-deProduct">
-                                <p>{item.tensp}</p>
-                                <p>Màu: {item.mau}</p>
-                            </Col>
-                            <Col span={5} className="cart-price"><p>Giá: {item.gia}Đ</p></Col>
-                            <Col span={6} className="quantity-price">
-                                <div className="quantity-box">
-
-                                    <button onClick={() => props.removeCart(item)} className="remove">-</button>
-                                    {item.qty}
-                                    <button onClick={() => props.addCart(item)} className="add">+</button>
-
-                                </div>
-                            </Col>
-                            <Col offset={1} className="pay-box">
-                                <p>${item.qty * item.gia.toFixed(2)}Đ</p>
-                            </Col>
-                            <Col className="btn-box">
-                                <Button onClick={() => props.removeCart(item)} type="primary" danger>
-                                    <DeleteOutlined />
-                                </Button>
+                            <Col className="col-two">
+                                <Row className="product-count">
+                                    <Col><p>{props.cart.length} Sản phẩm</p></Col>
+                                    <Col><p>{props.PriceCart.toFixed(2)}Đ</p></Col>
+                                </Row>
+                                <Row className="product-code">
+                                    <Input placeholder="Nhập mã khuyến mãi" />
+                                    <Button type="primary">Áp dụng</Button>
+                                </Row>
+                                <Row className="product-sum">
+                                    <Col className="title"><p>Tổng đơn hàng</p></Col>
+                                    <Col className="price"><p>{props.PriceCart.toFixed(2)}Đ</p></Col>
+                                </Row>
+                                <Row className="button-group">
+                                    <Button className="pay" type="primary">
+                                        <Link to="/nhap-thong-tin-giao-hang">Tiến hành thanh toán</Link>
+                                    </Button>
+                                    <Button className="continue">
+                                        <Link to="/">Tiếp tục mua hàng <RollbackOutlined /></Link>
+                                    </Button>
+                                </Row>
                             </Col>
                         </Row>
-                    ))
+                    </div>
                 )
             }
-            {props.cart.length !== 0 && (
-                <>
-                    <Row className="cart-sum">
-                        <Col>
-                            <textarea
-                                placeholder="Ghi chú"
-                            />
-
-
-                        </Col>
-                        <Col className="line">
-                            <h3>Tổng Hóa đơn</h3>
-                            <div>
-                                {props.PriceCart.toFixed(2)}Đ
-                            </div>
-                        </Col>
-
-                    </Row>
-                    <Row className="warning">
-                        <Col >
-                            (*) Mọi thông tin của bạn sẽ được bảo mật
-                        </Col>
-                    </Row>
-                    <Row className="button-group">
-                        <Col>
-                            <Button type="primary" size={size}>
-                                <Link to="/">
-                                    Tiếp tục mua hàng <RollbackOutlined />
-                                </Link>
-                            </Button>
-                        </Col>
-                        <Col className="payments">
-                            <Paycart payCart={props.cart} size={size} />
-                        </Col>
-
-
-                    </Row>
-                </>
-            )}
-
-        </Content>
+        </Layout>
     );
 }
 
