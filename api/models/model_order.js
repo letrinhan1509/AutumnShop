@@ -100,10 +100,11 @@ exports.update_Order = (orderId, delivery, status) => {
     })
 }
     // Tạo đơn hàng: (data là 1 mảng các sản phẩm)
-exports.insert_Order = (userId, total, promoCode, orderDate, data) => {
+exports.insert_Order = (userId, phone, address, total, promoCode, orderDate, data) => {
+    console.log(data);
     return new Promise( (hamOK, hamLoi) => {
         arrProduct = [];
-        let sql = `INSERT INTO donhang(makh, tongtien, makm, ngaydat) VALUES ('${userId}', '${total}', '${promoCode}', '${orderDate}')`;
+        let sql = `INSERT INTO donhang(makh, sodienthoai, diachi, tongtien, makm, ngaydat) VALUES ('${userId}', '${phone}', '${address}', '${total}', '${promoCode}', '${orderDate}')`;
         db.query(sql, (err, result) => {
             if(err)
                 hamLoi(err);
@@ -121,6 +122,8 @@ exports.insert_Order = (userId, total, promoCode, orderDate, data) => {
                 db.query(sql_orderDetail, data, (err, result1) => {    // Câu lệnh tạo chi tiết đơn hàng.
                     if(err)
                         hamLoi(err);
+                    else
+                        hamOK(result1);
                 })
             }
         })

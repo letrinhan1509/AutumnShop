@@ -56,27 +56,30 @@ router.get('/khach-hang/:id', async function (req, res) {
     // Tạo đơn hàng:
 router.post('/tao-don-hang', async function(req, res) {
     let makh = req.body.makh;
+    let sodienthoai = req.body.order.sodienthoai;
+    let add = req.body.order.address;
+    let ward = req.body.order.ward;
     let tongtien = req.body.tongtien;
     let makm = req.body.makm;
     var today = new Date();
     var ngaydat = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+    let cart = req.body.order.cart;
+    console.log(req.body);
+    //console.log(cart);
+    /* cart.forEach(element => {
+        console.log(element.masp);
+    }); */
     
-    if(makh == '' && tongtien == ''){
+    /* if(makh == undefined && tongtien == undefined){
         res.status(400).json({"status": "Fail", "message": "Tạo đơn hàng không thành công! Thiếu thông tin!"});
     }else{
         try {
-            let data = {
-                masp: masp,
-                makh: makh,
-                noidung: noidung,
-                ngaybl: ngaybl,
-            };
-            let query = await modelOrder.insert_Order(makh, tongtien, makm, ngaydat);
+            let query = await modelOrder.insert_Order(makh, sodienthoai, tongtien, makm, ngaydat);
             res.status(200).json({"status": "Success", "message": "Tạo đơn hàng thành công!", "result": query});
         } catch (error) {
             res.status(400).json({"status": "Fail", "error": error });
         }
-    }
+    } */
 });
 
 

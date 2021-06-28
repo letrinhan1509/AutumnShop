@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "nodemon ./models/www"
+    "start": "nodemon ./models/www",
+    "dev": "nodemon ./models/www"
   },
   "dependencies": {
     "axios": "^0.21.1",

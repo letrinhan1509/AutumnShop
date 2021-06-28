@@ -1,5 +1,7 @@
 const { json } = require('body-parser');
 var mysql = require('mysql');
+const dotenv = require('dotenv');
+dotenv.config({ path: './config.env' });
 
 var db = mysql.createConnection({
     host: 'localhost',
@@ -7,7 +9,6 @@ var db = mysql.createConnection({
     password: '',
     database: 'autumn_shop'
 })
-
 
 db.connect(function (err) {  
     if (err){

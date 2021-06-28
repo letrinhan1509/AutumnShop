@@ -42,13 +42,13 @@ const Payments2 = (props) => {
     values['order'] = order;
     values['pay'] = cod;
     console.log(values);
-    /* const url = "http://localhost:3001/users/api/payment";
+    /* const url = "http://localhost:5000/api/v1/don-hang/tao-don-hang";
     axios
       .post(url, values)
       .then(async (res) => {
-        if (res.data.status === "success") {
+        if (res.data.status === "Success") {
           console.log(values);
-          message.success(`Xin chào, ${res.data.data.username}`);
+          message.success("Đặt hàng thành công !");
           console.log(res.data.data.username);
           localStorage.setItem("token", res.data.token);
           localStorage.setItem("user", JSON.stringify(res.data.data));
