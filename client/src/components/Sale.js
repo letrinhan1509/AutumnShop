@@ -53,8 +53,8 @@ const Sale = () => {
                                             mask: <div className="link_product">
 
                                                 <span>
-                                                    Collection
-                                            </span>
+                                                    xem thêm
+                                                </span>
                                             </div>
                                         }}
                                     />
@@ -92,7 +92,7 @@ const Sale = () => {
                                             mask: <div className="link_product">
 
                                             <span>
-                                                Collection
+                                                xem thêm
                                             </span>
                                             </div>
                                         }}

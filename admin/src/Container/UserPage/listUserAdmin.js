@@ -133,6 +133,7 @@ const ListUserAdmin = () => {
       title: 'Địa chỉ',
       dataIndex: 'diachi',
       key: 'diachi',
+      width: 300,
     },
     {
       title: 'Chức vụ',

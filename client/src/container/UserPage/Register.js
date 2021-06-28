@@ -22,7 +22,7 @@ const RegisterForm = () => {
     const register = (values) => {
         user.register(values).then((res) => {
             message.success("Register successfully!")
-            setTimeout(() => { history.push('/login') }, 2000)
+            setTimeout(() => { history.push('/dang-nhap') }, 2000)
         })
             .catch(err => {
                 message.error(`Login fail!\n ${err.response.data.message}`)

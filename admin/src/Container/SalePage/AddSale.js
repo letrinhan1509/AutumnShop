@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from "axios"
-import { Form, Input, Button, Select, Checkbox, DatePicker, Space  } from 'antd';
-import { useHistory } from "react-router-dom"
-import "./scss/addpro.scss"
+import { Form, Input, Button, Select, Checkbox, DatePicker, Space } from 'antd';
+import { useHistory, Link } from "react-router-dom"
+import "Container/scss/addpro.scss";
 const { Option } = Select;
 const formItemLayout = {
     labelCol: {
@@ -39,11 +39,11 @@ const AddSale = (props) => {
     function startChange(date) {
         setDatestart(date._d);
         //a = date._d;
-      }
+    }
     function endChange(date) {
         setDateEnd(date._d);
         //a = date._d;
-      }
+    }
     const addProduct = (values) => {
         console.log(datestart);
         values["ngaybd"] = datestart;
@@ -128,7 +128,7 @@ const AddSale = (props) => {
                     >
                         <Input />
                     </Form.Item>
-                    <Form.Item
+{/*                     <Form.Item
                         name="voucher"
                         label="Voucher"
                         rules={[
@@ -139,7 +139,7 @@ const AddSale = (props) => {
                         ]}
                     >
                         <Input />
-                    </Form.Item>
+                    </Form.Item> */}
                     <Form.Item
                         label="Ngày bắt đầu"
                         rules={[
@@ -163,9 +163,14 @@ const AddSale = (props) => {
                         <DatePicker onChange={endChange} />
                     </Form.Item>
                     <Form.Item {...tailFormItemLayout}>
-                        <Button type="primary" htmlType="submit">
+                        <Link to={'/danh-sach-khuyen-mai'} >
+                            <Button className="ant-btn ant-btn-dashed " htmlType="submit" style={{ marginLeft: -30 }}>
+                                Trở về
+                            </Button>
+                        </Link>
+                        <Button type="primary" htmlType="submit" style={{ marginLeft: 30 }}>
                             Thêm khuyến mãi
-                    </Button>
+                        </Button>
                     </Form.Item>
                 </Form>
             </div>

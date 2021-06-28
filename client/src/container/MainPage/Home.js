@@ -57,7 +57,7 @@ const Home = (props) => {
                         </div> */}
                         <h1>THE WINTER</h1>
 
-                        <p>COLLECTION</p>
+                        <p>COLLECTION-2021</p>
                         <div className="button-wrapper"><button className="btn10">Xem</button></div>
                     </div>
 

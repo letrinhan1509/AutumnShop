@@ -93,17 +93,17 @@ const ListComment = (props) => {
     filteredInfo = filteredInfo || {}; */
     const columns = [
         {
-          title: 'Mã bình luận',
+          title: 'Mã',
           dataIndex: 'mabl',
           key: 'mabl',
         },
         {
-          title: 'Mã sản phẩm',
+          title: 'Mã SP',
           dataIndex: 'masp',
           key: 'masp',
         },
         {
-          title: 'Mã khách hàng',
+          title: 'Mã KH',
           dataIndex: 'makh',
           key: 'makh',
         },
@@ -111,6 +111,7 @@ const ListComment = (props) => {
             title: 'Nội dung',
             dataIndex: 'noidung',
             key: 'noidung',
+            width: 400
         },
         {
             title: 'Ngày bình luận',
@@ -139,7 +140,7 @@ const ListComment = (props) => {
           )
         },
         {
-            title: 'Xem chi tiết',
+            title: 'Chi tiết',
             dataIndex: 'mabl',
             key: 'mabl',
             render: (mabl) => <Button data-id={mabl} type="primary" icon={<SearchOutlined />} onClick={detail} />
@@ -174,9 +175,9 @@ const ListComment = (props) => {
     
     return (
     <>
-        <div className="form-wrapper">
+        <div className="product-wrapper">
             <h2 style={{ textAlign: 'center', marginTop: "20px", marginBottom: "20px" }}>DANH SÁCH TẤT CẢ BÌNH LUẬN</h2>
-            <Table dataSource={listComment} columns={columns} pagination={{ pageSize: 8 }}  size="small" />
+            <Table className="proItem" dataSource={listComment} columns={columns} pagination={{ pageSize: 8 }}  size="small" />
         
             {/* <a className="ant-btn ant-btn-primary" href='/Themsanpham'  type="primary">Thêm sản phẩm</a> */}
         </div>

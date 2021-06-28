@@ -35,12 +35,19 @@ const Payments2 = (props) => {
   const [cod, setisCod] = useState(true);
   const onChange = (e) => {
     setisCod(e.target.value);
-    
   };
-  console.log(cod);
+  const [notes, setNotes] = useState("");
+  const note = (e) => {
+    setNotes(e.target.value);
+  };
+  const [ship, setShip] = useState(20000);
+
   const pay = (values) => {
     values['order'] = order;
+    values['note'] = notes;
     values['pay'] = cod;
+    values['ship'] = ship;
+    values['sumpay'] = ship + Number(props.PriceCart);
     console.log(values);
     /* const url = "http://localhost:5000/api/v1/don-hang/tao-don-hang";
     axios
@@ -71,7 +78,7 @@ const Payments2 = (props) => {
     localStorage.setItem(...["cart", JSON.stringify(props.cart)]);
   }, [props.cart]); */
 
-  let ship = 10000;
+  
 
 
 
@@ -134,7 +141,7 @@ const Payments2 = (props) => {
                     <Button type="primary">Áp dụng</Button>
                     <Row className="ship">
                       <Col className="title"><p>Phí vận chuyển</p></Col>
-                      <Col className="price"><p>10000Đ</p></Col>
+                      <Col className="price"><p>{ship}</p></Col>
                     </Row>
                   </Col>
                 </Row>
@@ -142,6 +149,7 @@ const Payments2 = (props) => {
                   <Col className="title"><p>Tổng Thanh toán</p></Col>
                   <Col className="price"><p>{ship + Number(props.PriceCart)}Đ</p></Col>
                 </Row>
+                <Row><textarea placeholder="Ghi chú" onChange={note}/></Row>
                 <Row className="button-group">
                   <Button className="pay" value="submit" type="primary" htmlType="submit" >
                     {/* <Link to="/nhap-thong-tin-giao-hang">Tiếp tục</Link> */}Tiếp tục

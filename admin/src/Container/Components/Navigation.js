@@ -36,7 +36,7 @@ const Navigation = () => {
                                 <Menu.Item key="danh-sach-admin" icon={<ProfileOutlined />}>Nhân viên</Menu.Item>
                             </SubMenu>
                             <SubMenu key="sub3" icon={<AppstoreOutlined />} title="Quản lý danh mục">
-                                <Menu.Item key="tat-ca-san-pham" icon={<AppstoreOutlined />} >Danh sách sản phẩm</Menu.Item>
+                                <Menu.Item key="tat-ca-san-pham" icon={<UnorderedListOutlined />} >Danh sách sản phẩm</Menu.Item>
                                 <Menu.Item key="danh-sach-loai" icon={<UnorderedListOutlined />} >Danh sách loại</Menu.Item>
                                 <Menu.Item key ="danh-sach-nha-sx" icon={<UnorderedListOutlined />} >Danh sách nhà sản xuất</Menu.Item>
                                 <Menu.Item key="danh-muc-san-pham" icon={<UnorderedListOutlined />}>Danh mục sản phẩm</Menu.Item>
