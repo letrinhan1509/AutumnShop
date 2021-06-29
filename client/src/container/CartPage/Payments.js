@@ -86,7 +86,7 @@ const Payments = (props) => {
     localStorage.setItem(...["cart", JSON.stringify(props.cart)]);
   }, [props.cart]); */
 
-  let ship = 10000;
+  let ship = 20000;
 
   const [isCitizen, setisCitizen] = useState(true);
   const onChange = (e) => {
@@ -233,7 +233,7 @@ const Payments = (props) => {
                     <Button type="primary">Áp dụng</Button>
                     <Row className="ship">
                       <Col className="title"><p>Phí vận chuyển</p></Col>
-                      <Col className="price"><p>10000Đ</p></Col>
+                      <Col className="price"><p>20000Đ</p></Col>
                     </Row>
                   </Col>
                 </Row>

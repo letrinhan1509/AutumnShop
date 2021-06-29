@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from "axios"
-import { Form, Input, Button, Select, Checkbox, DatePicker, Space } from 'antd';
+import { Form, Input, Button, Select, Checkbox, DatePicker, Space, message } from 'antd';
 import { useHistory, Link } from "react-router-dom"
 import "Container/scss/addpro.scss";
 const { Option } = Select;
+const { TextArea } = Input;
 const formItemLayout = {
     labelCol: {
         xs: { span: 22 },
@@ -48,25 +49,26 @@ const AddSale = (props) => {
         console.log(datestart);
         values["ngaybd"] = datestart;
         values["ngaykt"] = dateEnd;
-        console.log(values)
-
-
+        console.log(values);
 
         //let nameImg =urldown;
         /*   values["img"] = urldown;
           
-          console.log(values) */
-        /* const url = "http://127.0.0.1:5000/api/v1/add-product"
+        console.log(values) */
+        /* const url = "http://127.0.0.1:5000/api/v1/khuyen-mai/them-voucher"
         axios.post(url, values).then((res) => {
-            message.success(res.data.message)
-            setTimeout(() => {
-                history.push('/all');
-            }, 2000)
+            if (res.data.status === "Success") {
+                message.success(res.data.message)
+                setTimeout(() => {
+                    history.push('/danh-sach-khuyen-mai');
+                }, 1000)
+            } else
+                message.error(res.data.message);
         })
             .catch(err => {
                 console.log(err.response);
-                message.error(`Login fail!\n ${err.response.data}`)
-            }) */
+                message.error(`Tạo khuyến mãi thất bại !\n ${err.response.data}`)
+            }); */
     };
     const [fileList, setFileList] = useState([]);
     const [listProduct, setlistProduct] = useState([]);
@@ -88,7 +90,7 @@ const AddSale = (props) => {
                     onFinish={addProduct}
                     scrollToFirstError
                 >
-                    <Form.Item
+                    {/* <Form.Item
                         name="makm"
                         label="Mã khuyến mãi"
                         rules={[
@@ -103,14 +105,14 @@ const AddSale = (props) => {
                         ]}
                     >
                         <Input />
-                    </Form.Item>
+                    </Form.Item> */}
                     <Form.Item
                         name="tenkm"
                         label="Tên khuyến mãi"
                         rules={[
                             {
-                                //required: true,
-                                message: 'Nhập tên khuyến mãi!',
+                                required: true,
+                                message: 'Vui lòng nhập tên khuyến mãi!',
                             },
                         ]}
                     >
@@ -122,30 +124,42 @@ const AddSale = (props) => {
                         rules={[
                             {
                                 //required: true,
-                                message: 'Nhập điều kiện!',
+                                message: 'Nhập điều kiện !',
                             },
                         ]}
                     >
                         <Input />
                     </Form.Item>
-{/*                     <Form.Item
-                        name="voucher"
-                        label="Voucher"
+                    <Form.Item
+                        name="giagiam"
+                        label="Giá giảm"
                         rules={[
                             {
                                 //required: true,
-                                message: 'Nhập voucher!',
+                                message: 'Vui lòng nhập giá được giảm!',
                             },
                         ]}
                     >
                         <Input />
-                    </Form.Item> */}
+                    </Form.Item>
+                    <Form.Item
+                        name="ghichu"
+                        label="Ghi chú"
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Vui lòng nhập ghi chú cho khuyến mãi này !',
+                            },
+                        ]}
+                    >
+                        <TextArea rows={3}/>
+                    </Form.Item>
                     <Form.Item
                         label="Ngày bắt đầu"
                         rules={[
                             {
                                 required: true,
-                                message: 'chọn ngày bắt đầu!',
+                                message: 'Vui lòng chọn ngày bắt đầu!',
                             },
                         ]}
                     >
@@ -156,7 +170,7 @@ const AddSale = (props) => {
                         rules={[
                             {
                                 required: true,
-                                message: 'chọn ngày thúc!',
+                                message: 'Vui lòng chọn ngày kết thúc!',
                             },
                         ]}
                     >

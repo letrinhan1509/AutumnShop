@@ -49,20 +49,17 @@ const Payments2 = (props) => {
     values['ship'] = ship;
     values['sumpay'] = ship + Number(props.PriceCart);
     console.log(values);
-    /* const url = "http://localhost:5000/api/v1/don-hang/tao-don-hang";
+    const url = "http://localhost:5000/api/v1/don-hang/tao-don-hang";
     axios
       .post(url, values)
       .then(async (res) => {
         if (res.data.status === "Success") {
           console.log(values);
-          message.success("Đặt hàng thành công !");
-          console.log(res.data.data.username);
-          localStorage.setItem("token", res.data.token);
-          localStorage.setItem("user", JSON.stringify(res.data.data));
+          message.success(res.data.message);
           setTimeout(() => {
             history.push("/");
             window.location.reload();
-          }, 2000);
+          }, 1000);
         } else {
           message.error("Đạt hàng thất bại, vui lòng đăng nhập để đặt hàng !");
         }
@@ -71,7 +68,7 @@ const Payments2 = (props) => {
         message.error(
           `Đạt hàng thất bại, vui lòng đăng nhập để đặt hàng ! \n ${err}`
         );
-      }); */
+      });
   };
 
   /* useEffect(() => {

@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Image, Row, Col, Input, Button, message, Select, Table } from 'antd';
 import Meta from "antd/lib/card/Meta";
 import { useHistory, Link } from "react-router-dom";
 import "Container/scss/addpro.scss";
-import users from 'API_Call/Api_user/user';
+import order from 'API_Call/Api_order/order';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -11,8 +11,15 @@ const user = JSON.parse(localStorage.getItem("user"));
 console.log(user);
 const ListOrder = (props) => {
     const history = useHistory();
+    const [ListOrder, setListOrder] = useState([]);
 
-
+    //API List Order:
+    useEffect(() => {
+        order.getAll().then((res) => {
+        setListOrder(res.data.data);
+        setWordSearch(res.data.data);
+        })
+    }, []);
 
     function removeAccents(str) {
         return str.normalize('NFD')
@@ -83,14 +90,49 @@ const ListOrder = (props) => {
             key: 'makh',
         },
         {
+            title: 'Tên khách hàng',
+            dataIndex: 'tenkh',
+            key: 'tenkh',
+        },
+        {
+            title: 'Email',
+            dataIndex: 'email',
+            key: 'email',
+        },
+        {
+            title: 'Số điện thoại',
+            dataIndex: 'sodienthoai',
+            key: 'sodienthoai',
+        },
+        {
+            title: 'Địa chỉ',
+            dataIndex: 'diachi',
+            key: 'diachi',
+        },
+        {
+            title: 'Tiền ship',
+            dataIndex: 'tienship',
+            key: 'tienship',
+        },
+        {
             title: 'Tổng tiền',
             dataIndex: 'tongtien',
             key: 'tongtien',
         },
         {
+            title: 'Ghi chú',
+            dataIndex: 'ghichu',
+            key: 'ghichu',
+        },
+        {
             title: 'Mã khuyến mãi',
             dataIndex: 'makm',
             key: 'makm',
+        },
+        {
+            title: 'Hình thức',
+            dataIndex: 'hinhthuc',
+            key: 'hinhthuc',
         },
         {
             title: 'Ngày đặt',
@@ -101,6 +143,11 @@ const ListOrder = (props) => {
             title: 'Ngày giao',
             dataIndex: 'ngaygiao',
             key: 'ngaygiao',
+        },
+        {
+            title: 'Trạng thái',
+            dataIndex: 'trangthai',
+            key: 'trangthai',
         },
         {
             title: 'Mã nhân viên',
@@ -127,9 +174,6 @@ const ListOrder = (props) => {
                     </Select>
                 </div>
                 <div className="btn-wrapper" >
-                    <Button type="primary">
-                        Đơn hàng COD
-                    </Button>
                     <Button type="primary">
                         Đơn hàng GHTK
                     </Button>

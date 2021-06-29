@@ -7,7 +7,7 @@ import { storage } from 'firebase/firebase';
 import React, { useEffect, useState } from 'react';
 import { Link, useHistory } from "react-router-dom";
 import "Container/scss/addpro.scss";
-
+const { TextArea } = Input;
 
 const { Option } = Select;
 const formItemLayout = {
@@ -316,7 +316,7 @@ const AddProduct = (props) => {
                             }
                         ]}
                     >
-                        <Input />
+                        <TextArea rows={3} />
                     </Form.Item>
                     <Form.Item name="trangthai"
                         label="Trạng thái"

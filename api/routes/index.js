@@ -37,7 +37,6 @@ router.get('/city/:id', async function(req, res) {
         axios.get(url)
             .then(function (response) {
                 // handle success
-                console.log(response.data.Title);
                 res.status(200).json({ "status": "Success", "city": response.data });
             })
             .catch(function (error) {

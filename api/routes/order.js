@@ -1,3 +1,4 @@
+const axios = require('axios');
 var express = require('express');
 var router = express.Router();
 
@@ -32,9 +33,9 @@ router.get('/:id/chi-tiet-dhang', async function (req, res) {
     try {
         let orderId = req.params.id;
         let order = await modelOrder.get_detailOrder(orderId);
-        res.status(200).json({"status": "Success", "data": order});
+        res.status(200).json({"status": "Success", "message": "Lấy chi tiết đơn hàng theo mã đơn hàng thành công !", "data": order});
     } catch (error) {
-        res.status(400).json({"status": "Fail", "error": error})
+        res.status(400).json({"status": "Fail", "message": "Lỗi...! Không thể lấy chi tiết đơn hàng theo mã đơn hàng !", "error": error})
     }
 });
 // Đơn hàng theo mã khách hàng:
@@ -43,11 +44,11 @@ router.get('/khach-hang/:id', async function (req, res) {
         let userId = req.params.id;
         let order = await modelOrder.get_By_userId(userId);
         if(order == -1)
-            res.status(400).json({ "status": "Fail", "message": "Không có đơn hàng nào!" });
+            res.status(400).json({ "status": "Fail", "message": "Không có đơn hàng nào !" });
         else
-            res.status(200).json({ "status": "Success", "data": order});
+            res.status(200).json({ "status": "Success", "message": "Lấy đơn hàng thành công !", "data": order});
     } catch (error) {
-        res.status(400).json({ "status": "Fail", "message": "Lỗi cú pháp...!", "error": error })
+        res.status(400).json({ "status": "Fail", "message": "Lỗi...! Không thể lấy đơn hàng theo mã khách hàng !", "error": error })
     }
 });
 
@@ -56,30 +57,53 @@ router.get('/khach-hang/:id', async function (req, res) {
     // Tạo đơn hàng:
 router.post('/tao-don-hang', async function(req, res) {
     let makh = req.body.makh;
+    let tenkh = req.body.order.tenkh;
+    let email = req.body.order.email;
     let sodienthoai = req.body.order.sodienthoai;
-    let add = req.body.order.address;
+    let address = req.body.order.address;
     let ward = req.body.order.ward;
-    let tongtien = req.body.tongtien;
+    let tongtien = req.body.sumpay;
     let makm = req.body.makm;
+    let ship = req.body.ship;
+    let ghichu = req.body.note;
+    let hinhthuc = req.body.pay; 
     var today = new Date();
-    var ngaydat = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+    var ngaydat = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate()+' '+today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
     let cart = req.body.order.cart;
-    console.log(req.body);
-    //console.log(cart);
-    /* cart.forEach(element => {
-        console.log(element.masp);
-    }); */
     
-    /* if(makh == undefined && tongtien == undefined){
-        res.status(400).json({"status": "Fail", "message": "Tạo đơn hàng không thành công! Thiếu thông tin!"});
-    }else{
-        try {
-            let query = await modelOrder.insert_Order(makh, sodienthoai, tongtien, makm, ngaydat);
-            res.status(200).json({"status": "Success", "message": "Tạo đơn hàng thành công!", "result": query});
-        } catch (error) {
-            res.status(400).json({"status": "Fail", "error": error });
-        }
-    } */
+    try {
+        if(makm == undefined){
+            var url = "https://thongtindoanhnghiep.co/api/ward/" + ward;
+            axios.get(url)
+                .then(async function (response) {
+                    let tpho = response.data.TinhThanhTitle;
+                    let quan = response.data.QuanHuyenTitle;
+                    let phuong = response.data.Title;
+                    let diachi = address + ', ' + phuong + ', ' + quan + ', ' + tpho;
+                    let query = await modelOrder.insert_Order(makh, tenkh, email, sodienthoai, diachi, ship, tongtien, ghichu, hinhthuc, ngaydat, cart);
+                    res.status(200).json({"status": "Success", "message": "Tạo đơn hàng thành công !"});
+                })
+                .catch(function (error) {
+                    res.status(400).json({ "status": "Fail", "message": "Lỗi... GET DETAIL DISTRICT !!!", "error": error });
+                });
+        } else {
+            var url = "https://thongtindoanhnghiep.co/api/ward/" + ward;
+            axios.get(url)
+                .then(async function (response) {
+                    let tpho = response.data.TinhThanhTitle;
+                    let quan = response.data.QuanHuyenTitle;
+                    let phuong = response.data.Title;
+                    let diachi = address + ', ' + phuong + ', ' + quan + ', ' + tpho;
+                    let query = await modelOrder.insert_Order_PromoCode(makh, tenkh, email, sodienthoai, diachi, ship, tongtien, ghichu, makm, hinhthuc, ngaydat, cart);
+                    res.status(200).json({"status": "Success", "message": "Tạo đơn hàng thành công !"});
+                })
+                .catch(function (error) {
+                    res.status(400).json({ "status": "Fail", "message": "Lỗi... GET DETAIL DISTRICT !!!", "error": error });
+                });
+        } 
+    } catch (error) {
+        res.status(400).json({"status": "Fail", "message": "Lỗi...! Tạo đơn hàng không thành công!", "error": error });
+    }
 });
 
 

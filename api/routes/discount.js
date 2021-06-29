@@ -26,5 +26,18 @@ router.get('/voucher', async function(req, res) {
 });
 
 
+// API POST:
+// Thêm voucher:
+router.post('/them-voucher', async function(req, res) {
+    let tenkm = req.body.tenkm;
+    let dieukien = req.body.dieukien;
+    let giagiam = req.body.giagiam;
+    let ghichu = req.body.ghichu;
+    let ngaybd = req.body.ngaybd;
+    let ngaykt = req.body.ngaykt;
+    console.log(req.body);
+    console.log(ngaybd);
+});
+
 
 module.exports = router;
