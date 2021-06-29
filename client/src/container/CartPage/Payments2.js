@@ -56,8 +56,10 @@ const Payments2 = (props) => {
         if (res.data.status === "Success") {
           console.log(values);
           message.success(res.data.message);
+          localStorage.removeItem("cart");
+          localStorage.removeItem("order");
           setTimeout(() => {
-            history.push("/");
+            history.push("/hoan-tat-don-hang");
             window.location.reload();
           }, 1000);
         } else {

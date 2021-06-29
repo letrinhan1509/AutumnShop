@@ -92,8 +92,18 @@
                 display: flex;
                 justify-content: space-evenly;
                 width: 90%;
+                li{
+                    font-size: 22px;
+                    text-transform: uppercase;
+                    font-weight: 700;
+                }
                 
             }
         }
     }
+}
+.ant-menu-vertical.ant-menu-sub:not([class*='-active']){
+    margin-bottom: 10px;
+    font-size: 18px;
+    width: 200px;
 }

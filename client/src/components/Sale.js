@@ -64,8 +64,9 @@ const Sale = () => {
                     </Col>
                     <Col className="right">
                         <p>
-                            <span>K</span>hác với mùa đông, thời trang mùa hè có phần phóng khoáng và thoải mái hơn. Outfit không cần quá nhiều layer cầu kì mà vẫn nổi bật với chất 
-                            liệu mềm rũ và hoạ tiết độc đáo. Một chút “ mood “ biển mà tụi mình muốn gửi đến cho các bạn trong mùa hè này
+                            <span>M</span>ỗi người đều có cách để hạnh phúc, tích cực riêng. Vì thế AUTUMMN muốn chia sẻ niềm đam mê, tình yêu với những món đồ vintage đến các bạn trong colection lần này.
+                            Với những gam màu retro cơ bản, những món đồ vintage, vừa cổ điển lại vừa phóng khoáng. Vẫn biết rằng vintage là những gì thuộc về thời đại cũ, nhưng ở đây AUTUMMN
+                             muốn mang đến cảm hứng mới, phù hợp hiện đại mà vẫn giữ nguyên hơi thở hoài cổ.
                             <br />“𝐿𝑖𝑓𝑒 𝑖𝑠 𝑠𝑜 𝑚𝑢𝑐ℎ 𝑏𝑒𝑡𝑡𝑒𝑟 𝑤ℎ𝑒𝑛 𝑦𝑜𝑢’𝑟𝑒 𝑙𝑖𝑣𝑖𝑛𝑔 𝑖𝑛 𝑠𝑙𝑜𝑤 𝑚𝑜𝑡𝑖𝑜𝑛”.
                         </p>
                     </Col>

@@ -11,6 +11,7 @@ const { Option } = Select;
 const Payments = (props) => {
   const history = useHistory();
   const cart = JSON.parse(localStorage.getItem("cart"));
+  const user = JSON.parse(localStorage.getItem("user"));
   const [listCart, setListCart] = useState([]);
   const [order, setOrder] = useState([]);
   console.log(cart);
@@ -52,39 +53,12 @@ const Payments = (props) => {
 
   const pay = (values) => {
     values['cart'] = listCart;
-    localStorage.setItem('order',  JSON.stringify(values));
+    localStorage.setItem('order', JSON.stringify(values));
     console.log(values);
-    /* const url = "http://localhost:3001/users/api/payment";
-    axios
-      .post(url, values)
-      .then(async (res) => {
-        if (res.data.status === "success") {
-          console.log(values);
-          message.success(`Xin chào, ${res.data.data.username}`);
-          console.log(res.data.data.username);
-          localStorage.setItem("token", res.data.token);
-          localStorage.setItem("user", JSON.stringify(res.data.data));
-          setTimeout(() => {
-            history.push("/");
-            window.location.reload();
-          }, 2000);
-        } else {
-          message.error("Đạt hàng thất bại, vui lòng đăng nhập để đặt hàng !");
-        }
-      })
-      .catch((err) => {
-        message.error(
-          `Đạt hàng thất bại, vui lòng đăng nhập để đặt hàng ! \n ${err}`
-        );
-      }); */
-      setTimeout(() => {
-        history.push('/xac-nhan-don-hang');
-      }, 2000)
+    setTimeout(() => {
+      history.push('/xac-nhan-don-hang');
+    }, 2000)
   };
-
-  /* useEffect(() => {
-    localStorage.setItem(...["cart", JSON.stringify(props.cart)]);
-  }, [props.cart]); */
 
   let ship = 20000;
 
@@ -110,10 +84,26 @@ const Payments = (props) => {
             <Form
               name="pay"
               onFinish={pay}
+              initialValues={user === null ? ("") : (
+                {
+                makh: `${user.makh}`,
+                tenkh: `${user.username}`,
+                email: `${user.email}`,
+                sodienthoai: `${user.sdt}`,
+                address: `${user.diachi}`,
+              }
+              )}
             >
               <Col className="col-one">
                 <div className="col-one-box">
                   <Divider orientation="left" plain><h3>Thông tin khách hàng</h3></Divider>
+                  <Form.Item
+                    name="makh"
+                    label="Họ và tên"
+                    hidden
+                  >
+                    <Input />
+                  </Form.Item>
                   <Form.Item
                     name="tenkh"
                     label="Họ và tên"
@@ -121,7 +111,7 @@ const Payments = (props) => {
                     rules={[
                       {
                         required: true,
-                        message: "Vui lòng nhập tên tài khoảng !!!",
+                        message: "Vui lòng nhập họ và tên !!!",
                         whitespace: true,
                       },
                     ]}
@@ -136,7 +126,7 @@ const Payments = (props) => {
                       message: 'Vui lòng nhập số điện thoại !'
                     }]}
                   >
-                    <Input style={{ width: '100%' }} />
+                    <Input />
                   </Form.Item>
                   <Form.Item
                     name="email"
@@ -233,7 +223,7 @@ const Payments = (props) => {
                     <Button type="primary">Áp dụng</Button>
                     <Row className="ship">
                       <Col className="title"><p>Phí vận chuyển</p></Col>
-                      <Col className="price"><p>20000Đ</p></Col>
+                      <Col className="price"><p>{ship}</p></Col>
                     </Row>
                   </Col>
                 </Row>

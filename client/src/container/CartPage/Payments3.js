@@ -1,38 +1,28 @@
 import React, { useState } from "react";
-import {Modal, Button,Progress, Steps } from "antd";
-const { Step } = Steps;
-const Payments3 = () => {
-  const [visible, setVisible] = useState(false);
+import { Button, Layout } from "antd";
+import { Link } from "react-router-dom";
+import "container/components-css/payments3.scss"
+
+
+const Payments3 = (props) => {
+  const [size, setSize] = useState('large');
   return (
     <>
-    
-      <Button type="primary" htmlType="submit" onClick={() => setVisible(true)}>
-        Confirm
-      </Button>
-     
-      <Modal
-        title="Payments"
-        centered
-        visible={visible}
-        onOk={() => setVisible(false)}
-        onCancel={() => setVisible(false)}
-        width={1000}
-      
-        
-      >
-       <div>
-       <Steps>
-    <Step status="finish" title="Make Payment"  />
-    <Step status="finish"  title="Card Infomation" />
-    <Step status="finish" title="Done"  />
-  </Steps>
-  </div>
-        <div style={{textAlign:"center"}}>
-          <h1 style={{fontSize:"36px"}}>Successfully!</h1>
-        <Progress type="circle" percent={100} />
+      <Layout className="container">
+        <div className="cart-empty">
+          <div>
+            <p>Đặt hàng thành công, Autumn chân thành cảm ơn !</p>
+            <div>
+              <Link to="/">
+                <Button type="primary" shape="round" size={size}>
+                  Tiếp tục mua hàng
+                </Button>
+              </Link>
+            </div>
+            <img src="https://jerichochambers.com/wp-content/uploads/2016/06/paper-shopping-bags-white-background-51453600-1.jpg" alt="empty" />
+          </div>
         </div>
-        
-      </Modal>
+      </Layout>
     </>
   );
 };

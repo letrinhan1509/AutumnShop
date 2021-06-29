@@ -1,33 +1,43 @@
 import { Row, Col, Badge, Menu, Dropdown, Button } from 'antd';
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ShoppingCartOutlined, UserOutlined, UserAddOutlined, LoginOutlined, LogoutOutlined } from '@ant-design/icons';
 import { Link, useHistory } from "react-router-dom";
 import "../components-css/Header.scss"
 import SearchBar from "./SearchBar";
-
+import catalog from 'API_Call/Api_catalog/catalog';
 
 const menu = {
     fontSize: '25px',
     fontWeight: '500'
 }
-
+const { SubMenu } = Menu;
 const HeaderPage = (props) => {
 
     const history = useHistory();
     const [current, setCurrent] = useState("home");
-    const handClick = (e) => {
+    const handClick1 = (e) => {
         setCurrent(e.key);
         if (e.key === '/') {
             history.push('/')
         }
-        else history.push(`/${e.key}`);
+        else {
+            history.push(`/${e.key}`);
+        }
+    }
+    const handClick2 = (e) => {
+        setCurrent(e.key);
+        if (e.key === '/') {
+            history.push('/')
+        }
+        else {
+            history.push(`/san-pham/${e.key}`);
+        }
     }
     const logout = () => {
         localStorage.removeItem("token")
         localStorage.removeItem("user")
         history.push('/');
         window.location.reload()
-
     }
     const User = JSON.parse(localStorage.getItem('user'));
 
@@ -38,7 +48,7 @@ const HeaderPage = (props) => {
                 <Link to={'/don-hang'}>Đơn hàng</Link>
             </Menu.Item>
             <Menu.Item key="thong-tin-tai-khoan">
-                <Link to={'/thong-tin-tai-khoan'}>Profile</Link>
+                <Link to={'/thong-tin-tai-khoan'}>Tài khoản</Link>
             </Menu.Item>
             <Menu.Item key="logout" onClick={logout} icon={<LogoutOutlined />}>
                 <a target="_blank" rel="logout">
@@ -48,13 +58,33 @@ const HeaderPage = (props) => {
         </Menu>
     );
 
+    //API Danh mục - loại sản phẩm
+    const [listCategory, setlistCategory] = useState([]);
+    useEffect(() => {
+        catalog.getAll().then((res) => {
+            setlistCategory(res.data.data);
+        })
+    }, []);
+    const [listTypes, setlistTypes] = useState([]);
+    const onOpenChange = (e) => {
+        let id = "";
+        id = e[0];
+        if (id === undefined) {
+            console.log("not found");
+        } else {
+            catalog.getTypeDanhmucID(id).then((res) => {
+                setlistTypes(res.data.data);
+            })
+        }
+    };
+
     return (
         <>
             <Row className="menu1-wrapper">
                 <Col className="menu1-box">
                     <Menu mode="horizontal"
                         className="menu1"
-                        onClick={handClick}
+                        onClick={handClick1}
                         selectedKeys={[current]}>
 
                         <div className="logo-box">
@@ -77,11 +107,14 @@ const HeaderPage = (props) => {
                             {props.PriceCart}Đ
                         </Menu.Item>
                         <Menu.Item key="lien-he">
-                            Contact
+                            Liên hệ
                         </Menu.Item>
 
                         {JSON.parse(localStorage.getItem('user')) === null ? (
                             <>
+                                <Menu.Item key="don-hang-khong-dang-nhap">
+                                    Đơn hàng
+                                </Menu.Item>
                                 <Menu.Item key="dang-ky" style={menu} icon={<UserAddOutlined style={{ fontSize: 20 }} />}>
                                 </Menu.Item>
                                 <Menu.Item key="dang-nhap" style={menu} icon={<LoginOutlined style={{ fontSize: 20 }} />}>
@@ -101,10 +134,12 @@ const HeaderPage = (props) => {
                 <Col className="menu2-box" >
                     <Menu mode="horizontal"
                         className="menu2"
-                        onClick={handClick}
-                        selectedKeys={[current]}>
+                        onClick={handClick2}
+                        selectedKeys={[current]}
+                        onOpenChange={onOpenChange}
+                    >
 
-                        <Menu.Item key="/" style={menu} >
+                        {/* <Menu.Item key="/" style={menu} >
                             Home
                         </Menu.Item>
                         <Menu.Item key="san-pham/ao" style={menu}>
@@ -118,7 +153,15 @@ const HeaderPage = (props) => {
                         </Menu.Item>
                         <Menu.Item key="san-pham/phu-kien" style={menu}>
                             Acessories
-                        </Menu.Item>
+                        </Menu.Item> */}
+                        {listCategory.map((item) => (
+                            <SubMenu key={`${item.madm}`} title={item.tendm} onTitleClick={handClick2} subMenuOpenDelay={0.5} >
+                                {listTypes.map((type) => (
+                                    <Menu.Item key={`${type.maloai}`}>{type.tenloai}</Menu.Item>
+                                ))}
+                            </SubMenu>
+                        ))}
+
                     </Menu>
                 </Col>
             </Row>

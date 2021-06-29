@@ -18,6 +18,7 @@ const Cart = (props) => {
     const user = JSON.parse(localStorage.getItem("user"));
     console.log(user);
 
+    
     return (
         <Layout className="container">
             {props.cart.length === 0 ? (
@@ -79,7 +80,6 @@ const Cart = (props) => {
                                         </Col>
                                     </Row>
                                 ))}
-                                <Row><textarea placeholder="Ghi chú" /></Row>
                                 <Row className="product-count">
                                     <Col><p>{props.cart.length} Sản phẩm</p></Col>
                                     <Col><p>{props.PriceCart.toFixed(2)}Đ</p></Col>

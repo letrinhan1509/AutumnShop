@@ -13,6 +13,7 @@ import Login from "container/UserPage/Login";
 import Cart from "container/CartPage/Cart";
 import Payments from "container/CartPage/Payments";
 import Payments2 from "container/CartPage/Payments2";
+import Payments3 from "container/CartPage/Payments3";
 import Contact from "container/MainPage/Contact";
 import axios from "axios";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
@@ -27,6 +28,7 @@ import SearchResult from "container/MainPage/SearchResult";
 import Accessories from "container/CatalogPage/Acessories";
 import Error404 from "container/MainPage/Error404";
 import Order from "container/MainPage/Order";
+import Order_NotLogin from "container/MainPage/Order_NotLogin";
 import ScrollToTop from "container/Config/ScrollToTop";
 import product from "API_Call/Api_product/product";
 
@@ -223,16 +225,16 @@ useEffect(() => {
                 <Route path="/dang-nhap">
                   <Login />
                 </Route>
-                <Route path="/san-pham/ao">
+                <Route path="/san-pham/DMA">
                   <Shirt ListProductHome={ListProductHome} link={link} Thongbao_Them={Thongbao_Them} />
                 </Route>
-                <Route path="/san-pham/balo">
+                <Route path="/san-pham/DMB">
                   <Backpack ListProductHome={ListProductHome} link={link} Thongbao_Them={Thongbao_Them} />
                 </Route>
-                <Route path="/san-pham/giay">
+                <Route path="/san-pham/DMG">
                   <Shoes ListProductHome={ListProductHome} link={link}  Thongbao_Them={Thongbao_Them} />
                 </Route>
-                <Route path="/san-pham/phu-kien">
+                <Route path="/san-pham/DMPK">
                   <Accessories ListProductHome={ListProductHome} link={link}  Thongbao_Them={Thongbao_Them} />
                 </Route>
                 <Route path="/Timkiem">
@@ -250,8 +252,14 @@ useEffect(() => {
                 <Route path="/xac-nhan-don-hang">
                   <Payments2 cart={cart} CountCart={cart.length} PriceCart={sumPrice} />
                 </Route>
+                <Route path="/hoan-tat-don-hang">
+                  <Payments3 cart={cart} CountCart={cart.length} PriceCart={sumPrice} />
+                </Route>
                 <Route path="/don-hang">
                   <Order />
+                </Route>
+                <Route path="/don-hang-khong-dang-nhap">
+                  <Order_NotLogin />
                 </Route>
                 <Route path="/lien-he">
                   <Contact />

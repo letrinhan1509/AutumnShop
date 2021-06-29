@@ -56,7 +56,6 @@ const HomeBestseller = (props) => {
 
     }, [props.cart]);
 
-
     return (
         <>
             <div className="menu_filter">
@@ -96,7 +95,8 @@ const HomeBestseller = (props) => {
                                     key={productItem.masp}
                                     className="card-pro card_product_home"
                                     bordered={false}
-                                    hoverable >
+                                    hoverable 
+                                    >
                                     <div className="img-box">
                                         <Image
                                             width={'100%'}
@@ -120,20 +120,12 @@ const HomeBestseller = (props) => {
                                             }}
                                         />
                                     </div>
-                                    <Meta
-                                        className="card-pro-name"
-                                        title={productItem.tensp} />
-                                    <div className="price">
-                                        <Meta
-                                            className="card-pro-priceSale"
-                                            title={`${productItem.gia - (productItem.gia * productItem.giamgia / 100)} VNĐ`} />
-                                        <Meta
-                                            className="card-pro-price"
-                                            title={`${productItem.gia} VNĐ`} />
-                                        <Meta
-                                            className="card-pro-sale"
-                                            title={`${productItem.giamgia}% Off`} />
-                                    </div>
+                                    <Row className="product-price">
+                                        <Col>{`${productItem.gia} VNĐ`}</Col>
+                                    </Row>
+                                    <Row className="product-name">
+                                        <Col>{productItem.tensp}</Col>
+                                    </Row>
                                 </Card>
                             </Col>
                         );
