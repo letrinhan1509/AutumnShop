@@ -28,8 +28,10 @@ exports.get_Admin_Id = async (adminId) => {
             if(err)
                 hamLoi(err)
             else{
-                dataName = result[0];
-                hamOk(dataName);
+                if(result.length <= 0)
+                    hamOk(-1);
+                else
+                    hamOk(result[0]);
             }
         });
     });
@@ -132,8 +134,37 @@ exports.unlockAdmin = (adminId) => {
 
 
             // TRẠNG THÁI CỦA ĐƠN HÀNG:
+    // Danh sách trạng thái đơn hàng:
+exports.list_Status_Order = async () => {
+    return new Promise( (resolve, reject) => {
+        let sql = "SELECT * FROM trangthai";
+        db.query(sql, (err, result) => {
+            if(err)
+                reject(err);
+            else
+                resolve(result);          
+        })
+    })
+}
+    // Chi tiết 1 trạng thái đơn hàng:
+exports.status_Order_Id = async (id) => {
+    return new Promise( (resolve, reject) => {
+        let sql = `SELECT * FROM trangthai WHERE trangthai='${id}'`;
+        db.query(sql, (err, result) => {
+            if(err)
+                reject(err);
+            else{
+                if(result.length <= 0)
+                    resolve(-1);
+                else
+                    resolve(result[0]);
+            }
+                          
+        })
+    })
+}
     // Thêm trạng thái:
-exports.insertStatusOr = (data) => {
+exports.insert_Status_Or = (data) => {
     return new Promise( (resolve, reject) => {
         let sql = "INSERT INTO trangthai SET ?";
         db.query(sql, data, (err, result) => {
@@ -147,7 +178,7 @@ exports.insertStatusOr = (data) => {
     })
 }
     // Cập nhật trạng thái đơn hàng:
-exports.updateStatusOr = (sttId, name) => {
+exports.update_Status_Or = (sttId, name) => {
     let sql = `UPDATE trangthai SET tentt = '${name}' WHERE trangthai = '${sttId}'`;
     db.query(sql, (err, result) => {
         console.log('Update status success');

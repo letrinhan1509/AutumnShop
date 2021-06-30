@@ -58,8 +58,6 @@ exports.get_By_userId = async (userId) => {
         var data = [];
         let sql = `SELECT DH.madonhang, DH.makh, DH.tenkh, DH.email, DH.sodienthoai, DH.diachi, DH.tienship, DH.tongtien, DH.ghichu, DH.makm, DH.ngaydat, DH.ngaygiao,
         DH.trangthai, DH.manv FROM donhang AS DH WHERE DH.makh = '${userId}'`;
-        let sql_detail = `SELECT CTDH.mact, sanpham.tensp, CTDH.gia, CTDH.giagiam, CTDH.soluong, CTDH.thanhtien,
-        CTDH.madonhang FROM (chitietdh AS CTDH JOIN sanpham ON CTDH.masp = sanpham.masp) WHERE CTDH.madonhang = ?`;
         db.query(sql, (err, result) => {
             if(err)
                 hamLoi(err);
@@ -69,6 +67,27 @@ exports.get_By_userId = async (userId) => {
                     hamOK(data);
                 } else
                     hamOK(-1);
+            }
+        })
+    })
+}
+    // Đơn hàng theo số điện thoại:
+exports.get_By_Phone = async (phone) => {
+    return new Promise( (hamOK, hamLoi) => {
+        let data = [];
+        let sql = `SELECT DH.madonhang, DH.makh, DH.tenkh, DH.email, DH.sodienthoai, DH.diachi, DH.tienship, DH.tongtien, DH.ghichu, DH.makm, DH.hinhthuc, DH.ngaydat, DH.ngaygiao,
+        DH.trangthai, DH.manv FROM donhang AS DH
+        WHERE DH.sodienthoai = '${phone}'`;
+        db.query(sql, (err, result) => {
+            if(err){
+                hamLoi(err);
+            }else{
+                if(result.length > 0){
+                    data = result;
+                    hamOK(data);
+                }else{
+                    hamOK(-1);
+                }
             }
         })
     })

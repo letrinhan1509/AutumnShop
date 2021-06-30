@@ -51,12 +51,25 @@ router.get('/khach-hang/:id', async function (req, res) {
         res.status(400).json({ "status": "Fail", "message": "Lỗi...! Không thể lấy đơn hàng theo mã khách hàng !", "error": error })
     }
 });
+    // Đơn hàng theo số điện thoại:
+router.get('/so-dien-thoai/:phone', async function (req, res) {
+    let phone = req.params.phone;
+    try {
+        let order = await modelOrder.get_By_Phone(phone);
+        if(order == -1)
+            res.status(400).json({ "status": "Fail", "message": "Không có đơn hàng nào !" });
+        else
+            res.status(200).json({ "status": "Success", "message": "Lấy đơn hàng thành công !", order: order});
+    } catch (error) {
+        res.status(400).json({ "status": "Fail", "message": "Lỗi...! Không thể lấy đơn hàng theo mã khách hàng !", "error": error })
+    }
+});
 
 
             // API POST:
     // Tạo đơn hàng:
 router.post('/tao-don-hang', async function(req, res) {
-    let makh = req.body.makh;
+    let makh = req.body.order.makh;
     let tenkh = req.body.order.tenkh;
     let email = req.body.order.email;
     let sodienthoai = req.body.order.sodienthoai;
@@ -68,11 +81,12 @@ router.post('/tao-don-hang', async function(req, res) {
     let ghichu = req.body.note;
     let hinhthuc = req.body.pay; 
     var today = new Date();
-    var ngaydat = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate()+' '+today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+    var ngaydat = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
     let cart = req.body.order.cart;
     
     try {
         if(makm == undefined){
+            console.log("Không có mã km");
             var url = "https://thongtindoanhnghiep.co/api/ward/" + ward;
             axios.get(url)
                 .then(async function (response) {
@@ -87,6 +101,7 @@ router.post('/tao-don-hang', async function(req, res) {
                     res.status(400).json({ "status": "Fail", "message": "Lỗi... GET DETAIL DISTRICT !!!", "error": error });
                 });
         } else {
+            console.log("có mã khuyến mãi");
             var url = "https://thongtindoanhnghiep.co/api/ward/" + ward;
             axios.get(url)
                 .then(async function (response) {

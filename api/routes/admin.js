@@ -9,7 +9,7 @@ const modelAdmin = require('../models/model_admin');
 const { json } = require('express');
 
 const signToken = (id) => {
-	return jwt.sign({ id }, 'nhan', {
+	return jwt.sign({ id }, process.env.JWT_SECRET_ADMIN , {
 		expiresIn: '90d',
 	});
 };
@@ -80,14 +80,39 @@ router.get('/', async function (req, res) {
         res.status(400).json({ "status": "Fail", "error": error });
     }
 });
-
-router.get('/:id', async function (req, res) {
+// Danh sách trạng thái đơn hàng:
+router.get('/trang-thai-don-hang', async function (req, res) {
     try {
-        let adminId = req.params.id;
+        let listAdmins = await modelAdmin.list_Status_Order();
+        res.status(200).json({ status: "Success", message: "Lấy danh sách trạng thái đơn hàng thành công !", data: listAdmins });
+    } catch (error) {
+        res.status(400).json({ "status": "Fail", message: "Lấy danh sách trạng thái đơn hàng thất bại !", "error": error });
+    }
+});
+    // Chi tiết 1 nhân viên theo mã:
+router.get('/:id', async function (req, res) {
+    let adminId = req.params.id;
+    try {
         let admin = await modelAdmin.get_Admin_Id(adminId);
-        res.status(200).json({ "status": "Success", "data": admin });
+        if(admin == -1)
+            res.status(400).json({ "status": "Fail", message: "Mã nhân viên này không có trong database !" });
+        else
+            res.status(200).json({ "status": "Success", "data": admin });
     } catch (error) {
         res.status(400).json({ "status": "Fail", "error": error });
+    }
+});
+    // Chi tiết 1 trạng thái đơn hàng:
+router.get('/trang-thai-don-hang/:id', async function (req, res) {
+    let id = req.params.id;
+    try {
+        let orderStatus = await modelAdmin.status_Order_Id(id);
+        if(orderStatus == -1)
+            res.status(400).json({ "status": "Fail", message: "Trạng thái đơn hàng này không có trong database !" });
+        else
+            res.status(200).json({ status: "Success", message: "Lấy chi tiết 1 trạng thái đơn hàng thành công !", data: orderStatus });
+    } catch (error) {
+        res.status(400).json({ "status": "Fail", message: "Lỗi...Không thể lấy chi tiết 1 trạng thái đơn hàng !", "error": error });
     }
 });
 
@@ -238,42 +263,42 @@ router.put('/doi-mat-khau', async function(req, res) {
 });
 
 
-
+            // TRẠNG THÁI ĐƠN HÀNG:
     // Thêm trạng thái:
-router.post('/trang-thai/them', async function(req, res) {
-    let sttId = req.body.id;
-    let name = req.body.name;
+router.post('/them-trang-thai', async function(req, res) {
+    let trangthai = req.body.trangthai;
+    let tentt = req.body.tentt;
     let data = {
-        trangthai: sttId,
-        tentt: name,
+        trangthai: trangthai,
+        tentt: tentt,
     }
     try {
-        let query = await modelAdmin.insertStatusOr(data);
-        res.json({"status": "Success", "message": "Thêm trạng thái thành công!"});
+        let query = await modelAdmin.insert_Status_Or(data);
+        res.status(200).json({ "status": "Success", "message": "Thêm trạng thái thành công !" });
     } catch (error) {
-        res.json({"status": "Fail", "message": "Lỗi cú pháp! Thêm trạng thái không thành công!", "error": error});
+        res.status(400).json({ "status": "Fail", "message": "Lỗi... ! Thêm trạng thái thất bại !", "error": error });
     }
 });
     // Cập nhật trạng thái:
-router.post('/api/v1/update-status', async function(req, res) {
-    let sttId = req.body.sttId;
-    let name = req.body.name;
-    if(sttId == ''){
-        res.json({"status": "Fail", "message": "Không có id trạng thái!"});
+router.post('/cap-nhat/trang-thai-don-hang', async function(req, res) {
+    let trangthai = req.body.trangthai;
+    let tentt = req.body.tentt;
+    if(trangthai == undefined || tentt == undefined){
+        res.status(400).json({ "status": "Fail", "message": "Thiếu trạng thái hoặc tên trạng thái !" });
     }else{
         try {
-            let query = await modelAdmin.updateStatusOr(sttId, name);
-            res.json({"status": "Success", "message": "Cập nhật trạng thái thành công!"});
+            let query = await modelAdmin.update_Status_Or(trangthai, tentt);
+            res.status(200).json({ "status": "Success", "message": "Cập nhật trạng thái thành công!" });
         } catch (error) {
-            res.json({"status": "Fail", "message": "Lỗi cú pháp! Cập nhật trạng thái không thành công!", "error": error});
+            res.status(400).json({ "status": "Fail", "message": "Lỗi cú pháp! Cập nhật trạng thái không thành công!", "error": error });
         }
     }
 });
     // Xoá trạng thái:
-router.post('/api/v1/delete-status', async function(req, res) {
-    let sttId = req.body.sttId;
-    if(sttId == ''){
-        res.json({"status": "Fail", "message": "Không có id nhà sản xuất!"});
+router.post('/xoa/trang-thai-don-hang', async function(req, res) {
+    let trangthai = req.body.trangthai;
+    if(trangthai == undefined){
+        res.status(400).json({"status": "Fail", "message": "Không có mã trạng thái !" });
     }
     try {
         let query = await modelAdmin.deleteStatusOr(sttId);

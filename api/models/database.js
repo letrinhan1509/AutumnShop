@@ -13,7 +13,8 @@ var db = mysql.createConnection({
 db.connect(function (err) {  
     if (err){
         console.log(err);
-        console.log('Database is connected fail! Please check the connection again!');
+        console.log('Database is connected fail! Please check the connection again! Exiting now...');
+        //process.exit();
     } else
         console.log('Database is connected successfully!');
 });
