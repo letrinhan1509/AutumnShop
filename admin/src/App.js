@@ -19,8 +19,8 @@ import AllProduct from "./Container/ProductPage/AllProduct";
 import AddProductType from "./Container/ProtypePage/AddProductType";
 import AddProducer from "./Container/ProducerPage/AddProducer";
 import AddCategory from "./Container/CatalogPage/AddCategory";
-import AddVoucher from "./Container/AddVoucher";
-import AddSale from "./Container/SalePage/AddSale";
+import AddSale from "./Container/AddVoucher";
+import AddVoucher from "./Container/SalePage/AddVoucher";
 import UserInf from "./Container/UserPage/UserInf";
 import ListProductType from "./Container/ProtypePage/ListProductType";
 import EditProductType from "./Container/ProtypePage/EditProductType";
@@ -31,7 +31,9 @@ import EditCatalog from "./Container/CatalogPage/editCategory";
 import ListComment from "./Container/listComment";
 import EditProduct from "./Container/ProductPage/editProduct";
 import ListOrder from "./Container/OrderPage/listOrder";
-import ListSale from "./Container/SalePage/listSale";
+import OrderDetail from "./Container/OrderPage/OrderDetail";
+import EditOrder from "./Container/OrderPage/editOrder";
+import ListVoucher from "./Container/SalePage/listVoucher";
 
 
 function App() {
@@ -64,7 +66,7 @@ function App() {
         <Router exact path="/admin">
           <Layout>
             <HeaderPage />
-            <Row className="content-box">
+            <Row className="content-box" style={{minHeight: 750}}>
               <Col>
                 <Navigation />
               </Col>
@@ -121,11 +123,11 @@ function App() {
                   <Route exact path="/danh-muc-san-pham/sua-danh-muc">
                     <EditCatalog />
                   </Route>
-                  <Route exact path="/them-voucher">
-                    <AddVoucher />
-                  </Route>
                   <Route exact path="/them-khuyen-mai">
                     <AddSale />
+                  </Route>
+                  <Route exact path="/them-voucher">
+                    <AddVoucher />
                   </Route>
                   <Route exact path="/danh-sach-binh-luan">
                     <ListComment />
@@ -136,8 +138,14 @@ function App() {
                   <Route exact path="/danh-sach-don-hang">
                     <ListOrder />
                   </Route>
-                  <Route exact path="/danh-sach-khuyen-mai">
-                    <ListSale />
+                  <Route exact path="/danh-sach-don-hang/sua-don-hang">
+                    <EditOrder />
+                  </Route>
+                  <Route exact path="/danh-sach-don-hang/chi-tiet">
+                    <OrderDetail />
+                  </Route>
+                  <Route exact path="/danh-sach-voucher">
+                    <ListVoucher />
                   </Route>
                 </Content>
               </Col>

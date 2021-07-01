@@ -9,6 +9,14 @@ const admin = {
         const url = `/${id}`;
         return AxiosAdmin.get(url);
     },
+    getTitle: () => {
+        const url = "/trang-thai-don-hang";
+        return AxiosAdmin.get(url);
+    },
+    getTitleID: (id) => {
+        const url = `/trang-thai-don-hang/${id}`;
+        return AxiosAdmin.get(url);
+    },
     register: (values) => {
         const url = "/dang-ky";
         return AxiosAdmin.post(url, values);
@@ -23,6 +31,10 @@ const admin = {
     },
     updateStatus: (values) => {
         const url = "/cap-nhat-trang-thai";
+        return AxiosAdmin.put(url, values);
+    },
+    updateSTTorder: (values) => {
+        const url = "/cap-nhat/trang-thai-don-hang";
         return AxiosAdmin.put(url, values);
     },
     updatePassword: (values) => {

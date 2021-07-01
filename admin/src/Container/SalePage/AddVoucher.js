@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from "axios"
-import { Form, Input, Button, Select, Checkbox, DatePicker, Space, message } from 'antd';
+import { Row, Form, Input, Button, Select, Checkbox, DatePicker, Space, message } from 'antd';
 import { useHistory, Link } from "react-router-dom"
 import "Container/scss/addpro.scss";
 const { Option } = Select;
@@ -29,7 +29,7 @@ const tailFormItemLayout = {
 };
 
 
-const AddSale = (props) => {
+const AddVoucher = (props) => {
 
     const [form] = Form.useForm();
     const history = useHistory();
@@ -45,16 +45,18 @@ const AddSale = (props) => {
         setDateEnd(date._d);
         //a = date._d;
     }
+    const [title, setTitle] = useState(true);
+    const changett = (e) => {
+        setTitle(e.target.value);
+    };
+
     const addProduct = (values) => {
-        console.log(datestart);
-        values["ngaybd"] = datestart;
-        values["ngaykt"] = dateEnd;
+        console.log(datestart.toLocaleDateString());
+        values["ngaybd"] = datestart.toLocaleDateString();
+        values["ngaykt"] = dateEnd.toLocaleDateString();
+        values["trangthai"] = title;
         console.log(values);
 
-        //let nameImg =urldown;
-        /*   values["img"] = urldown;
-          
-        console.log(values) */
         /* const url = "http://127.0.0.1:5000/api/v1/khuyen-mai/them-voucher"
         axios.post(url, values).then((res) => {
             if (res.data.status === "Success") {
@@ -79,10 +81,12 @@ const AddSale = (props) => {
         { label: '1', value: '1' },
     ];
 
+
+
     return (
         <>
             <div className="form-wrapper">
-                <h2 style={{ textAlign: 'center' }}> Nhập thông tin khuyến mãi</h2>
+                <h2 style={{ textAlign: 'center' }}> Nhập thông tin voucher</h2>
                 <Form
                     {...formItemLayout}
                     form={form}
@@ -143,6 +147,18 @@ const AddSale = (props) => {
                         <Input />
                     </Form.Item>
                     <Form.Item
+                        name="voucher"
+                        label="Voucher"
+                        rules={[
+                            {
+                                //required: true,
+                                message: 'Vui lòng nhập Voucher!',
+                            },
+                        ]}
+                    >
+                        <Input />
+                    </Form.Item>
+                    <Form.Item
                         name="ghichu"
                         label="Ghi chú"
                         rules={[
@@ -152,7 +168,7 @@ const AddSale = (props) => {
                             },
                         ]}
                     >
-                        <TextArea rows={3}/>
+                        <TextArea rows={3} />
                     </Form.Item>
                     <Form.Item
                         label="Ngày bắt đầu"
@@ -176,14 +192,20 @@ const AddSale = (props) => {
                     >
                         <DatePicker onChange={endChange} />
                     </Form.Item>
+                    <Form.Item
+                        label="Trạng thái"
+                    >
+                        <Checkbox onChange={changett} value="Hiện">Hiện</Checkbox>
+                        <Checkbox onChange={changett} value="Ẩn">Ẩn</Checkbox>
+                    </Form.Item>
                     <Form.Item {...tailFormItemLayout}>
-                        <Link to={'/danh-sach-khuyen-mai'} >
+                        <Link to={'/danh-sach-voucher'} >
                             <Button className="ant-btn ant-btn-dashed " htmlType="submit" style={{ marginLeft: -30 }}>
                                 Trở về
                             </Button>
                         </Link>
                         <Button type="primary" htmlType="submit" style={{ marginLeft: 30 }}>
-                            Thêm khuyến mãi
+                            Thêm voucher
                         </Button>
                     </Form.Item>
                 </Form>
@@ -191,4 +213,4 @@ const AddSale = (props) => {
         </>
     );
 };
-export default AddSale;
+export default AddVoucher;

@@ -24,13 +24,21 @@
                 text-align: center;
             }
         }
+        .date-box{
+            display: flex;
+            justify-content: center;
+            .ant-form-item{
+                width: 500px;
+                
+            }
+        }
     }
     .product-wrapper{
         margin-top: 50px;
         background: white;
         filter: drop-shadow(0px 5px 5px rgba(0, 0, 0, 0.2));
         border-radius: 10px;
-        width: 1200px;
+        width: 1300px;
         h2{
             font-size: 30px;
             margin: 20px 0px;
@@ -93,5 +101,22 @@
 .btn-box{
     display: flex;
     justify-content: center;
-
 }
+.fix{
+    button{
+     width: 100%;
+     text-transform: uppercase;
+     border: none;
+     filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.3));
+     outline: none;
+     cursor: pointer;
+     background-color: gold;
+     color: black;
+     font-weight: 500;
+     &:hover{
+        color: black;
+         opacity: 0.7;
+         background-color: gold;
+     }
+    }
+ }

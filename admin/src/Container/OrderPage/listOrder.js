@@ -10,17 +10,61 @@ const { Option } = Select;
 const user = JSON.parse(localStorage.getItem("user"));
 console.log(user);
 const ListOrder = (props) => {
-    const history = useHistory();
+    const link = useHistory();
     const [ListOrder, setListOrder] = useState([]);
-
+    const [a, setA] = useState([]);
     //API List Order:
     useEffect(() => {
         order.getAll().then((res) => {
-        setListOrder(res.data.data);
-        setWordSearch(res.data.data);
+            setListOrder(res.data.data);
+            setWordSearch(res.data.data);
         })
     }, []);
 
+
+    //Redirect sua-san-pham 
+    const loadDetail = (e) => {
+        let i = e.currentTarget.dataset.id;
+        console.log(i);
+        setA(i);
+        console.log(a);
+        setTimeout(() => {
+            link.push('/danh-sach-don-hang/chi-tiet');
+        }, 100)
+    }
+    const loadEdit = (e) => {
+        let i = e.currentTarget.dataset.id;
+        console.log(i);
+        setA(i);
+        console.log(a);
+        setTimeout(() => {
+            link.push('/danh-sach-don-hang/sua-don-hang');
+        }, 100)
+    }
+    //Lấy thông tin SP theo ID
+    const [orderEdit, setOrderEdit] = useState([]);
+    useEffect(() => {
+        if (a != '') {
+            order.getOrderID(a).then((res) => {
+                if (res.data.status === "Success") {
+                    setOrderEdit(res.data.data);
+                    console.log(orderEdit);
+                    console.log(res.data.data);
+                }
+            })
+            /* order.getOrderID(a).then((res) => {
+                if (res.data.status === "Success") {
+                    setOrderEdit(res.data.data);
+                    console.log(orderEdit);
+                    console.log(res.data.data);
+                }
+            })    */        
+        }
+    }, [a]);
+    if (orderEdit != '') {
+        localStorage.setItem('order', JSON.stringify(orderEdit));
+    }
+    //Tìm kiếm
     function removeAccents(str) {
         return str.normalize('NFD')
             .replace(/[\u0300-\u036f]/g, '')
@@ -38,6 +82,7 @@ const ListOrder = (props) => {
     }
     //let demo = ListAdmin;
     const [wordSearch, setWordSearch] = useState([]);
+
     /* function onChange(e) {
         if (e.target.value !== "") {
             let filter = filterItems(ListAdmin, e.target.value);
@@ -78,6 +123,8 @@ const ListOrder = (props) => {
         setPageSize(e);
     };
 
+
+
     const columns = [
         {
             title: 'Mã đơn hàng',
@@ -85,19 +132,9 @@ const ListOrder = (props) => {
             key: 'madonhang',
         },
         {
-            title: 'Mã khách hàng',
-            dataIndex: 'makh',
-            key: 'makh',
-        },
-        {
             title: 'Tên khách hàng',
             dataIndex: 'tenkh',
             key: 'tenkh',
-        },
-        {
-            title: 'Email',
-            dataIndex: 'email',
-            key: 'email',
         },
         {
             title: 'Số điện thoại',
@@ -110,24 +147,9 @@ const ListOrder = (props) => {
             key: 'diachi',
         },
         {
-            title: 'Tiền ship',
-            dataIndex: 'tienship',
-            key: 'tienship',
-        },
-        {
             title: 'Tổng tiền',
             dataIndex: 'tongtien',
             key: 'tongtien',
-        },
-        {
-            title: 'Ghi chú',
-            dataIndex: 'ghichu',
-            key: 'ghichu',
-        },
-        {
-            title: 'Mã khuyến mãi',
-            dataIndex: 'makm',
-            key: 'makm',
         },
         {
             title: 'Hình thức',
@@ -138,11 +160,12 @@ const ListOrder = (props) => {
             title: 'Ngày đặt',
             dataIndex: 'ngaydat',
             key: 'ngaydat',
-        },
-        {
-            title: 'Ngày giao',
-            dataIndex: 'ngaygiao',
-            key: 'ngaygiao',
+            render: ngaydat => {
+                var date = new Date(ngaydat);
+                return(
+                    date.toLocaleDateString()
+                );
+            }
         },
         {
             title: 'Trạng thái',
@@ -150,11 +173,15 @@ const ListOrder = (props) => {
             key: 'trangthai',
         },
         {
-            title: 'Mã nhân viên',
-            dataIndex: 'manv',
-            key: 'manv',
+            dataIndex: "madonhang",
+            key: "madonhang",
+            render: madonhang => (<div className="btn-box fix"><Button data-id={madonhang} onClick={loadEdit} type="primary">Sửa</Button></div>)
         },
-
+        {
+            dataIndex: "madonhang",
+            key: "madonhang",
+            render: madonhang => (<div className="btn-box"><Button data-id={madonhang} onClick={loadDetail} type="primary">Chi tiết</Button></div>)
+        }
     ];
 
     return (

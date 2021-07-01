@@ -7,7 +7,7 @@ import "Container/scss/addpro.scss";
 import user from 'API_Call/Api_user/user';
 
 const { Option } = Select;
-const ListSale = (props) => {
+const ListVoucher = (props) => {
     const [ListUser, setListUser] = useState([]);
     const history = useHistory();
 
@@ -100,9 +100,24 @@ const ListSale = (props) => {
             key: 'tenkm',
         },
         {
+            title: 'Ghi chú',
+            dataIndex: 'ghichu',
+            key: 'ghichu',
+        },
+        {
             title: 'Điều kiện',
             dataIndex: 'dieukien',
             key: 'dieukien',
+        },
+        {
+            title: 'Giá giảm',
+            dataIndex: 'giagiam',
+            key: 'giagiam',
+        },
+        {
+            title: 'Voucher',
+            dataIndex: 'voucher',
+            key: 'voucher',
         },
         {
             title: 'Ngày bắt đầu',
@@ -231,10 +246,10 @@ const ListSale = (props) => {
     return (
         <>
             <div className="product-wrapper">
-                <h2 style={{ textAlign: 'center', marginTop: "50px" }}>DANH SÁCH CHƯƠNG TRÌNH KHUYẾN MÃI</h2>
+                <h2 style={{ textAlign: 'center', marginTop: "50px" }}>DANH SÁCH VOUCHER</h2>
                 <div className="View-layout">
                     <div>
-                        <span>Chương trình hiển thị: </span>
+                        <span>Voucher hiển thị: </span>
                         <Select defaultValue="6" Option style={{ width: 70 }} onChange={e => ChangeSize(e)}>
                             {size.map((item) => {
                                 return (
@@ -247,12 +262,12 @@ const ListSale = (props) => {
                     </div>
                     <div className="search-box">
                         <span>Tìm kiếm: </span>
-                        <input placeholder='Nhập tên chương trình khuyến mãi' style={{ width: 300 }} /*onChange={e => onChange(e)}*/ />
+                        <input placeholder='Nhập tên voucher' style={{ width: 300 }} /*onChange={e => onChange(e)}*/ />
                     </div>
                 </div>
                 <Table className="proItem" dataSource={wordSearch} columns={columns} pagination={{ pageSize: `${pageSize}` }} size="middle" />
                 <div className="btn-wrapper">
-                    <Link to={'/them-khuyen-mai'}>
+                    <Link to={'/them-voucher'}>
                         <Button type="primary">
                             Thêm chương trình
                         </Button>
@@ -263,4 +278,4 @@ const ListSale = (props) => {
     );
 }
 
-export default ListSale;
+export default ListVoucher;
