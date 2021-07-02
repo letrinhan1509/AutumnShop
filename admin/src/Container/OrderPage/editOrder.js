@@ -44,7 +44,7 @@ const ListOrder = (props) => {
     const order = JSON.parse(localStorage.getItem("order"));
     console.log(order);
     const ORDER = order[0];
-    console.log(ORDER);
+    console.log(ORDER.tentt);
 
     const back = () => {
         localStorage.removeItem("order");
@@ -94,7 +94,7 @@ const ListOrder = (props) => {
                 className="register-form"
                 initialValues={order === null ? ("") : (
                     {
-                        trangthai: `${order.trangthai}`,
+                        trangthai: `${ORDER.tentt}`,
                     }
                 )}
             >

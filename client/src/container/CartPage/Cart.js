@@ -1,7 +1,7 @@
 import { Col, Layout, Row, Button, Input } from "antd";
 import React, { useState, useEffect } from 'react';
 import "container/components-css/cart.scss"
-import { CloseOutlined, RollbackOutlined } from '@ant-design/icons';
+import { CloseOutlined, RollbackOutlined, WarningOutlined } from '@ant-design/icons';
 import { Link } from "react-router-dom";
 
 
@@ -90,13 +90,14 @@ const Cart = (props) => {
                                     <Col><p>{props.cart.length} Sản phẩm</p></Col>
                                     <Col><p>{props.PriceCart.toFixed(2)}Đ</p></Col>
                                 </Row>
-                                <Row className="product-code">
-                                    <Input placeholder="Nhập mã khuyến mãi" />
-                                    <Button type="primary">Áp dụng</Button>
-                                </Row>
                                 <Row className="product-sum">
                                     <Col className="title"><p>Tổng đơn hàng</p></Col>
                                     <Col className="price"><p>{props.PriceCart.toFixed(2)}Đ</p></Col>
+                                </Row>
+                                <Row className="product-warning">
+                                    {/* <Input placeholder="Nhập mã khuyến mãi" />
+                                    <Button type="primary">Áp dụng</Button> */}
+                                    <p><WarningOutlined />Quý khách vui lòng kiểm tra thông tin sản phẩm thật kỹ trước khi <span>tiến hành thanh toán</span>.</p>
                                 </Row>
                                 <Row className="button-group">
                                     <Button className="pay" type="primary">

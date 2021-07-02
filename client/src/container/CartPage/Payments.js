@@ -5,6 +5,7 @@ import axios from "axios";
 import { useHistory, Link } from "react-router-dom";
 import "container/components-css/payments.scss"
 import city from 'API_Call/Api_city/city';
+import voucher from 'API_Call/Api_discount/discount';
 
 const { Step } = Steps;
 const { Option } = Select;
@@ -60,13 +61,44 @@ const Payments = (props) => {
     }, 2000)
   };
 
-  let ship = 20000;
+  //let ma = "";
+  //const [ma, setMa] = useState([]);
+  var ma = "";
+  const [khuyenmai, setKhuyenmai] = useState([]);
+  const code = (e) => {
+    ma = e.target.value;
+    console.log(ma);
+    console.log(khuyenmai.length);
+  };
+  const useCode = () => {
+    let id = ma;
+    console.log(id);
+    voucher.getVoucherID(id).then((res) => {
+      if (res.data.status === "Success") {
+        if (props.PriceCart >= res.data.voucher.dieukien) {
+          message.success("Áp dụng VOUCHER thành công !")
+          localStorage.setItem('voucher', JSON.stringify(res.data.voucher));
+          setKhuyenmai(JSON.parse(localStorage.getItem("voucher")));
+          console.log(khuyenmai);
+        } else {
+          message.error(`Áp dụng mã thất bại!\n Tổng đơn hàng phải lớn hơn hoặc bằng ${res.data.voucher.dieukien}Đ`);
+        }
 
-  const [isCitizen, setisCitizen] = useState(true);
-  const onChange = (e) => {
-    setisCitizen(e.target.checked);
+      }
+    })
+      .catch(err => {
+        message.error(`Lỗi...! Áp dụng mã thất bại!\n ${err.response.data.message}`);
+      })
   };
 
+  let ship = 20000;
+
+  const deleteVoucher = () => {
+      /* ma = khuyenmai.voucher;
+      console.log(ma); */
+      localStorage.removeItem("voucher");
+      setKhuyenmai([]);
+  };
 
   return (
     <>
@@ -86,12 +118,11 @@ const Payments = (props) => {
               onFinish={pay}
               initialValues={user === null ? ("") : (
                 {
-                makh: `${user.makh}`,
-                tenkh: `${user.username}`,
-                email: `${user.email}`,
-                sodienthoai: `${user.sdt}`,
-                address: `${user.diachi}`,
-              }
+                  makh: `${user.makh}`,
+                  tenkh: `${user.username}`,
+                  email: `${user.email}`,
+                  sodienthoai: `${user.sdt}`,
+                }
               )}
             >
               <Col className="col-one">
@@ -210,26 +241,48 @@ const Payments = (props) => {
                 {cart.map(item => (
                   <Row className="product-count">
                     <Col className="title"><p>{item.qty}x {item.tensp}</p></Col>
-                    <Col><p>{item.qty * item.gia.toFixed(2)}Đ</p></Col>
+                    <Col><p>{item.qty * item.gia}Đ</p></Col>
                   </Row>
                 ))}
                 <Row className="product-code">
                   <Col className="abc">
                     <Row className="sum-cart">
                       <Col className="title"><p>Tổng đơn hàng</p></Col>
-                      <Col className="price"><p>{props.PriceCart.toFixed(2)}Đ</p></Col>
+                      <Col className="price"><p>{props.PriceCart}Đ</p></Col>
                     </Row>
-                    <Input placeholder="Nhập mã khuyến mãi" />
-                    <Button type="primary">Áp dụng</Button>
+                    {khuyenmai.length === 0 ? (
+                      <>
+                        <Input onChange={code} placeholder="Nhập mã khuyến mãi" />
+                        <Button className="use-code" onClick={useCode} type="primary">Áp dụng</Button>
+                      </>
+                    ) : (
+                      <>
+                        <Input onChange={code} placeholder="Nhập mã khuyến mãi" disabled/>
+                        <Button type="primary" disabled>Áp dụng</Button>
+                      </>
+                    )}
+
                     <Row className="ship">
                       <Col className="title"><p>Phí vận chuyển</p></Col>
-                      <Col className="price"><p>{ship}</p></Col>
+                      <Col className="price"><p>{ship}Đ</p></Col>
                     </Row>
+                    {khuyenmai.length === 0 ? ("") : (
+                      <>
+                        <h3>Áp dụng voucher</h3>
+                        <Row className="voucher">
+                          <Col className="title"><a onClick={deleteVoucher}><CloseOutlined /></a><p>{khuyenmai.voucher}</p></Col>
+                          <Col className="price"><p>- {khuyenmai.giagiam}Đ</p></Col>
+                        </Row>
+                      </>
+                    )}
+
                   </Col>
                 </Row>
                 <Row className="product-sum">
                   <Col className="title"><p>Tổng Thanh toán</p></Col>
-                  <Col className="price"><p>{ship + Number(props.PriceCart)}Đ</p></Col>
+                  {khuyenmai.length === 0 ? (<Col className="price"><p>{ship + Number(props.PriceCart)}Đ</p></Col>) : (
+                    <Col className="price"><p>{ship + Number(props.PriceCart) - Number(khuyenmai.giagiam)}Đ</p></Col>
+                  )}
                 </Row>
                 <Row className="button-group">
                   <Button className="pay" value="submit" type="primary" htmlType="submit" >Tiếp tục</Button>

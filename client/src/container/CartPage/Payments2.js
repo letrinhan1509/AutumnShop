@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Row, Col, Button, Input, Steps, message, Form, Layout, Select, Divider, Checkbox  } from "antd";
+import { Row, Col, Button, Input, Steps, message, Form, Layout, Select, Divider, Checkbox } from "antd";
 import { DollarCircleOutlined, RollbackOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { useHistory, Link } from "react-router-dom";
@@ -11,7 +11,7 @@ const { Option } = Select;
 const Payments2 = (props) => {
   const history = useHistory();
   const order = JSON.parse(localStorage.getItem("order"));
-
+  const voucher = JSON.parse(localStorage.getItem("voucher"));
 
   //let CITY = "";
   //let DISTRICT = "";
@@ -48,6 +48,7 @@ const Payments2 = (props) => {
     values['pay'] = cod;
     values['ship'] = ship;
     values['sumpay'] = ship + Number(props.PriceCart);
+    values['makm'] = voucher.makm;
     console.log(values);
     const url = "http://localhost:5000/api/v1/don-hang/tao-don-hang";
     axios
@@ -77,12 +78,13 @@ const Payments2 = (props) => {
     localStorage.setItem(...["cart", JSON.stringify(props.cart)]);
   }, [props.cart]); */
 
-  
+
 
 
 
   const back = () => {
     localStorage.removeItem("order");
+    localStorage.removeItem("voucher");
   }
 
   return (
@@ -117,7 +119,7 @@ const Payments2 = (props) => {
                 </div>
                 <div className="col-one-box2">
                   <Row><h3>Chọn hình thức thanh toán</h3></Row>
-                  <Row><Checkbox onChange={onChange} value="Thanh toán khi nhận hàng">Thanh toán khi nhận hàng<DollarCircleOutlined style={{ fontSize: '25px' }}/></Checkbox></Row>
+                  <Row><Checkbox onChange={onChange} value="Thanh toán khi nhận hàng">Thanh toán khi nhận hàng<DollarCircleOutlined style={{ fontSize: '25px' }} /></Checkbox></Row>
                 </div>
               </Col>
               <Col className="col-two">
@@ -127,31 +129,41 @@ const Payments2 = (props) => {
                 {order.cart.map(item => (
                   <Row className="product-count">
                     <Col className="title"><p>{item.qty}x {item.tensp}</p></Col>
-                    <Col><p>{item.qty * item.gia.toFixed(2)}Đ</p></Col>
+                    <Col><p>{item.qty * item.gia}Đ</p></Col>
                   </Row>
                 ))}
                 <Row className="product-code">
                   <Col className="abc">
                     <Row className="sum-cart">
                       <Col className="title"><p>Tổng đơn hàng</p></Col>
-                      <Col className="price"><p>{props.PriceCart.toFixed(2)}Đ</p></Col>
+                      <Col className="price"><p>{props.PriceCart}Đ</p></Col>
                     </Row>
-                    <Input placeholder="Nhập mã khuyến mãi" />
-                    <Button type="primary">Áp dụng</Button>
                     <Row className="ship">
                       <Col className="title"><p>Phí vận chuyển</p></Col>
-                      <Col className="price"><p>{ship}</p></Col>
+                      <Col className="price"><p>{ship}Đ</p></Col>
                     </Row>
+                    {voucher === null ? ("") : (
+                      <>
+                        <h3>Áp dụng voucher</h3>
+                        <Row className="voucher">
+                          <Col className="title"><p>{voucher.voucher}</p></Col>
+                          <Col className="price"><p>- {voucher.giagiam}Đ</p></Col>
+                        </Row>
+                      </>
+                    )}
                   </Col>
                 </Row>
                 <Row className="product-sum">
                   <Col className="title"><p>Tổng Thanh toán</p></Col>
-                  <Col className="price"><p>{ship + Number(props.PriceCart)}Đ</p></Col>
+                  {voucher === null ? (<Col className="price"><p>{ship + Number(props.PriceCart)}Đ</p></Col>) : (
+                    <Col className="price"><p>{ship + Number(props.PriceCart) - Number(voucher.giagiam)}Đ</p></Col>
+                  )}
+                  
                 </Row>
-                <Row><textarea placeholder="Ghi chú" onChange={note}/></Row>
+                <Row><textarea placeholder="Ghi chú" onChange={note} /></Row>
                 <Row className="button-group">
                   <Button className="pay" value="submit" type="primary" htmlType="submit" >
-                    {/* <Link to="/nhap-thong-tin-giao-hang">Tiếp tục</Link> */}Tiếp tục
+                    Thanh toán
                   </Button>
                   <Button className="continue" onClick={back} >
                     <Link to="/nhap-thong-tin-giao-hang">Quay lại<RollbackOutlined /></Link>

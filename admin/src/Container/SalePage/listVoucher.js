@@ -5,6 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { useHistory, Link } from "react-router-dom";
 import "Container/scss/addpro.scss";
 import user from 'API_Call/Api_user/user';
+import voucher from 'API_Call/Api_discount/discount';
 
 const { Option } = Select;
 const ListVoucher = (props) => {
@@ -12,12 +13,12 @@ const ListVoucher = (props) => {
     const history = useHistory();
 
     //API List Voucher:
-    /* useEffect(() => {
-        voucher.getAll().then((res) => {
+    useEffect(() => {
+        voucher.getAllVoucher().then((res) => {
         setListVoucher(res.data.voucher);
         setWordSearch(res.data.voucher);
       })
-    }, []); */
+    }, []);
 
     //Cập nhật trạng thái User
     const unlock = (e) => {

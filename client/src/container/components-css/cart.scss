@@ -120,11 +120,24 @@
                 .col-two {
                     width: 40%;
                     padding: 0px 25px;
+                    
                     .product-count{
                         display: flex;
                         justify-content: space-between;
                         font-weight: 700;
                         font-size: 18px;
+                    }
+                    .product-warning{
+                        padding-bottom: 10px;
+                        p{
+                            font-size: 16px;
+                            color: red;
+                            font-weight: 500;
+                            span{
+                                font-weight: 700;
+                                text-transform: uppercase;
+                            }
+                        }
                     }
                     .product-code{
                         padding: 1.5em 0px;
