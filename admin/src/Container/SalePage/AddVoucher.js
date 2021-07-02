@@ -57,20 +57,20 @@ const AddVoucher = (props) => {
         values["trangthai"] = title;
         console.log(values);
 
-        /* const url = "http://127.0.0.1:5000/api/v1/khuyen-mai/them-voucher"
+        const url = "http://127.0.0.1:5000/api/v1/khuyen-mai/them-voucher"
         axios.post(url, values).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message)
                 setTimeout(() => {
-                    history.push('/danh-sach-khuyen-mai');
+                    history.push('/danh-sach-voucher');
                 }, 1000)
             } else
                 message.error(res.data.message);
         })
             .catch(err => {
                 console.log(err.response);
-                message.error(`Tạo khuyến mãi thất bại !\n ${err.response.data}`)
-            }); */
+                message.error(`Tạo voucher thất bại !\n ${err.response.data.message}`)
+            });
     };
     const [fileList, setFileList] = useState([]);
     const [listProduct, setlistProduct] = useState([]);
@@ -123,12 +123,24 @@ const AddVoucher = (props) => {
                         <Input />
                     </Form.Item>
                     <Form.Item
-                        name="dieukien"
-                        label="điều kiện"
+                        name="voucher"
+                        label="Mã Voucher"
                         rules={[
                             {
-                                //required: true,
-                                message: 'Nhập điều kiện !',
+                                required: true,
+                                message: 'Vui lòng nhập mã Voucher!',
+                            },
+                        ]}
+                    >
+                        <Input />
+                    </Form.Item>
+                    <Form.Item
+                        name="dieukien"
+                        label="Điều kiện"
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Vui lòng nhập điều kiện !',
                             },
                         ]}
                     >
@@ -139,20 +151,8 @@ const AddVoucher = (props) => {
                         label="Giá giảm"
                         rules={[
                             {
-                                //required: true,
+                                required: true,
                                 message: 'Vui lòng nhập giá được giảm!',
-                            },
-                        ]}
-                    >
-                        <Input />
-                    </Form.Item>
-                    <Form.Item
-                        name="voucher"
-                        label="Voucher"
-                        rules={[
-                            {
-                                //required: true,
-                                message: 'Vui lòng nhập Voucher!',
                             },
                         ]}
                     >
@@ -195,8 +195,8 @@ const AddVoucher = (props) => {
                     <Form.Item
                         label="Trạng thái"
                     >
-                        <Checkbox onChange={changett} value="Hiện">Hiện</Checkbox>
-                        <Checkbox onChange={changett} value="Ẩn">Ẩn</Checkbox>
+                        <Checkbox onChange={changett} value="1">Hiện</Checkbox>
+                        <Checkbox onChange={changett} value="0">Ẩn</Checkbox>
                     </Form.Item>
                     <Form.Item {...tailFormItemLayout}>
                         <Link to={'/danh-sach-voucher'} >

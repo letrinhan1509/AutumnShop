@@ -37,11 +37,12 @@ const verifyToken = (token) => {
 const isAuth = async (req, res, next) => {
     // Lấy token được gửi lên từ phía client:
     const tokenFromClient = req.body.token || req.headers["auth-token"];
+    console.log(tokenFromClient);
     if (tokenFromClient) {
         // Nếu tồn tại token:
         try {
             // Thực hiện giải mã token xem có hợp lệ hay không?
-            const decoded = await jwtHelper.verifyToken(tokenFromClient);
+            const decoded = verifyToken(tokenFromClient);
             // Nếu token hợp lệ, lưu thông tin giải mã được vào đối tượng req, dùng cho các xử lý ở phía sau.
             req.jwtDecoded = decoded;
             // Cho phép req đi tiếp sang controller.
@@ -52,11 +53,13 @@ const isAuth = async (req, res, next) => {
             return res.status(401).json({
                 status: 'Fail',
                 message: 'Unauthorized.',
+                error: error
             });
         }
     } else {
         // Không tìm thấy token trong request:
         return res.status(403).send({
+            status: 'Fail',
             message: 'No token provided.',
         });
     }
@@ -66,4 +69,5 @@ const isAuth = async (req, res, next) => {
 module.exports = {
     signToken: signToken,
     verifyToken: verifyToken,
+    isAuth: isAuth
 };

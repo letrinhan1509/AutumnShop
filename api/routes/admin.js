@@ -3,10 +3,11 @@ const router = express.Router();
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const axios = require('axios');
+const { json } = require('express');
 
 const db = require('../models/database');
 const modelAdmin = require('../models/model_admin');
-const { json } = require('express');
+const authController = require('../controllers/authController');
 
 const signToken = (id) => {
 	return jwt.sign({ id }, process.env.JWT_SECRET_ADMIN , {
@@ -44,6 +45,7 @@ router.post('/dang-nhap', function (req, res, next) {
                 httpOnly: true,
             }; 
             res.cookie("jwt", token, cookieOptions);
+            //res.header("auth-token", token).send(token);
             //Remove password from output
             //user.password = undefined;
             if (kq) {
@@ -280,7 +282,7 @@ router.post('/them-trang-thai', async function(req, res) {
     }
 });
     // Cập nhật trạng thái:
-router.post('/cap-nhat/trang-thai-don-hang', async function(req, res) {
+router.put('/cap-nhat/trang-thai-don-hang', async function(req, res) {
     let trangthai = req.body.trangthai;
     let tentt = req.body.tentt;
     if(trangthai == undefined || tentt == undefined){
@@ -295,8 +297,8 @@ router.post('/cap-nhat/trang-thai-don-hang', async function(req, res) {
     }
 });
     // Xoá trạng thái:
-router.post('/xoa/trang-thai-don-hang', async function(req, res) {
-    let trangthai = req.body.trangthai;
+router.delete('/xoa/trang-thai-don-hang/:id', async function(req, res) {
+    let trangthai = req.params.id;
     if(trangthai == undefined){
         res.status(400).json({"status": "Fail", "message": "Không có mã trạng thái !" });
     }

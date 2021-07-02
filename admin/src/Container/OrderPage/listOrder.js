@@ -169,8 +169,8 @@ const ListOrder = (props) => {
         },
         {
             title: 'Trạng thái',
-            dataIndex: 'trangthai',
-            key: 'trangthai',
+            dataIndex: 'tentt',
+            key: 'tentt',
         },
         {
             dataIndex: "madonhang",

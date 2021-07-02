@@ -11,7 +11,6 @@ exports.list_Discounts = async () => {
                 hamLoi(err);
             }else{
                 dataList = result;
-                console.log(dataList);
                 hamOK(dataList);
             }
         })
@@ -21,13 +20,14 @@ exports.list_Discounts = async () => {
     // Danh sách các voucher:
 exports.list_Vouchers = async () => {
     return new Promise( (hamOK, hamLoi) => {
-        let sql = `SELECT * FROM khuyenmai WHERE voucher = 1`;
+        let data = [];
+        let sql = `SELECT * FROM khuyenmai WHERE voucher IS NOT NULL`;
         db.query(sql, (err, result) => {
             if(err){
                 hamLoi(err);
             }else{
-                dataList = result;
-                hamOK(dataList);
+                data = result;
+                hamOK(data);
             }
         })
     })
@@ -35,57 +35,78 @@ exports.list_Vouchers = async () => {
     // Danh sách các khuyến mãi theo sản phẩm:
 exports.list_Dis_Product = async () => {
     return new Promise( (hamOK, hamLoi) => {
-        let sql = `SELECT * FROM khuyenmai WHERE voucher = 0`;
+        let data = [];
+        let sql = `SELECT * FROM khuyenmai WHERE voucher IS NULL`;
         db.query(sql, (err, result) => {
             if(err){
                 hamLoi(err);
             }else{
-                dataList = result;
-                hamOK(dataList);
+                data = result;
+                hamOK(data);
             }
         })
     })
 }
-    // Danh sách sản phẩm khuyến mãi theo id:
-exports.get_by_discountId = async (discountId) => {
+    // Chi tiết các sản phẩm khuyến mãi theo "makm":
+exports.get_By_discountId = async (makm) => {
     return new Promise( (hamOK, hamLoi) => {
-        let sql = `SELECT * FROM ((chitietkm JOIN sanpham ON chitietkm.masp = sanpham.masp) 
-        JOIN khuyenmai ON chitietkm.makm = khuyenmai.makm) WHERE chitietkm.makm = '${discountId}'`;
+        let sql = `SELECT * FROM khuyenmai WHERE khuyenmai.makm = '${makm}'`;
         db.query(sql, (err, result) => {
             if(err){
                 hamLoi(err);
             }else{
-                dataList = result;
-                hamOK(dataList);
-            }
-        })
-    })
-}
+                if(result.length > 0){
+                    let sql_CTKM = `SELECT * FROM chitietkm WHERE chitietkm.makm = ?`;
+                    db.query(sql_CTKM, result[0].makm, (err, result1) => {
+                        if(err)
+                            hamLoi(err);
+                        else{
+                            if(result1.length > 0){
+                                result[0].chitietKM = result1;
+                                dataList.push(result);
+                                hamOK(dataList);
+                            } else{
+                                // Khuyến mãi này không có chi tiết khuyến mãi:
+                                hamOK(result);
+                            };
+                        };
+                    });
+                } else{
+                    // Không có khuyến mãi này trong DB:
+                    hamOK(-1);
+                };
+            };
+        });
+    });
+};
     // Tìm voucher theo tên:
-exports.get_by_voucherName = async (name) => {
+exports.check_By_voucherName = async (name) => {
     return new Promise( (hamOK, hamLoi) => {
-        let sql = `SELECT * FROM khuyenmai WHERE voucher = 0 AND khuyenmai.tenkm = '${name}'`;
+        let sql = `SELECT * FROM khuyenmai WHERE khuyenmai.voucher = '${name}' AND voucher IS NOT NULL`;
         db.query(sql, (err, result) => {
             if(err){
                 hamLoi(err);
-            }else if(result[0] == null)
-            {
-                hamOK("Không tìm thấy voucher này!!!");
-            }else{
+            } else if(result.length <= 0) {
+                hamOK(false);
+            } else {
                 console.log("Có voucher");
                 hamOK(result[0]);
             }
         })
     })
 }
-    // Tạo voucher:
+    // Tạo khuyến mãi là voucher:
 exports.create_Voucher = (data) => {
     console.log(data);
     return new Promise( (resolve, reject) => {
         let sql = "INSERT INTO khuyenmai SET ?";
-        db.query(sql, data, (err, d) => {
-            console.log('Insert successfully')
-            resolve(d);
+        db.query(sql, data, (err, result) => {
+            if(err)
+                reject(err);
+            else{
+                console.log('Insert successfully');
+                resolve(result);
+            }
         })
     })
 }

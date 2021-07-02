@@ -9,7 +9,7 @@ var dataName = [];
 exports.list_Orders = async () => {
     return new Promise( (hamOK, hamLoi) => {
         let sql = `SELECT DH.madonhang, DH.makh, DH.tenkh, DH.email, DH.sodienthoai, DH.diachi, DH.tienship, DH.tongtien, DH.ghichu, DH.makm, DH.hinhthuc, DH.ngaydat, DH.ngaygiao,
-        DH.trangthai, DH.manv FROM donhang AS DH`;
+        DH.trangthai, TT.tentt as tentt, DH.manv FROM donhang AS DH JOIN trangthai as TT ON DH.trangthai = TT.trangthai`;
         db.query(sql, (err, result) => {
             if(err){
                 hamLoi(err);
@@ -25,7 +25,7 @@ exports.get_By_Id = async (orderId) => {
     const data = [];
     return new Promise( (hamOK, hamLoi) => {
         let sql = `SELECT DH.madonhang, DH.makh, DH.tenkh, DH.email, DH.sodienthoai, DH.diachi, DH.tienship, DH.tongtien, DH.ghichu, DH.makm, DH.hinhthuc, DH.ngaydat, DH.ngaygiao,
-        DH.trangthai, DH.manv FROM donhang AS DH
+        DH.trangthai, TT.tentt as tentt, DH.manv FROM donhang AS DH JOIN trangthai as TT ON DH.trangthai = TT.trangthai
         WHERE DH.madonhang = '${orderId}'`;
         db.query(sql, (err, result) => {
             //console.log(result[0].madonhang);

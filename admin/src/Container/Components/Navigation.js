@@ -45,7 +45,6 @@ const Navigation = () => {
                                 <Menu.Item key="danh-sach-don-hang" icon={<ProfileOutlined />} >Danh sách đơn hàng</Menu.Item>
                                 <SubMenu key="sub9" icon={<PercentageOutlined />} title="Quản lý khuyến mãi">
                                     <Menu.Item key="danh-sach-voucher">Danh sách voucher</Menu.Item>
-                                    {result.permission==='Admin'?(<Menu.Item key ="them-voucher" icon={<FileAddOutlined />}>Thêm voucher</Menu.Item>):(<p/>)}
                                     <Menu.Item key="danh-sach-khuyen-mai">Danh sách khuyến mãi</Menu.Item>
                                     {result.permission==='Admin'?(<Menu.Item key ="them-khuyen-mai" icon={<FileAddOutlined />}>Thêm khuyến mãi</Menu.Item>):(<p/>)}
                                 </SubMenu>

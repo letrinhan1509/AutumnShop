@@ -8,14 +8,14 @@ import user from 'API_Call/Api_user/user';
 
 const { Option } = Select;
 const ListVoucher = (props) => {
-    const [ListUser, setListUser] = useState([]);
+    const [listVoucher, setListVoucher] = useState([]);
     const history = useHistory();
 
-    //API ListUser
+    //API List Voucher:
     /* useEffect(() => {
-      user.getAll().then((res) => {
-        setListUser(res.data.data);
-        setWordSearch(res.data.data);
+        voucher.getAll().then((res) => {
+        setListVoucher(res.data.voucher);
+        setWordSearch(res.data.voucher);
       })
     }, []); */
 
@@ -75,7 +75,7 @@ const ListVoucher = (props) => {
     let result = JSON.parse(localStorage.getItem('user'));
 
     //Setup trạng thái cho datatable
-    ListUser.forEach(element => {
+    listVoucher.forEach(element => {
         if (element.trangthai === 1) {
             element.trangthai = [];
             element.trangthai.stt = ["Hoạt động"];
@@ -100,6 +100,11 @@ const ListVoucher = (props) => {
             key: 'tenkm',
         },
         {
+            title: 'Mã voucher',
+            dataIndex: 'voucher',
+            key: 'voucher',
+        },
+        {
             title: 'Ghi chú',
             dataIndex: 'ghichu',
             key: 'ghichu',
@@ -113,11 +118,6 @@ const ListVoucher = (props) => {
             title: 'Giá giảm',
             dataIndex: 'giagiam',
             key: 'giagiam',
-        },
-        {
-            title: 'Voucher',
-            dataIndex: 'voucher',
-            key: 'voucher',
         },
         {
             title: 'Ngày bắt đầu',
@@ -200,7 +200,7 @@ const ListVoucher = (props) => {
 
         });
     }
-    let demo = ListUser;
+    let demo = listVoucher;
     const [wordSearch, setWordSearch] = useState([]);
     console.log(wordSearch);
     /* function onChange(e) {
