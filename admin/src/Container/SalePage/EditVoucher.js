@@ -61,10 +61,9 @@ const EditVoucher = (props) => {
         values["ngaybd"] = moment(datestart).format('YYYY-MM-DD');
         values["ngaykt"] = moment(dateEnd).format('YYYY-MM-DD');
         values["trangthai"] = title;
-        console.log(values);
 
-        /* const url = "http://127.0.0.1:5000/api/v1/khuyen-mai/them-voucher"
-        axios.post(url, values).then((res) => {
+        const url = "http://127.0.0.1:5000/api/v1/khuyen-mai/cap-nhat-voucher"
+        axios.put(url, values).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message)
                 setTimeout(() => {
@@ -74,9 +73,8 @@ const EditVoucher = (props) => {
                 message.error(res.data.message);
         })
             .catch(err => {
-                console.log(err.response);
-                message.error(`Tạo voucher thất bại !\n ${err.response.data.message}`)
-            }); */
+                message.error(`${err.response.data.message}\n Cập nhật thông tin voucher thất bại !\n `);
+            });
     };
     const [fileList, setFileList] = useState([]);
     const [listProduct, setlistProduct] = useState([]);

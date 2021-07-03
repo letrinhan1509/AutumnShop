@@ -125,21 +125,22 @@ router.post('/tao-don-hang', async function(req, res) {
             // API PUT:
     // Cập nhật trạng thái đơn hàng:
 router.put('/cap-nhat-trang-thai', async function(req, res) {
-    let orderId = req.body.orderId;
-    let delivery = req.body.delivery;
-    let status = req.body.status;
-    console.log(req.body);
+    let data = {
+        madonhang: req.body.madonhang,
+        ngaygiao: req.body.ngaygiao,
+        trangthai: req.body.trangthai
+    };
 
-    if(orderId == ''){
-        res.status(400).json({"status": "Fail", "message": "Không có id đơn hàng!"});
+    if(data.madonhang == undefined){
+        res.status(400).json({ "status": "Fail", "message": "Không có id đơn hàng!" });
     }else{
         try {
-            let query = await modelOrder.updateOrder(orderId, delivery, status);
-            res.status(200).json({"status": "Success", "message": "Cập nhật đơn hàng thành công!"});
+            let query = await modelOrder.update_Order(data);
+            res.status(200).json({ "status": "Success", "message": query });
         } catch (error) {
-            res.status(400).json({"status": "Fail", "message": "Lỗi cú pháp!", "error": error});
+            res.status(400).json({ "status": "Fail", "message": "Lỗi...!", "error": error });
         }
-    }
+    };
 });
 
 

@@ -110,14 +110,14 @@ exports.get_detailOrder = async (orderId) => {
     })
 }
     // Cập nhật đơn hàng:
-exports.update_Order = (orderId, delivery, status) => {
+exports.update_Order = (data) => {
     return new Promise( (hamOK, hamLoi) => {
-        let sql = `UPDATE donhang SET ngaygiao='${delivery}', trangthai='${status}' WHERE madonhang='${orderId}'`;
+        let sql = `UPDATE donhang SET ngaygiao='${data.ngaygiao}', trangthai='${data.trangthai}' WHERE madonhang='${data.madonhang}'`;
         db.query(sql, (err, result) => {
             if(err)
                 hamLoi(err);
             else
-                hamOK(result);
+                hamOK("Cập nhật thông tin đơn hàng thành công!");
         })
     })
 }

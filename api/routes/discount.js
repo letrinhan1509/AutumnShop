@@ -7,8 +7,17 @@ const authController = require('../controllers/authController');
 
 
             // API GET
-    // Danh sách các khuyến mãi theo sản phẩm:
+// Danh sách tất cả các khuyến mãi theo sản phẩm:
 router.get('/', async function(req, res) { 
+    try {
+        let list = await modelDiscount.list_Discounts();
+        res.status(200).json({ "status": "Success", "message": "Lấy danh sách khuyến mãi theo sản phẩm thành công !", "discount": list });
+    } catch (error) {
+        res.status(400).json({ "status": "Fail", "message": "Lỗi...! Lấy danh sách khuyến mãi theo sản phẩm thất bại !!!", "error": error });
+    }
+});
+    // Danh sách các khuyến mãi theo sản phẩm:
+router.get('/san-pham', async function(req, res) { 
     try {
         let list = await modelDiscount.list_Dis_Product();
         res.status(200).json({ "status": "Success", "message": "Lấy danh sách khuyến mãi theo sản phẩm thành công !", "discount": list });
@@ -43,7 +52,7 @@ router.get('/check-voucher/:ma', async function(req, res) {
     let maVoucher = req.params.ma;
     let today = new Date();
     let ngayhientai = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
-    console.log(req.body);
+
     try {
         let voucher = await modelDiscount.check_By_voucherName(maVoucher);
         if(voucher == false)
@@ -119,32 +128,26 @@ router.post('/them-khuyen-mai/san-pham', async function(req, res) {
 
 
 // API PUT:
-// Sửa khuyến mãi là voucher:
-router.put('/cap-nhat', async function(req, res) {
-    let ten = req.body.tenkm;
-    let ghichu = req.body.ghichu;
-    let dieukien = req.body.dieukien;
-    let giagiam = req.body.giagiam;
-    let voucher = req.body.voucher;
-    let ngaybd = req.body.ngaybd;
-    let ngaykt = req.body.ngaykt;
-    var today = new Date();
-    var ngayhientai = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+// Cập nhật khuyến mãi là voucher:
+router.put('/cap-nhat-voucher', async function(req, res) {
+    let data = {
+        makm: req.body.makm,
+        tenkm: req.body.tenkm,
+        voucher: req.body.voucher,
+        ghichu: req.body.ghichu,
+        dieukien: req.body.dieukien,
+        giagiam: req.body.giagiam,
+        ngaybd: req.body.ngaybd,
+        ngaykt: req.body.ngaykt,
+        trangthai: req.body.trangthai
+    };
 
-    if(voucher == 1){
-        try {
-
-            res.status(200).json({ "status": "Success", "message": "Cập nhật thông tin voucher thành công !" });
-        } catch (error) {
-            res.status(400).json({ "status": "Fail", "message": "Lỗi...! Cập nhật thông tin voucher thất bại !", error: error });
-        }
-    } else{
-        try {
-            
-        } catch (error) {
-            res.status(400).json({ "status": "Fail", "message": "Lỗi...! Cập nhật thông tin khuyến mãi thất bại !", error: error });
-        }
-    }
+    try {
+        let query = await modelDiscount.update_Discount(data);
+        res.status(200).json({ "status": "Success", "message": query });
+    } catch (error) {
+        res.status(400).json({ "status": "Fail", "message": "Lỗi...!", error: error });
+    };
 });
     // Cập nhật trạng thái khuyến mãi:
 router.put('/cap-nhat-trang-thai', async function(req, res) {

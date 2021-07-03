@@ -5,6 +5,11 @@ const discount = {
         const url = "/";
         return AxiosDiscount.get(url);
     },
+    //(Danh sách tất cả các khuyến mãi theo sản phẩm)
+    getAllVoucher: () => {
+        const url = "/san-pham";
+        return AxiosDiscount.get(url);
+    },
     //(Danh sách tất cả các khuyến mãi là voucher)
     getAllVoucher: () => {
         const url = "/voucher";
@@ -38,6 +43,11 @@ const discount = {
     //(Cập nhật chương trình khuyến mãi theo sản phẩm)
     updateSale: (values) => {
         const url = "/cap-nhat";
+        return AxiosDiscount.put(url ,values);
+    },
+    //(Cập nhật chương trình khuyến mãi là voucher)
+    updateVoucher: (values) => {
+        const url = "/cap-nhat-voucher";
         return AxiosDiscount.put(url ,values);
     },
     //(Cập nhật chương trình khuyến mãi theo voucher)

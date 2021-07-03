@@ -4,7 +4,6 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useHistory, Link } from "react-router-dom";
 import "Container/scss/addpro.scss";
-import user from 'API_Call/Api_user/user';
 import voucher from 'API_Call/Api_discount/discount';
 
 const { Option } = Select;

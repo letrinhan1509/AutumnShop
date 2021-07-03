@@ -3,9 +3,10 @@ import { Form, Row, Col, Input, Button, message, Select, DatePicker } from 'antd
 import Meta from "antd/lib/card/Meta";
 import { Link, useHistory } from "react-router-dom";
 import "Container/scss/addpro.scss";
-import admins from 'API_Call/Api_admin/admin';
+import orders from 'API_Call/Api_order/order';
 import admin from 'API_Call/Api_admin/admin';
 import moment from 'moment';
+import axios from "axios"
 
 const { TextArea } = Input;
 const formItemLayout = {
@@ -77,9 +78,10 @@ const ListOrder = (props) => {
         } else {
             values["ngaygiao"] = moment(dateEnd).format('YYYY-MM-DD');
         }
-
+        //values["madonhang"] = ORDER.madonhang;
         console.log(values);
-        /* admins.updateSTTorder(values).then((res) => {
+
+        orders.updateStatus(values).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message)
                 localStorage.removeItem("order");
@@ -89,8 +91,8 @@ const ListOrder = (props) => {
             }
         })
         .catch(err => {
-                message.error(`Lỗi...! Sửa đơn hàng thất bại!\n ${err.response.data.message}`);
-        }) */
+                message.error(`${err.response.data.message}\n Cập nhật đơn hàng thất bại! `);
+        })
     };
 
     return (

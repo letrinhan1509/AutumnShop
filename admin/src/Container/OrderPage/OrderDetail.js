@@ -12,7 +12,8 @@ const OrderDetail = (props) => {
     const ORDER = order[0];
     console.log(ORDER);
     var date = new Date(ORDER.ngaydat);
-    console.log(date);
+    console.log(date.toLocaleString());
+    var ngayGiao = new Date(ORDER.ngaygiao);
 
     const back = () => {
         localStorage.removeItem("order");
@@ -41,7 +42,7 @@ const OrderDetail = (props) => {
                         <li><span>Ngày đặt: </span>{date.toLocaleString()}</li>
                         <li><span>Phí vận chuyển: </span>{ORDER.tienship}</li>
                         <li><span>Tổng hóa đơn: </span>{ORDER.tongtien}</li>
-                        {ORDER.ngaygiao === null ? ("") : (<li><span>Ngày giao hàng: </span></li>)}
+                        {ORDER.ngaygiao === null ? ("") : (<li><span>Ngày giao hàng: </span>{ngayGiao.toLocaleString()}</li>)}
                         <li><span>Trạng thái đơn hàng: </span>{ORDER.tentt}</li>
                     </ul>
                 </Col>

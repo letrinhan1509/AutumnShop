@@ -89,7 +89,6 @@ exports.check_By_voucherName = async (name) => {
             } else if(result.length <= 0) {
                 hamOK(false);
             } else {
-                console.log("Có voucher");
                 hamOK(result[0]);
             }
         })
@@ -136,16 +135,16 @@ exports.create_Discount = (data, masp, chietkhau, giakm) => {
     })
 };
     // Sửa thông tin khuyến mãi:
-exports.update_Discount = (id, ten, voucher, dk, ngaykt, trangthai) => {
+exports.update_Discount = (data) => {
     return new Promise( (resolve, reject) => {
-        let sql = `UPDATE trangthai SET tenkm='${ten}', voucher='${voucher}',, dieukien='${dk}', ngaykt='${ngaykt}', trangthai='${trangthai}'
-        WHERE makm = '${id}'`;
+        let sql = `UPDATE khuyenmai SET tenkm='${data.tenkm}', voucher='${data.voucher}', ghichu='${data.ghichu}', dieukien='${data.dieukien}', giagiam='${data.giagiam}', ngaybd='${data.ngaybd}', ngaykt='${data.ngaykt}', trangthai='${data.trangthai}'
+        WHERE makm = '${data.makm}'`;
         db.query(sql, (err, result) => {
-            if(err)
+            if(err){
                 reject(err);
-            else
-                resolve("Cập nhật thông tin khuyến mãi thành công !") ;
-        })
+            } else
+                resolve("Cập nhật thông tin khuyến mãi thành công !");
+        });
     });
 };
     // Khoá khuyến mãi:
