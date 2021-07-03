@@ -32,6 +32,26 @@
                         font-weight: 700;
                         padding-right: 5px;
                     }
+                    .ant-form-item{
+                        display: flex;
+                        justify-content: space-between;
+                        .ant-form-item-label{
+                            overflow: unset;
+                        }
+                        .ant-form-item-label {
+                            label {
+                                font-weight: 700;
+                                font-size: 18px;
+                            }
+                        }
+                        .ant-form-item-control{
+                            span{
+                                font-size: 18px;
+                                font-weight: 500;
+                            }
+                        }
+                    }
+                    
                 }
             }
             .col-two {
@@ -68,13 +88,32 @@
         }
         .btn-box {
             display: flex;
-            justify-content: center;
-            margin-top: 30px;
+            justify-content: flex-start;
+            margin-top: 10px;
+            margin-left: 20px;
             Button {
                 width: 100px;
                 height: 30px;
                 margin-bottom: 10px;
                 padding-bottom: 32px;
+                a {
+                    font-size: 20px;
+                }
+            }
+        }
+        .btn-box-edit {
+            display: flex;
+            justify-content: flex-start;
+            margin-top: 10px;
+            width: 100%;
+            margin-left: 20px;
+            Button {
+                width: 100px;
+                height: 30px;
+                border-radius: 5px;
+                padding-bottom: 32px;
+                font-size: 18px;
+                margin-right: 20px;
                 a {
                     font-size: 20px;
                 }

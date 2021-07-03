@@ -47,10 +47,15 @@ const Payments2 = (props) => {
     values['note'] = notes;
     values['pay'] = cod;
     values['ship'] = ship;
-    values['sumpay'] = ship + Number(props.PriceCart);
-    values['makm'] = voucher.makm;
+    if(voucher !== null){
+      values['sumpay'] = ship + Number(props.PriceCart) - Number(voucher.giagiam);
+      values['makm'] = voucher.makm;
+    }else{
+      values['sumpay'] = ship + Number(props.PriceCart);
+    }
+    
     console.log(values);
-    const url = "http://localhost:5000/api/v1/don-hang/tao-don-hang";
+    /* const url = "http://localhost:5000/api/v1/don-hang/tao-don-hang";
     axios
       .post(url, values)
       .then(async (res) => {
@@ -71,7 +76,7 @@ const Payments2 = (props) => {
         message.error(
           `Đạt hàng thất bại, vui lòng đăng nhập để đặt hàng ! \n ${err}`
         );
-      });
+      }); */
   };
 
   /* useEffect(() => {

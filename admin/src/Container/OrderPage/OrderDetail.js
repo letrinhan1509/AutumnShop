@@ -20,6 +20,11 @@ const OrderDetail = (props) => {
 
     return (
         <div className="wrapper" >
+            <Row className="btn-box">
+                <Button onClick={back} className="pay" type="primary">
+                    <Link to="/danh-sach-don-hang">Trở về</Link>
+                </Button>
+            </Row>
             <Row className="box">
                 <Col className="col-one">
                     <h1>Thông tin đơn hàng</h1>
@@ -36,7 +41,7 @@ const OrderDetail = (props) => {
                         <li><span>Ngày đặt: </span>{date.toLocaleString()}</li>
                         <li><span>Phí vận chuyển: </span>{ORDER.tienship}</li>
                         <li><span>Tổng hóa đơn: </span>{ORDER.tongtien}</li>
-                        {ORDER.ngaygiao === null ? ("") : (<li><span>Ngày giao hàng: </span></li>) }
+                        {ORDER.ngaygiao === null ? ("") : (<li><span>Ngày giao hàng: </span></li>)}
                         <li><span>Trạng thái đơn hàng: </span>{ORDER.tentt}</li>
                     </ul>
                 </Col>
@@ -58,11 +63,7 @@ const OrderDetail = (props) => {
 
                 </Col>
             </Row>
-            <Row className="btn-box">
-                <Button onClick={back} className="pay" type="primary">
-                    <Link to="/danh-sach-don-hang">Trở về</Link>
-                </Button>
-            </Row>
+
         </div>
     );
 }

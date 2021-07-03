@@ -31,18 +31,19 @@ const tailFormItemLayout = {
 };
 
 
-const AddVoucher = (props) => {
+const EditVoucher = (props) => {
 
     const [form] = Form.useForm();
     const history = useHistory();
 
+    let voucherID = JSON.parse(localStorage.getItem('voucherID'));
+    console.log(voucherID);
     const [datestart, setDatestart] = useState("");
     const [dateEnd, setDateEnd] = useState("");
     //let a = "";
     function startChange(date) {
         if(date !== null){
             setDatestart(date._d);
-
         }
     }
     function endChange(date) {
@@ -50,15 +51,15 @@ const AddVoucher = (props) => {
             setDateEnd(date._d);
         }
     }
-    const [title, setTitle] = useState(true);
+    const [title, setTitle] = useState("");
     const changett = (e) => {
         setTitle(e.target.value);
     };
 
-    const addProduct = (values) => {
+    const editvoucher = (values) => {
         console.log(datestart.toLocaleDateString());
-        values["ngaybd"] = moment(datestart.toLocaleDateString()).format('YYYY-DD-MM');
-        values["ngaykt"] = moment(dateEnd.toLocaleDateString()).format('YYYY-DD-MM');
+        values["ngaybd"] = moment(datestart).format('YYYY-MM-DD');
+        values["ngaykt"] = moment(dateEnd).format('YYYY-MM-DD');
         values["trangthai"] = title;
         console.log(values);
 
@@ -80,7 +81,6 @@ const AddVoucher = (props) => {
     const [fileList, setFileList] = useState([]);
     const [listProduct, setlistProduct] = useState([]);
 
-
     const options = [
         { label: '0', value: '0' },
         { label: '1', value: '1' },
@@ -91,15 +91,24 @@ const AddVoucher = (props) => {
     return (
         <>
             <div className="form-wrapper">
-                <h2 style={{ textAlign: 'center' }}> Nhập thông tin voucher</h2>
+                <h2 style={{ textAlign: 'center' }}> Chỉnh sửa thông tin voucher</h2>
                 <Form
                     {...formItemLayout}
                     form={form}
                     name="register"
-                    onFinish={addProduct}
+                    onFinish={editvoucher}
                     scrollToFirstError
+                    initialValues={{
+                        makm: `${voucherID.makm}`,
+                        tenkm: `${voucherID.tenkm}`,
+                        voucher: `${voucherID.voucher}`,
+                        dieukien: `${voucherID.dieukien}`,
+                        giagiam: `${voucherID.giagiam}`,
+                        ghichu: `${voucherID.ghichu}`,
+                        
+                    }}
                 >
-                    {/* <Form.Item
+                    <Form.Item
                         name="makm"
                         label="Mã khuyến mãi"
                         rules={[
@@ -113,8 +122,8 @@ const AddVoucher = (props) => {
                             },
                         ]}
                     >
-                        <Input />
-                    </Form.Item> */}
+                        <Input disabled/>
+                    </Form.Item>
                     <Form.Item
                         name="tenkm"
                         label="Tên khuyến mãi"
@@ -210,7 +219,7 @@ const AddVoucher = (props) => {
                             </Button>
                         </Link>
                         <Button type="primary" htmlType="submit" style={{ marginLeft: 30 }}>
-                            Thêm voucher
+                            Xác nhận
                         </Button>
                     </Form.Item>
                 </Form>
@@ -218,4 +227,4 @@ const AddVoucher = (props) => {
         </>
     );
 };
-export default AddVoucher;
+export default EditVoucher;

@@ -13,12 +13,19 @@ const Payments = (props) => {
   const history = useHistory();
   const cart = JSON.parse(localStorage.getItem("cart"));
   const user = JSON.parse(localStorage.getItem("user"));
+  const VOUCHER = JSON.parse(localStorage.getItem("voucher"));
   const [listCart, setListCart] = useState([]);
   const [order, setOrder] = useState([]);
+  const [khuyenmai, setKhuyenmai] = useState([]);
+
   console.log(cart);
   useEffect(() => {
     if (cart !== "") {
       setListCart(cart);
+    }
+    if(VOUCHER !== null){
+      setKhuyenmai(VOUCHER);
+      localStorage.removeItem("order");
     }
   }, [])
   console.log(listCart);
@@ -64,11 +71,9 @@ const Payments = (props) => {
   //let ma = "";
   //const [ma, setMa] = useState([]);
   var ma = "";
-  const [khuyenmai, setKhuyenmai] = useState([]);
   const code = (e) => {
     ma = e.target.value;
     console.log(ma);
-    console.log(khuyenmai.length);
   };
   const useCode = () => {
     let id = ma;
@@ -257,7 +262,7 @@ const Payments = (props) => {
                       </>
                     ) : (
                       <>
-                        <Input onChange={code} placeholder="Nhập mã khuyến mãi" disabled/>
+                        <Input onChange={code} value={khuyenmai.voucher} placeholder="Nhập mã khuyến mãi" disabled/>
                         <Button type="primary" disabled>Áp dụng</Button>
                       </>
                     )}

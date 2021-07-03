@@ -5,6 +5,7 @@ import { Link, useHistory } from "react-router-dom";
 import "Container/scss/addpro.scss";
 import admins from 'API_Call/Api_admin/admin';
 import admin from 'API_Call/Api_admin/admin';
+import moment from 'moment';
 
 const { TextArea } = Input;
 const formItemLayout = {
@@ -45,6 +46,7 @@ const ListOrder = (props) => {
     console.log(order);
     const ORDER = order[0];
     console.log(ORDER.tentt);
+    var date = new Date(ORDER.ngaydat);
 
     const back = () => {
         localStorage.removeItem("order");
@@ -53,9 +55,14 @@ const ListOrder = (props) => {
 
     const [dateEnd, setDateEnd] = useState("");
     function endChange(date) {
-        setDateEnd(date._d);
-        //a = date._d;
+        if(order !== null){
+            setDateEnd(date._d);
+        }
     }
+    /* const [select, setSelect] = useState("");
+    function titleChange(e) {
+        setSelect(e);
+    } */
     const [title, setTitle] = useState([]);
     useEffect(() => {
         admin.getTitle().then((res) => {
@@ -65,8 +72,12 @@ const ListOrder = (props) => {
         })
     }, [])
     const update = (values) => {
-        values["ngaygiao"] = dateEnd.toLocaleDateString();
-        console.log(title);
+        if (dateEnd.length === 0) {
+            values["ngaygiao"] = "";
+        } else {
+            values["ngaygiao"] = moment(dateEnd).format('YYYY-MM-DD');
+        }
+
         console.log(values);
         /* admins.updateSTTorder(values).then((res) => {
             if (res.data.status === "Success") {
@@ -83,8 +94,7 @@ const ListOrder = (props) => {
     };
 
     return (
-        <div className="form-wrapper">
-            <h2 style={{ textAlign: 'center' }}>Sửa trạng thái đơn hàng</h2>
+        <div className="wrapper" >
             <Form
                 {...formItemLayout}
                 form={form}
@@ -98,38 +108,72 @@ const ListOrder = (props) => {
                     }
                 )}
             >
-                <Form.Item
-                    label="Ngày giao"
-                    rules={[
-                        {
-                            //required: true,
-                            message: 'Vui lòng chọn ngày giao hàng !',
-                        },
-                    ]}
-                >
-                    <DatePicker onChange={endChange} />
+                <Form.Item >
+                    <div className="btn-box-edit">                        
+                        <Button onClick={back} className="pay" type="danger">
+                            <Link to="/danh-sach-don-hang">Trở về</Link>
+                        </Button>
+                        <Button className="pay" value="submit" type="primary" htmlType="submit">
+                            Cập nhật
+                        </Button>
+                    </div>
                 </Form.Item>
-                <Form.Item
-                    name="trangthai"
-                    id="trangthai"
-                    label="Trạng thái đơn hàng"
-                >
-                    <Select style={{ width: 300 }}>
-                        {title.map((item) => {
-                            return (
-                                <>
-                                    <Option value={item.trangthai}>{item.tentt}</Option>
-                                </>
-                            )
-                        })}
-                    </Select>
-                </Form.Item>
-                <Form.Item {...tailFormItemLayout}>
-                    <Link to="/danh-sach-don-hang" onClick={back} ><p style={{ marginRight: "20px", }} className="ant-btn ant-btn-dashed">Trở về</p></Link>
-                    <Button value="submit" type="primary" htmlType="submit">
-                        Xác nhận
-                    </Button>
-                </Form.Item>
+                <Row className="box">
+                    <Col className="col-one">
+                        <h1>Sửa trạng thái đơn hàng</h1>
+                        <ul>
+                            {/* <li>Mã Khách hàng: {ORDER.makh}</li> */}
+                            <li><span>Mã đơn hàng: </span>{ORDER.madonhang}</li>
+                            <li><span>Tên khách hàng: </span>{ORDER.tenkh}</li>
+                            <li><span>Điện thoại: </span>{ORDER.sodienthoai}</li>
+                            <li><span>Email: </span>{ORDER.email}</li>
+                            <li><span>Địa chỉ: </span>{ORDER.diachi}</li>
+                            <li><span>Hình thức thanh toán: </span>{ORDER.hinhthuc}</li>
+                            {ORDER.ghichu === "" ? ("") : (<li><span>Ghi chú: </span>{ORDER.ghichu}</li>)}
+                            {/* {ORDER.makm === null ? ("") : (<li><span>Mã khuyến mãi: </span>{ORDER.makm}</li>)} */}
+                            <li><span>Ngày đặt: </span>{date.toLocaleDateString()}</li>
+                            <li><span>Ngày giao: </span><DatePicker onChange={endChange} /></li>
+                            <li><span>Phí vận chuyển: </span>{ORDER.tienship}</li>
+                            <li><span>Tổng hóa đơn: </span>{ORDER.tongtien}</li>
+                            {ORDER.ngaygiao === null ? ("") : (<li><span>Ngày giao hàng: </span></li>)}
+                            <li>
+                                <Form.Item
+                                    name="trangthai"
+                                    id="trangthai"
+                                    label="Trạng thái đơn hàng: "
+                                >
+                                    <Select className="tentt" style={{ width: 300 }}>
+                                        {title.map((item) => {
+                                            return (
+                                                <>
+                                                    <Option className="tentt" value={item.trangthai}>{item.tentt}</Option>
+                                                </>
+                                            )
+                                        })}
+                                    </Select>
+                                </Form.Item>
+                            </li>
+                        </ul>
+                    </Col>
+                    <Col className="col-two">
+                        <h3>Chi tiết đơn hàng</h3>
+                        <ul>
+                            {ORDER.chitietDH.map((item) => (
+                                <li className="number">
+                                    <ul>
+                                        <li><span>Tên sản phẩm: </span>{item.tensp}</li>
+                                        <li><span>Số lượng: </span>{item.soluong}</li>
+                                        <li><span>Giá: </span>{item.gia}Đ</li>
+                                        {Number(item.giagiam) === 0 ? ("") : (<li><span>Giảm giá: </span>{item.giagiam}</li>)}
+                                        <li><span>Thành tiền: </span>{item.thanhtien}Đ</li>
+                                    </ul>
+                                </li>
+                            ))}
+                        </ul>
+
+                    </Col>
+                </Row>
+                
             </Form>
         </div>
     );

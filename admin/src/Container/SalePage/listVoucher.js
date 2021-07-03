@@ -12,16 +12,36 @@ const ListVoucher = (props) => {
     const [listVoucher, setListVoucher] = useState([]);
     const [a, setA] = useState([]);
     const history = useHistory();
-    let result = JSON.parse(localStorage.getItem('user'));
+    let user = JSON.parse(localStorage.getItem('user'));
 
     //API List Voucher:
     useEffect(() => {
         voucher.getAllVoucher().then((res) => {
-        setListVoucher(res.data.voucher);
-        setWordSearch(res.data.voucher);
-      })
+            setListVoucher(res.data.voucher);
+            setWordSearch(res.data.voucher);
+        })
     }, []);
-
+    // Sửa voucher:
+    const loadEdit = (e) => {
+        let id = e.currentTarget.dataset.id;
+        console.log(id);
+        setA(id);
+        console.log(a);
+        setTimeout(() => {
+            history.push('/danh-sach-voucher/sua-voucher');
+        }, 100)
+    }
+    const [voucherID, setVoucherID] = useState([]);
+    useEffect(() => {
+        if (a != "") {
+            voucher.getVoucherID(a).then((res) => {
+                setVoucherID(res.data.voucher);
+            });
+        }
+    }, [a]);
+    if (voucherID != '') {
+        localStorage.setItem('voucherID', JSON.stringify(voucherID));
+    }
     //Cập nhật trạng thái Voucher:
     const unlock = (e) => {
         let id = e.currentTarget.dataset.id;
@@ -64,16 +84,7 @@ const ListVoucher = (props) => {
             });
     };
 
-    // Sửa voucher:
-    const loadEdit = (e) => {
-        let id = e.currentTarget.dataset.id;
-        console.log(id);
-        setA(id);
-        console.log(a);
-        setTimeout(() => {
-            history.push('/danh-sach-voucher/sua-voucher');
-        }, 100)
-    }
+
 
     //Setup trạng thái cho datatable
     listVoucher.forEach(element => {
@@ -124,11 +135,23 @@ const ListVoucher = (props) => {
             title: 'Ngày bắt đầu',
             dataIndex: 'ngaybd',
             key: 'ngaybd',
+            render: ngaybd => {
+                var date = new Date(ngaybd);
+                return(
+                    date.toLocaleDateString()
+                );
+            }
         },
         {
             title: 'Ngày kết thúc',
             dataIndex: 'ngaykt',
             key: 'ngaykt',
+            render: ngaykt => {
+                var date = new Date(ngaykt);
+                return(
+                    date.toLocaleDateString()
+                );
+            }
         },
         {
             title: 'Trạng thái',
@@ -156,9 +179,8 @@ const ListVoucher = (props) => {
             ],
             onFilter: (value, record) => record.trangthai.stt.includes(value),
         },
-        result.permission === 'Admin' ? (
+        user.permission === 'Admin' ? (
             {
-                title: 'Hành động',
                 dataIndex: 'trangthai',
                 data: 'makh',
                 key: 'trangthai',
@@ -181,10 +203,10 @@ const ListVoucher = (props) => {
                     </>
                 )
             }) : (<> </>),
-        result.permission === 'Admin' ? ({
-            dataIndex: "makm",
-            key: "makm",
-            render: madonhang => (<div className="btn-box fix"><Button data-id={madonhang} onClick={loadEdit} type="primary">Cập nhật</Button></div>)
+            user.permission === 'Admin' ? ({
+            dataIndex: "voucher",
+            key: "voucher",
+            render: voucher => (<div className="btn-box fix"><Button data-id={voucher} onClick={loadEdit} type="primary">Cập nhật</Button></div>)
         }) : (<> </>)
     ];
 

@@ -34,7 +34,7 @@ import ListOrder from "./Container/OrderPage/listOrder";
 import OrderDetail from "./Container/OrderPage/OrderDetail";
 import EditOrder from "./Container/OrderPage/editOrder";
 import ListVoucher from "./Container/SalePage/listVoucher";
-
+import EditVoucher from "./Container/SalePage/EditVoucher";
 
 function App() {
   const PrivateRoute = ({ component: Component, ...rest }) => (
@@ -146,6 +146,9 @@ function App() {
                   </Route>
                   <Route exact path="/danh-sach-voucher">
                     <ListVoucher />
+                  </Route>
+                  <Route exact path="/danh-sach-voucher/sua-voucher">
+                    <EditVoucher />
                   </Route>
                 </Content>
               </Col>

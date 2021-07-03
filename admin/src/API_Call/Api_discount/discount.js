@@ -15,7 +15,7 @@ const discount = {
         const url = "/san-pham";
         return AxiosDiscount.get(url);
     },
-    //(Chi tiết của 1 voucher theo mã khuyến mãi)
+    //(Chi tiết của 1 khuyến mãi theo mã khuyến mãi)
     getSaleID: (id) => {
         const url = `/voucher/${id}`;
         return AxiosDiscount.get(url);
