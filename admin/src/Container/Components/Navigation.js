@@ -41,18 +41,17 @@ const Navigation = () => {
                                 <Menu.Item key ="danh-sach-nha-sx" icon={<UnorderedListOutlined />} >Danh sách nhà sản xuất</Menu.Item>
                                 <Menu.Item key="danh-muc-san-pham" icon={<UnorderedListOutlined />}>Danh mục sản phẩm</Menu.Item>
                             </SubMenu>                          
-                            <SubMenu key="sub8" icon={<OrderedListOutlined />} title="Quản lý kinh doanh">
+                            <SubMenu key="sub4" icon={<OrderedListOutlined />} title="Quản lý kinh doanh">
                                 <Menu.Item key="danh-sach-don-hang" icon={<ProfileOutlined />} >Danh sách đơn hàng</Menu.Item>
-                                <SubMenu key="sub9" icon={<PercentageOutlined />} title="Quản lý khuyến mãi">
+                                <SubMenu key="sub5" icon={<PercentageOutlined />} title="Quản lý khuyến mãi">
                                     <Menu.Item key="danh-sach-voucher">Danh sách voucher</Menu.Item>
                                     <Menu.Item key="danh-sach-khuyen-mai">Danh sách khuyến mãi</Menu.Item>
-                                    {result.permission==='Admin'?(<Menu.Item key ="them-khuyen-mai" icon={<FileAddOutlined />}>Thêm khuyến mãi</Menu.Item>):(<p/>)}
                                 </SubMenu>
                             </SubMenu>
-                            <SubMenu key="sub10" icon={<MessageOutlined />} title="Quản lý bình luận">
+                            <SubMenu key="sub6" icon={<MessageOutlined />} title="Quản lý bình luận">
                                 <Menu.Item key="danh-sach-binh-luan">Danh sách các bình luận</Menu.Item>
                             </SubMenu>
-                            <SubMenu key="sub20" icon={<SettingOutlined />} title="Cài đặt">
+                            <SubMenu key="sub8" icon={<SettingOutlined />} title="Cài đặt">
                                 <Menu.Item key="thong-tin-tai-khoan" icon={<ProfileOutlined />}>Thông tin tài khoản</Menu.Item>
                                 <Menu.Item onClick={logout} icon={<LogoutOutlined />}>Đăng xuất</Menu.Item>
                             </SubMenu>         

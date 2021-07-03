@@ -43,6 +43,7 @@ router.get('/check-voucher/:ma', async function(req, res) {
     let maVoucher = req.params.ma;
     let today = new Date();
     let ngayhientai = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+    console.log(req.body);
     try {
         let voucher = await modelDiscount.check_By_voucherName(maVoucher);
         if(voucher == false)
@@ -82,7 +83,7 @@ router.post('/them-voucher', async function(req, res) {
                     dieukien: dieukien,
                     giagiam: giagiam,
                     ngaybd: ngaybd,
-                    ngaykt: "05-07-2021",
+                    ngaykt: ngaykt,
                     trangthai: trangthai
                 };
                 let voucher = await modelDiscount.create_Voucher(data);
@@ -119,7 +120,7 @@ router.post('/them-khuyen-mai/san-pham', async function(req, res) {
 
 // API PUT:
 // Sửa khuyến mãi là voucher:
-router.put('/cap-nhat-khuyen-mai', async function(req, res) {
+router.put('/cap-nhat', async function(req, res) {
     let ten = req.body.tenkm;
     let ghichu = req.body.ghichu;
     let dieukien = req.body.dieukien;
@@ -149,17 +150,19 @@ router.put('/cap-nhat-khuyen-mai', async function(req, res) {
 router.put('/cap-nhat-trang-thai', async function(req, res) {
     let makm = req.body.makm;
     let trangthai = req.body.trangthai;
+    console.log(req.body);
 
-    try {
-        if(trangthai == 1){
-
-        } else{
-            
-        }
-        res.status(200).json({ "status": "Success", "message": "Cập nhật trạng thái khuyến mãi thành công !" });
-    } catch (error) {
-        res.status(400).json({ "status": "Fail", "message": "Lỗi...! Cập nhật trạng thái khuyến mãi thất bại !", error: error });
-    }
+    if(makm == undefined){
+        res.status(400).json({ "status": "Fail", "message": "Thiếu mã khuyến mãi! Cập nhật trạng thái khuyến mãi thất bại !" });
+    } else {
+        try {
+            let data = { makm: makm, trangthai: trangthai };
+            let voucher = await modelDiscount.lock_Discount(data);
+            res.status(200).json({ "status": "Success", "message": voucher });
+        } catch (error) {
+            res.status(400).json({ "status": "Fail", "message": "Lỗi...! Cập nhật trạng thái khuyến mãi thất bại !", error: error });
+        };
+    };
 });
 
 
@@ -167,12 +170,12 @@ router.put('/cap-nhat-trang-thai', async function(req, res) {
 router.delete('/xoa-khuyen-mai/:id', async function(req, res) {
     let makm = req.body.id;
 
-    try {
+    /* try {
 
         res.status(200).json({ "status": "Success", "message": "xoá khuyến mãi thành công !" });
     } catch (error) {
         res.status(400).json({ "status": "Fail", "message": "Lỗi...! Xoá khuyến mãi thất bại !", error: error });
-    }
+    } */
 });
 
 

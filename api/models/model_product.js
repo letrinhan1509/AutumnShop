@@ -10,7 +10,7 @@ exports.list_products = async () => {
         let sql = `SELECT SP.masp, SP.code, SP.tensp, SP.soluong, SP.size, SP.mau, SP.gia, SP.hinh, 
         SP.hinhchitiet, SP.mota, SP.trangthai, nhasx.tennsx, loaisp.tenloai, danhmuc.tendm
         FROM (((sanpham AS SP JOIN danhmuc ON SP.madm = danhmuc.madm) JOIN loaisp ON SP.maloai = loaisp.maloai)
-        JOIN nhasx ON SP.mansx = nhasx.mansx) WHERE SP.trangthai = 1`;
+        JOIN nhasx ON SP.mansx = nhasx.mansx)`;
         db.query(sql, (err, result) => {
             console.log('List success');
             dataList = result;

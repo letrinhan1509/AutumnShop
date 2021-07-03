@@ -101,7 +101,7 @@ router.post('/tao-don-hang', async function(req, res) {
                     res.status(400).json({ "status": "Fail", "message": "Lỗi... GET DETAIL DISTRICT !!!", "error": error });
                 });
         } else {
-            console.log("có mã khuyến mãi");
+            // Trường hợp đơn hàng có mã khuyến mãi:
             var url = "https://thongtindoanhnghiep.co/api/ward/" + ward;
             axios.get(url)
                 .then(async function (response) {
@@ -128,6 +128,8 @@ router.put('/cap-nhat-trang-thai', async function(req, res) {
     let orderId = req.body.orderId;
     let delivery = req.body.delivery;
     let status = req.body.status;
+    console.log(req.body);
+
     if(orderId == ''){
         res.status(400).json({"status": "Fail", "message": "Không có id đơn hàng!"});
     }else{

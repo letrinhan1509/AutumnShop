@@ -102,8 +102,8 @@ const ListOrder = (props) => {
                     label="Ngày giao"
                     rules={[
                         {
-                            required: true,
-                            message: 'Vui lòng chọn ngày giao!',
+                            //required: true,
+                            message: 'Vui lòng chọn ngày giao hàng !',
                         },
                     ]}
                 >
@@ -112,7 +112,7 @@ const ListOrder = (props) => {
                 <Form.Item
                     name="trangthai"
                     id="trangthai"
-                    label="Trạng thái"
+                    label="Trạng thái đơn hàng"
                 >
                     <Select style={{ width: 300 }}>
                         {title.map((item) => {

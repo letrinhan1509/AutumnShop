@@ -10,7 +10,9 @@ import voucher from 'API_Call/Api_discount/discount';
 const { Option } = Select;
 const ListVoucher = (props) => {
     const [listVoucher, setListVoucher] = useState([]);
+    const [a, setA] = useState([]);
     const history = useHistory();
+    let result = JSON.parse(localStorage.getItem('user'));
 
     //API List Voucher:
     useEffect(() => {
@@ -20,72 +22,70 @@ const ListVoucher = (props) => {
       })
     }, []);
 
-    //Cập nhật trạng thái User
+    //Cập nhật trạng thái Voucher:
     const unlock = (e) => {
         let id = e.currentTarget.dataset.id;
-        let unLock = 1;
-        console.log("Id:", id);
-        let values = {
-            "userId": id,
-            "stt": unLock
-        };
-        user.updateStatus(values).then((res) => {
+        //console.log("Id:", id);
+        let values = { makm: id, trangthai: 1 };
+        voucher.updateSaleStatus(values).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message)
                 setTimeout(() => {
-                    //history.go('/danh-sach-khach-hang')
-                    history.go({ pathname: '/danh-sach-khach-hang' });
-                }, 800)
-
+                    history.go({ pathname: '/danh-sach-voucher' });
+                }, 1000);
             }
             else {
-                message.error("Cập nhật trạng thái thất bại")
+                message.error(res.data.message);
             }
         })
             .catch(err => {
                 console.log(err.response);
-                message.error(`Lỗi...! Mở khoá tài khoản thất bại!\n ${err.response.data}`)
-            })
-
+                message.error(`Lỗi...! Mở khoá tài khoản thất bại!\n ${err.response.data.message}`);
+            });
     }
     const lock = (e) => {
         let id = e.currentTarget.dataset.id;
-        let shutdown = 0;
-        console.log("Id:", id);
-        let values = {
-            "userId": id,
-            "stt": shutdown
-        };
-        user.updateStatus(values).then((res) => {
+        //console.log("Id:", id);
+        let values = { makm: id, trangthai: 0 };
+        voucher.updateSaleStatus(values).then((res) => {
             if (res.data.status === "Success") {
-                message.success(res.data.message)
+                message.success(res.data.message);
                 setTimeout(() => {
-                    history.go('/danh-sach-khach-hang')
-                }, 800)
+                    history.go('/danh-sach-voucher');
+                }, 1000);
             }
             else {
-                message.error("Cập nhật trạng thái thất bại")
+                message.error(res.data.message);
             }
         })
             .catch(err => {
                 console.log(err.response);
-                message.error(`Lỗi...! Khoá tài khoản thất bại!\n ${err.response.data}`)
-            })
+                message.error(`${err.response.data.message}`);
+            });
     };
 
-    let result = JSON.parse(localStorage.getItem('user'));
+    // Sửa voucher:
+    const loadEdit = (e) => {
+        let id = e.currentTarget.dataset.id;
+        console.log(id);
+        setA(id);
+        console.log(a);
+        setTimeout(() => {
+            history.push('/danh-sach-voucher/sua-voucher');
+        }, 100)
+    }
 
     //Setup trạng thái cho datatable
     listVoucher.forEach(element => {
         if (element.trangthai === 1) {
             element.trangthai = [];
             element.trangthai.stt = ["Hoạt động"];
-            element.trangthai.id = element.makh;
+            element.trangthai.id = element.makm;
         }
         if (element.trangthai === 0) {
             element.trangthai = [];
             element.trangthai.stt = ["Khoá"];
-            element.trangthai.id = element.makh;
+            element.trangthai.id = element.makm;
         }
     })
 
@@ -156,7 +156,6 @@ const ListVoucher = (props) => {
             ],
             onFilter: (value, record) => record.trangthai.stt.includes(value),
         },
-
         result.permission === 'Admin' ? (
             {
                 title: 'Hành động',
@@ -181,7 +180,12 @@ const ListVoucher = (props) => {
                         })}
                     </>
                 )
-            }) : (<> </>)
+            }) : (<> </>),
+        result.permission === 'Admin' ? ({
+            dataIndex: "makm",
+            key: "makm",
+            render: madonhang => (<div className="btn-box fix"><Button data-id={madonhang} onClick={loadEdit} type="primary">Cập nhật</Button></div>)
+        }) : (<> </>)
     ];
 
 
@@ -203,7 +207,6 @@ const ListVoucher = (props) => {
     }
     let demo = listVoucher;
     const [wordSearch, setWordSearch] = useState([]);
-    console.log(wordSearch);
     /* function onChange(e) {
       if (e.target.value !== "") {
         let filter = filterItems(ListUser, e.target.value);
@@ -270,7 +273,7 @@ const ListVoucher = (props) => {
                 <div className="btn-wrapper">
                     <Link to={'/them-voucher'}>
                         <Button type="primary">
-                            Thêm chương trình
+                            Thêm chương trình khuyến mãi
                         </Button>
                     </Link>
                 </div>

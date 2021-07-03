@@ -8,8 +8,8 @@ var dataName = [];
     // Danh sách tất cả đơn hàng:
 exports.list_Orders = async () => {
     return new Promise( (hamOK, hamLoi) => {
-        let sql = `SELECT DH.madonhang, DH.makh, DH.tenkh, DH.email, DH.sodienthoai, DH.diachi, DH.tienship, DH.tongtien, DH.ghichu, DH.makm, DH.hinhthuc, DH.ngaydat, DH.ngaygiao,
-        DH.trangthai, TT.tentt as tentt, DH.manv FROM donhang AS DH JOIN trangthai as TT ON DH.trangthai = TT.trangthai`;
+        let sql = `SELECT DH.madonhang, DH.makh, DH.tenkh, DH.email, DH.sodienthoai, DH.diachi, DH.tienship, DH.tongtien, DH.ghichu, DH.makm, DH.hinhthuc, DH.ngaydat, DH.ngaygiao, DH.trangthai, TT.tentt as tentt, DH.manv 
+        FROM (donhang AS DH JOIN trangthai AS TT ON DH.trangthai = TT.trangthai)`;
         db.query(sql, (err, result) => {
             if(err){
                 hamLoi(err);
@@ -24,8 +24,8 @@ exports.list_Orders = async () => {
 exports.get_By_Id = async (orderId) => {
     const data = [];
     return new Promise( (hamOK, hamLoi) => {
-        let sql = `SELECT DH.madonhang, DH.makh, DH.tenkh, DH.email, DH.sodienthoai, DH.diachi, DH.tienship, DH.tongtien, DH.ghichu, DH.makm, DH.hinhthuc, DH.ngaydat, DH.ngaygiao,
-        DH.trangthai, TT.tentt as tentt, DH.manv FROM donhang AS DH JOIN trangthai as TT ON DH.trangthai = TT.trangthai
+        let sql = `SELECT DH.madonhang, DH.makh, DH.tenkh, DH.email, DH.sodienthoai, DH.diachi, DH.tienship, DH.tongtien, DH.ghichu, DH.makm, DH.hinhthuc, DH.ngaydat, DH.ngaygiao, DH.trangthai, TT.tentt as tentt, DH.manv 
+        FROM (donhang AS DH JOIN trangthai AS TT ON DH.trangthai = TT.trangthai)
         WHERE DH.madonhang = '${orderId}'`;
         db.query(sql, (err, result) => {
             //console.log(result[0].madonhang);
@@ -56,8 +56,9 @@ exports.get_By_Id = async (orderId) => {
 exports.get_By_userId = async (userId) => {
     return new Promise( (hamOK, hamLoi) => {
         var data = [];
-        let sql = `SELECT DH.madonhang, DH.makh, DH.tenkh, DH.email, DH.sodienthoai, DH.diachi, DH.tienship, DH.tongtien, DH.ghichu, DH.makm, DH.ngaydat, DH.ngaygiao,
-        DH.trangthai, DH.manv FROM donhang AS DH WHERE DH.makh = '${userId}'`;
+        let sql = `SELECT DH.madonhang, DH.makh, DH.tenkh, DH.email, DH.sodienthoai, DH.diachi, DH.tienship, DH.tongtien, DH.ghichu, DH.makm, DH.hinhthuc, DH.ngaydat, DH.ngaygiao, DH.trangthai, TT.tentt as tentt, DH.manv 
+        FROM (donhang AS DH JOIN trangthai AS TT ON DH.trangthai = TT.trangthai)
+        WHERE DH.makh = '${userId}'`;
         db.query(sql, (err, result) => {
             if(err)
                 hamLoi(err);
@@ -75,8 +76,8 @@ exports.get_By_userId = async (userId) => {
 exports.get_By_Phone = async (phone) => {
     return new Promise( (hamOK, hamLoi) => {
         let data = [];
-        let sql = `SELECT DH.madonhang, DH.makh, DH.tenkh, DH.email, DH.sodienthoai, DH.diachi, DH.tienship, DH.tongtien, DH.ghichu, DH.makm, DH.hinhthuc, DH.ngaydat, DH.ngaygiao,
-        DH.trangthai, DH.manv FROM donhang AS DH
+        let sql = `SELECT DH.madonhang, DH.makh, DH.tenkh, DH.email, DH.sodienthoai, DH.diachi, DH.tienship, DH.tongtien, DH.ghichu, DH.makm, DH.hinhthuc, DH.ngaydat, DH.ngaygiao, DH.trangthai, TT.tentt as tentt, DH.manv 
+        FROM (donhang AS DH JOIN trangthai AS TT ON DH.trangthai = TT.trangthai)
         WHERE DH.sodienthoai = '${phone}'`;
         db.query(sql, (err, result) => {
             if(err){

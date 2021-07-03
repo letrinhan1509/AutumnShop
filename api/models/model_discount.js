@@ -94,7 +94,7 @@ exports.check_By_voucherName = async (name) => {
             }
         })
     })
-}
+};
     // Tạo khuyến mãi là voucher:
 exports.create_Voucher = (data) => {
     console.log(data);
@@ -109,7 +109,7 @@ exports.create_Voucher = (data) => {
             }
         })
     })
-}
+};
     // Tạo khuyến mãi:
 exports.create_Discount = (data, masp, chietkhau, giakm) => {
     console.log(data);
@@ -134,37 +134,40 @@ exports.create_Discount = (data, masp, chietkhau, giakm) => {
             });
         });
     })
-}
+};
     // Sửa thông tin khuyến mãi:
-exports.update_Discount = (id, ten, dk, voucher, ngaykt, trangthai) => {
-    let sql = `UPDATE trangthai SET tenkm='${ten}', dieukien='${dk}', voucher='${voucher}', ngaykt='${ngaykt}', trangthai='${trangthai}'
-    WHERE makm = '${id}'`;
-    db.query(sql, (err, result) => {
-        if(err)
-            return err;
-        else
-            return result;
-    })
-}
-    // Khoá khuyến mãi:
-exports.lock_Discount = (id) => {
-    let sql = `UPDATE khuyenmai SET trangthai = 0 WHERE makm = '${id}'`;
-    db.query(sql, (err, result) => {
-        console.log('Lock product success');
-    })
-}
-    // Mở khoá sản phẩm:
-exports.unlock_Discount = (id) => {
+exports.update_Discount = (id, ten, voucher, dk, ngaykt, trangthai) => {
     return new Promise( (resolve, reject) => {
-        let sql = `UPDATE khuyenmai SET trangthai = 1 WHERE makm = '${id}'`;
+        let sql = `UPDATE trangthai SET tenkm='${ten}', voucher='${voucher}',, dieukien='${dk}', ngaykt='${ngaykt}', trangthai='${trangthai}'
+        WHERE makm = '${id}'`;
         db.query(sql, (err, result) => {
             if(err)
                 reject(err);
-            else{
-                console.log('Unlock product success');
-                resolve(result);
-            }
+            else
+                resolve("Cập nhật thông tin khuyến mãi thành công !") ;
         })
+    });
+};
+    // Khoá khuyến mãi:
+exports.lock_Discount = (data) => {
+    return new Promise( (resolve, reject) => {
+        if(data.trangthai == 0){
+            let sql = `UPDATE khuyenmai SET trangthai = 0 WHERE makm = '${data.makm}'`;
+            db.query(sql, (err, result) => {
+                if(err)
+                    reject(err);
+                else
+                    resolve("Ẩn chương trình khuyến mãi thành công !");
+            });
+        } else {
+            let sql = `UPDATE khuyenmai SET trangthai = 1 WHERE makm = '${data.makm}'`;
+            db.query(sql, (err, result) => {
+                if(err)
+                    reject(err);
+                else
+                    resolve("Hiện chương trình khuyến mãi thành công !");
+            });
+        };
     });
 };
     // Xoá khuyến mãi:
@@ -175,7 +178,7 @@ exports.delete = (id) => {
             if(err)
                 reject(err);
             else
-                resolve(result);
+                resolve("Xoá khuyến mãi thành công !");
         })
     });
 };

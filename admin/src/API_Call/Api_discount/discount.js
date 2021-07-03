@@ -27,7 +27,7 @@ const discount = {
     },
     //(Thêm 1 khuyến mãi theo sản phẩm)
     addSale: (values) => {
-        const url = "/them-khuyen-mai";
+        const url = "/them-khuyen-mai/san-pham";
         return AxiosDiscount.post(url ,values);
     },
     //(Thêm 1 khuyến mãi là voucher)
@@ -37,12 +37,12 @@ const discount = {
     },
     //(Cập nhật chương trình khuyến mãi theo sản phẩm)
     updateSale: (values) => {
-        const url = "/cap-nhat-khuyen-mai";
+        const url = "/cap-nhat";
         return AxiosDiscount.put(url ,values);
     },
     //(Cập nhật chương trình khuyến mãi theo voucher)
-    updateSale: (values) => {
-        const url = "/cap-nhat-voucher";
+    updateSaleStatus: (values) => {
+        const url = "/cap-nhat-trang-thai";
         return AxiosDiscount.put(url ,values);
     },
     //(Xoá chương trình khuyến mãi theo sản phẩm)

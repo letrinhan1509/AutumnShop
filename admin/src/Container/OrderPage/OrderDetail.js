@@ -25,15 +25,19 @@ const OrderDetail = (props) => {
                     <h1>Thông tin đơn hàng</h1>
                     <ul>
                         {/* <li>Mã Khách hàng: {ORDER.makh}</li> */}
+                        <li><span>Mã đơn hàng: </span>{ORDER.madonhang}</li>
                         <li><span>Tên khách hàng: </span>{ORDER.tenkh}</li>
                         <li><span>Điện thoại: </span>{ORDER.sodienthoai}</li>
                         <li><span>Email: </span>{ORDER.email}</li>
                         <li><span>Địa chỉ: </span>{ORDER.diachi}</li>
                         <li><span>Hình thức thanh toán: </span>{ORDER.hinhthuc}</li>
                         {ORDER.ghichu === "" ? ("") : (<li><span>Ghi chú: </span>{ORDER.ghichu}</li>)}
+                        {/* {ORDER.makm === null ? ("") : (<li><span>Mã khuyến mãi: </span>{ORDER.makm}</li>)} */}
                         <li><span>Ngày đặt: </span>{date.toLocaleString()}</li>
                         <li><span>Phí vận chuyển: </span>{ORDER.tienship}</li>
                         <li><span>Tổng hóa đơn: </span>{ORDER.tongtien}</li>
+                        {ORDER.ngaygiao === null ? ("") : (<li><span>Ngày giao hàng: </span></li>) }
+                        <li><span>Trạng thái đơn hàng: </span>{ORDER.tentt}</li>
                     </ul>
                 </Col>
                 <Col className="col-two">
