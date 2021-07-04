@@ -52,13 +52,6 @@ const ListOrder = (props) => {
                     console.log(res.data.data);
                 }
             })
-            /* order.getOrderID(a).then((res) => {
-                if (res.data.status === "Success") {
-                    setOrderEdit(res.data.data);
-                    console.log(orderEdit);
-                    console.log(res.data.data);
-                }
-            })    */        
         }
     }, [a]);
     if (orderEdit != '') {

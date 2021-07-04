@@ -55,7 +55,7 @@ const Payments2 = (props) => {
     }
     
     console.log(values);
-    /* const url = "http://localhost:5000/api/v1/don-hang/tao-don-hang";
+    const url = "http://localhost:5000/api/v1/don-hang/tao-don-hang";
     axios
       .post(url, values)
       .then(async (res) => {
@@ -76,7 +76,7 @@ const Payments2 = (props) => {
         message.error(
           `Đạt hàng thất bại, vui lòng đăng nhập để đặt hàng ! \n ${err}`
         );
-      }); */
+      });
   };
 
   /* useEffect(() => {

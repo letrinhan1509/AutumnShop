@@ -43,9 +43,6 @@ const Dashboard = () => {
 
     return (
         <>
-            <div>
-                <h2>Xin chào {admin.username}</h2>
-            </div>
             <div className="wrapper">
                 <Row className="box1">
                     <Link to={'/danh-sach-admin'}><Col className="ADMIN">ADMIN: {ListAdmin.length}</Col></Link>

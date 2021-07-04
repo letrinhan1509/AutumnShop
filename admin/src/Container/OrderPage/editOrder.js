@@ -6,7 +6,6 @@ import "Container/scss/addpro.scss";
 import orders from 'API_Call/Api_order/order';
 import admin from 'API_Call/Api_admin/admin';
 import moment from 'moment';
-import axios from "axios"
 
 const { TextArea } = Input;
 const formItemLayout = {
@@ -44,9 +43,7 @@ const ListOrder = (props) => {
     const history = useHistory();
     const { Option } = Select;
     const order = JSON.parse(localStorage.getItem("order"));
-    console.log(order);
     const ORDER = order[0];
-    console.log(ORDER.tentt);
     var date = new Date(ORDER.ngaydat);
 
     const back = () => {
@@ -78,9 +75,8 @@ const ListOrder = (props) => {
         } else {
             values["ngaygiao"] = moment(dateEnd).format('YYYY-MM-DD');
         }
-        //values["madonhang"] = ORDER.madonhang;
+        values["madonhang"] = ORDER.madonhang;
         console.log(values);
-
         orders.updateStatus(values).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message)

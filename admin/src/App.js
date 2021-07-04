@@ -19,8 +19,7 @@ import AllProduct from "./Container/ProductPage/AllProduct";
 import AddProductType from "./Container/ProtypePage/AddProductType";
 import AddProducer from "./Container/ProducerPage/AddProducer";
 import AddCategory from "./Container/CatalogPage/AddCategory";
-import AddSale from "./Container/AddVoucher";
-import AddVoucher from "./Container/SalePage/AddVoucher";
+import AddVoucher from "./Container/VoucherPage/AddVoucher";
 import UserInf from "./Container/UserPage/UserInf";
 import ListProductType from "./Container/ProtypePage/ListProductType";
 import EditProductType from "./Container/ProtypePage/EditProductType";
@@ -33,8 +32,11 @@ import EditProduct from "./Container/ProductPage/editProduct";
 import ListOrder from "./Container/OrderPage/listOrder";
 import OrderDetail from "./Container/OrderPage/OrderDetail";
 import EditOrder from "./Container/OrderPage/editOrder";
-import ListVoucher from "./Container/SalePage/listVoucher";
-import EditVoucher from "./Container/SalePage/EditVoucher";
+import ListVoucher from "./Container/VoucherPage/listVoucher";
+import EditVoucher from "./Container/VoucherPage/EditVoucher";
+import ListSale from "./Container/SalePage/listSale";
+import AddSale from "./Container/SalePage/AddSale";
+
 
 function App() {
   const PrivateRoute = ({ component: Component, ...rest }) => (
@@ -125,6 +127,9 @@ function App() {
                   </Route>
                   <Route exact path="/them-khuyen-mai">
                     <AddSale />
+                  </Route>
+                  <Route exact path="/danh-sach-khuyen-mai">
+                    <ListSale />
                   </Route>
                   <Route exact path="/them-voucher">
                     <AddVoucher />
