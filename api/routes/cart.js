@@ -49,25 +49,18 @@ router.get('/san-pham/:id', async function(req, res) {
 
     // Thêm sản phẩm vào giỏ hàng:
 router.put('/them-san-pham', async function(req, res) { 
-    try {
-        let makh = req.body.makh;
-        let masp = req.body.masp;
-        let hinh = req.body.hinh;
-        let gia = req.body.gia;
-        let giagiam = req.body.giagiam;
-        let soluong = req.body.soluong;
-        let thanhtien = req.body.thanhtien;
+    let data = {
+        makh: req.body.makh,
+        masp: req.body.masp,
+        hinh: req.body.hinh,
+        gia: req.body.gia,
+        giagiam: req.body.giagiam,
+        soluong: req.body.soluong,
+        thanhtien: req.body.thanhtien
+    };
 
-        let data = {
-            makh: makh,
-            masp: masp,
-            hinh: hinh,
-            gia: gia,
-            giagiam: giagiam,
-            soluong: soluong,
-            thanhtien: thanhtien
-        };
-        //let query = await modelCart.put(data);
+    try {
+        let query = await modelCart.create(data);
         res.status(200).json({ "status": "Success", "message": "Thêm sản phẩm vào trong giỏ hàng thành công!!!" });
     } catch (error) {
         res.status(404).json({ "status": "Fail", "message": "Thêm sản phẩm vào trong giỏ hàng không thành công!!!", "error": error });
@@ -75,24 +68,14 @@ router.put('/them-san-pham', async function(req, res) {
 });
     // Cập nhật 1 sản phẩm trong giỏ hàng:
 router.put('/cap-nhat-san-pham', async function(req, res) { 
-    try {
-        let magiohang = req.body.magiohang;
-        let masp = req.body.masp;
-        let hinh = req.body.hinh;
-        let gia = req.body.gia;
-        let giagiam = req.body.giagiam;
-        let soluong = req.body.soluong;
-        let thanhtien = req.body.thanhtien;
+    let data = {
+        magiohang: req.body.magiohang,
+        giagiam: req.body.giagiam,
+        soluong: req.body.soluong,
+        thanhtien: req.body.thanhtien
+    };
 
-        let data = {
-            magiohang: magiohang,
-            masp: masp,
-            hinh: hinh,
-            gia: gia,
-            giagiam: giagiam,
-            soluong: soluong,
-            thanhtien: thanhtien
-        };
+    try {
         let query = await modelCart.put(data);
         res.status(200).json({ "status": "Success", "message": "Cập nhật sản phẩm trong giỏ hàng thành công!!!" });
     } catch (error) {
@@ -101,10 +84,11 @@ router.put('/cap-nhat-san-pham', async function(req, res) {
 });
     // Xoá 1 sản phẩm trong giỏ hàng thông qua id giỏ hàng:
 router.delete('/xoa-san-pham/:id', async function(req, res) { 
+    let id = req.params.id;
+
     try {
-        let id = req.params.id;
         let query = await modelCart.delete(id);
-        res.status(200).json({ "status": "Success", "message": "Xoá sản phẩm trong giỏ hàng thành công!!!", "result": query });
+        res.status(200).json({ "status": "Success", "message": "Xoá sản phẩm trong giỏ hàng thành công!!!" });
     } catch (error) {
         res.status(404).json({ "status": "Fail", "message": "Xoá sản phẩm trong giỏ hàng không thành công!!!", "error": error });
     }

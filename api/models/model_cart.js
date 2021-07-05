@@ -38,9 +38,23 @@ exports.get_By_userId = async (userId) => {
     });
 };
 
+exports.create = async (data) => {
+    return new Promise( (resolve, reject) => {
+        let sql = `INSERT INTO giohang SET ?`;
+        db.query(sql, data, (err, result) => {
+            if(err) {
+                reject(err);
+            } else{
+                resolve(result);
+            }
+        });
+    });
+};
+
 exports.put = async (data) => {
     return new Promise( (resolve, reject) => {
-        //let sql = `UPDATE giohang SET ? WHERE magiohang = '${data.magiohang}'`;
+        let sql = `UPDATE giohang SET giagiam='${data.giagiam}', soluong='${data.soluong}', thanhtien='${data.thanhtien}'
+        WHERE magiohang = '${data.magiohang}'`;
         db.query(sql, data, (err, result) => {
             if(err) {
                 reject(err);

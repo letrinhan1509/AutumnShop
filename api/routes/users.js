@@ -75,7 +75,7 @@ router.get('/', async function (req, res) {
 router.get('/:id', async function (req, res) {
     try {
         let userId = req.params.id;
-        let user = await modelUser.getById(userId);
+        let user = await modelUser.get_By_Id(userId);
         if(user == -1){     // Kiểm tra user_id trong DB.
             res.status(400).json({"status": "Fail", "message": "Không tìm thấy user này trong DB!"});
         }else{
@@ -83,7 +83,7 @@ router.get('/:id', async function (req, res) {
         }  
     } catch (error) {
         res.status(400).json({"status": "Fail", "error": error});
-    }
+    };
 });
     // Tìm khách hàng bằng tên: "async"->Bất đồng bộ.
 router.get('/ten/:name', async function (req, res) {
@@ -137,8 +137,7 @@ router.post('/dang-nhap', function (req, res, next) {
             let user = rows[0];
             let pass_fromdb = user.matkhau;
             var kq = bcrypt.compareSync(mk, pass_fromdb);
-            console.log(kq);
-            const token = signToken(user._id);
+            const token = signToken(user.makh);
             const cookieOptions = {
                 expires: new Date(
                     Date.now() + 90 * 24 * 60 * 60 * 1000

@@ -7,6 +7,7 @@ const { json } = require('express');
 
 const db = require('../models/database');
 const modelAdmin = require('../models/model_admin');
+const checkToken = require('../controllers/checkToken');
 const authController = require('../controllers/authController');
 
 const signToken = (id) => {
@@ -37,7 +38,7 @@ router.post('/dang-nhap', function (req, res, next) {
             let admin = rows[0];
             let pass_fromdb = admin.matkhau;
             var kq = bcrypt.compareSync(mk, pass_fromdb);// So sánh mật khẩu từ người dùng và MK đã mã hoá dưới DB.
-            const token = signToken(admin._id);
+            const token = signToken(admin.manv);
             const cookieOptions = {
                 expires: new Date(
                     Date.now() + 90 * 24 * 60 * 60 * 1000

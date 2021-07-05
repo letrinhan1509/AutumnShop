@@ -6,7 +6,7 @@ const discount = {
         return AxiosDiscount.get(url);
     },
     //(Danh sách tất cả các khuyến mãi theo sản phẩm)
-    getAllVoucher: () => {
+    getAllSale: () => {
         const url = "/san-pham";
         return AxiosDiscount.get(url);
     },
@@ -15,14 +15,9 @@ const discount = {
         const url = "/voucher";
         return AxiosDiscount.get(url);
     },
-    //(Danh sách tất cả các khuyến mãi theo sản phẩm)
-    getAllProduct: () => {
-        const url = "/san-pham";
-        return AxiosDiscount.get(url);
-    },
     //(Chi tiết của 1 khuyến mãi theo mã khuyến mãi)
     getSaleID: (id) => {
-        const url = `/voucher/${id}`;
+        const url = `/${id}`;
         return AxiosDiscount.get(url);
     },
     //(Chi tiết của 1 voucher theo mã voucher)
@@ -36,7 +31,7 @@ const discount = {
         return AxiosDiscount.post(url ,values);
     },
     //(Thêm 1 khuyến mãi là voucher)
-    addSale: (values) => {
+    addVoucher: (values) => {
         const url = "/them-voucher";
         return AxiosDiscount.post(url ,values);
     },
@@ -60,11 +55,6 @@ const discount = {
         const url = `/xoa-khuyen-mai/${id}`;
         return AxiosDiscount.delete(url);
     },
-    //(Xoá chương trình khuyến mãi theo voucher)
-    deleteVoucher: (id) => {
-        const url = `/xoa-voucher/${id}`;
-        return AxiosDiscount.delete(url);
-    }
 };
 
 export default discount;

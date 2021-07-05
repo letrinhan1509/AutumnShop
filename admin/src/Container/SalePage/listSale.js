@@ -4,7 +4,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useHistory, Link } from "react-router-dom";
 import "Container/scss/addpro.scss";
-import voucher from 'API_Call/Api_discount/discount';
+import discount from 'API_Call/Api_discount/discount';
 
 const { Option } = Select;
 const ListSale = (props) => {
@@ -13,13 +13,14 @@ const ListSale = (props) => {
     const history = useHistory();
     let user = JSON.parse(localStorage.getItem('user'));
     const [wordSearch, setWordSearch] = useState([]);
-    //API List Voucher:
-    /* useEffect(() => {
-        voucher.getAllVoucher().then((res) => {
-            setListVoucher(res.data.voucher);
-            setWordSearch(res.data.voucher);
+    //API List Sale:
+    useEffect(() => {
+        discount.getAllSale().then((res) => {
+            setListVoucher(res.data.discount);
+            setWordSearch(res.data.discount);
         })
-    }, []); */
+    }, []);
+    console.log(listVoucher);
     // Sửa voucher:
     const loadEdit = (e) => {
         let id = e.currentTarget.dataset.id;
@@ -27,13 +28,13 @@ const ListSale = (props) => {
         setA(id);
         console.log(a);
         setTimeout(() => {
-            history.push('/danh-sach-voucher/sua-voucher');
+            history.push('/danh-sach-khuyen-mai/sua-khuyen-mai');
         }, 100)
     }
     const [voucherID, setVoucherID] = useState([]);
     useEffect(() => {
         if (a != "") {
-            voucher.getVoucherID(a).then((res) => {
+            discount.getSaleID(a).then((res) => {
                 setVoucherID(res.data.voucher);
             });
         }
@@ -46,7 +47,7 @@ const ListSale = (props) => {
         let id = e.currentTarget.dataset.id;
         //console.log("Id:", id);
         let values = { makm: id, trangthai: 1 };
-        voucher.updateSaleStatus(values).then((res) => {
+        discount.updateSaleStatus(values).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message)
                 setTimeout(() => {
@@ -66,7 +67,7 @@ const ListSale = (props) => {
         let id = e.currentTarget.dataset.id;
         //console.log("Id:", id);
         let values = { makm: id, trangthai: 0 };
-        voucher.updateSaleStatus(values).then((res) => {
+        discount.updateSaleStatus(values).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message);
                 setTimeout(() => {
@@ -202,11 +203,16 @@ const ListSale = (props) => {
                     </>
                 )
             }) : (<> </>),
-            user.permission === 'Admin' ? ({
-            dataIndex: "voucher",
-            key: "voucher",
-            render: voucher => (<div className="btn-box fix"><Button data-id={voucher} onClick={loadEdit} type="primary">Cập nhật</Button></div>)
-        }) : (<> </>)
+        user.permission === 'Admin' ? ({
+            dataIndex: "makm",
+            key: "makm",
+            render: makm => (<div className="btn-box fix"><Button data-id={makm} onClick={loadEdit} type="primary">Cập nhật</Button></div>)
+        }) : (<> </>),
+        user.permission === 'Admin' ? ({
+            dataIndex: "makm",
+            key: "makm",
+            render: makm => (<div className="btn-box"><Button data-id={makm} onClick={loadEdit} type="primary">Chi tiết</Button></div>)
+        }) : (<> </>),
     ];
 
 
@@ -291,13 +297,15 @@ const ListSale = (props) => {
                     </div>
                 </div>
                 <Table className="proItem" dataSource={wordSearch} columns={columns} pagination={{ pageSize: `${pageSize}` }} size="middle" />
-                <div className="btn-wrapper">
-                    <Link to={'/them-khuyen-mai'}>
-                        <Button type="primary">
-                            Thêm chương trình khuyến mãi
-                        </Button>
-                    </Link>
-                </div>
+                {user.permission === "Admin" ? (
+                    <div className="btn-wrapper">
+                        <Link to={'/them-khuyen-mai'}>
+                            <Button type="primary">
+                                Thêm chương trình khuyến mãi
+                            </Button>
+                        </Link>
+                    </div>
+                ) : (<div></div>) }
             </div>
         </>
     );

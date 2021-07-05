@@ -5,6 +5,7 @@ import "Container/scss/addSale.scss";
 import moment from 'moment';
 import product from 'API_Call/Api_product/product';
 import catalog from 'API_Call/Api_catalog/catalog';
+import discount from 'API_Call/Api_discount/discount';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -64,20 +65,20 @@ const AddSale = (props) => {
         values["sanphamCK"] = add;
         console.log(values);
 
-        /* const url = "http://127.0.0.1:5000/api/v1/khuyen-mai/them-voucher"
-        axios.post(url, values).then((res) => {
+        //const url = "http://127.0.0.1:5000/api/v1/khuyen-mai/them-khuyen-mai/san-pham"
+        discount.addSale(values).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message)
                 setTimeout(() => {
-                    history.push('/danh-sach-voucher');
+                    history.push('/danh-sach-khuyen-mai');
                 }, 1000)
             } else
                 message.error(res.data.message);
         })
             .catch(err => {
                 console.log(err.response);
-                message.error(`Tạo voucher thất bại !\n ${err.response.data.message}`)
-            }); */
+                message.error(`${err.response.data.message}\n Tạo khuyến mãi sản phẩm thất bại !`);
+            });
     };
 
     const [listTypes, setListTypes] = useState([]);
@@ -141,16 +142,16 @@ const AddSale = (props) => {
 
     const chietkhau = [
         {
-            key: 1,
+            key: 20,
             persen: '20%',
 
         },
         {
-            key: 2,
+            key: 30,
             persen: '30%',
         },
         {
-            key: 3,
+            key: 40,
             persen: '40%',
         },
     ];
@@ -191,7 +192,7 @@ const AddSale = (props) => {
     return (
         <>
             <div className="form-wrapper">
-                <h2 style={{ textAlign: 'center' }}> Nhập thông tin voucher</h2>
+                <h2 style={{ textAlign: 'center' }}> Nhập thông tin chương trình khuyến mãi</h2>
                 <div className="col-wrapper">
                     <div className="col-one">
                         <Form
@@ -203,11 +204,11 @@ const AddSale = (props) => {
                         >
                             <Form.Item
                                 name="tenkm"
-                                label="Tên khuyến mãi"
+                                label="Tên chương trình"
                                 rules={[
                                     {
                                         required: true,
-                                        message: 'Vui lòng nhập tên khuyến mãi!',
+                                        message: 'Vui lòng nhập tên chương trình khuyến mãi!',
                                     },
                                 ]}
                             >
@@ -218,7 +219,7 @@ const AddSale = (props) => {
                                 label="Điều kiện"
                                 rules={[
                                     {
-                                        required: true,
+                                        //required: true,
                                         message: 'Vui lòng nhập điều kiện !',
                                     },
                                 ]}
@@ -230,7 +231,7 @@ const AddSale = (props) => {
                                 label="Giá giảm"
                                 rules={[
                                     {
-                                        required: true,
+                                        //required: true,
                                         message: 'Vui lòng nhập giá được giảm!',
                                     },
                                 ]}

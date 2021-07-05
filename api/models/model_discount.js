@@ -12,9 +12,8 @@ exports.list_Discounts = async () => {
             }else{
                 dataList = result;
                 hamOK(dataList);
-            }
-        })
-        console.log("KQ:", query);
+            };
+        });
     })
 }
     // Danh sách các voucher:
@@ -61,13 +60,11 @@ exports.get_By_discountId = async (makm) => {
                         if(err)
                             hamLoi(err);
                         else{
-                            if(result1.length > 0){
+                            if(result1.length <= 0){
+                                hamOK(result[0]);
+                            } else {
                                 result[0].chitietKM = result1;
-                                dataList.push(result);
-                                hamOK(dataList);
-                            } else{
-                                // Khuyến mãi này không có chi tiết khuyến mãi:
-                                hamOK(result);
+                                hamOK(result[0]);
                             };
                         };
                     });
@@ -109,28 +106,39 @@ exports.create_Voucher = (data) => {
         })
     })
 };
-    // Tạo khuyến mãi:
-exports.create_Discount = (data, masp, chietkhau, giakm) => {
-    console.log(data);
+    // Tạo khuyến mãi là các sản phẩm:
+exports.create_Discount = (data, chitietKM) => {
     return new Promise( (resolve, reject) => {
         let sql = "INSERT INTO khuyenmai SET ?";
-        db.query(sql, data, (err, d) => {
-            console.log('Insert successfully')
-        })
-        let sql_discountId = "SELECT LAST_INSERT_ID() as LastID;";
-        db.query(sql_discountId, (err, result1) => {
-            console.log(result1[0]);
-            let dataCTKM = {
-                makm: result1[0],
-                masp: masp,
-                chietkhau: chietkhau,
-                giakm: giakm
-            }
-            let sql_CTKM = `INSERT INTO chitietkm SET ?`;
-            db.query(sql_CTKM, dataCTKM, (err, result) => {
-                console.log(result);
-                console.log('Create CTKM success');
-            });
+        db.query(sql, data, (error, result) => {
+            if(error)
+                reject(error);
+            console.log('Insert khuyenmai successfully');
+        });
+        let sql_makm = "SELECT LAST_INSERT_ID() as LastID;";
+        db.query(sql_makm, (err0, resultId) => {
+            console.log(resultId[0].LastID);
+            if(err0)
+                reject(err0);
+            else{
+                let sql_CTKM = `INSERT INTO chitietkm SET ?`;
+                chitietKM.forEach(element => {
+                    element.sanpham.forEach(e => {
+                        let dataCTKM = {
+                            masp: e.masp,
+                            chietkhau: element.chietkhau,
+                            giakm: e.gia - (e.gia * (element.chietkhau/100)),
+                            makm: resultId[0].LastID
+                        };
+                        db.query(sql_CTKM, dataCTKM, (err, result1) => {
+                            if(err)
+                                reject(err);
+                            console.log('Create CTKM success');
+                        });
+                    });
+                });
+                resolve("Tạo chương trình khuyến mãi cho sản phẩm thành công !");
+            };
         });
     })
 };
@@ -172,12 +180,25 @@ exports.lock_Discount = (data) => {
     // Xoá khuyến mãi:
 exports.delete = (id) => {
     return new Promise( (resolve, reject) => {
-        let sql = `DELETE FROM khuyenmai WHERE makm='${id}'`;
-        let query = db.query(sql, (err, result) => {
-            if(err)
-                reject(err);
-            else
-                resolve("Xoá khuyến mãi thành công !");
+        let sql = `SELECT * FROM chitietkm WHERE chitietkm.makm='${id}'`;
+        db.query(sql, (error, result) => {
+            if(error)
+                reject(error);
+            else {
+                if(result.length <= 0){
+                    console.log("Xoá được");
+                    /* let sql_delete = `DELETE FROM khuyenmai WHERE makm='${id}'`;
+                    let query = db.query(sql_delete, (err, result1) => {
+                        if(err)
+                            reject(err);
+                        else
+                            resolve("Xoá khuyến mãi thành công !");
+                    }); */
+                } else {
+                    resolve(-1);
+                }
+            }
         })
+        
     });
 };

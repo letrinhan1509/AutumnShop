@@ -41,7 +41,7 @@ exports.detailByName = (nameUser) => {
     });
 }
     // Lọc khách hàng theo ID:
-exports.getById = (userId) => {
+exports.get_By_Id = (userId) => {
     return new Promise( (hamOK, hamLoi) => {
         let sql = `SELECT makh, tenkh, email, sodienthoai, diachi, trangthai FROM khachhang WHERE makh='${userId}'`;
         db.query(sql, (err, result) => {

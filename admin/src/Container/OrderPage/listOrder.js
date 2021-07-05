@@ -165,11 +165,12 @@ const ListOrder = (props) => {
             dataIndex: 'tentt',
             key: 'tentt',
         },
+        user.permission === "Admin" ? (
         {
             dataIndex: "madonhang",
             key: "madonhang",
             render: madonhang => (<div className="btn-box fix"><Button data-id={madonhang} onClick={loadEdit} type="primary">Cập nhật</Button></div>)
-        },
+        }) : (<></>),
         {
             dataIndex: "madonhang",
             key: "madonhang",
