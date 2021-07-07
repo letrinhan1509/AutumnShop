@@ -3,7 +3,7 @@ import { Button, Form, Input, InputNumber, message, Select, Upload } from "antd"
 import product from 'API_Call/Api_product/product';
 import catalog from 'API_Call/Api_catalog/catalog';
 import producer from 'API_Call/Api_producer/producer';
-import { storage } from "firebase/firebase";
+import { storage } from 'Container/Firebase/firebase';
 import React, { useEffect, useState } from 'react';
 import { Link, useHistory } from "react-router-dom";
 import "Container/scss/addpro.scss";

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Form, Input, Button, Checkbox, Row, Col, message } from 'antd';
-import { QuestionCircleOutlined } from '@ant-design/icons';
+import { InfoCircleOutlined } from '@ant-design/icons';
 import { useHistory, Link } from "react-router-dom";
 import "container/components-css/Form.scss";
 import firebase from 'firebase';
@@ -16,7 +16,7 @@ const tailLayout = {
         },
         sm: {
             span: 16,
-            offset: 9,
+            offset: 7,
         },
     },
 };
@@ -44,12 +44,12 @@ const uiConfig = {
     ]
 };
 
-const Login = () => {
+const ForgotPass = () => {
     const history = useHistory();
 
     const login = (values) => {
         console.log(values);
-        user
+        /* user
             .login(values)
             .then(async (res) => {
                 console.log(res.data);
@@ -69,13 +69,13 @@ const Login = () => {
             })
             .catch((err) => {
                 message.error(`Đăng nhập thất bại\n ${err}`)
-            })
+            }) */
     }
 
     return (
         <Row className="login-container">
-            <Col className="login-form-wrapper">
-                <h1 id='register-title' className="register-title">Đăng nhập</h1>
+            <Col className="forgot-form-wrapper">
+                <h1 id='register-title' className="register-title">Lấy lại mật khẩu</h1>
                 <Form
 
                     name="basic"
@@ -91,34 +91,22 @@ const Login = () => {
                     >
                         <Input />
                     </Form.Item>
-                    <Form.Item
-                        label="Mật khẩu"
-                        name="matkhau"
-                        rules={[{ required: true, message: 'Vui lòng nhập mật khẩu!' }]}
-                    >
-                        <Input.Password />
-                    </Form.Item>
-
                     <div className="btn-wrapper">
-                        <Form.Item {...remember} name="remember" valuePropName="checked">
-                            <Checkbox>Remember me</Checkbox>
-                        </Form.Item>
-                        <Form.Item {...remember}>
-                            <Link to="/dang-nhap/quen-mat-khau"><span>Quân mật khẩu</span><QuestionCircleOutlined /></Link>
-                        </Form.Item>
+
                     </div>
                     <Form.Item {...tailLayout}>
+                        <Button type="dashed" style={{marginRight: 20}}>
+                            <Link to="/dang-nhap">Trở lại</Link>
+                        </Button>
                         <Button type="primary" htmlType="submit">
-                            Đăng nhập
+                            Gửi yêu cầu
                         </Button>
                     </Form.Item>
                 </Form>
-                <div className="social-network">
-                    <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()} />
-                </div>
+                <p><InfoCircleOutlined /> Nhập Email mà bạn đã đăng ký trước đó và nhấn gửi yêu cầu, sau đó bạn vào Email và nhận lại mật khẩu mới.</p>
             </Col>
         </Row>
     );
 }
 
-export default Login;
+export default ForgotPass;

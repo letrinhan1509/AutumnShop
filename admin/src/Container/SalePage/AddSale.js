@@ -172,21 +172,20 @@ const AddSale = (props) => {
     };
 
     let demo = [];
+    //const [id, setID] = useState(0);
+    let id = 0;
     const thempro = (value) => {
-        console.log(proSelect);
+        
+        console.log(id);
+        value['id'] = id;
         value['sanpham'] = proSelect;
-        console.log(value);
-        /*         demo.push(value);
-                console.log(demo); */
         setAdd([...add, value]);
-        console.log(add);
+        document.getElementById("themproduct").reset();
+        console.log(value);
     };
 
     const lick = () => {
 
-        console.log(demo);
-
-        console.log(add);
     };
 
     return (
@@ -293,6 +292,7 @@ const AddSale = (props) => {
                     <div className="col-two">
                         <Form
                             onFinish={thempro}
+                            id="themproduct"
                         >
                             <Form.Item
                                 label="Sản phẩm khuyến mãi"
@@ -315,6 +315,7 @@ const AddSale = (props) => {
                             </Form.Item>
                             <Form.Item
                                 name="chietkhau"
+                                id="persen"
                                 label="Chiết khấu"
                                 rules={[
                                     {
@@ -334,6 +335,7 @@ const AddSale = (props) => {
                                 </Select>
                             </Form.Item>
                             <Button htmlType="submit">Thêm</Button>
+                            <Button onClick={lick}>ádadasdasd</Button>
                             <Table rowSelection={rowSelection} rowKey={listPro => listPro.masp} dataSource={listPro} columns={columns} pagination={{ pageSize: 5 }} />
                             <Row>
                                 {add !== "" ? (
@@ -342,6 +344,7 @@ const AddSale = (props) => {
                                             return (
                                                 <>
                                                     <Col className="box">
+                                                    <p>{item.id}</p>
                                                         <Row className="title"><span>Chiết khấu: </span>{item.chietkhau}</Row>
                                                         {item.sanpham.map((sp) => {
                                                             return (

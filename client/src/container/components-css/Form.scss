@@ -4,7 +4,8 @@
     justify-content: center;
     background-image: url("./bg/wall.jpg");
     background-size: cover;
-    .login-form-wrapper {
+    .login-form-wrapper,
+    .forgot-form-wrapper {
         background: white;
         margin: 120px 0px;
         width: 500px;
@@ -12,30 +13,52 @@
         padding: 20px;
         border-radius: 15px;
         box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.6);
+        h1 {
+            text-align: center;
+            font-size: 25px;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin: 20px;
+        }
         .btn-wrapper {
             display: flex;
             justify-content: space-evenly;
             .ant-form-item {
                 width: 300px;
             }
+            a {
+                color: black;
+                span {
+                    padding-right: 5px;
+                }
+                &:hover {
+                    color: rgb(45, 163, 218);
+                }
+            }
         }
         .social-network {
             display: flex;
             justify-content: flex-start;
             width: 500px;
-            .firebaseui-card-content{
+            .firebaseui-card-content {
                 width: 500px;
                 ul {
                     width: 100%;
                     display: flex;
-                    
-                    li{
+
+                    li {
                         margin-right: 20px;
                         width: 100%;
                     }
                 }
             }
-            
+        }
+    }
+    .forgot-form-wrapper {
+        height: 300px;
+        p {
+            color: red;
+            font-size: 16px;
         }
     }
 }
@@ -56,38 +79,75 @@
     }
 }
 
-.user-warrper {
-    background-size: cover;
+.col-wrapper {
     display: flex;
-    justify-content: center;
-    text-align: center;
-    width: 100%;
-    .form {
-        background: white;
-        margin: 50px 0px;
-        width: 550px;
-        padding: 20px;
-        border-radius: 15px;
-        box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.6);
-        .user-title {
-            text-transform: uppercase;
-            .ant-card-meta-title {
-                font-weight: bold;
-                margin: 20px 0px;
-            }
-        }
-        .form-group {
+    background: white;
+    width: 1000px;
+    margin: 30px;
+    box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.1);
+    .col-one {
+        width: 40%;
+    }
+    .col-two {
+        background-size: cover;
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        text-align: center;
+        width: 100%;
+        .box {
             display: flex;
-            justify-content: space-between;
-            margin-bottom: 15px;
-            .ant-input {
-                width: 400px;
-            }
-            .ant-input-affix-wrapper {
-                width: 400px;
+            justify-content: center;
+            width: 100%;
+            .form {
+                background: white;
+                margin: 50px 0px;
+                width: 80%;
+                padding: 20px;
+                border-radius: 5px;
+                box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
+                .user-title {
+                    text-transform: uppercase;
+                    font-size: 30px;
+                    font-weight: 700;
+                    margin-bottom: 30px;
+                }
+                .box-inf {
+                    padding: 0px 70px;
+                    display: flex;
+                    justify-content: space-between;
+                    font-size: 18px;
+                    margin-bottom: 15px;
+                    .label-inf {
+                        font-weight: 600;
+                    }
+                    .inf {
+                    }
+                }
+                Button {
+                    text-transform: uppercase;
+                    margin-top: 20px;
+                }
+                .load-img {
+                    .ant-form-item-control-input-content {
+                        display: flex;
+                        justify-content: flex-start;
+                        flex-direction: column;
+                        
+                        .ant-upload-select-picture {
+                            width: 100%;
+                            display: flex;
+                            justify-content: flex-start;
+                        }
+                        .ant-upload-list-picture {
+                            width: 100%;
+                        }
+                    }
+                    .ant-btn {
+                        margin: 0px;
+                    }
+                }
             }
         }
     }
 }
-
-

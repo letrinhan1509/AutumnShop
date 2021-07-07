@@ -1,8 +1,8 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
-import { Image, Input, Button, message, Form } from 'antd';
-import Meta from "antd/lib/card/Meta";
-import { useHistory } from "react-router-dom";
+import { Image, Input, Button, message, Form, Menu } from 'antd';
+import Menus from "./Menus";
+import { useHistory, Link } from "react-router-dom";
 import "container/components-css/Form.scss";
 import users from 'API_Call/Api_user/user';
 
@@ -32,74 +32,49 @@ const UserInfo = (props) => {
             }) */
     };
 
-
+    var url = window.location.toString();
+    url = url.replace("http://localhost:3000/", '');
+    
     return (
         <Container>
-            <Row>
-                <Col className="user-warrper">
-                    
-                    <Form
-                        name="update"
-                        onFinish={update}
-                        initialValues={{
-                            username: `${user.username}`,
-                            matkhau: `${user.matkhau}`,
-                            email: `${user.email}`,
-                            sdt: `${user.sdt}`,
-                            diachi: `${user.diachi}`,
-                        }}
-                        scrollToFirstError
-                        className="form"
-                    >
-                        <Meta id='register-title' className="user-title" title="Thông tin tài khoản" />
-                        <Image
-                            width={150}
-                            src="https://cdn0.iconfinder.com/data/icons/a-restaurant/500/SingleCartoonRestaurantAlice_1-512.png"
-                        />
-                        {/* <Form.Group>
-                            <Form.Label>Profile Image</Form.Label>
-                            <Form.Control type="file" name="profileImage" />
-                        </Form.Group> */}
-                        <Form.Item
-                            name="username"
-                            id="username"
-                            label="Tên khách hàng"
-                        >
-                            <Input placeholder="User name" />
-                        </Form.Item>
-                        <Form.Item
-                            name="matkhau"
-                            id="matkhau"
-                            label="Mật khẩu"
-                        >
-                            <Input placeholder="Password" />
-                        </Form.Item>
-                        <Form.Item
-                            name="email"
-                            id="email"
-                            label="Email"
-                        >
-                            <Input placeholder="email" />
-                        </Form.Item>
-                        <Form.Item
-                            name="sdt"
-                            id="sdt"
-                            label="Số điện thoại"
-                        >
-                            <Input placeholder="Số điện thoại" />
-                        </Form.Item>
-                        <Form.Item
-                            name="diachi"
-                            id="diachi"
-                            label="Địa chỉ"
-                        >
-                            <Input placeholder="Địa chỉ" />
-                        </Form.Item>
-                        <Button value="submit" type="primary" htmlType="submit">Update Profile</Button>
-                    </Form>
+            <Row className="col-wrapper">
+                <Col className="col-one">
+                    <Menus url={url}/>
                 </Col>
-
+                <Col className="col-two">
+                    <Row className="box">
+                        <Col className="form">
+                            <Row>
+                                <h1 className="user-title">Thông tin tài khoản</h1>
+                                <Image
+                                    width={150}
+                                    src="https://cdn0.iconfinder.com/data/icons/a-restaurant/500/SingleCartoonRestaurantAlice_1-512.png"
+                                />
+                            </Row>
+                            <Row className="box-inf">
+                                <Col className="label-inf">Tên khách hàng: </Col>
+                                <Col className="inf">{user.username}</Col>
+                            </Row>
+                            <Row className="box-inf">
+                                <Col className="label-inf">Email: </Col>
+                                <Col className="inf">{user.email}</Col>
+                            </Row>
+                            <Row className="box-inf">
+                                <Col className="label-inf">Số điện thoại: </Col>
+                                <Col className="inf">{user.sdt}</Col>
+                            </Row>
+                            <Row className="box-inf">
+                                <Col className="label-inf">Địa chỉ: </Col>
+                                <Col className="inf">{user.diachi}</Col>
+                            </Row> 
+                            <Button value="submit" type="primary">
+                                <Link to="/">Chỉnh sửa</Link>
+                            </Button>
+                        </Col>
+                    </Row>
+                </Col>
             </Row>
+
 
         </Container>
 

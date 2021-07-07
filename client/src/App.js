@@ -31,9 +31,9 @@ import Order from "container/MainPage/Order";
 import Order_NotLogin from "container/MainPage/Order_NotLogin";
 import ScrollToTop from "container/Config/ScrollToTop";
 import product from "API_Call/Api_product/product";
-
-
-
+import ForgotPass from "container/UserPage/forgotPass";
+import EditUser from "container/UserPage/EditUser";
+import ChangePass from "container/UserPage/ChangePass";
 
 
 
@@ -222,7 +222,7 @@ useEffect(() => {
                 <Route path="/dang-ky">
                   <Register />
                 </Route>
-                <Route path="/dang-nhap">
+                <Route exact path="/dang-nhap">
                   <Login />
                 </Route>
                 <Route path="/san-pham/DMA">
@@ -240,8 +240,18 @@ useEffect(() => {
                 <Route path="/Timkiem">
                   <SearchResult kqSearch={kqSearch} countkqSearch={kqSearch.length} Thongbao_Them={Thongbao_Them} />
                 </Route>
-                <Route path="/thong-tin-tai-khoan">
+                <Route exact path="/thong-tin-tai-khoan">
                   <UserInfo />
+                </Route>
+                <Route exact path="/thong-tin-tai-khoan/chinh-sua-thong-tin">
+                  <EditUser />
+                </Route>
+                <Route exact path="/thong-tin-tai-khoan/doi-mat-khau">
+                  <ChangePass />
+                </Route>
+                
+                <Route exact path="/dang-nhap/quen-mat-khau">
+                  <ForgotPass />
                 </Route>
                 <Route path="/gio-hang">
                   <Cart cart={cart} CountCart={cart.length} addCart={addCart} removeCart={removeCart} showDeleteProduct={showDeleteProduct} PriceCart={sumPrice} />
