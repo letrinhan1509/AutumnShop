@@ -1,19 +1,21 @@
-import { Col, Layout, Row, Rate, Statistic, Select, Button, Card, Carousel, Tabs, Comment, Tooltip, List } from "antd";
+import { Col, Layout, Row, Rate, Statistic, Select, Button, Card, Carousel, Tabs, Comment, Tooltip, List, Form, Input, Avatar } from "antd";
 import moment from 'moment';
 import { ShoppingCartOutlined, HeartOutlined, FacebookOutlined, TwitterOutlined } from '@ant-design/icons';
 import React, { createContext, useState } from 'react';
 import "../components/components-css/SelectProduct.scss";
 import { useParams } from "react-router";
 import { Link } from "react-router-dom";
+//import moment from 'moment';
+
+
 const { Content } = Layout;
 const { Option } = Select;
-
-
 export const DataContext = createContext()
 const Select_Product = (props) => {
-
+    const User = JSON.parse(localStorage.getItem('user'));
+    const { TextArea } = Input;
     const { id } = useParams();
-    function handleChange(value) {
+    function Changecolor(value) {
         console.log(`selected ${value}`);
     }
 
@@ -21,7 +23,7 @@ const Select_Product = (props) => {
     pro = props.ListPro.filter(
         ListPro => ListPro.masp.toString() === id
     );
-    console.log(pro);
+    console.log(pro[0].masp);
     let visible = 4;
 
 
@@ -65,6 +67,23 @@ const Select_Product = (props) => {
         },
     ];
 
+    let values = '';
+    const [submitting, setSubmitting] = useState(false);
+    const handleSubmit = (value) => {
+        let date = new Date();
+        value['date'] = moment(date.toLocaleDateString()).format('YYYY-DD-MM');
+        console.log(value);
+        //setSubmitting(true);
+        document.getElementById("cmt").reset();
+        
+    };
+
+    const handleChange = (e) => {
+        console.log(e.target.value);
+        values = e.target.value;
+
+    };
+
     const product = [
         {
             key: "1",
@@ -77,12 +96,54 @@ const Select_Product = (props) => {
             ],
         }
     ];
-    let mt = pro;
+
+    const Editor = () => (
+        <>
+            <Form
+                onFinish={handleSubmit}
+                id="cmt"
+                initialValues={{
+                    makh: `${User.makh}`,
+                    tenkh: `${User.username}`,
+                    masp: `${pro[0].masp}`,
+                }}
+            >
+                <Form.Item
+                    name="makh"
+                    hidden
+                >
+                    <Input />
+                </Form.Item>
+                <Form.Item
+                    name="tenkh"
+                    hidden
+                >
+                    <Input />
+                </Form.Item>
+                <Form.Item
+                    name="masp"
+                    hidden
+                >
+                    <Input />
+                </Form.Item>
+                <Form.Item
+                    name="content"
+                >
+                    <TextArea placeholder="Nhập đánh giá của bạn" rows={4} onChange={handleChange} />
+                </Form.Item>
+                <Form.Item>
+                    <Button  /*loading={submitting}*/ htmlType="submit" type="primary">
+                        Add Comment
+                    </Button>
+                </Form.Item>
+            </Form>
+        </>
+    );
     const TabsProduct = () => {
         return (
             <Tabs defaultActiveKey="1" style={{ width: 900 }}>
                 <TabPane tab="Product Infomation" key="1">
-                    <p>{mt[0].mota}</p>
+                    <p>{pro[0].mota}</p>
                 </TabPane>
                 <TabPane tab="Reviews" key="2">
                     <List
@@ -91,17 +152,42 @@ const Select_Product = (props) => {
                         itemLayout="horizontal"
                         dataSource={data}
                         renderItem={item => (
-                            <li>
-                                <Comment
-                                    actions={item.actions}
-                                    author={item.author}
-                                    avatar={item.avatar}
-                                    content={item.content}
-                                    datetime={item.datetime}
-                                />
-                            </li>
+                            <>
+                                <li>
+                                    <Comment
+                                        actions={item.actions}
+                                        author={item.author}
+                                        avatar={item.avatar}
+                                        content={item.content}
+                                        datetime={item.datetime}
+                                    />
+
+                                </li>
+                            </>
+
                         )}
                     />
+                    {User !== null ? (
+                        <Comment
+                            avatar={
+                                <Avatar
+                                    src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
+                                    alt={User.username}
+                                />
+                            }
+                            author={User.username}
+                            content={
+                                <Editor
+                                    onChange={handleChange}
+                                    onSubmit={handleSubmit}
+                                    submitting={submitting}
+                                    value={values}
+                                />
+                            }
+                        />
+                    ) : ("")}
+
+
                 </TabPane>
                 <TabPane tab="Another Tab" key="3">
                     Content of Tab Pane 3
@@ -136,7 +222,7 @@ const Select_Product = (props) => {
 
 
     return (
-        <div>
+        <>
             <Row className="cover-one">
                 {pro.map((e) => {
                     return (
@@ -208,7 +294,7 @@ const Select_Product = (props) => {
                                             <span>Size</span>
                                         </Col>
                                         <Col>
-                                            <Select defaultValue="S" style={{ width: 120 }} onChange={handleChange}>
+                                            <Select defaultValue="S" style={{ width: 120 }} onChange={Changecolor}>
                                                 <Option value="S">S</Option>
                                                 <Option value="M">M</Option>
                                                 <Option value="L">L</Option>
@@ -293,7 +379,7 @@ const Select_Product = (props) => {
                     <TabsProduct />
                 </Col>
             </Row>
-        </div>
+        </>
     );
 }
 

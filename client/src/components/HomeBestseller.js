@@ -89,7 +89,6 @@ const HomeBestseller = (props) => {
                     {ProductHome.slice(0, hiddenitem).map((productItem) => {
                         return (
                             <Col key={productItem.masp} span={6}>
-
                                 <Card
                                     width={'100%'}
                                     key={productItem.masp}

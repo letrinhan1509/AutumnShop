@@ -16,8 +16,8 @@ const ProductDetail = (props) => {
         <Content className="detail-wrapper">
             <LinkPage />
             <Row>
-                <Col offset={2}>
-                    <SelectProduct ListPro={props.ListProductHome} Thongbao_Them={props.Thongbao_Them}/>
+                <Col style={{ width: '100%' }}>
+                    <SelectProduct ListPro={props.ListProductHome} Thongbao_Them={props.Thongbao_Them} />
                 </Col>
             </Row>
             <Row className="related">
@@ -27,59 +27,54 @@ const ProductDetail = (props) => {
                             <h1>Related Products</h1>
                         </Col>
                     </Row>
-                    <Row className="detail-related">
-                        {props.initRelatedItems.map((Items) => {
-                            return (
-                                <Col key={Items.masp} >
+                    <div className="site-card-wrapper product_home">
+                        <Row>
+                            {props.initRelatedItems.map((Items) => {
+                                return (
+                                    <Col key={Items.masp} span={6}>
 
-                                    <Card
-                                        width={'100%'}
-                                        key={Items.masp}
-                                        className="card-pro card_product_home"
-                                        bordered={false}
+                                        <Card
+                                            width={'100%'}
+                                            key={Items.masp}
+                                            className="card-pro card_product_home"
+                                            bordered={false}
+                                            hoverable
                                         >
-                                        <div className="img-box">
-                                            <Image
-                                                width={'100%'}
-                                                src={Items.hinh}
-                                                preview={{
-                                                    visible: false,
-                                                    /* onVisibleChange: () => { onClick() }, */
-                                                    mask: <div className="icon_product">
-                                                        <span onClick={() => props.Thongbao_Them(Items)}>
-                                                            <ShoppingCartOutlined
-                                                                style={{ fontSize: '36px' }} />
-                                                        </span>
-                                                        <span>
-                                                            <Link to={`/san-pham/chi-tiet-san-pham/${Items.masp}`}>
-                                                                <EyeOutlined
-                                                                    style={{ fontSize: '36px' }}
-                                                                />
-                                                            </Link>
-                                                        </span>
-                                                    </div>
-                                                }}
-                                            />
-                                        </div>
-                                        <Meta
-                                            className="card-pro-name"
-                                            title={Items.tensp} />
-                                        <div className="price">
-                                            <Meta
-                                                className="card-pro-priceSale"
-                                                title={`${Items.gia - (Items.gia * Items.giamgia / 100)} VNĐ`} />
-                                            <Meta
-                                                className="card-pro-price"
-                                                title={`${Items.gia} VNĐ`} />
-                                            <Meta
-                                                className="card-pro-sale"
-                                                title={`${Items.giamgia}% Off`} />
-                                        </div>
-                                    </Card>
-                                </Col>
-                            );
-                        })}
-                    </Row>
+                                            <div className="img-box">
+                                                <Image
+                                                    width={'100%'}
+                                                    src={Items.hinh}
+                                                    preview={{
+                                                        visible: false,
+                                                        /* onVisibleChange: () => { onClick() }, */
+                                                        mask: <div className="icon_product">
+                                                            <span onClick={() => props.Thongbao_Them(Items)}>
+                                                                <ShoppingCartOutlined
+                                                                    style={{ fontSize: '36px' }} />
+                                                            </span>
+                                                            <span>
+                                                                <Link to={`/san-pham/chi-tiet-san-pham/${Items.masp}`}>
+                                                                    <EyeOutlined
+                                                                        style={{ fontSize: '36px' }}
+                                                                    />
+                                                                </Link>
+                                                            </span>
+                                                        </div>
+                                                    }}
+                                                />
+                                            </div>
+                                            <Row className="product-price">
+                                                <Col>{`${Items.gia} VNĐ`}</Col>
+                                            </Row>
+                                            <Row className="product-name">
+                                                <Col>{Items.tensp}</Col>
+                                            </Row>
+                                        </Card>
+                                    </Col>
+                                );
+                            })}
+                        </Row>
+                    </div>
                 </Col>
             </Row>
 

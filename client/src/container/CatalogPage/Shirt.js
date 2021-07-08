@@ -82,7 +82,7 @@ const Shirt = (props) => {
             </div>
           </Carousel>
           <div className="site-card-wrapper product_home">
-            <Row>
+            <Row >
               {Ao.slice(0, visible).map((productItem) => {
                 return (
                   <Col key={productItem.masp} span={7} offset={1}>
@@ -91,7 +91,8 @@ const Shirt = (props) => {
                       key={productItem.masp}
                       className="card-pro card_product_home"
                       bordered={false}
-                      hoverable >
+                      hoverable
+                    >
                       <div className="img-box">
                         <Image
                           width={'100%'}
@@ -115,20 +116,12 @@ const Shirt = (props) => {
                           }}
                         />
                       </div>
-                      <Meta
-                        className="card-pro-name"
-                        title={productItem.tensp} />
-                      <div className="price">
-                        <Meta
-                          className="card-pro-priceSale"
-                          title={`${productItem.gia - (productItem.gia * productItem.giamgia / 100)} VNĐ`} />
-                        <Meta
-                          className="card-pro-price"
-                          title={`${productItem.gia} VNĐ`} />
-                        <Meta
-                          className="card-pro-sale"
-                          title={`${productItem.giamgia}% Off`} />
-                      </div>
+                      <Row className="product-price">
+                        <Col>{`${productItem.gia} VNĐ`}</Col>
+                      </Row>
+                      <Row className="product-name">
+                        <Col>{productItem.tensp}</Col>
+                      </Row>
                     </Card>
                   </Col>
                 );
@@ -146,7 +139,7 @@ const Shirt = (props) => {
                       className="btn-load"
                     >
                       Xem thêm
-                </Button>
+                    </Button>
                   </Col>
                 </Row>
               ) : ("")
