@@ -37,7 +37,7 @@ const ListCata = () => {
       });
     }
   }, [a]);
-  if(category != ''){
+  if (category != '') {
     localStorage.setItem('category', JSON.stringify(category));
   }
   let result = JSON.parse(localStorage.getItem('user'));
@@ -69,16 +69,16 @@ const ListCata = () => {
       "trangthai": 1
     };
     catalog.updateStatus(values).then((res) => {
-        if (res.data.status === "Success") {
-          message.success(res.data.message)
-          setTimeout(() => {
-            link.go({ pathname: '/danh-sach-admin' });
-          }, 800) 
-        }
-    }) 
-        .catch(err => {
-            message.error(`Lỗi...! Hiện danh mục thất bại!\n ${err.response.data}`)
-        })
+      if (res.data.status === "Success") {
+        message.success(res.data.message)
+        setTimeout(() => {
+          link.go({ pathname: '/danh-sach-admin' });
+        }, 800)
+      }
+    })
+      .catch(err => {
+        message.error(`Lỗi...! Hiện danh mục thất bại!\n ${err.response.data}`)
+      })
   };
   const lock = (e) => {
     let id = e.currentTarget.dataset.id;
@@ -87,25 +87,25 @@ const ListCata = () => {
       "trangthai": 0
     };
     catalog.updateStatus(values).then((res) => {
-        if (res.data.status === "Success") {
-            message.success(res.data.message)
-            setTimeout(() => {
-              link.go('/danh-sach-admin')
-            }, 800)
-        }
-    }) 
-        .catch(err => {
-            message.error(`Lỗi...! Ẩn danh mục thất bại! \n ${err.response.data}`)
-        })
+      if (res.data.status === "Success") {
+        message.success(res.data.message)
+        setTimeout(() => {
+          link.go('/danh-sach-admin')
+        }, 800)
+      }
+    })
+      .catch(err => {
+        message.error(`Lỗi...! Ẩn danh mục thất bại! \n ${err.response.data}`)
+      })
   };
 
   listCategory.forEach(element => {
-    if(element.trangthai === 1){
+    if (element.trangthai === 1) {
       element.trangthai = [];
       element.trangthai.stt = ["Hiện"];
       element.trangthai.id = element.madm;
     }
-    if(element.trangthai === 0 ){
+    if (element.trangthai === 0) {
       element.trangthai = [];
       element.trangthai.stt = ["Ẩn"];
       element.trangthai.id = element.madm;
@@ -140,7 +140,7 @@ const ListCata = () => {
               </Tag>
             );
           })}
-          
+
         </>
       ),
       filters: [
@@ -154,21 +154,21 @@ const ListCata = () => {
         dataIndex: 'trangthai',
         key: 'trangthai',
         render: (trangthai) =>
-          (
-            <>
-              {trangthai.stt.map(tragth => {
-                if (tragth === 'Ẩn') {
-                  return (
-                    <div className="btn-box"><Button data-id={trangthai.id} type="primary" icon={<UnlockOutlined />} onClick={unlock}></Button></div>  
-                  );
-                }else{
-                  return (
-                    <div className="btn-box"><Button data-id={trangthai.id} type="danger" icon={<LockOutlined />} onClick={lock}></Button></div>
-                  )
-                }  
-              })}
-            </>
-          )
+        (
+          <>
+            {trangthai.stt.map(tragth => {
+              if (tragth === 'Ẩn') {
+                return (
+                  <div className="btn-box"><Button data-id={trangthai.id} type="primary" icon={<UnlockOutlined />} onClick={unlock}></Button></div>
+                );
+              } else {
+                return (
+                  <div className="btn-box"><Button data-id={trangthai.id} type="danger" icon={<LockOutlined />} onClick={lock}></Button></div>
+                )
+              }
+            })}
+          </>
+        )
       } : (<> </>),
     result.permission === 'Admin' ?
       {
@@ -190,14 +190,16 @@ const ListCata = () => {
     <>
       <div className="form-wrapper">
         <h2 style={{ textAlign: 'center', marginTop: "30px" }}>DANH SÁCH CÁC DANH MỤC</h2>
-        <Table className="item" dataSource={listCategory} columns={columns} pagination={{ pageSize: 10 }} style={{padding: 10}} size="middle" />
-        <div className="btn-wrapper">
-          <Link to={'/them-danh-muc'}>
-            <Button type="primary">
-              Thêm danh mục
-            </Button>
-          </Link>
-        </div>
+        {result.permission === 'Admin' ? (
+          <div className="btn-wrapper">
+            <Link to={'/them-danh-muc'}>
+              <Button type="primary">
+                Thêm danh mục
+              </Button>
+            </Link>
+          </div>
+        ) : ("")}
+        <Table className="item" dataSource={listCategory} columns={columns} pagination={{ pageSize: 10 }} style={{ padding: 10 }} size="middle" />
       </div>
     </>
   );

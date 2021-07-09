@@ -16,7 +16,8 @@
             margin: 50px 0px;
             padding-bottom: 50px;
             h1 {
-                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif, 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+                font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif, "Lucida Sans Regular", "Lucida Grande",
+                    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
                 text-align: center;
                 font-size: 3em;
                 text-transform: uppercase;
@@ -26,7 +27,7 @@
                 filter: drop-shadow(5px 5px 2px rgba(0, 0, 0, 0.3));
                 border-radius: 10%;
             }
-            .step{
+            .step {
                 padding: 10px 50px 40px;
             }
             .cart-wrapper {
@@ -37,52 +38,52 @@
                     .col-one {
                         width: 60%;
                         padding: 0px 20px;
-                        .col-one-box1{
+                        .col-one-box1 {
                             box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.2);
                             padding: 15px;
                             width: 100%;
-                            h3{
+                            h3 {
                                 font-size: 24px;
                                 font-weight: 700;
                                 margin: 15px 0;
                                 text-transform: uppercase;
                             }
-                            ul{
+                            ul {
                                 margin-left: 20px;
-                                li{
+                                li {
                                     padding: 10px 0;
                                     list-style: circle;
                                     font-size: 17px;
-                                    span{
+                                    span {
                                         font-weight: 700;
                                         margin-right: 10px;
                                     }
                                 }
                             }
-                            .ant-row{
+                            .ant-row {
                                 padding: 10px 0;
-                                span{
+                                span {
                                     font-weight: 700;
                                     margin-right: 10px;
                                 }
                             }
                         }
-                        .col-one-box2{
+                        .col-one-box2 {
                             box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.2);
                             padding: 15px;
                             width: 100%;
                             margin-top: 20px;
-                            h3{
+                            h3 {
                                 font-size: 18px;
                                 font-weight: 700;
                                 margin: 15px 0;
                                 text-transform: uppercase;
                             }
-                            .ant-checkbox-wrapper{
-                                width: 100%;
-                                span{
-                                    font-size: 18px;
-
+                            .select-pay {
+                                display: flex;
+                                justify-content: space-between;
+                                img{
+                                    margin-right: 5px;
                                 }
                             }
                         }
@@ -90,16 +91,16 @@
                     .col-two {
                         width: 40%;
                         padding: 0px 25px;
-                        h3{
+                        h3 {
                             font-size: 20px;
                             font-weight: 700;
                             text-transform: uppercase;
                         }
-                        .product-count{
+                        .product-count {
                             display: flex;
                             justify-content: space-between;
                             font-size: 18px;
-                            .title{
+                            .title {
                                 font-weight: 400;
                             }
                         }
@@ -135,7 +136,8 @@
                                         opacity: 0.7;
                                     }
                                 }
-                                .sum-cart, .ship{
+                                .sum-cart,
+                                .ship {
                                     display: flex;
                                     justify-content: space-between;
                                     .title {
@@ -164,7 +166,7 @@
                                 color: red;
                             }
                         }
-                        textarea{
+                        textarea {
                             width: 100%;
                             height: 70px;
                             background: rgb(221, 221, 221);

@@ -190,9 +190,9 @@ const AddSale = (props) => {
 
     return (
         <>
-            <div className="form-wrapper">
+            <div className="sale-wrapper">
                 <h2 style={{ textAlign: 'center' }}> Nhập thông tin chương trình khuyến mãi</h2>
-                <div className="col-wrapper">
+                <div className="col-box">
                     <div className="col-one">
                         <Form
                             {...formItemLayout}

@@ -135,11 +135,6 @@ const ListOrder = (props) => {
             key: 'sodienthoai',
         },
         {
-            title: 'Địa chỉ',
-            dataIndex: 'diachi',
-            key: 'diachi',
-        },
-        {
             title: 'Tổng tiền',
             dataIndex: 'tongtien',
             key: 'tongtien',
@@ -165,7 +160,7 @@ const ListOrder = (props) => {
             dataIndex: 'tentt',
             key: 'tentt',
         },
-        user.permission === "Admin" ? (
+        user.permission === "Admin" || user.permission === "NVBH" ? (
         {
             dataIndex: "madonhang",
             key: "madonhang",

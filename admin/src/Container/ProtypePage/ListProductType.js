@@ -116,7 +116,6 @@ const ListProductType = () => {
     <>
       <div className="form-wrapper">
         <h2 style={{ textAlign: 'center', marginTop: "30px", marginBottom:"5px" }}>DANH SÁCH LOẠI SẢN PHẨM</h2>
-        <Table className="item" dataSource={ListType} columns={columns} pagination={{ pageSize: 10 }} style={{ padding: 10 }} size="middle" />
         {
           result.permission === 'Admin' ? (
             <div className="btn-wrapper">
@@ -126,8 +125,10 @@ const ListProductType = () => {
                 </Button>
               </Link>
             </div>
-          ) : (<div></div>)
+          ) : ("")
         }
+        <Table className="item" dataSource={ListType} columns={columns} pagination={{ pageSize: 10 }} style={{ padding: 10 }} size="middle" />
+        
         
       </div>
 

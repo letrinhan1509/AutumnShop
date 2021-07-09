@@ -36,7 +36,7 @@ const ListProducer = () => {
       });
     }
   }, [a]);
-  if(producer != ''){
+  if (producer != '') {
     localStorage.setItem('producer', JSON.stringify(producer));
   }
   let result = JSON.parse(localStorage.getItem('user'));
@@ -117,14 +117,16 @@ const ListProducer = () => {
     <>
       <div className="form-wrapper">
         <h2 style={{ textAlign: 'center', marginTop: "30px" }}>DANH SÁCH NHÀ SẢN XUẤT</h2>
-        <Table className="item" dataSource={listProducer} columns={columns} pagination={{ pageSize: 10 }} style={{padding: 10}} size="middle" />
-        <div className="btn-wrapper">
-          <Link to={'/them-nha-san-xuat'}>
-            <Button type="primary">
-              Thêm nhà sản xuất
-            </Button>
-          </Link>
-        </div>
+        {result.permission === 'Admin' ? (
+          <div className="btn-wrapper">
+            <Link to={'/them-nha-san-xuat'}>
+              <Button type="primary">
+                Thêm nhà sản xuất
+              </Button>
+            </Link>
+          </div>
+        ) : ("")}
+        <Table className="item" dataSource={listProducer} columns={columns} pagination={{ pageSize: 10 }} style={{ padding: 10 }} size="middle" />
       </div>
       {/* <Link to={'/Themnhanvien'}><p className="ant-btn ant-btn-primary" type="primary">Thêm nhân viên</p></Link> */}
 

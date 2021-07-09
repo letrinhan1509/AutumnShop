@@ -36,7 +36,9 @@ import ListVoucher from "./Container/VoucherPage/listVoucher";
 import EditVoucher from "./Container/VoucherPage/EditVoucher";
 import ListSale from "./Container/SalePage/listSale";
 import AddSale from "./Container/SalePage/AddSale";
-
+import AccountInfo from "./Container/AccountPage/AccountInfo";
+import EditAccount from "./Container/AccountPage/EditAccount";
+import ChangePass from "./Container/AccountPage/ChangePass";
 
 function App() {
   const PrivateRoute = ({ component: Component, ...rest }) => (
@@ -58,8 +60,8 @@ function App() {
     <>
       {localStorage.getItem('user') === null ? ( 
         <Layout>
-          <Content className="content-wrapper">
-            <Router>
+          <Content className="box">
+            <Router path="/dang-nhap">
               <Login />
             </Router>
           </Content>
@@ -68,11 +70,11 @@ function App() {
         <Router exact path="/admin">
           <Layout>
             <HeaderPage />
-            <Row className="content-box" style={{minHeight: 750}}>
+            <Row className="content-box" style={{minHeight: 750}, {marginTop: 64}}>
               <Col>
                 <Navigation />
               </Col>
-              <Col span={18} push={1} width={'100%'}>
+              <Col className="aa" span={18} push={1} width={'100%'}>
                 <Content className="content-wrapper">
                   <Route exact path="/">
                     <Dashboard />
@@ -154,6 +156,15 @@ function App() {
                   </Route>
                   <Route exact path="/danh-sach-voucher/sua-voucher">
                     <EditVoucher />
+                  </Route>
+                  <Route exact path="/tai-khoan">
+                    <AccountInfo />
+                  </Route>
+                  <Route exact path="/tai-khoan/chinh-sua-tai-khoan">
+                    <EditAccount />
+                  </Route>
+                  <Route exact path="/tai-khoan/doi-mat-khau">
+                    <ChangePass />
                   </Route>
                 </Content>
               </Col>

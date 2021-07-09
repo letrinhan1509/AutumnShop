@@ -3,6 +3,8 @@ import { Form, Input, Button, message } from 'antd';
 import { useHistory } from "react-router-dom";
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import admin from 'API_Call/Api_admin/admin';
+import "Container/scss/login.scss";
+
 
 const formItemLayout = {
   labelCol: {
@@ -62,7 +64,7 @@ const Login = () => {
   
   return (
     <>
-      <div className="form-wrapper">
+      <div className="login-wrapper">
         <h2 style={{ textAlign: 'center', fontSize: '30px' }}>Đăng nhập</h2>
         <Form
           {...formItemLayout}

@@ -280,6 +280,15 @@ const ListUserAdmin = () => {
                 )
               })}
             </Select>
+            {result.permission === 'Admin' ? (
+              <div className="btn-wrapper" >
+                <Link to={'/them-nhan-vien'}>
+                  <Button type="primary">
+                    Thêm tài khoản nhân viên
+                  </Button>
+                </Link>
+              </div>
+            ) : ("")}
           </div>
           <div className="search-box">
             <span>Tìm kiếm: </span>
@@ -287,13 +296,7 @@ const ListUserAdmin = () => {
           </div>
         </div>
         <Table className="proItem" dataSource={wordSearch} columns={columns} pagination={{ pageSize: `${pageSize}` }} size="middle" />
-        <div className="btn-wrapper" >
-          <Link to={'/them-nhan-vien'}>
-            <Button type="primary">
-              Thêm tài khoản nhân viên
-            </Button>
-          </Link>
-        </div>
+
         {/* <Link to={'/Themnhanvien'}><p className="ant-btn ant-btn-primary" type="primary">Thêm nhân viên</p></Link> */}
       </div>
     </>

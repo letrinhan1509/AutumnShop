@@ -174,21 +174,21 @@ const AllProduct = () => {
       dataIndex: 'tenloai',
       key: 'tenloai',
       filters: [
-          { text: 'ÁO KHOÁC', value: 'ÁO KHOÁC' },
-          { text: 'ÁO SƠ MI', value: 'ÁO SƠ MI' },
-          { text: 'ÁO THUN', value: 'ÁO THUN' },
-          { text: 'BALO - TÚI SÁCH', value: 'BALO - TÚI SÁCH' },
-          { text: 'DÉP', value: 'DÉP' },
-          { text: 'GIÀY', value: 'GIÀY' },
-          { text: 'NÓN', value: 'NÓN' },
-          { text: 'QUẦN JEAN', value: 'QUẦN JEAN' },
-          { text: 'QUẦN KAKI', value: 'QUẦN KAKI' },
-          { text: 'QUẦN SHORT', value: 'QUẦN SHORT' },
-          { text: 'QUẦN TÂY', value: 'QUẦN TÂY' },
-          { text: 'THẮT LƯNG', value: 'THẮT LƯNG' },
-          { text: 'Túii', value: 'Túii' },
-          { text: 'VỚ', value: 'VỚ' },
-        ],
+        { text: 'ÁO KHOÁC', value: 'ÁO KHOÁC' },
+        { text: 'ÁO SƠ MI', value: 'ÁO SƠ MI' },
+        { text: 'ÁO THUN', value: 'ÁO THUN' },
+        { text: 'BALO - TÚI SÁCH', value: 'BALO - TÚI SÁCH' },
+        { text: 'DÉP', value: 'DÉP' },
+        { text: 'GIÀY', value: 'GIÀY' },
+        { text: 'NÓN', value: 'NÓN' },
+        { text: 'QUẦN JEAN', value: 'QUẦN JEAN' },
+        { text: 'QUẦN KAKI', value: 'QUẦN KAKI' },
+        { text: 'QUẦN SHORT', value: 'QUẦN SHORT' },
+        { text: 'QUẦN TÂY', value: 'QUẦN TÂY' },
+        { text: 'THẮT LƯNG', value: 'THẮT LƯNG' },
+        { text: 'Túii', value: 'Túii' },
+        { text: 'VỚ', value: 'VỚ' },
+      ],
       //filteredValue: filteredInfo.maloai || null,
       onFilter: (value, record) => record.tenloai.includes(value),
     },
@@ -295,6 +295,15 @@ const AllProduct = () => {
                 )
               })}
             </Select>
+            {result.permission === 'Admin' ? (
+              <div className="btn-wrapper">
+                <Link to={'/them-san-pham'}>
+                  <Button type="primary">
+                    Thêm sản phẩm
+                  </Button>
+                </Link>
+              </div>
+            ) : ("")}
           </div>
           <div className="search-box">
             <span>Tìm kiếm: </span>
@@ -305,13 +314,7 @@ const AllProduct = () => {
         <Modal title="Thông báo" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
           <p>Bạn có muốn xoá sản phẩm này không ?</p>
         </Modal>
-        <div className="btn-wrapper">
-          <Link to={'/them-san-pham'}>
-            <Button type="primary">
-              Thêm sản phẩm
-            </Button>
-          </Link>
-        </div>
+
       </div>
     </>
   );

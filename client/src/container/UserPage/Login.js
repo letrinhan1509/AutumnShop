@@ -3,7 +3,7 @@ import { Form, Input, Button, Checkbox, Row, Col, message } from 'antd';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import { useHistory, Link } from "react-router-dom";
 import "container/components-css/Form.scss";
-import firebase from 'firebase';
+import firebase from 'container/Config/firebase';
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 import user from 'API_Call/Api_user/user';
 //import HeaderPage from '../components/include/HeaderPage';
@@ -36,7 +36,7 @@ const remember = {
 const uiConfig = {
     // Popup signin flow rather than redirect flow.
     signInFlow: 'redirect',
-    signInSuccessUrl: 'https://localhost:3000/',
+    signInSuccessUrl: 'http://localhost:3000/',
     // We will display Google and Facebook as auth providers.
     signInOptions: [
         firebase.auth.GoogleAuthProvider.PROVIDER_ID,

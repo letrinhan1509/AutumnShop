@@ -1,0 +1,24 @@
+.box{
+    height: 725px;
+    background-image: url("./img/coffee-rocks-beach-morning.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .login-wrapper {
+        width: 550px;
+        
+        background: white;
+        filter: drop-shadow(0px 5px 5px rgba(0, 0, 0, 0.4));
+        border-radius: 10px;
+        h2{
+            font-size: 25px;
+            margin: 20px 0px;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+    }
+}

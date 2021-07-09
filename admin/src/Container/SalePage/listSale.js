@@ -137,7 +137,7 @@ const ListSale = (props) => {
             key: 'ngaybd',
             render: ngaybd => {
                 var date = new Date(ngaybd);
-                return(
+                return (
                     date.toLocaleDateString()
                 );
             }
@@ -148,7 +148,7 @@ const ListSale = (props) => {
             key: 'ngaykt',
             render: ngaykt => {
                 var date = new Date(ngaykt);
-                return(
+                return (
                     date.toLocaleDateString()
                 );
             }
@@ -233,7 +233,7 @@ const ListSale = (props) => {
         });
     }
     let demo = listVoucher;
-    
+
     /* function onChange(e) {
       if (e.target.value !== "") {
         let filter = filterItems(ListUser, e.target.value);
@@ -290,6 +290,15 @@ const ListSale = (props) => {
                                 )
                             })}
                         </Select>
+                        {user.permission === "Admin" ? (
+                            <div className="btn-wrapper">
+                                <Link to={'/them-khuyen-mai'}>
+                                    <Button type="primary">
+                                        Thêm chương trình khuyến mãi
+                                    </Button>
+                                </Link>
+                            </div>
+                        ) : ("")}
                     </div>
                     <div className="search-box">
                         <span>Tìm kiếm: </span>
@@ -297,15 +306,6 @@ const ListSale = (props) => {
                     </div>
                 </div>
                 <Table className="proItem" dataSource={wordSearch} columns={columns} pagination={{ pageSize: `${pageSize}` }} size="middle" />
-                {user.permission === "Admin" ? (
-                    <div className="btn-wrapper">
-                        <Link to={'/them-khuyen-mai'}>
-                            <Button type="primary">
-                                Thêm chương trình khuyến mãi
-                            </Button>
-                        </Link>
-                    </div>
-                ) : (<div></div>) }
             </div>
         </>
     );

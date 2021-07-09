@@ -116,11 +116,6 @@ const ListVoucher = (props) => {
             key: 'voucher',
         },
         {
-            title: 'Ghi chú',
-            dataIndex: 'ghichu',
-            key: 'ghichu',
-        },
-        {
             title: 'Điều kiện',
             dataIndex: 'dieukien',
             key: 'dieukien',
@@ -136,7 +131,7 @@ const ListVoucher = (props) => {
             key: 'ngaybd',
             render: ngaybd => {
                 var date = new Date(ngaybd);
-                return(
+                return (
                     date.toLocaleDateString()
                 );
             }
@@ -147,7 +142,7 @@ const ListVoucher = (props) => {
             key: 'ngaykt',
             render: ngaykt => {
                 var date = new Date(ngaykt);
-                return(
+                return (
                     date.toLocaleDateString()
                 );
             }
@@ -202,7 +197,7 @@ const ListVoucher = (props) => {
                     </>
                 )
             }) : (<> </>),
-            user.permission === 'Admin' ? ({
+        user.permission === 'Admin' ? ({
             dataIndex: "voucher",
             key: "voucher",
             render: voucher => (<div className="btn-box fix"><Button data-id={voucher} onClick={loadEdit} type="primary">Cập nhật</Button></div>)
@@ -284,6 +279,15 @@ const ListVoucher = (props) => {
                                 )
                             })}
                         </Select>
+                        {user.permission === 'Admin' ? (
+                            <div className="btn-wrapper">
+                                <Link to={'/them-voucher'}>
+                                    <Button type="primary">
+                                        Thêm chương trình khuyến mãi
+                                    </Button>
+                                </Link>
+                            </div>
+                        ) : ("")}
                     </div>
                     <div className="search-box">
                         <span>Tìm kiếm: </span>
@@ -291,13 +295,6 @@ const ListVoucher = (props) => {
                     </div>
                 </div>
                 <Table className="proItem" dataSource={wordSearch} columns={columns} pagination={{ pageSize: `${pageSize}` }} size="middle" />
-                <div className="btn-wrapper">
-                    <Link to={'/them-voucher'}>
-                        <Button type="primary">
-                            Thêm chương trình khuyến mãi
-                        </Button>
-                    </Link>
-                </div>
             </div>
         </>
     );

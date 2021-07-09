@@ -33,7 +33,7 @@ const admin = JSON.parse(localStorage.getItem('user'));
                         </Col>
                         <Col span={20} offset={1}>
                             <Menu  mode="horizontal">
-                                    <Menu.Item onClick={linkto} key="thong-tin-tai-khoan">
+                                    <Menu.Item onClick={linkto} key="tai-khoan">
                                         <Avatar>N</Avatar> &nbsp;
                                         {admin.username}
                                     </Menu.Item>
