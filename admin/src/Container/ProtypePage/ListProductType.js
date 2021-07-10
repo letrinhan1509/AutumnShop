@@ -52,7 +52,7 @@ const ListProductType = () => {
     })
       .catch(err => {
         console.log(err.response);
-        message.error(`Lỗi...! Xoá loại thất bại!\n ${err.response.data}`)
+        message.error(`Lỗi...! Xoá loại thất bại!\n ${err.response.data.message}`)
       })
   }
 

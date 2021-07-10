@@ -5,6 +5,8 @@ const modelUser = require('../models/model_user');
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
+const userController = require('../controllers/userController');
+
 
 const signToken = (id) => {
 	return jwt.sign({ id }, 'nhan', {
@@ -169,60 +171,15 @@ router.post('/dang-nhap', function (req, res, next) {
         }
     });
 });
-    // Đổi mật khẩu:
-router.put('/doi-mat-khau', async function(req, res) {
-    //let adminId = req.body.adminId;
-    let email = req.body.email;
-    let password = req.body.password;
-    let newPassword = req.body.newPassword;
-    let confirmPassword = req.body.confirmPassword;
-    console.log(req.body);
-
-    let user = await modelUser.checkEmail(email);
-    let kq = bcrypt.compareSync(password, user.matkhau);
-    try {
-        if(email == user.email && kq == true){
-            if(newPassword == confirmPassword){
-                var salt = bcrypt.genSaltSync(10);
-                var pass_mahoa = bcrypt.hashSync(newPassword, salt);
-                let query = await modelUser.updatePasswordUser(email, pass_mahoa);
-                res.status(200).json({ "status": "Success", "message": "Đổi mật khẩu thành công!" });
-            } else
-                res.status(400).json({ "status": "Fail", "message": "Mật khẩu mới và xác nhận mật khẩu mới không trùng nhau!" });
-        } else
-            res.status(400).json({ "status": "Fail", "message": "Sai Email hoặc mật khẩu cũ không đúng! Vui lòng kiểm tra lại thông tin!" });
-    } catch (error) {
-        res.status(400).json({ "status": "Fail", "message": "Lỗi...! Đổi mật khẩu không thành công!" });
-    }
-});
-    // Cập nhật thông tin tài khoản user:
-router.put('/cap-nhat-tai-khoan', async function(req, res) {
-    let userId = req.body.userId;
-    let pass = req.body.password;
-    let name = req.body.name;
-    let address = req.body.address;
-    let phone = req.body.phone;
-
-    var salt = bcrypt.genSaltSync(10); // Chuỗi cộng thêm vào mật khẩu để mã hoá.
-    var pass_mahoa = bcrypt.hashSync(pass, salt);
-    
-    try {
-        if(userId == ''){
-            res.status(400).json({"status": "Fail", "message": "Thiếu id user!"});
-        }
-        let query = await modelUser.updateProfileUser(userId, name, pass_mahoa, phone, address);
-        res.status(200).json({"status": "Success", "message": "Sửa thông tin tài khoản user thành công!"});
-    } catch (error) {
-        res.status(400).json({"status": "Fail", "message": "Lỗi cú pháp!", "error": error});
-    }
-});
+router.put('/doi-mat-khau', userController.putChangePassword);  // Đổi mật khẩu
+router.put('/cap-nhat-tai-khoan', userController.postEditUser); // Cập nhật thông tin tài khoản user
     // Cập nhật trạng thái user:
 router.put('/cap-nhat-trang-thai', async function(req, res) {
     let userId = req.body.userId;
     let stt = req.body.stt;
 
     try {
-        if(userId == ''){
+        if(!userId){
             res.status(400).json({ "status": "Fail", "message": "Không có id user!" });
         }else{
             if(stt == 0){

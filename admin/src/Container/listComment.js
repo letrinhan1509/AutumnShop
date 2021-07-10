@@ -75,7 +75,8 @@ const ListComment = (props) => {
         localStorage.setItem('detailComment', JSON.stringify(comment));
     }
 
-    listComment.forEach(element => {
+    if(listComment != null) {
+      listComment.forEach(element => {
         if(element.trangthai === 1){
         element.trangthai = [];
         element.trangthai.stt = ["Hiện"];
@@ -86,7 +87,8 @@ const ListComment = (props) => {
         element.trangthai.stt = ["Ẩn"];
         element.trangthai.id = element.mabl;
         }
-    });
+      });
+    };
   
     /* let { sortedInfo, filteredInfo } = useState([]);
     sortedInfo = sortedInfo || {};

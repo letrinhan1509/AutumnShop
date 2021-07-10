@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Image, Row, Col, Input, Button, message, Select, Table } from 'antd';
 import Meta from "antd/lib/card/Meta";
 import { useHistory, Link } from "react-router-dom";
 import "container/components-css/order.scss";
-import users from 'API_Call/Api_user/user';
+import order from 'API_Call/Api_order/order';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -11,7 +11,15 @@ const user = JSON.parse(localStorage.getItem("user"));
 console.log(user);
 const Order = (props) => {
     const history = useHistory();
-
+    const [ListOrder, setListOrder] = useState([]);
+    //API List Order:
+    useEffect(() => {
+        order.getAll().then((res) => {
+            setListOrder(res.data.data);
+            setWordSearch(res.data.data);
+        })
+    }, []);
+    console.log(ListOrder);
 
 
     function removeAccents(str) {
@@ -96,6 +104,12 @@ const Order = (props) => {
             title: 'Ngày đặt',
             dataIndex: 'ngaydat',
             key: 'ngaydat',
+            render: ngaydat => {
+                var date = new Date(ngaydat);
+                return(
+                    date.toLocaleDateString()
+                );
+            }
         },
         {
             title: 'Ngày giao',

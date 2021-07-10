@@ -45,11 +45,10 @@ const ListUserAdmin = () => {
   //Cập nhật trạng thái admin
   const unlock = (e) => {
     let id = e.currentTarget.dataset.id;
-    let unLock = 1;
     console.log("Id:", id);
     let values = {
       "adminId": id,
-      "stt": unLock
+      "stt": 1
     };
     admin.updateStatus(values).then((res) => {
       if (res.data.status === "Success") {
@@ -64,16 +63,15 @@ const ListUserAdmin = () => {
     })
       .catch(err => {
         console.log(err.response);
-        message.error(`Lỗi...! Mở khoá tài khoản thất bại!\n ${err.response.data}`)
+        message.error(`Lỗi...! Mở khoá tài khoản thất bại!\n ${err.response.data.message}`)
       })
   }
   const lock = (e) => {
     let id = e.currentTarget.dataset.id;
-    let shutdown = 0;
     console.log("Id:", id);
     let values = {
       "adminId": id,
-      "stt": shutdown
+      "stt": 0
     };
     admin.updateStatus(values).then((res) => {
       if (res.data.status === "Success") {
@@ -88,7 +86,7 @@ const ListUserAdmin = () => {
     })
       .catch(err => {
         console.log(err.response);
-        message.error(`Lỗi...! Khoá tài khoản thất bại! \n ${err.response.data}`)
+        message.error(`Lỗi...! Khoá tài khoản thất bại! \n ${err.response.data.message}`)
       })
   };
 

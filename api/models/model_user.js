@@ -6,12 +6,14 @@ var dataName = [];
 exports.checkEmail = (email) => {
     return new Promise( (hamOK, hamLoi) => {
         let sql = `SELECT * FROM khachhang WHERE email = '${email}'`;
-        db.query(sql, (err, d) => {
+        db.query(sql, (err, result) => {
             if(err)
                 hamLoi(err);
             else{
-                dataList = d[0];
-                hamOK(dataList);
+                if(result.length <= 0)  // Không tìm thấy user trong DB
+                    hamOK(-1);
+                else
+                    hamOK(result[0]);
             }
         })
     })
@@ -75,15 +77,19 @@ exports.insertUser = (data) => {
     })
 }
     // Cập nhật profile khách hàng:
-exports.updateProfileUser = (userId, name, pas, phone, address) => {
+exports.updateProfileUser = (email, ten, hinh, sdt, diachi) => {
     return new Promise( (hamOK, hamLoi) => {
-        let sql = `UPDATE khachhang SET tenkh = '${name}', matkhau = '${pas}', sodienthoai = '${phone}', diachi = '${address}' WHERE makh = '${userId}'`;
+        let sql = `UPDATE khachhang SET tenkh = '${ten}', hinh = '${hinh}', sodienthoai = '${sdt}', diachi = '${diachi}' 
+        WHERE email = '${email}'`;
         db.query(sql, (err, result) => {
-            console.log('Update success');
-            hamOK(result);
-        })
-        }
-    )
+            if(err)
+                hamLoi(err);
+            else {
+                console.log('Update success');
+                hamOK("Sửa thông tin tài khoản thành công !");
+            };
+        });
+    });
 }
     // Cập nhật mật khẩu khách hàng:
 exports.updatePasswordUser = (email, pass) => {

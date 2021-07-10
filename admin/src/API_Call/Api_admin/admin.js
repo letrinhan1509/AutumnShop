@@ -5,6 +5,14 @@ const admin = {
         const url = "/";
         return AxiosAdmin.get(url);
     },
+    /* getAlls: (token) => {
+        const url = "/";
+        return AxiosAdmin.get(url, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
+    }, */
     getID: (id) => {
         const url = `/${id}`;
         return AxiosAdmin.get(url);

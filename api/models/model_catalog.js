@@ -29,8 +29,25 @@ exports.get_Category_Id = async (id) => {
             if(err)
                 hamLoi(err);
             else{
-                if(result[0] == null){  // Không có trong DB:
-                    hamOK(-1)
+                if(result.length <= 0){  // Không có trong DB:
+                    hamOK(-1);
+                }else{
+                    hamOK(result[0]);
+                }
+            }
+        })
+    })
+}
+    // Get danh mục theo tên:
+exports.get_Category_Name = async (name) => {
+    return new Promise( (hamOK, hamLoi) => {
+        let sql = `SELECT * FROM danhmuc WHERE tendm='${name}'`;
+        db.query(sql, (err, result) => {
+            if(err)
+                hamLoi(err);
+            else{
+                if(result.length <= 0){  // Không có trong DB:
+                    hamOK(-1);
                 }else{
                     hamOK(result[0]);
                 }
@@ -47,7 +64,7 @@ exports.insert_category = async (data) => {
                 reject(err);
             else{
                 console.log('Insert category successfully')
-                resolve(result);    // trả về kết quả nếu promise hoàn thành.
+                resolve("Thêm danh mục thành công !");    // trả về kết quả nếu promise hoàn thành.
             }
         })
     })
@@ -60,7 +77,7 @@ exports.update_category = async (categoryId, name) => {
             if(err)
                 hamLoi(err);
             else
-                hamOK(result);
+                hamOK("Cập nhật thông tin danh mục thành công !");
         })
     });
 }
@@ -72,7 +89,7 @@ exports.lock_category = async (categoryId) => {
             if(err)
                 hamLoi(err);
             else
-                hamOK(result);
+                hamOK("Ẩn danh mục thành công !");
         })
     });
 }
@@ -84,11 +101,35 @@ exports.unlock_category = async (categoryId) => {
             if(err)
                 hamLoi(err);
             else
-                hamOK(result);
+                hamOK("Hiện danh mục thành công !");
         })
     });
 }
-// Delete danh mục:
+    // Delete danh mục:
+exports.delete_Category = async (madm) => {
+    return new Promise( (hamOK, hamLoi) => {
+        let sql_type = `SELECT sanpham.code, sanpham.tensp 
+        FROM sanpham JOIN danhmuc 
+        ON sanpham.madm = danhmuc.madm 
+        WHERE sanpham.madm = '${madm}'`;
+        db.query(sql_type, (error, result) => {
+            if(error)
+                hamLoi(error);
+            else if(result.length <= 0) {
+                let sql = `DELETE FROM danhmuc WHERE madm='${madm}'`;
+                db.query(sql, (err, result) => {
+                    if(err)
+                        hamLoi(err);
+                    else
+                        hamOK("Xoá danh mục sản phẩm thành công !");
+                })
+            }else{
+                // Có ràng buộc khoá ngoại nên không xoá được
+                hamOK(-1);
+            }
+        })
+    });
+};
 
 
             // LOẠI:
@@ -97,9 +138,13 @@ exports.list_types = async () => {
     return new Promise( (hamOK, hamLoi) => {
         let sql = "SELECT * FROM loaisp";
         db.query(sql, (err, d) => {
-            console.log('List success');
-            dataList = d;
-            hamOK(dataList);
+            if(err) {
+                hamLoi(err);
+            } else {
+                console.log('List success');
+                dataList = d;
+                hamOK(dataList);
+            }
         })
     })
 }
@@ -127,10 +172,27 @@ exports.get_Type_Id = async (typeId) => {
         db.query(sql, (err, result) => {
             if(err)
                 hamLoi(err);
-            else{
-                if(result[0] == null){
-                    hamOK(-1)
-                }else{
+            else {
+                if(result.length <= 0){
+                    hamOK(-1);
+                } else {
+                    hamOK(result[0]);
+                }
+            }
+        })
+    })
+}
+    // Get loại theo tên:
+exports.get_Type_Name = async (name) => {
+    return new Promise( (hamOK, hamLoi) => {
+        let sql = `SELECT * FROM loaisp WHERE tenloai='${name}'`;
+        db.query(sql, (err, result) => {
+            if(err)
+                hamLoi(err);
+            else {
+                if(result.length <= 0){
+                    hamOK(-1);
+                } else {
                     hamOK(result[0]);
                 }
             }
@@ -162,10 +224,10 @@ exports.insert_Type = (data) => {
         let sql = "INSERT INTO loaisp SET ?";
         db.query(sql, data, (err, result) => {
             if(err)
-                hamLoi(err);
+                reject(err);
             else{
-                console.log('Insert type successfully')
-                resolve(result);    // trả về kết quả nếu promise hoàn thành.
+                console.log('Insert type successfully');
+                resolve("Thêm loại sản phẩm thành công !");    // trả về kết quả nếu promise hoàn thành.
             }
         })
     })
@@ -178,9 +240,33 @@ exports.update_Type = (maloai, ten, madm) => {
             if(err)
                 reject(err);
             else
-                resolve(result);
+                resolve("Cập nhật thông tin loại sản phẩm thành công !");
         })
     })
+};
+    // Ẩn loại sản phẩm:
+exports.lock_Type = async (maloai) => {
+    return new Promise( (resolve, reject) => {
+        let sql = `UPDATE loaisp SET trangthai = 0 WHERE maloai = '${maloai}'`;
+        db.query(sql, (err, result) => {
+            if(err)
+                reject(err);
+            else
+                resolve("Ẩn loại sản phẩm thành công !");
+        })
+    });
+};
+    // Hiện loại sản phẩm:
+exports.unlock_Type = async (maloai) => {
+    return new Promise( (resolve, reject) => {
+        let sql = `UPDATE loaisp SET trangthai = 1 WHERE maloai = '${maloai}'`;
+        db.query(sql, (err, result) => {
+            if(err)
+                reject(err);
+            else
+                resolve("Hiện loại sản phẩm thành công !");
+        })
+    });
 }
     // Xoá loại sản phẩm:
 exports.delete_Type = (typeId) => {
@@ -192,17 +278,17 @@ exports.delete_Type = (typeId) => {
         db.query(sql_type, (err, result) => {
             if(err)
                 hamLoi(err);
-            else if(result.length <= 0){
+            else if(result.length <= 0) {
                 console.log("Xoá được!");
                 let sql = `DELETE FROM loaisp WHERE maloai='${typeId}'`;
                 db.query(sql, (err, result) => {
                     console.log('Delete type success');
-                    hamOK(1);
+                    hamOK("Xoá loại sản phẩm thành công !");
                 })
             }else{
                 console.log("Không xoá được!");
                 hamOK(-1);
             }
         })
-    })  
-}
+    });
+};

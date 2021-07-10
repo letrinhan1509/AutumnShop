@@ -14,7 +14,7 @@ const ListCata = () => {
   const [listCategory, setListCategory] = useState([]);
   useEffect(() => {
     catalog.getAll().then((res) => {
-      setListCategory(res.data.data);
+      setListCategory(res.data.listCategorys);
     })
   }, []);
 
@@ -77,7 +77,7 @@ const ListCata = () => {
       }
     })
       .catch(err => {
-        message.error(`Lỗi...! Hiện danh mục thất bại!\n ${err.response.data}`)
+        message.error(`Lỗi...! Hiện danh mục thất bại!\n ${err.response.data.message}`)
       })
   };
   const lock = (e) => {
@@ -95,7 +95,7 @@ const ListCata = () => {
       }
     })
       .catch(err => {
-        message.error(`Lỗi...! Ẩn danh mục thất bại! \n ${err.response.data}`)
+        message.error(`Lỗi...! Ẩn danh mục thất bại! \n ${err.response.data.message}`)
       })
   };
 

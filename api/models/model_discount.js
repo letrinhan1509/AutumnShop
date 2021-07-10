@@ -10,8 +10,7 @@ exports.list_Discounts = async () => {
             if(err){
                 hamLoi(err);
             }else{
-                dataList = result;
-                hamOK(dataList);
+                hamOK(result);
             };
         });
     })
@@ -19,14 +18,12 @@ exports.list_Discounts = async () => {
     // Danh sách các voucher:
 exports.list_Vouchers = async () => {
     return new Promise( (hamOK, hamLoi) => {
-        let data = [];
         let sql = `SELECT * FROM khuyenmai WHERE voucher IS NOT NULL`;
         db.query(sql, (err, result) => {
             if(err){
                 hamLoi(err);
             }else{
-                data = result;
-                hamOK(data);
+                hamOK(result);
             }
         })
     })
@@ -50,9 +47,9 @@ exports.list_Dis_Product = async () => {
 exports.get_By_discountId = async (makm) => {
     return new Promise( (hamOK, hamLoi) => {
         let sql = `SELECT * FROM khuyenmai WHERE khuyenmai.makm = '${makm}'`;
-        db.query(sql, (err, result) => {
-            if(err){
-                hamLoi(err);
+        db.query(sql, (error, result) => {
+            if(error){
+                hamLoi(error);
             }else{
                 if(result.length > 0){
                     let sql_CTKM = `SELECT * FROM chitietkm WHERE chitietkm.makm = ?`;
@@ -84,7 +81,7 @@ exports.check_By_voucherName = async (name) => {
             if(err){
                 hamLoi(err);
             } else if(result.length <= 0) {
-                hamOK(false);
+                hamOK(false);   // Không tìm thấy voucher trong DB
             } else {
                 hamOK(result[0]);
             }
@@ -101,7 +98,7 @@ exports.create_Voucher = (data) => {
                 reject(err);
             else{
                 console.log('Insert successfully');
-                resolve(result);
+                resolve("Tạo voucher thành công !");
             }
         })
     })
@@ -166,7 +163,7 @@ exports.lock_Discount = (data) => {
                 else
                     resolve("Ẩn chương trình khuyến mãi thành công !");
             });
-        } else {
+        } else if(data.trangthai == 1) {
             let sql = `UPDATE khuyenmai SET trangthai = 1 WHERE makm = '${data.makm}'`;
             db.query(sql, (err, result) => {
                 if(err)
@@ -174,6 +171,8 @@ exports.lock_Discount = (data) => {
                 else
                     resolve("Hiện chương trình khuyến mãi thành công !");
             });
+        } else {
+            reject("Sai thông tin, Cập nhật chương trình khuyến mãi thất bại !");
         };
     });
 };

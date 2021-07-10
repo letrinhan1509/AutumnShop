@@ -31,7 +31,7 @@ const Dashboard = () => {
             setListProType(res.data.data);
         });
         catalog.getAll().then((res) => {
-            setListCatalog(res.data.data);
+            setListCatalog(res.data.listCategorys);
         });
         admins.getAll().then((res) => {
             setListAdmin(res.data.data);
@@ -40,6 +40,7 @@ const Dashboard = () => {
             setListUser(res.data.data);
         });
     }, []);
+    console.log(ListCatalog);
 
     return (
         <>

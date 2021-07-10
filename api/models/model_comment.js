@@ -24,7 +24,7 @@ exports.list_Comments = async () => {
 exports.get_by_Id = async (cmtId) => {
     return new Promise( (hamOK, hamLoi) => {
         const data = [];
-        let sql = `SELECT * FROM binhluan WHERE mabl = '${cmtId}' AND trangthai = 1`;
+        let sql = `SELECT * FROM binhluan WHERE mabl = '${cmtId}'`;
         db.query(sql, (err, result) => {
             console.log(result);
             if(err){
@@ -45,6 +45,7 @@ exports.get_by_Id = async (cmtId) => {
                         })     
                     });
                 }else{
+                    // Không có trong database
                     hamOK(-1);
                 }
             }   
@@ -111,22 +112,38 @@ exports.get_detailComment = async (commentId) => {
         })
     })
 }
-
+    // Get 1 chi tiết comment:
+exports.get_detailComment_Id = async (id) => {
+    return new Promise( (hamOK, hamLoi) => {
+        let sql = `SELECT * FROM chitietbl WHERE mact = '${id}'`;
+        db.query(sql, (err, result) => {
+            if(err){
+                hamLoi(err);
+            }else{
+                if(result.length > 0){
+                    //dataList = result;
+                    hamOK(result);
+                }else{
+                    hamOK(-1);
+                };
+            };
+        });
+    });
+};
     // Tạo comment:
 exports.create_Comment = (data) => {
-    console.log(data);
     return new Promise( (resolve, reject) => {
         let sql = "INSERT INTO binhluan SET ?";
         db.query(sql, data, (err, d) => {
             if(err)
                 reject(err);
-            else{
+            else {
                 console.log('Insert successfully')
-                resolve(d);
-            }
-        })
-    })
-}
+                resolve("Thêm bình luận thành công !");
+            };
+        });
+    });
+};
     // Rep cmt:
 exports.create_RepComment = (data) => {
     return new Promise( (resolve, reject) => {
@@ -136,11 +153,11 @@ exports.create_RepComment = (data) => {
                 reject(err);
             else{
                 console.log('Insert successfully')
-                resolve(d);
-            }
-        })
-    })
-}
+                resolve("Trả lời bình luận thành công !");
+            };
+        });
+    });
+};
     // Chỉnh sửa comment:
 exports.update_Comment = (mabl, noidung) => {
     return new Promise( (hamOK, hamLoi) => {
@@ -149,7 +166,7 @@ exports.update_Comment = (mabl, noidung) => {
             if(err){
                 hamLoi(err);
             }else{
-                hamOK(result);
+                hamOK("Chỉnh sửa bình luận thành công !");
             }
         });
     });
@@ -171,20 +188,18 @@ exports.update_RepComment = (mact, noidung) => {
 exports.delete_Comment = (mabl) => {
     return new Promise( (hamOK, hamLoi) => {
         let deleteCT = `DELETE FROM chitietbl WHERE mabl='${mabl}'`;
-        let delete_query = db.query(deleteCT, (err, result) => {
-            if(err){
-                hamLoi(err);
-            }else{
-                hamOK(result);
-            }
+        let delete_query = db.query(deleteCT, (error, result) => {
+            if(error) {
+                hamLoi(error);
+            };
         });
         let sql = `DELETE FROM binhluan WHERE mabl='${mabl}'`;
-        let query = db.query(sql, (err, result) => {
-            if(err){
+        let query = db.query(sql, (err, result1) => {
+            if(err) {
                 hamLoi(err);
-            }else{
-                hamOK(result);
-            }
+            } else {
+                hamOK("Xoá bình luận thành công !");
+            };
         });
     });
 };
@@ -196,7 +211,7 @@ exports.delete_RepComment = (mact) => {
             if(err){
                 hamLoi(err);
             }else{
-                hamOK(result);
+                hamOK("Xoá bình luận thành công !");
             }
         });
     });
@@ -209,7 +224,7 @@ exports.lock_Comment = (mabl) => {
             if(err){
                 hamLoi(err);
             }else{
-                hamOK(result);
+                hamOK("Ẩn bình luận thành công !");
             }
         });
     });
@@ -222,7 +237,7 @@ exports.unlock_Comment = (mabl) => {
             if(err){
                 hamLoi(err);
             }else{
-                hamOK(result);
+                hamOK("Hiện bình luận thành công !");
             }
         });
     });

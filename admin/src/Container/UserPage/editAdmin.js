@@ -51,16 +51,14 @@ const EditNV = (props) => {
                 setTimeout(() => {
                     history.push('/danh-sach-admin');
                 }, 2000)
-            }
-            else {
-                //message.error("Sửa thông tin thất bại")
+            } else {
                 message.error(res.data.message)
             }
         })
-            .catch(err => {
+        .catch(err => {
                 console.log(err.response);
-                message.error(`Login fail!\n ${err.response.data}`)
-            })
+                message.error(`ERROR !\n ${err.response.data.message}`)
+        })
     };
 
     return (

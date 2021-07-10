@@ -44,13 +44,13 @@ const AddProductType = (props) => {
         })
             .catch(err => {
                 console.log(err.response);
-                message.error(`Thêm loại thất bại!\n ${err.response.data}`)
+                message.error(`Thêm loại thất bại!\n ${err.response.data.message}`)
             })
     };
     const [listCategory, setlistCategory] = useState([]);
     useEffect(() => {
         catalog.getAll().then((res) => {
-            setlistCategory(res.data.data)
+            setlistCategory(res.data.listCategorys)
         })
     }, []);
 

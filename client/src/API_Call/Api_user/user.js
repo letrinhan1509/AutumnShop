@@ -19,7 +19,7 @@ const user = {
     },
     changePass: (values) => {
         const url = "/doi-mat-khau";
-        return AxiosUser.post(url, values);
+        return AxiosUser.put(url, values);
     },
     forgotPass: (values) => {
         const url = "/quen-mat-khau";

@@ -15,7 +15,7 @@ const ChangePass = (props) => {
 
     const update = (values) => {
         console.log(values)
-        /* users.updateInfo(values).then((res) => {
+        users.changePass(values).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message)
                 setTimeout(() => {
@@ -23,14 +23,13 @@ const ChangePass = (props) => {
                 }, 2000)
             }
             else {
-                //message.error("Sửa thông tin thất bại")
                 message.error(res.data.message)
             }
         })
             .catch(err => {
                 console.log(err.response);
-                message.error(`Login fail!\n ${err.response.data}`)
-            }) */
+                message.error(`ERROR !\n ${err.response.data.message}`)
+            })
     };
 
     var url = window.location.toString();
@@ -47,6 +46,9 @@ const ChangePass = (props) => {
                         <Form
                             name="update"
                             onFinish={update}
+                            initialValues={{
+                                email: `${user.email}`
+                            }}
                             scrollToFirstError
                             className="form"
                         >
@@ -56,25 +58,25 @@ const ChangePass = (props) => {
                                 id="email"
                                 label="Email"
                             >
-                                <Input placeholder="email" />
+                                <Input placeholder="email" disabled />
                             </Form.Item>
                             <Form.Item
-                                name="matkhaucu"
-                                id="matkhaucu"
+                                name="password"
+                                id="password"
                                 label="Mật khẩu cũ"
                             >
                                 <Input.Password placeholder="Nhập mật khẩu cũ" iconRender={visible => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}/>
                             </Form.Item>
                             <Form.Item
-                                name="matkhaumoi"
-                                id="matkhaumoi"
+                                name="newPassword"
+                                id="newPassword"
                                 label="Mật khẩu mới"
                             >
                                 <Input.Password placeholder="Nhập mật khẩu mới" iconRender={visible => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}/>
                             </Form.Item>
                             <Form.Item
-                                name="matkhaumoiCheck"
-                                id="matkhaumoiCheck"
+                                name="confirmPassword"
+                                id="confirmPassword"
                                 label="Nhập lại mật khẩu mới"
                             >
                                 <Input.Password placeholder="Nhập lại mật khẩu mới" iconRender={visible => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}/>

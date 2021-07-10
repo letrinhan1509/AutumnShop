@@ -47,7 +47,7 @@ const catalog = {
     },
     //(Cập nhật trạng thái danh mục theo mã danh mục)
     updateStatus: (values) => {
-        const url = "/cap-nhat-trang-thai/dmuc";
+        const url = "/cap-nhat-trang-thai";
         return AxiosCatalog.put(url, values);
     },
     //(Xoá loại sản phẩm theo id)

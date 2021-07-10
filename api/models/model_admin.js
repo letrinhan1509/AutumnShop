@@ -7,7 +7,7 @@ var dataName = [];
 
             // ADMIN:
     // Danh sách tất cả admin:
-exports.listAdmins = async () => {
+exports.list_Admins = async () => {
     return new Promise( (hamOk, hamLoi) => {
         let sql = `SELECT A.manv, A.admin, A.tennv, A.hinh, A.diachi, A.sodienthoai, A.quyen, A.trangthai 
         FROM admin as A`;
@@ -30,8 +30,9 @@ exports.get_Admin_Id = async (adminId) => {
             else{
                 if(result.length <= 0)
                     hamOk(-1);
-                else
+                else {
                     hamOk(result[0]);
+                }
             }
         });
     });
@@ -59,9 +60,14 @@ exports.check_Admin = async (email) => {
     return new Promise( (hamOK, hamLoi) => {
         let sql = `SELECT * FROM admin WHERE admin = '${email}'`;
         db.query(sql, (err, result) => {
-            console.log('List success');
-            data = result[0];
-            hamOK(data);
+            if(err) {
+                hamLoi(err);
+            } else {
+                if(result.length <= 0)
+                    hamOK(-1);
+                else
+                    hamOK(result[0]);
+            }
         })
         }
     )
@@ -74,22 +80,23 @@ exports.insert_Admin = (data) => {
             if(err){
                 reject(err);
             } else{
-                resolve(result);    // trả về kết quả nếu promise hoàn thành.
+                resolve("Đăng ký tài khoản admin thành công !");    // trả về kết quả nếu promise hoàn thành.
             }
         })
     })
 }
     // Cập nhật thông tin tài khoản admin:
-exports.updateProfileAdmin = (adminId, pas, name, img, address, phone, permission) => {
+exports.update_Profile_Admin = (id, ten, matkhau, hinh, diachi, sdt, quyen) => {
     return new Promise( (resolve, reject) => {
-        let sql = `UPDATE admin SET matkhau = '${pas}', tennv = '${name}', hinh = '${img}', diachi = '${address}', sodienthoai = '${phone}', quyen = '${permission}' WHERE manv = '${adminId}'`;
+        let sql = `UPDATE admin SET tennv = '${ten}', matkhau = '${matkhau}', hinh = '${hinh}', diachi = '${diachi}', sodienthoai = '${sdt}', quyen = '${quyen}'
+        WHERE manv = '${id}'`;
         db.query(sql, (err, result) => {
             if(err){
                 console.log('Fail');
                 reject(err)
             }else{
                 console.log('Update profile success');
-                resolve(result)
+                resolve("Cập nhật thông tin tài khoản admin thành công !")
             }     
         })
     })
@@ -102,32 +109,33 @@ exports.update_Password = (adminId, pas) => {
             if(err){
                 reject(err)
             }else{
-                resolve(result)
+                resolve("Đổi mật khẩu thành công !")
             }     
         })
     })
 }
     // Khoá tài khoản admin:
-exports.lockAdmin = (adminId) => {
+exports.lock_Admin = (adminId) => {
     return new Promise( (resolve, reject) => {
         let sql = `UPDATE admin SET trangthai = 0 WHERE manv = '${adminId}'`;
         db.query(sql, (err, result) => {
-            if(err)
+            if(err) {
                 reject(err);
-            else
-                resolve(result);
-        })
-    })
-}
+            } else {
+                resolve("Khoá tài khoản admin thành công !");
+            };
+        });
+    });
+};
     // Mở khoá tài khoản admin:
-exports.unlockAdmin = (adminId) => {
+exports.unlock_Admin = (adminId) => {
     return new Promise( (resolve, reject) => {
         let sql = `UPDATE admin SET trangthai = 1 WHERE manv = '${adminId}'`;
         db.query(sql, (err, result) => {
             if(err)
                 reject(err);
             else
-                resolve(result);
+                resolve("Mở khoá tài khoản admin thành công !");
         })
     })
 }
@@ -147,7 +155,7 @@ exports.list_Status_Order = async () => {
     })
 }
     // Chi tiết 1 trạng thái đơn hàng:
-exports.status_Order_Id = async (id) => {
+exports.status_Order = async (id) => {
     return new Promise( (resolve, reject) => {
         let sql = `SELECT * FROM trangthai WHERE trangthai='${id}'`;
         db.query(sql, (err, result) => {
@@ -172,37 +180,52 @@ exports.insert_Status_Or = (data) => {
                 reject(err);
             else{
                 console.log('Insert status order successfully')
-                resolve(result);
+                resolve("Thêm trạng thái đơn hàng thành công !");
             }
         })
     })
 }
     // Cập nhật trạng thái đơn hàng:
 exports.update_Status_Or = (sttId, name) => {
-    let sql = `UPDATE trangthai SET tentt = '${name}' WHERE trangthai = '${sttId}'`;
-    db.query(sql, (err, result) => {
-        console.log('Update status success');
-    })
+    return new Promise( (hamOK, hamLoi) => {
+        let sql = `UPDATE trangthai SET tentt = '${name}' WHERE trangthai = '${sttId}'`;
+        db.query(sql, (err, result) => {
+            if(err) {
+                hamLoi(err);
+            } else {
+                console.log('Update status success');
+                hamOK("Cập nhật trạng thái đơn hàng thành công !")
+            };
+        });
+    });
 }
     // Xoá trạng thái:
-exports.deleteStatusOr = (sttId) => {
+exports.delete_Status_Order = (sttId) => {
     return new Promise( (hamOK, hamLoi) => {
         let sql_type = `SELECT donhang.madonhang, donhang.makh, TT.trangthai
         FROM donhang JOIN trangthai TT
         ON donhang.trangthai = TT.trangthai
-        WHERE TT.trangthai = '${sttId}'`;
-        db.query(sql_type, (err, result) => {
-            if(result[0] == null){
-                console.log("Xoá được!");
-                let sql = `DELETE FROM trangthai WHERE trangthai='${sttId}'`;
-                db.query(sql, (err, result) => {
-                    console.log('Delete type success');
-                    hamOK(1);
-                })
-            }else{
-                console.log("Không xoá được!");
-                hamOK(-1);
-            }
-        })
-    })  
-}
+        WHERE donhang.trangthai = '${sttId}'`;
+        db.query(sql_type, (error, result) => {
+            if(error) {
+                hamLoi(error);
+            } else {
+                if(result.length <= 0){
+                    console.log("Xoá được!");
+                    let sql = `DELETE FROM trangthai WHERE trangthai='${sttId}'`;
+                    db.query(sql, (err, result1) => {
+                        if(err) {
+                            hamLoi(err);
+                        } else {
+                            console.log('Delete type success');
+                            hamOK(1);
+                        };
+                    });
+                }else{
+                    console.log("Không xoá được!");
+                    hamOK(-1);
+                };
+            };
+        });
+    });
+};

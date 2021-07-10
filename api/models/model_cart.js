@@ -6,7 +6,7 @@ const db = require('./database');
 var dataList = [];
 
 
-exports.list = async () => {
+exports.list_Carts = async () => {
     return new Promise( (hamOK, hamLoi) => {
         let sql = `SELECT * FROM giohang`;
         db.query(sql, (err, result) => {
@@ -17,6 +17,21 @@ exports.list = async () => {
             } else{
                 dataList = result;
                 hamOK(dataList);
+            }
+        });
+    });
+};
+
+exports.get_Cart = async (id) => {
+    return new Promise( (resolve, reject) => {
+        let sql = `SELECT * FROM giohang WHERE magiohang = '${id}'`;
+        db.query(sql, (err, result) => {
+            if(err) {
+                reject(err);
+            } else if(result.length <= 0){
+                resolve(0);
+            } else{
+                resolve(result[0]);
             }
         });
     });
@@ -38,6 +53,22 @@ exports.get_By_userId = async (userId) => {
     });
 };
 
+exports.get_By_productId = async (id) => {
+    return new Promise( (resolve, reject) => {
+        let sql = `SELECT * FROM giohang WHERE masp = '${id}'`;
+        db.query(sql, (err, result) => {
+            if(err) {
+                reject(err);
+            } else if(result.length <= 0){
+                resolve(0);
+            } else{
+                dataList = result;
+                resolve(dataList);
+            }
+        });
+    });
+};
+
 exports.create = async (data) => {
     return new Promise( (resolve, reject) => {
         let sql = `INSERT INTO giohang SET ?`;
@@ -45,7 +76,7 @@ exports.create = async (data) => {
             if(err) {
                 reject(err);
             } else{
-                resolve(result);
+                resolve("Thêm sản phẩm vào giỏ hàng thành công !!!");
             }
         });
     });
@@ -59,7 +90,7 @@ exports.put = async (data) => {
             if(err) {
                 reject(err);
             } else{
-                resolve(result);
+                resolve("Cập nhật sản phẩm trong giỏ hàng thành công !!!");
             }
         });
     });
@@ -72,7 +103,7 @@ exports.delete = async (id) => {
             if(err) {
                 reject(err);
             } else{
-                resolve(result);
+                resolve("Xoá sản phẩm trong giỏ hàng thành công !!!");
             }
         });
     });

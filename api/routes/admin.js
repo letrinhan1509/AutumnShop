@@ -9,19 +9,21 @@ const db = require('../models/database');
 const modelAdmin = require('../models/model_admin');
 const checkToken = require('../controllers/checkToken');
 const authController = require('../controllers/authController');
+const adminController = require('../controllers/adminController');
 
 const signToken = (id) => {
 	return jwt.sign({ id }, process.env.JWT_SECRET_ADMIN , {
 		expiresIn: '90d',
 	});
 };
-    // Đăng ký tài khoản:
-router.get('/test', async(req, res, next) => {
-    res.status(200).json({status: "Success", message: "TEST OK!!!"});
-});
-
-
-            // API:
+    
+            // API GET:
+router.get('/', adminController.getListAdmins);                             // Danh sách tất cả admins.
+router.get('/trang-thai-don-hang', adminController.getListOrderStatus);     // Danh sách trạng thái đơn hàng.
+router.get('/:id', adminController.getAdmin);                               // Chi tiết 1 nhân viên theo mã.
+router.get('/trang-thai-don-hang/:id', adminController.getOrderStatus);     // Chi tiết 1 trạng thái đơn hàng.
+            // API POST:
+router.post('/dev-dang-ky', adminController.signup);
     // Đăng nhập:
 router.post('/dang-nhap', function (req, res, next) {
     let em = req.body.email;
@@ -35,7 +37,7 @@ router.post('/dang-nhap', function (req, res, next) {
         if (rows.length == 0) {
             res.status(400).json({"status": "LoginFail", "message": "Không tìm thấy tài khoản admin này! Vui lòng kiểm tra lại email!", "error": err});
         }else{
-            let admin = rows[0];
+            const admin = rows[0];
             let pass_fromdb = admin.matkhau;
             var kq = bcrypt.compareSync(mk, pass_fromdb);// So sánh mật khẩu từ người dùng và MK đã mã hoá dưới DB.
             const token = signToken(admin.manv);
@@ -48,7 +50,7 @@ router.post('/dang-nhap', function (req, res, next) {
             res.cookie("jwt", token, cookieOptions);
             //res.header("auth-token", token).send(token);
             //Remove password from output
-            //user.password = undefined;
+            admin.matkhau = undefined;
             if (kq) {
                 res.status(200).json({
                     status: "LoginSuccess",
@@ -71,56 +73,6 @@ router.post('/dang-nhap', function (req, res, next) {
         }
     });
 });
-
-
-            // API GET:
-    // Danh sách tất cả admins:
-router.get('/', async function (req, res) {
-    try {
-        let listAdmins = await modelAdmin.listAdmins();
-        res.status(200).json({ "status": "Success", "data": listAdmins });
-    } catch (error) {
-        res.status(400).json({ "status": "Fail", "error": error });
-    }
-});
-// Danh sách trạng thái đơn hàng:
-router.get('/trang-thai-don-hang', async function (req, res) {
-    try {
-        let listAdmins = await modelAdmin.list_Status_Order();
-        res.status(200).json({ status: "Success", message: "Lấy danh sách trạng thái đơn hàng thành công !", data: listAdmins });
-    } catch (error) {
-        res.status(400).json({ "status": "Fail", message: "Lấy danh sách trạng thái đơn hàng thất bại !", "error": error });
-    }
-});
-    // Chi tiết 1 nhân viên theo mã:
-router.get('/:id', async function (req, res) {
-    let adminId = req.params.id;
-    try {
-        let admin = await modelAdmin.get_Admin_Id(adminId);
-        if(admin == -1)
-            res.status(400).json({ "status": "Fail", message: "Mã nhân viên này không có trong database !" });
-        else
-            res.status(200).json({ "status": "Success", "data": admin });
-    } catch (error) {
-        res.status(400).json({ "status": "Fail", "error": error });
-    }
-});
-    // Chi tiết 1 trạng thái đơn hàng:
-router.get('/trang-thai-don-hang/:id', async function (req, res) {
-    let id = req.params.id;
-    try {
-        let orderStatus = await modelAdmin.status_Order_Id(id);
-        if(orderStatus == -1)
-            res.status(400).json({ "status": "Fail", message: "Trạng thái đơn hàng này không có trong database !" });
-        else
-            res.status(200).json({ status: "Success", message: "Lấy chi tiết 1 trạng thái đơn hàng thành công !", data: orderStatus });
-    } catch (error) {
-        res.status(400).json({ "status": "Fail", message: "Lỗi...Không thể lấy chi tiết 1 trạng thái đơn hàng !", "error": error });
-    }
-});
-
-
-            // API POST:
     // Thêm tài khoản admin:
 router.post('/dang-ky', async function(req, res) {
     let email = req.body.email;
@@ -184,135 +136,14 @@ router.post('/dang-ky', async function(req, res) {
         res.status(400).json({ "status": "Fail", "message": "Lỗi cú pháp! Đăng ký không thành công!", "error": error });
     } 
 });
-    // Cập nhật thông tin tài khoản admin:
-router.put('/cap-nhat-tai-khoan', async function(req, res) {
-    let adminId = req.body.adminId;
-    let pass = req.body.pass;
-    let name = req.body.name;
-    let img = req.body.img;
-    let address = req.body.address;
-    let phone = req.body.phone;
-    let permission = req.body.permission;
-    //let ward = req.body.ward;
-    
-    if(adminId == undefined && permission == undefined && pass == undefined && name == undefined && phone == undefined && address == undefined){
-        res.status(400).json({ "status": "Fail", "message": "Thiếu thông tin admin!" });
-    }else{
-        try {
-            let ad = await modelAdmin.get_Admin_Id(adminId);
-            if(pass == ad.matkhau){
-                let query = await modelAdmin.updateProfileAdmin(adminId, pass, name, img, address, phone, permission);
-            } else{
-                var salt = bcrypt.genSaltSync(10);              // Chuỗi cộng thêm vào mật khẩu để mã hoá.
-                var pass_mahoa = bcrypt.hashSync(pass, salt);   // password đã mã hoá.
-                let query = await modelAdmin.updateProfileAdmin(adminId, pass_mahoa, name, img, address, phone, permission);
-            }
-            res.status(200).json({ "status": "Success", "message": "Sửa thông tin tài khoản admin thành công!" });
-        } catch (error) {
-            res.status(400).json({ "status": "Fail", "message": "Lỗi cú pháp!", "error": error });
-        }
-    }
-});
-    // Cập nhật trạng thái admin:
-router.put('/cap-nhat-trang-thai', async function(req, res) {
-    let adminId = req.body.adminId;
-    let stt = req.body.stt;
-    
-    if(adminId == undefined && stt == undefined){
-        res.status(400).json({ "status": "Fail", "message": "Thiếu thông tin. Cập nhật trạng thái thất bại !!!" });
-    }else{
-        if(stt == 0){
-            try {
-                let query = await modelAdmin.lockAdmin(adminId);
-                res.status(200).json({ "status": "Success", "message": "Khoá tài khoản admin thành công!" });
-            } catch (error) {
-                res.status(400).json({ "status": "Fail", "message": "Lỗi... Không thể khoá tài khoản admin!", "error": error });
-            }
-        } else if(stt == 1){
-            try {
-                let query = await modelAdmin.unlockAdmin(adminId);
-                res.status(200).json({ "status": "Success", "message": "Mở khoá tài khoản admin thành công!" });
-            } catch (error) {
-                res.status(400).json({ "status": "Fail", "message": "Lỗi... Không thể mở khoá tài khoản admin!", "error": error });
-            }
-        } else
-            res.status(400).json({ "status": "Fail", "message": "Lỗi...Cập nhật trạng thái tài khoản admin thất bại!", "error": error });
-    }
-});
-    // Cập nhật mật khẩu:
-router.put('/doi-mat-khau', async function(req, res) {
-    let adminId = req.body.adminId;
-    let email = req.body.email;
-    let password = req.body.password;
-    let newPassword = req.body.newPassword;
-    let confirmPassword = req.body.confirmPassword;
-
-    let ad = await modelAdmin.get_Admin_Id(adminId);
-    let kq = bcrypt.compareSync(password, ad.matkhau);
-    try {
-        if(email == ad.admin && kq == true){
-            if(newPassword == confirmPassword){
-                var salt = bcrypt.genSaltSync(10);
-                var pass_mahoa = bcrypt.hashSync(newPassword, salt);
-                let query = await modelAdmin.update_Password(adminId, pass_mahoa);
-                res.status(200).json({ "status": "Success", "message": "Đổi mật khẩu thành công!" });
-            } else
-                res.status(400).json({ "status": "Fail", "message": "Mật khẩu cũ và mật khẩu mới không trùng nhau!" });
-        } else
-            res.status(400).json({ "status": "Fail", "message": "Sai Email hoặc mật khẩu cũ không đúng! Vui lòng kiểm tra lại thông tin!" });
-    } catch (error) {
-        res.status(400).json({ "status": "Fail", "message": "Lỗi...! Đổi mật khẩu không thành công!" });
-    }
-});
-
-
-            // TRẠNG THÁI ĐƠN HÀNG:
-    // Thêm trạng thái:
-router.post('/them-trang-thai', async function(req, res) {
-    let trangthai = req.body.trangthai;
-    let tentt = req.body.tentt;
-    let data = {
-        trangthai: trangthai,
-        tentt: tentt,
-    }
-    try {
-        let query = await modelAdmin.insert_Status_Or(data);
-        res.status(200).json({ "status": "Success", "message": "Thêm trạng thái thành công !" });
-    } catch (error) {
-        res.status(400).json({ "status": "Fail", "message": "Lỗi... ! Thêm trạng thái thất bại !", "error": error });
-    }
-});
-    // Cập nhật trạng thái:
-router.put('/cap-nhat/trang-thai-don-hang', async function(req, res) {
-    let trangthai = req.body.trangthai;
-    let tentt = req.body.tentt;
-    if(trangthai == undefined || tentt == undefined){
-        res.status(400).json({ "status": "Fail", "message": "Thiếu trạng thái hoặc tên trạng thái !" });
-    }else{
-        try {
-            let query = await modelAdmin.update_Status_Or(trangthai, tentt);
-            res.status(200).json({ "status": "Success", "message": "Cập nhật trạng thái thành công!" });
-        } catch (error) {
-            res.status(400).json({ "status": "Fail", "message": "Lỗi cú pháp! Cập nhật trạng thái không thành công!", "error": error });
-        }
-    }
-});
-    // Xoá trạng thái:
-router.delete('/xoa/trang-thai-don-hang/:id', async function(req, res) {
-    let trangthai = req.params.id;
-    if(trangthai == undefined){
-        res.status(400).json({"status": "Fail", "message": "Không có mã trạng thái !" });
-    }
-    try {
-        let query = await modelAdmin.deleteStatusOr(sttId);
-        if(query == 1){
-            res.json({"status": "Success", "message": "Xoá trạng thái thành công!"});
-        }else
-            res.json({"status": "Success", "message": "Có ràng buộc khoá ngoại. Không thể xoá trạng thái!"});
-    } catch (error) {
-        res.json({"status": "Fail", "message": "Lỗi cú pháp! Xoá trạng thái không thành công!", "error": error});
-    }
-});
+router.post('/them-trang-thai', adminController.postStatusOrder);                   // Thêm trạng thái đơn hàng.
+            // API PUT:
+router.put('/doi-mat-khau', adminController.putEditPassword);                       // Cập nhật mật khẩu cho admin.
+router.put('/cap-nhat-tai-khoan', adminController.putEditProfile);                  // Cập nhật thông tin tài khoản admin.
+router.put('/cap-nhat-trang-thai', adminController.putEditStatusAdmin);             // Cập nhật trạng thái cho admin.
+router.put('/cap-nhat/trang-thai-don-hang', adminController.putEditStatusOrder);    // Cập nhật trạng thái.
+            // API DELETE:
+router.delete('/xoa/trang-thai-don-hang/:id', adminController.deleteStatusOrder);   // Xoá trạng thái.
 
 
 module.exports = router;

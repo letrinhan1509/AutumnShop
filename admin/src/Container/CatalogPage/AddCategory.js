@@ -43,7 +43,7 @@ const AddCategory = (props) => {
         })
             .catch(err => {
                 console.log(err.response);
-                message.error(`Thêm danh mục thất bại!\n ${err.response.data}`)
+                message.error(`Thêm danh mục thất bại!\n ${err.response.data.message}`)
             })
     };
 

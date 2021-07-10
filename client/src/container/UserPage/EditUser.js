@@ -68,7 +68,7 @@ const EditUser = (props) => {
             values['img'] = link;
         }
         console.log(values)
-        /* users.updateInfo(values).then((res) => {
+        users.updateInfo(values).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message)
                 setTimeout(() => {
@@ -76,14 +76,13 @@ const EditUser = (props) => {
                 }, 2000)
             }
             else {
-                //message.error("Sửa thông tin thất bại")
                 message.error(res.data.message)
             }
         })
             .catch(err => {
                 console.log(err.response);
-                message.error(`Login fail!\n ${err.response.data}`)
-            }) */
+                message.error(`ERROR !\n ${err.response.data.message}`)
+            })
     };
 
     return (
@@ -161,7 +160,7 @@ const EditUser = (props) => {
                                 id="email"
                                 label="Email"
                             >
-                                <Input placeholder="email" />
+                                <Input placeholder="email" disabled />
                             </Form.Item>
                             <Form.Item
                                 name="sdt"
