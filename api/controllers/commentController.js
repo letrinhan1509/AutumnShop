@@ -79,13 +79,23 @@ exports.postComment = catchAsync(async (req, res, next) => {
             ngaybl: req.body.date,
         };
         if(!data.masp || !data.makh || !data.noidung || !data.ngaybl) {
-            return res.status(400).json({ status: "Fail", message: "Thiếu thông tin, vui lòng nhập đầy đủ thông tin !" });
+            return res.status(400).json({ 
+                status: "Fail", 
+                message: "Thiếu thông tin, vui lòng nhập đầy đủ thông tin !" 
+            });
         } else {
             let query = await modelComment.create_Comment(data);
-            return res.status(200).json({ status: "Success", message: query });
+            return res.status(200).json({ 
+                status: "Success", 
+                message: query 
+            });
         };
     } catch (error) {
-        return res.status(400).json({ status: "Fail", message: "Lỗi...! Thêm bình luận không thành công!", error: error });
+        return res.status(400).json({ 
+            status: "Fail", 
+            message: "Something went wrong!", 
+            error: error 
+        });
     };
 });
 // Create Rep Comment

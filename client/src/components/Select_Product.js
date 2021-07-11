@@ -1,10 +1,11 @@
-import { Col, Layout, Row, Rate, Statistic, Select, Button, Card, Carousel, Tabs, Comment, Tooltip, List, Form, Input, Avatar } from "antd";
+import { Col, Layout, Row, Rate, Statistic, Select, Button, Card, Carousel, Tabs, Comment, Tooltip, List, Form, Input, Avatar, message } from "antd";
 import moment from 'moment';
 import { ShoppingCartOutlined, HeartOutlined, FacebookOutlined, TwitterOutlined } from '@ant-design/icons';
-import React, { createContext, useState } from 'react';
+import React, { createContext, useState, useEffect } from 'react';
 import "../components/components-css/SelectProduct.scss";
 import { useParams } from "react-router";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
+import comment from 'API_Call/Api_comment/comment';
 //import moment from 'moment';
 
 
@@ -26,7 +27,12 @@ const Select_Product = (props) => {
     console.log(pro[0].masp);
     let visible = 4;
 
-
+    /* const [ListComment, setListComment] = useState([]);
+    useEffect(() => {
+        comment.getProductID().then((res) => {
+            setListComment(res.data.city);
+        })
+    }, []); */
 
     const [size] = useState('large');
     const { TabPane } = Tabs;
@@ -75,7 +81,20 @@ const Select_Product = (props) => {
         console.log(value);
         //setSubmitting(true);
         document.getElementById("cmt").reset();
-        
+        comment.addComment(value).then((res) => {
+            if (res.data.status === "Success") {
+                message.success(res.data.message)
+                /* setTimeout(() => {
+                    history.push('/Thong-tin-tai-khoan');
+                }, 2000) */
+            } else {
+                message.error(res.data.message)
+            }
+        })
+        .catch(err => {
+            console.log(err.response);
+            message.error(`ERROR !\n ${err.response.data.message}`)
+        })
     };
 
     const handleChange = (e) => {
