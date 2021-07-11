@@ -6,6 +6,7 @@ import "../components/components-css/SelectProduct.scss";
 import { useParams } from "react-router";
 import { Link, useHistory } from "react-router-dom";
 import comment from 'API_Call/Api_comment/comment';
+import PRODUCT from 'API_Call/Api_product/product';
 //import moment from 'moment';
 
 
@@ -14,25 +15,27 @@ const { Option } = Select;
 export const DataContext = createContext()
 const Select_Product = (props) => {
     const User = JSON.parse(localStorage.getItem('user'));
+    const detail = JSON.parse(localStorage.getItem('detail'));
     const { TextArea } = Input;
     const { id } = useParams();
     function Changecolor(value) {
         console.log(`selected ${value}`);
     }
 
-    let pro = [];
-    pro = props.ListPro.filter(
-        ListPro => ListPro.masp.toString() === id
-    );
-    console.log(pro[0].masp);
     let visible = 4;
+    const [listpro, setListpro] = useState([]);
+    const [ListComment, setListComment] = useState([]);
 
-    /* const [ListComment, setListComment] = useState([]);
+
     useEffect(() => {
-        comment.getProductID().then((res) => {
-            setListComment(res.data.city);
+        //const detail = JSON.parse(localStorage.getItem('detail'));
+        console.log(detail);
+        let idBL = detail.masp;
+        comment.getProductID(idBL).then((res) => {
+            setListComment(res.data.listComment);
+            console.log(ListComment);
         })
-    }, []); */
+    }, []);
 
     const [size] = useState('large');
     const { TabPane } = Tabs;
@@ -54,47 +57,31 @@ const Select_Product = (props) => {
                     <span>{moment().subtract(1, 'days').fromNow()}</span>
                 </Tooltip>
             ),
-        },
-        {
-            actions: [<span key="comment-list-reply-to-0">Reply to</span>],
-            author: 'Taki',
-            avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-            content: (
-                <p>
-                    We supply a series of design principles, practical patterns and high quality design
-                    resources. very good !!!
-                </p>
-            ),
-            datetime: (
-                <Tooltip title={moment().subtract(2, 'days').format('YYYY-MM-DD HH:mm:ss')}>
-                    <span>{moment().subtract(2, 'days').fromNow()}</span>
-                </Tooltip>
-            ),
-        },
+        }
     ];
 
     let values = '';
     const [submitting, setSubmitting] = useState(false);
     const handleSubmit = (value) => {
-        let date = new Date();
-        value['date'] = moment(date.toLocaleDateString()).format('YYYY-DD-MM');
+        let date = new Date().toLocaleString();
+        let ngay = date.slice(10);
+        let gio = date.slice(0, 8);
+        value['ngay'] = moment(ngay).format('YYYY-DD-MM');
+        value['gio'] = gio;
         console.log(value);
         //setSubmitting(true);
-        document.getElementById("cmt").reset();
+        /* document.getElementById("cmt").reset();
         comment.addComment(value).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message)
-                /* setTimeout(() => {
-                    history.push('/Thong-tin-tai-khoan');
-                }, 2000) */
             } else {
                 message.error(res.data.message)
             }
         })
-        .catch(err => {
-            console.log(err.response);
-            message.error(`ERROR !\n ${err.response.data.message}`)
-        })
+            .catch(err => {
+                console.log(err.response);
+                message.error(`ERROR !\n ${err.response.data.message}`)
+            }) */
     };
 
     const handleChange = (e) => {
@@ -124,7 +111,7 @@ const Select_Product = (props) => {
                 initialValues={{
                     makh: `${User.makh}`,
                     tenkh: `${User.username}`,
-                    masp: `${pro[0].masp}`,
+                    masp: `${detail.masp}`,
                 }}
             >
                 <Form.Item
@@ -162,29 +149,31 @@ const Select_Product = (props) => {
         return (
             <Tabs defaultActiveKey="1" style={{ width: 900 }}>
                 <TabPane tab="Product Infomation" key="1">
-                    <p>{pro[0].mota}</p>
+                    <p>{detail.mota}</p>
                 </TabPane>
                 <TabPane tab="Reviews" key="2">
                     <List
                         className="comment-list"
-                        header={`${data.length} replies`}
+                        header={`${ListComment.length} replies`}
                         itemLayout="horizontal"
-                        dataSource={data}
-                        renderItem={item => (
-                            <>
-                                <li>
-                                    <Comment
-                                        actions={item.actions}
-                                        author={item.author}
-                                        avatar={item.avatar}
-                                        content={item.content}
-                                        datetime={item.datetime}
-                                    />
+                        dataSource={ListComment}
+                        renderItem={item => {
+                            var date = new Date(item.ngaybl).toLocaleDateString();
+                            return (
+                                <>
+                                    <li>
+                                        <Comment
+                                            actions={[<span key="comment-list-reply-to-0">Reply to</span>]}
+                                            author={item.tenkh}
+                                            avatar={'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png'}
+                                            content={item.noidung}
+                                            datetime={date + "  " + date}
+                                        />
 
-                                </li>
-                            </>
-
-                        )}
+                                    </li>
+                                </>
+                            );
+                        }}
                     />
                     {User !== null ? (
                         <Comment
@@ -243,115 +232,115 @@ const Select_Product = (props) => {
     return (
         <>
             <Row className="cover-one">
-                {pro.map((e) => {
-                    return (
-                        <>
-                            <Col className="img-box" key={e.key}>
+                <Col className="box-one">
+                    <Row className="box-row-one">
+                        <Col className="img-box">
+                            <Row>
+                                <Col>
+                                    <img src={detail.hinh} alt="product" />
+                                </Col>
+                            </Row>
+                            <Row className="img-change">
+                                <Col className="hinh"><img name={detail.id} src={detail.hinh} alt="product" /*onClick={(e) => handleTab(e.file, e)}*/ /></Col>
+                            </Row>
+                        </Col>
+                        <Col className="imfo-col">
+                            <h1>{detail.tensp}</h1>
+                            <ul className="vote-star">
+                                <li><Rate /></li>
+                                <li><Statistic title="reviews" value={0} /></li>
+                                <li><a href="#/">Submit a review</a></li>
+                            </ul>
+                            <div className="sale-imfo">
+                                <Row>
+                                    <Col><p>Price:</p></Col>
+                                    <Col offset={5}><p>{detail.gia} VNĐ</p></Col>
+                                </Row>
+                                <Row>
+                                    <Col><p>Sale:</p></Col>
+                                    <Col offset={6}><p>{detail.giamgia}% OFF</p></Col>
+                                </Row>
                                 <Row>
                                     <Col>
-                                        <img src={e.hinh} alt="product" />
+                                        <p>Origin:</p>
+                                        <p>Type:</p>
+                                    </Col>
+                                    <Col offset={5}>
+                                        <p>{detail.tennsx}</p>
+                                        <p>{detail.tenloai}</p>
                                     </Col>
                                 </Row>
-                                <Row className="img-change">
-                                    {pro.map((e) => {
-                                        return (
-                                            <Col className="hinh"><img name={e.id} src={e.hinh} alt="product" /*onClick={(e) => handleTab(e.file, e)}*/ /></Col>
-                                        );
-                                    })}
+                            </div>
+                            <div className="size-color">
+                                <Row className="box-one">
+                                    <Col>
+                                        <span>Select Color</span>
+                                    </Col>
+                                    <Col>
+                                        {
+                                            product.map((items) => {
+                                                return (
+                                                    <div >
+                                                        {items.color.map((item) => {
+                                                            return (
+                                                                <button className="select-color" style={{ background: item }}></button>
+                                                            );
+                                                        })}
+                                                    </div>
+                                                );
+                                            })
+                                        }
+                                    </Col>
                                 </Row>
-                            </Col>
-                            <Col className="imfo-col">
-                                <h1>{e.tensp}</h1>
-                                <ul className="vote-star">
-                                    <li><Rate /></li>
-                                    <li><Statistic title="reviews" value={0} /></li>
-                                    <li><a href="#/">Submit a review</a></li>
-                                </ul>
-                                <div className="sale-imfo">
-                                    <Row>
-                                        <Col><p>Price:</p></Col>
-                                        <Col offset={5}><p>{e.gia} VNĐ</p></Col>
-                                    </Row>
-                                    <Row>
-                                        <Col><p>Sale:</p></Col>
-                                        <Col offset={6}><p>{e.giamgia}% OFF</p></Col>
-                                    </Row>
-                                    <Row>
-                                        <Col>
-                                            <p>Origin:</p>
-                                            <p>Type:</p>
-                                        </Col>
-                                        <Col offset={5}>
-                                            <p>{e.tennsx}</p>
-                                            <p>{e.tenloai}</p>
-                                        </Col>
-                                    </Row>
-                                </div>
-                                <div className="size-color">
-                                    <Row className="box-one">
-                                        <Col>
-                                            <span>Select Color</span>
-                                        </Col>
-                                        <Col>
-                                            {
-                                                product.map((items) => {
-                                                    return (
-                                                        <div >
-                                                            {items.color.map((item) => {
-                                                                return (
-                                                                    <button className="select-color" style={{ background: item }}></button>
-                                                                );
-                                                            })}
-                                                        </div>
-                                                    );
-                                                })
-                                            }
-                                        </Col>
-                                    </Row>
-                                    <Row className="box-two">
-                                        <Col>
-                                            <span>Size</span>
-                                        </Col>
-                                        <Col>
-                                            <Select defaultValue="S" style={{ width: 120 }} onChange={Changecolor}>
-                                                <Option value="S">S</Option>
-                                                <Option value="M">M</Option>
-                                                <Option value="L">L</Option>
-                                                <Option value="XL">XL</Option>
-                                            </Select>
-                                        </Col>
-                                    </Row>
-                                </div>
-                                <div className="add-cart">
-                                    <Row>
-                                        <Col offset={13} span={4}>
-                                            <Button onClick={() => props.Thongbao_Them(e)} className="btn-add" type="primary" icon={<ShoppingCartOutlined />} size={size}>
-                                                Add To Cart
-                                            </Button>
-                                        </Col>
-                                        <Col offset={4} span={2}>
-                                            <Button className="btn-add" type="primary" icon={<HeartOutlined />} size={size} />
-                                        </Col>
-                                    </Row>
-                                </div>
-                                <div className="social-network">
-                                    <Row>
-                                        <Col>
-                                            <Button className="btn-facebook" type="primary" icon={<FacebookOutlined />} size={size}>
-                                                Share on Facebook
-                                            </Button>
-                                        </Col>
-                                        <Col>
-                                            <Button className="btn-switter" type="primary" icon={<TwitterOutlined />} size={size}>
-                                                Share on Twitter
-                                            </Button>
-                                        </Col>
-                                    </Row>
-                                </div>
-                            </Col>
-                        </>
-                    );
-                })}
+                                <Row className="box-two">
+                                    <Col>
+                                        <span>Size</span>
+                                    </Col>
+                                    <Col>
+                                        <Select defaultValue="S" style={{ width: 120 }} onChange={Changecolor}>
+                                            <Option value="S">S</Option>
+                                            <Option value="M">M</Option>
+                                            <Option value="L">L</Option>
+                                            <Option value="XL">XL</Option>
+                                        </Select>
+                                    </Col>
+                                </Row>
+                            </div>
+                            <div className="add-cart">
+                                <Row>
+                                    <Col offset={13} span={4}>
+                                        <Button onClick={() => props.Thongbao_Them(detail)} className="btn-add" type="primary" icon={<ShoppingCartOutlined />} size={size}>
+                                            Add To Cart
+                                        </Button>
+                                    </Col>
+                                    <Col offset={4} span={2}>
+                                        <Button className="btn-add" type="primary" icon={<HeartOutlined />} size={size} />
+                                    </Col>
+                                </Row>
+                            </div>
+                            <div className="social-network">
+                                <Row>
+                                    <Col>
+                                        <Button className="btn-facebook" type="primary" icon={<FacebookOutlined />} size={size}>
+                                            Share on Facebook
+                                        </Button>
+                                    </Col>
+                                    <Col>
+                                        <Button className="btn-switter" type="primary" icon={<TwitterOutlined />} size={size}>
+                                            Share on Twitter
+                                        </Button>
+                                    </Col>
+                                </Row>
+                            </div>
+                        </Col>
+                    </Row>
+                    <Row className="box-row-two">
+                        <Col className="comments">
+                            <TabsProduct />
+                        </Col>
+                    </Row>
+                </Col>
+
 
                 <Col className="best-seller">
                     <Row>
@@ -391,11 +380,6 @@ const Select_Product = (props) => {
                             </Carousel>
                         </Col>
                     </Row>
-                </Col>
-            </Row>
-            <Row className="cover-two">
-                <Col className="comments">
-                    <TabsProduct />
                 </Col>
             </Row>
         </>

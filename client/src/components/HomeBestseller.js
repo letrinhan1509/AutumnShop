@@ -26,17 +26,8 @@ const HomeBestseller = (props) => {
     useEffect(() => {
         setProductHome(props.ProductHomeS)
     }, [props.ProductHomeS])
-    const handleClick = (e) => {
-        setProductHome(props.ProductHomeS);
-        let filterProduct = [];
-        if (e === "all") {
-            filterProduct = props.ProductHomeS;
-        } else {
-            filterProduct = props.ProductHomeS.filter(
-                ProductHomeS => ProductHomeS.maloai === e
-            )
-        }
-        setProductHome(filterProduct)
+    const handleClick = (productItem) => {
+        localStorage.setItem('detail', JSON.stringify(productItem));
     };
     const [hiddenitem] = useState(4);
     //const history = useHistory();
@@ -109,7 +100,7 @@ const HomeBestseller = (props) => {
                                                             style={{ fontSize: '36px' }} />
                                                     </span>
                                                     <span>
-                                                        <Link to={`/san-pham/chi-tiet-san-pham/${productItem.masp}`}>
+                                                        <Link onClick={() => handleClick(productItem)} to={`/san-pham/chi-tiet-san-pham/${productItem.masp}`}>
                                                             <EyeOutlined
                                                                 style={{ fontSize: '36px' }}
                                                             />

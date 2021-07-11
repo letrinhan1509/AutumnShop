@@ -5,13 +5,18 @@ import "container/components-css/ProductDetail.scss"
 import "components/Select_Product"
 import SelectProduct from "components/Select_Product";
 import LinkPage from "components/Link_Page";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 const { Content } = Layout;
 
 const ProductDetail = (props) => {
-    const { Meta } = Card;
-    //const [relaedItems, setRelatedItems] = useState(props.initRelatedItems);
-    console.log(props.ListProductHome);
+    const history = useHistory();
+    const handleClick = (productItem) => {
+        setTimeout(() => {
+            history.push(`/san-pham/chi-tiet-san-pham/${productItem.masp}`);
+            localStorage.setItem('detail', JSON.stringify(productItem));
+            window.location.reload();
+        }, 500);
+    };
     return (
         <Content className="detail-wrapper">
             <LinkPage />
@@ -53,7 +58,7 @@ const ProductDetail = (props) => {
                                                                     style={{ fontSize: '36px' }} />
                                                             </span>
                                                             <span>
-                                                                <Link to={`/san-pham/chi-tiet-san-pham/${Items.masp}`}>
+                                                                <Link onClick={() => handleClick(Items)}>
                                                                     <EyeOutlined
                                                                         style={{ fontSize: '36px' }}
                                                                     />

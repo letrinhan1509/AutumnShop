@@ -79,15 +79,15 @@ const Contact = () => {
               },
             ]}
           >
-            <Input />
+            <Input name="email" />
           </Form.Item>
           <div className="name">Subject</div>
           <Form.Item name="subject">
-            <Input />
+            <Input name="subject"/>
           </Form.Item>
           <div className="mess">Message</div>
           <Form.Item name="message" >
-            <Input.TextArea style={{ height: '100px', width: '400px' }} />
+            <Input.TextArea style={{ height: '100px', width: '400px' }} name="message"/>
           </Form.Item>
           <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 1, span: 5 }} >
             <Button type="submit" htmlType="submit" >

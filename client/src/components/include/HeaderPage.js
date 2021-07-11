@@ -123,7 +123,7 @@ const HeaderPage = (props) => {
                         ) : (
                             <>
                                 <Dropdown overlay={drops} placement="bottomLeft">
-                                    <a href="/thong-tin-tai-khoan" className="ant-dropdown-link"><UserOutlined />{User.username}</a>
+                                    <Link to="/thong-tin-tai-khoan"><UserOutlined />{User.username}</Link>
                                 </Dropdown>
                             </>
                         )}

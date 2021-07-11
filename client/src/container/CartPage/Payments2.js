@@ -135,13 +135,13 @@ const Payments2 = (props) => {
                   <Row className="select-pay">
                     <Radio.Group onChange={selectPay} value={payValue}>
                       <Space direction="vertical">
-                        <Radio value="Thanh toán khi nhận hàng"><img width="30" src="https://lh3.googleusercontent.com/proxy/xbVOk3P0BpNMNwNCxBgs83_3u0O32LdaG1ZS-9-L1T9UBi7LEv64oHWu8S4JDKsOnjd-ga7l66BabJyl5rinfpQ9oRbd5S3yCvVG9Wu69uDcBB9baMIV-bxB6p-JtHC6-bVtB7wvJNesTlY"/>Thanh toán khi nhận hàng</Radio>
-                        <Radio value="Thanh toán Paypal"><img width="30" src="https://cdn.iconscout.com/icon/free/png-256/paypal-1527455-1298285.png"/>Thanh toán Paypal</Radio>
-                        <Radio value="Thanh toán MOMO"><img width="30" src="https://developers.momo.vn/images/favicon/ms-icon-310x310.png"/>Thanh toán MOMO</Radio>
+                        <Radio value="Thanh toán khi nhận hàng"><img width="30" src="https://www.pngitem.com/pimgs/m/466-4661926_cash-payment-icon-money-icon-hd-png-download.png" />Thanh toán khi nhận hàng</Radio>
+                        <Radio value="Thanh toán Paypal"><img width="30" src="https://cdn.iconscout.com/icon/free/png-256/paypal-1527455-1298285.png" />Thanh toán Paypal</Radio>
+                        <Radio value="Thanh toán MOMO"><img width="30" src="https://developers.momo.vn/images/favicon/ms-icon-310x310.png" />Thanh toán MOMO</Radio>
                       </Space>
                     </Radio.Group>
                     {payValue === "Thanh toán Paypal" ? (
-                      <Col><Paypal /></Col>
+                      <Col><Paypal order={order} notes={notes} payValue={payValue} ship={ship} PriceCart={props.PriceCart} voucher={voucher}/></Col>
                     ) : ("")}
                   </Row>
                 </div>
@@ -186,9 +186,16 @@ const Payments2 = (props) => {
                 </Row>
                 <Row><textarea placeholder="Ghi chú" onChange={note} /></Row>
                 <Row className="button-group">
-                  <Button className="pay" value="submit" type="primary" htmlType="submit" >
-                    Thanh toán
-                  </Button>
+                  {payValue === "Thanh toán Paypal" ? (
+                    <Button className="pay" value="submit" type="primary" htmlType="submit" disabled>
+                      Thanh toán
+                    </Button>
+                  ) : (
+                    <Button className="pay" value="submit" type="primary" htmlType="submit" >
+                      Thanh toán
+                    </Button>
+                  )}
+
                   <Button className="continue" onClick={back} >
                     <Link to="/nhap-thong-tin-giao-hang">Quay lại<RollbackOutlined /></Link>
                   </Button>

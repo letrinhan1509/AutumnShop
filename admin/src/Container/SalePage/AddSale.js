@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useRef  } from 'react';
 import { Row, Col, Form, Input, Button, Select, Checkbox, DatePicker, Space, message, Table, Radio } from 'antd';
 import { useHistory, Link } from "react-router-dom"
 import "Container/scss/addSale.scss";
@@ -34,7 +34,7 @@ const tailFormItemLayout = {
 
 
 const AddSale = (props) => {
-
+    const valueOption = useRef(null);
     const [form] = Form.useForm();
     const history = useHistory();
 
@@ -66,7 +66,7 @@ const AddSale = (props) => {
         console.log(values);
 
         //const url = "http://127.0.0.1:5000/api/v1/khuyen-mai/them-khuyen-mai/san-pham"
-        discount.addSale(values).then((res) => {
+        /* discount.addSale(values).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message)
                 setTimeout(() => {
@@ -78,7 +78,7 @@ const AddSale = (props) => {
             .catch(err => {
                 console.log(err.response);
                 message.error(`${err.response.data.message}\n Tạo khuyến mãi sản phẩm thất bại !`);
-            });
+            }); */
     };
 
     const [listTypes, setListTypes] = useState([]);
@@ -174,18 +174,30 @@ const AddSale = (props) => {
     let demo = [];
     //const [id, setID] = useState(0);
     let id = 0;
-    const thempro = (value) => {
-        
+    const thempro = () => {
+        id = id +1;
         console.log(id);
-        value['id'] = id;
-        value['sanpham'] = proSelect;
-        setAdd([...add, value]);
-        document.getElementById("themproduct").reset();
-        console.log(value);
+            let value=[]
+            let chietkhau = valueOption.current.props.value;
+            console.log(proSelect);
+            //value['id'] = id;
+            value['sanpham'] = proSelect;
+            value['chietkhau'] = chietkhau;
+            setAdd([...add, value]);
+           // document.getElementById("themproduct").reset();
+            console.log(value); 
+            console.log(add);
+          
     };
+   
 
     const lick = () => {
+        id = id +1;
+        console.log(id);
+    };
 
+    const plusID = (e) => {
+        
     };
 
     return (
@@ -294,6 +306,7 @@ const AddSale = (props) => {
                             onFinish={thempro}
                             id="themproduct"
                         >
+                        
                             <Form.Item
                                 label="Sản phẩm khuyến mãi"
                                 rules={[
@@ -324,17 +337,18 @@ const AddSale = (props) => {
                                     },
                                 ]}
                             >
-                                <Select>
+                                {/* <Select onChange={plusID}>
                                     {chietkhau.map((item) => {
                                         return (
                                             <>
-                                                <Option value={item.key}>{item.persen}</Option>
+                                                <Option ref={valueOption} value={item.key}>{item.persen}</Option>
                                             </>
                                         )
                                     })}
-                                </Select>
+                                </Select> */}
+                                <Input ref={valueOption}  />
                             </Form.Item>
-                            <Button htmlType="submit">Thêm</Button>
+                            <Button onClick={thempro} >Thêm</Button>
                             <Button onClick={lick}>ádadasdasd</Button>
                             <Table rowSelection={rowSelection} rowKey={listPro => listPro.masp} dataSource={listPro} columns={columns} pagination={{ pageSize: 5 }} />
                             <Row>
@@ -343,7 +357,7 @@ const AddSale = (props) => {
                                         {add.map((item) => {
                                             return (
                                                 <>
-                                                    <Col className="box">
+                                                    <Col className="box-selected">
                                                     <p>{item.id}</p>
                                                         <Row className="title"><span>Chiết khấu: </span>{item.chietkhau}</Row>
                                                         {item.sanpham.map((sp) => {
