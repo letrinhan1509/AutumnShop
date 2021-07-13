@@ -63,9 +63,9 @@ exports.getDetailPromotion = catchAsync(async (req, res, next) => {
         let makm = req.params.id;
         let detailPromotion = await modelDiscount.get_By_discountId(makm);
         if(detailPromotion == -1) {
-            return res.status(200).json({
+            return res.status(400).json({
                 status: "Fail",
-                message: "Chương trình khuyến mãi này không tồn tại, vui lòng kiểm tra lại !",
+                message: "Chương trình khuyến mãi này không tồn tại hoặc đã hết hạn, vui lòng kiểm tra lại !",
             });
         } else {
             return res.status(200).json({ 
@@ -95,7 +95,7 @@ exports.getDetailPromotionVoucher = catchAsync(async (req, res, next) => {
         } else {
             return res.status(200).json({ 
                 status: "Success", 
-                message: "Tìm voucher thành công !", 
+                message: "Áp dụng voucher thành công !", 
                 voucher: voucher 
             });
         }

@@ -5,6 +5,7 @@ import axios from "axios";
 import { useHistory, Link } from "react-router-dom";
 import "container/components-css/payments2.scss"
 import city from 'API_Call/Api_city/city';
+import Oder from 'API_Call/Api_order/order';
 import Paypal from "./Paypal";
 
 const { Step } = Steps;
@@ -66,9 +67,9 @@ const Payments2 = (props) => {
     } else {
       values['sumpay'] = ship + Number(props.PriceCart);
     }
-
     console.log(values);
-    /* const url = "http://localhost:5000/api/v1/don-hang/tao-don-hang";
+    //Oder.addOrder(values)
+    const url = "http://localhost:5000/api/v1/don-hang/tao-don-hang";
     axios
       .post(url, values)
       .then(async (res) => {
@@ -82,14 +83,14 @@ const Payments2 = (props) => {
             window.location.reload();
           }, 1000);
         } else {
-          message.error("Đạt hàng thất bại, vui lòng đăng nhập để đặt hàng !");
+          message.error("Đặt hàng thất bại !");
         }
       })
       .catch((err) => {
         message.error(
-          `Đạt hàng thất bại, vui lòng đăng nhập để đặt hàng ! \n ${err}`
+          `Đặt hàng thất bại ! \n ${err.response.data.message}`
         );
-      }); */
+      });
   };
 
   /* useEffect(() => {

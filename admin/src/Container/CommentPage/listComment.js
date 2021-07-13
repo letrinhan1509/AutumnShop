@@ -22,19 +22,18 @@ const ListComment = (props) => {
       "mabl": id,
       "trangthai": 1
     };
-    const url = "http://127.0.0.1:5000/api/v1/binh-luan/cap-nhat/trang-thai-bluan"
-    axios.put(url, values).then((res) => {
+    
+    COMMENTS.hideCommet(values).then((res) => {
       if (res.data.status === "Success") {
         message.success(res.data.message)
         setTimeout(() => {
           history.go({ pathname: '/danh-sach-binh-luan' });
         }, 800)
-
       }
     })
       .catch(err => {
         console.log(err.response);
-        message.error(`Lỗi...! Hiện bình luận thất bại!\n ${err.response.data.message}`)
+        message.error(`${err.response.data.message}`)
       })
 
   }
@@ -44,8 +43,7 @@ const ListComment = (props) => {
       "mabl": id,
       "trangthai": 0
     };
-    const url = "http://127.0.0.1:5000/api/v1/binh-luan/cap-nhat/trang-thai-bluan"
-    axios.put(url, values).then((res) => {
+    COMMENTS.hideCommet(values).then((res) => {
       if (res.data.status === "Success") {
         message.success(res.data.message)
         setTimeout(() => {
@@ -54,7 +52,7 @@ const ListComment = (props) => {
       }
     })
       .catch(err => {
-        message.error(`Lỗi...! Ẩn bình luận thất bại!\n ${err.response.data.message}`)
+        message.error(`${err.response.data.message}`)
       })
   };
   const [a, setA] = useState([]);

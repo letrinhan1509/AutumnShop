@@ -16,6 +16,7 @@ export const DataContext = createContext()
 const Select_Product = (props) => {
     const User = JSON.parse(localStorage.getItem('user'));
     const detail = JSON.parse(localStorage.getItem('detail'));
+    const history = useHistory();
     const { TextArea } = Input;
     const { id } = useParams();
     function Changecolor(value) {
@@ -63,17 +64,17 @@ const Select_Product = (props) => {
     let values = '';
     const [submitting, setSubmitting] = useState(false);
     const handleSubmit = (value) => {
-        let date = new Date().toLocaleString();
-        let ngay = date.slice(10);
-        let gio = date.slice(0, 8);
-        value['ngay'] = moment(ngay).format('YYYY-DD-MM');
-        value['gio'] = gio;
+        let date2 = new Date();
+        value['ngay'] = moment(date2).format('YYYY-MM-DD');
         console.log(value);
         //setSubmitting(true);
-        /* document.getElementById("cmt").reset();
+        document.getElementById("cmt").reset();
         comment.addComment(value).then((res) => {
             if (res.data.status === "Success") {
-                message.success(res.data.message)
+                message.success(res.data.message);
+                /* setTimeout(() => {
+                    history.replace();
+                }, 100); */
             } else {
                 message.error(res.data.message)
             }
@@ -81,7 +82,7 @@ const Select_Product = (props) => {
             .catch(err => {
                 console.log(err.response);
                 message.error(`ERROR !\n ${err.response.data.message}`)
-            }) */
+            })
     };
 
     const handleChange = (e) => {
@@ -167,7 +168,7 @@ const Select_Product = (props) => {
                                             author={item.tenkh}
                                             avatar={'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png'}
                                             content={item.noidung}
-                                            datetime={date + "  " + date}
+                                            datetime={item.giobl + "  " + date}
                                         />
 
                                     </li>

@@ -27,7 +27,7 @@ const comment = {
     },
     //(Thêm mới 1 bình luận)
     addComment: (values) => {
-        const url = "/them-binh-luan";
+        const url = "/them";
         return AxiosComment.post(url, values);
     },
     //(Trả lời 1 bình luận đã có sẵn)
@@ -37,12 +37,12 @@ const comment = {
     },
     //(Chỉnh sửa nội dung bình luận theo mã bình luận)
     updateComment: (values) => {
-        const url = "/cap-nhat-binh-luan";
+        const url = "/cap-nhat";
         return AxiosComment.put(url, values);
     },
     //(Chỉnh sửa nội dung chi tiết(trả lời) bình luận theo mã chitietbl)
     updateDeComment: (values) => {
-        const url = "/cap-nhat-tra-loi-bluan";
+        const url = "/cap-nhat-tra-loi";
         return AxiosComment.put(url, values);
     },
     //(Cập nhật trạng thái 1 bình luận theo mabl ẩn hoặc hiện)
@@ -52,12 +52,12 @@ const comment = {
     },
     //(Xoá 1 bình luận theo mabl)
     deleteCommentID: (id) => {
-        const url = `/xoa-binh-luan/${id}`;
+        const url = `/xoa/${id}`;
         return AxiosComment.delete(url);
     },
     //(Xoá 1 chi tiết(trả lời) bình luận theo mã chitietbl)
     deleteCommentDe: (id) => {
-        const url = `/xoa-tra-loi-bluan/${id}`;
+        const url = `/xoa-tra-loi/${id}`;
         return AxiosComment.delete(url);
     }
 };

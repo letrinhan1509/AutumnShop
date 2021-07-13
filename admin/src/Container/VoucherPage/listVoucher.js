@@ -68,7 +68,6 @@ const ListVoucher = (props) => {
             }
         })
             .catch(err => {
-                console.log(err.response);
                 message.error(`${err.response.data.message}`);
             });
     };

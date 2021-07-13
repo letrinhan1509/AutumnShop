@@ -1,74 +1,26 @@
 const axios = require('axios');
 var express = require('express');
 var router = express.Router();
-
-const modelOrder = require('../models/model_order');    //nhúng model products vào controller này để sử dụng
-
-
-            // API GET
-    // Danh sách hoá đơn:
-router.get('/', async function(req, res) { 
-    try {
-        let listOrder = await modelOrder.list_Orders();
-        res.status(200).json({ "status": "Success", "data": listOrder });
-    } catch (error) {
-        res.status(400).json({ "status": "Fail", "message": "Lỗi! Lấy danh sách đơn hàng thất bại!", "error": error });
-    }
-})
-    // Đơn hàng theo mã đơn hàng:
-router.get('/:id', async function (req, res) {
-    try {
-        let orderId = req.params.id;
-        let order = await modelOrder.get_By_Id(orderId);
-        if(order == -1)
-            res.status(400).json({ "status": "Fail", "message": "Không tìm thấy mã đơn hàng này!" });
-        else
-            res.status(200).json({ "status": "Success", "data": order });
-    } catch (error) {
-        res.status(400).json({ "status": "Fail", "message": "Lỗi! Lấy chi tiết 1 đơn hàng thất bại!", "error": error })
-    }
-});
-    // Danh sách chi tiết đơn hàng theo mã đơn hàng:
-router.get('/:id/chi-tiet-dhang', async function (req, res) {
-    try {
-        let orderId = req.params.id;
-        let order = await modelOrder.get_detailOrder(orderId);
-        res.status(200).json({"status": "Success", "message": "Lấy chi tiết đơn hàng theo mã đơn hàng thành công !", "data": order});
-    } catch (error) {
-        res.status(400).json({"status": "Fail", "message": "Lỗi...! Không thể lấy chi tiết đơn hàng theo mã đơn hàng !", "error": error})
-    }
-});
-// Đơn hàng theo mã khách hàng:
-router.get('/khach-hang/:id', async function (req, res) {
-    try {
-        let userId = req.params.id;
-        let order = await modelOrder.get_By_userId(userId);
-        if(order == -1)
-            res.status(400).json({ "status": "Fail", "message": "Không có đơn hàng nào !" });
-        else
-            res.status(200).json({ "status": "Success", "message": "Lấy đơn hàng thành công !", "data": order});
-    } catch (error) {
-        res.status(400).json({ "status": "Fail", "message": "Lỗi...! Không thể lấy đơn hàng theo mã khách hàng !", "error": error })
-    }
-});
-    // Đơn hàng theo số điện thoại:
-router.get('/so-dien-thoai/:phone', async function (req, res) {
-    let phone = req.params.phone;
-    try {
-        let order = await modelOrder.get_By_Phone(phone);
-        if(order == -1)
-            res.status(400).json({ "status": "Fail", "message": "Không có đơn hàng nào !" });
-        else
-            res.status(200).json({ "status": "Success", "message": "Lấy đơn hàng thành công !", order: order});
-    } catch (error) {
-        res.status(400).json({ "status": "Fail", "message": "Lỗi...! Không thể lấy đơn hàng theo mã khách hàng !", "error": error })
-    }
-});
+const orderController = require('../controllers/orderController');
+const authController = require('../controllers/authController');
 
 
-            // API POST:
-    // Tạo đơn hàng:
-router.post('/tao-don-hang', async function(req, res) {
+            // API 
+    // GET
+router.get('/', orderController.getListOrders); // Danh sách đơn hàng
+router.get('/:id', orderController.getOrder); // Chi tiết 1 đơn hàng theo mã đơn hàng
+router.get('/:id/chi-tiet-dhang', orderController.getListDetailOrders); // Danh sách các chi tiết đơn hàng theo mã đơn hàng
+router.get('/khach-hang/:id', orderController.getListOrderUser);        // Đơn hàng theo mã khách hàng
+router.get('/so-dien-thoai/:phone', orderController.getListOrderPhone); // Đơn hàng theo số điện thoại
+    // POST
+router.post('/tao-don-hang', orderController.postCreateOrder);  // Tạo đơn hàng
+    // PUT
+router.put('/cap-nhat-trang-thai', orderController.putEditStatus);  // Cập nhật trạng thái đơn hàng
+    // DELETE
+router.delete('/xoa/:id', orderController.deleteOrder);  // Huỷ(xoá) đơn hàng
+
+
+/* router.post('/tao-don-hang', async function(req, res) {
     let makh = req.body.order.makh;
     let tenkh = req.body.order.tenkh;
     let email = req.body.order.email;
@@ -119,30 +71,7 @@ router.post('/tao-don-hang', async function(req, res) {
     } catch (error) {
         res.status(400).json({"status": "Fail", "message": "Lỗi...! Tạo đơn hàng không thành công!", "error": error });
     }
-});
-
-
-            // API PUT:
-    // Cập nhật trạng thái đơn hàng:
-router.put('/cap-nhat-trang-thai', async function(req, res) {
-    let data = {
-        madonhang: req.body.madonhang,
-        ngaygiao: req.body.ngaygiao,
-        trangthai: req.body.trangthai
-    };
-
-    if(data.madonhang == undefined){
-        res.status(400).json({ "status": "Fail", "message": "Không có id đơn hàng!" });
-    }else{
-        try {
-            let query = await modelOrder.update_Order(data);
-            res.status(200).json({ "status": "Success", "message": query });
-        } catch (error) {
-            res.status(400).json({ "status": "Fail", "message": "Lỗi...!", "error": error });
-        }
-    };
-});
-
+}); */
 
 
 module.exports = router;

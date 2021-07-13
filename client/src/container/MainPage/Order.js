@@ -12,9 +12,9 @@ console.log(user);
 const Order = (props) => {
     const link = useHistory();
     const [ListOrder, setListOrder] = useState([]);
-    //API List Order:
+    //API Customer order list :
     useEffect(() => {
-        order.getAll().then((res) => {
+        order.getUserID(user.makh).then((res) => {
             setListOrder(res.data.data);
             setWordSearch(res.data.data);
         })
@@ -97,6 +97,24 @@ const Order = (props) => {
 
     }
 
+    const cancelOrder = (e) => {
+        let i = e.currentTarget.dataset.id;
+        console.log(i);
+
+        order.cancelOrder(i).then((res) => {
+            if (res.data.status === "Success") {
+                message.success(res.data.message);
+                setTimeout(() => {
+                    link.replace('/don-hang');
+                }, 400);
+            } else {
+                message.error(res.data.message);
+            }
+        }).catch(err => {
+            message.error(`${err.response.data.message}`);
+        });
+    }
+
     const columns = [
         {
             title: 'Mã đơn hàng',
@@ -128,6 +146,11 @@ const Order = (props) => {
                     date.toLocaleDateString()
                 );
             }
+        },
+        {
+            title: 'Trạng thái',
+            dataIndex: 'tentt',
+            key: 'tentt',
         },
         {
             title: 'Mã nhân viên',

@@ -139,6 +139,19 @@ exports.unlock_Admin = (adminId) => {
         })
     })
 }
+    // Xoá tài khoản quản trị viên:
+exports.delete_Admin = (adminId) => {
+    return new Promise( (resolve, reject) => {
+        let sql = `DELETE FROM admin WHERE manv = '${adminId}'`;
+        db.query(sql, (err, result) => {
+            if(err) {
+                reject(err);
+            } else {
+                resolve("Xoá tài khoản quản trị viên thành công !");
+            }
+        })
+    })
+}
 
 
             // TRẠNG THÁI CỦA ĐƠN HÀNG:

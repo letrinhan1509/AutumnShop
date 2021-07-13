@@ -92,7 +92,7 @@ const Payments = (props) => {
       }
     })
       .catch(err => {
-        message.error(`Lỗi...! Áp dụng mã thất bại!\n ${err.response.data.message}`);
+        message.error(`Áp dụng mã thất bại!\n ${err.response.data.message}`);
       })
   };
 

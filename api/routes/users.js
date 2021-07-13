@@ -64,138 +64,21 @@ router.post('/quen-mat-khau', async (req, res) => {
 
 
             // API
-    // Danh sách tất cả khách hàng:
-router.get('/', async function (req, res) {
-    try {
-        let listUsers = await modelUser.list();
-        res.status(200).json({"status": "Success", "data": listUsers});
-    } catch (error) {
-        res.status(400).json({"status": "Fail", "error": error})
-    }
-});
-    // Khách hàng bằng id:
-router.get('/:id', async function (req, res) {
-    try {
-        let userId = req.params.id;
-        let user = await modelUser.get_By_Id(userId);
-        if(user == -1){     // Kiểm tra user_id trong DB.
-            res.status(400).json({"status": "Fail", "message": "Không tìm thấy user này trong DB!"});
-        }else{
-            res.status(200).json({"status": "Success", "data": user});
-        }  
-    } catch (error) {
-        res.status(400).json({"status": "Fail", "error": error});
-    };
-});
-    // Tìm khách hàng bằng tên: "async"->Bất đồng bộ.
-router.get('/ten/:name', async function (req, res) {
-    let nameUser = req.params.name;
-    let User = await modelUser.detailByName(nameUser);
-    console.log(User);
-    res.json(User);
-});
-
-
-            // API POST:
-    // Đăng ký tài khoản:
-router.post('/dang-ky', async function(req, res) {
-    let email = req.body.email;
-    let pass = req.body.matkhau;
-    let nhaplaimk = req.body.nhaplaimk;
-    let name = req.body.tenkh;
-    let address = req.body.diachi;
-    let phone = req.body.sodienthoai;
-    
-    if(email == '' && pass == '' && name == '' && address == '' && phone == ''){
-        res.status(400).json({"status": "Fail", "message": "Thiếu thông tin!"});
-    }else{ 
-        try {
-            var salt = bcrypt.genSaltSync(10); // Chuỗi cộng thêm vào mật khẩu để mã hoá.
-            var mk_mahoa = bcrypt.hashSync(pass, salt);   // Mã hoá password.
-            let data = {
-                tenkh: name,
-                email: email,
-                matkhau: mk_mahoa,
-                sodienthoai: phone,
-                diachi: address,   
-            }
-            let query = await modelUser.insertUser(data);
-            res.status(200).json({ "status": "Success", "message": "Thêm tài khoản user thành công!" });
-        } catch (error) {
-            res.status(400).json({ "status": "Fail", "message": "Lỗi cú pháp! Thêm không thành công!", "error": error });
-        }
-    } 
-})
-    // Đăng nhập tài khoản:
-router.post('/dang-nhap', function (req, res, next) {
-    let em = req.body.email;
-    let mk = req.body.matkhau;
-    
-    let sql = `SELECT * FROM khachhang WHERE email = '${em}'`;
-    db.query(sql, (err, rows) => {
-        if (rows.length <= 0) {
-            res.status(400).json({"status": "LoginFail", "error": err, message: "Đăng nhập thất bại. Không tìm thấy tài khoản!"});
-        }else{
-            let user = rows[0];
-            let pass_fromdb = user.matkhau;
-            var kq = bcrypt.compareSync(mk, pass_fromdb);
-            const token = signToken(user.makh);
-            const cookieOptions = {
-                expires: new Date(
-                    Date.now() + 90 * 24 * 60 * 60 * 1000
-                ),
-                httpOnly: true,
-            }; 
-            res.cookie("jwt", token, cookieOptions);
-            if (kq) {
-                console.log("OK!!! Đăng nhập thành công");
-                res.status(200).json({
-                    status: "LoginSuccess",
-                    data: {
-                        makh: user.makh, 
-                        username: user.tenkh,
-                        email: user.email,
-                        sdt: user.sodienthoai,
-                        diachi: user.diachi
-                    },
-                    message: "Đăng nhập thành công.",
-                    token
-                });
-            }
-            else {
-                res.status(400).json({
-                    status: "LoginFail",
-                    message: "Đăng nhập thất bại. Sai mật khẩu!!!"
-                });
-            }
-        }
-    });
-});
-router.put('/doi-mat-khau', userController.putChangePassword);  // Đổi mật khẩu
-router.put('/cap-nhat-tai-khoan', userController.postEditUser); // Cập nhật thông tin tài khoản user
-    // Cập nhật trạng thái user:
-router.put('/cap-nhat-trang-thai', async function(req, res) {
-    let userId = req.body.userId;
-    let stt = req.body.stt;
-
-    try {
-        if(!userId){
-            res.status(400).json({ "status": "Fail", "message": "Không có id user!" });
-        }else{
-            if(stt == 0){
-                let query = await modelUser.lockUser(userId);
-                res.status(200).json({ "status": "Success", "message": "Khoá tài khoản khách hàng thành công!" });
-            }else{
-                let query = await modelUser.unlockUser(userId);
-                res.status(200).json({ "status": "Success", "message": "Mở khoá tài khoản khách hàng thành công!" });
-            }
-        }
-    } catch (error) {
-        res.status(400).json({ "status": "Fail", "message": "Lỗi! Cập nhật trạng thái khách hàng thất bại!", "error": error });
-    };
-});
-
-    
+    // GET
+router.get('/', userController.getListUsers);   // Danh sách tất cả khách hàng
+router.get('/:id', userController.getDetailUser);   // Chi tiết 1 khách hàng bằng id
+router.get('/ten/:name', userController.getUserName);   // Tìm khách hàng bằng tên: "async"->Bất đồng bộ
+    // POST
+router.post('/dang-ky', userController.postUser);   // Đăng ký tài khoản
+router.post('/dang-nhap', userController.postUserLogin);    // Đăng nhập tài khoản
+router.post('/dang-ky/gmail', userController.postUser);   // Đăng ký tài khoản khi đăng nhập bằng gmail
+router.post('/dang-nhap/gmail', userController.postUserLogin);    // Đăng nhập tài khoản thông qua tài khoản gmail
+    // PUT
+router.put('/doi-mat-khau', userController.putChangePassword);  // Đổi mật khẩu tài khoản user
+router.put('/cap-nhat-tai-khoan', userController.putEditUser); // Cập nhật thông tin tài khoản user
+router.put('/cap-nhat-trang-thai', userController.putEditUserStatus);   // Cập nhật trạng thái tài khoản user
+    // DELETE
+router.delete('/xoa/:id', userController.deleteUser);   // Xoá tài khoản khách hàng  
 
 
 module.exports = router;

@@ -11,7 +11,11 @@ exports.getListComments = catchAsync(async (req, res, next) => {
         let listComments = await modelComment.list_Comments();
         return res.status(200).json({ status: "Success", listComments: listComments });
       } catch (error) {
-        return res.status(400).json({ status: "Fail", message: "Lỗi...!", error: error })
+        return res.status(400).json({ 
+            status: "Fail", 
+            message: "Something went wrong!", 
+            error: error 
+        });
     };
 });
 // GET Comment
@@ -45,10 +49,18 @@ exports.getCommentByProduct = catchAsync(async (req, res, next) => {
     try {
         let idSpham = await req.params.idPro;
         let listCmt = await modelComment.get_by_productId(idSpham);
-        if(listCmt == -1)
-            return res.status(400).json({ status: "Fail", message: "Sản phẩm này không có bình luận nào !" });
-        else
-            return res.status(200).json({ status: "Success", listComment: listCmt });
+        if(listCmt == -1) {
+            return res.status(200).json({ 
+                status: "Success", 
+                message: "Sản phẩm này không có bình luận nào !",
+                listComment: []
+            });
+        } else {
+            return res.status(200).json({ 
+                status: "Success", 
+                listComment: listCmt 
+            });
+        }
     } catch (error) {
         return res.status(400).json({ status: "Fail", message: "Lỗi...!", error: error })
     };
@@ -58,10 +70,17 @@ exports.getDetailComment = catchAsync(async (req, res, next) => {
     try {
         let idCmt = req.params.id;
         let listCmt = await modelComment.get_detailComment(idCmt);
-        if(listCmt == -1)
-            return res.status(400).json({ status: "Fail", message: "Không có chi tiết bình luận nào! Hoặc bình luận đó đã bị khoá" });
-        else
-            return res.status(200).json({ status: "Success", listComment: listCmt });
+        if(listCmt == -1) {
+            return res.status(200).json({ 
+                status: "Success", 
+                message: "Không có chi tiết bình luận nào! Hoặc bình luận đó đã bị khoá" 
+            });
+        } else {
+            return res.status(200).json({ 
+                status: "Success", 
+                listComment: listCmt 
+            });
+        }
     } catch (error) {
         return res.status(400).json({ status: "Fail", message: "Lỗi...!", error: error })
     };
@@ -72,13 +91,19 @@ exports.getDetailComment = catchAsync(async (req, res, next) => {
 // Create Comment
 exports.postComment = catchAsync(async (req, res, next) => {
     try {
+        var today = new Date();
+        var ngay = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+        var gio = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
         let data = {
             masp: req.body.masp,
             makh: req.body.makh,
             noidung: req.body.content,
-            ngaybl: req.body.date,
+            giobl: gio,
+            ngaybl: ngay
+            //ngaybl: req.body.date
         };
-        if(!data.masp || !data.makh || !data.noidung || !data.ngaybl) {
+        console.log(req.body);
+        if(!data.masp || !data.makh || !data.noidung || !data.giobl || !data.ngaybl) {
             return res.status(400).json({ 
                 status: "Fail", 
                 message: "Thiếu thông tin, vui lòng nhập đầy đủ thông tin !" 
@@ -171,23 +196,39 @@ exports.putEditCommentStatus = catchAsync(async (req, res, next) => {
     try {
         let mabl = req.body.mabl;
         let trangthai = req.body.trangthai;
+        console.log(req.body);
         // 1) Check null
-        if(!mabl || !trangthai) {
-            return res.status(400).json({ status: "Fail", message: "Thiếu thông tin, vui lòng nhập đầy đủ thông tin !" });
+        if(!mabl || trangthai == undefined) {
+            return res.status(400).json({ 
+                status: "Fail", 
+                message: "Thiếu thông tin, vui lòng nhập đầy đủ thông tin !" 
+            });
         };
         // 2) Check comment exists
         const comment = await modelComment.get_by_Id(mabl);
         if(comment == -1) {
-            return res.status(400).json({ status: "Fail", message: "Mã bình luận " + `${mabl}` + " này không tồn tại, vui lòng kiểm tra lại !" });
+            return res.status(400).json({ 
+                status: "Fail", 
+                message: "Mã bình luận " + `${mabl}` + " này không tồn tại, vui lòng kiểm tra lại !" 
+            });
         };
         if(trangthai == 0) {
             let queryLock = await modelComment.lock_Comment(mabl);
-            return res.status(200).json({ status: "Success", message: queryLock });
+            return res.status(200).json({ 
+                status: "Success", 
+                message: queryLock 
+            });
         } else if(trangthai == 1) {
             let queryUnlock = await modelComment.unlock_Comment(mabl);
-            return res.status(200).json({ status: "Success", message: queryUnlock });
+            return res.status(200).json({ 
+                status: "Success", 
+                message: queryUnlock 
+            });
         } else
-            return res.status(400).json({ status: "Fail", message: "Lỗi...! Cập nhật trạng thái bình luận không thành công !" }); 
+            return res.status(400).json({ 
+                status: "Fail", 
+                message: "Lỗi...! Cập nhật trạng thái bình luận không thành công !" 
+            }); 
     } catch (error) {
         return res.status(400).json({ status: "Fail", message: "Lỗi...!", error: error });
     };

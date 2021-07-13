@@ -6,7 +6,7 @@ var dataList=[];
 var dataListPro=[];
 
     // Danh sách các nhà sản xuất:
-exports.list_producer = async () => {
+exports.list_producers = async () => {
     return new Promise( (hamOK, hamLoi) => {
         let sql = "SELECT * FROM nhasx";
         db.query(sql, (err, result) => {
@@ -25,7 +25,7 @@ exports.get_By_Id = async (producerId) => {
             if(err)
                 hamLoi(err);
             else{
-                if(result[0] == null)
+                if(result.length <= 0)
                     hamOK(-1)   // Không có nhà sản xuất này trong DB.
                 else
                     hamOK(result[0]);// Trả về nhà sản xuất tìm thấy trong DB.
@@ -34,7 +34,7 @@ exports.get_By_Id = async (producerId) => {
     })
 }
     // Thêm nhà sản xuất:
-exports.insert_producer = (data) => {
+exports.insert = (data) => {
     return new Promise( (resolve, reject) => {
         let sql = "INSERT INTO nhasx SET ?";
         db.query(sql, data, (err, result) => {
@@ -42,13 +42,13 @@ exports.insert_producer = (data) => {
                 reject(err);
             else{
                 console.log('Insert producer successfully')
-                resolve(result);    // trả về kết quả nếu promise hoàn thành.
+                resolve("Thêm nhà sản xuất thành công !");    // trả về kết quả nếu promise hoàn thành.
             }
         })
     })
 }
     // Cập nhật nhà sản xuất:
-exports.update_producer = (producerId, name, origin) => {
+exports.update = (producerId, name, origin) => {
     return new Promise( (hamOK, hamLoi) => {
         let sql = `UPDATE nhasx SET tennsx = '${name}', xuatxu = '${origin}' WHERE mansx = '${producerId}'`;
         db.query(sql, (err, result) => {
@@ -56,30 +56,35 @@ exports.update_producer = (producerId, name, origin) => {
                 hamLoi(err);
             else{
                 console.log('Update type success');
-                hamOK(result);
+                hamOK("Cập nhật thông tin nhà sản xuất thành công !");
             }
         })
     })
 }
     // Xoá nhà sản xuất:
-exports.delete_producer = (producerId) => {
+exports.delete = (producerId) => {
     return new Promise( (hamOK, hamLoi) => {
         let sql_type = `SELECT sanpham.code, sanpham.tensp, nhasx.tennsx
         FROM sanpham JOIN nhasx
         ON sanpham.mansx = nhasx.mansx
         WHERE sanpham.mansx='${producerId}'`;
-        db.query(sql_type, (err, result) => {
-            if(err)
-                hamLoi(err);
+        db.query(sql_type, (error, result) => {
+            if(error)
+                hamLoi(error);
             else{
-                if(result[0] == null){
+                if(result.length <= 0){
                     console.log("Xoá được!");
                     let sql = `DELETE FROM nhasx WHERE mansx='${producerId}'`;
                     db.query(sql, (err, result) => {
-                        console.log('Delete type success');
-                        hamOK(1);
+                        if(err) {
+                            hamLoi(err);
+                        } else {
+                            console.log('Delete type success');
+                            hamOK("Xoá nhà sản xuất thành công !");
+                        };
                     })
-                }else{
+                } else {
+                    // Có ràng buộc khoá ngoại không thể xoá
                     console.log("Không xoá được!");
                     hamOK(-1);
                 }

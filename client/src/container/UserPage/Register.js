@@ -6,6 +6,18 @@ import Meta from "antd/lib/card/Meta";
 import "container/components-css/Form.scss";
 const { Option } = Select;
 
+const tailLayout = {
+    wrapperCol: {
+        xs: {
+            span: 24,
+            offset: 0,
+        },
+        sm: {
+            span: 16,
+            offset: 9,
+        },
+    },
+};
 
 const RegisterForm = () => {
     const [form] = Form.useForm();
@@ -25,7 +37,7 @@ const RegisterForm = () => {
             setTimeout(() => { history.push('/dang-nhap') }, 2000)
         })
             .catch(err => {
-                message.error(`Login fail!\n ${err.response.data.message}`)
+                message.error(`Đăng ký tài khoản thất bại! \n ${err.response.data.message}`)
             })
     };
 
@@ -140,7 +152,7 @@ const RegisterForm = () => {
                     >
                         <Input />
                     </Form.Item>
-                    <Form.Item >
+                    <Form.Item {...tailLayout}>
                         <Button type="primary" htmlType="submit">
                             Đăng kí
                         </Button>

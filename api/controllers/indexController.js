@@ -10,7 +10,12 @@ const modelIndex = require('../models/model_index');
 exports.getListCities = catchAsync(async (req, res, next) => {
     try {
         var url = "https://thongtindoanhnghiep.co/api/city";
-        axios.get(url)
+        const listcities = await axios.get(url);
+        return res.status(200).json({ 
+            status: "Success", 
+            city: listcities.data.LtsItem 
+        });
+        /* axios.get(url)
             .then(function (response) {
                 // handle success
                 return res.status(200).json({ 
@@ -26,7 +31,7 @@ exports.getListCities = catchAsync(async (req, res, next) => {
                     message: "Lỗi! Không thể lấy danh sách thành phố!", 
                     error: error 
                 });
-            });
+            }); */
     } catch (error) {
         return res.status(400).json({
             status: "Fail", 
@@ -188,22 +193,11 @@ exports.getDetailWard = catchAsync(async (req, res, next) => {
             });
         };
         var url = "https://thongtindoanhnghiep.co/api/ward/" + id;
-        axios.get(url)
-            .then(function (response) {
-                // handle success
-                return res.status(200).json({ 
-                    status: "Success", 
-                    ward: response.data 
-                });
-            })
-            .catch(function (error) {
-                // handle error
-                console.log(error);
-                return res.status(400).json({ 
-                    status: "Fail", 
-                    error: error 
-                });
-            });
+        const ward = await axios.get(url);
+        return res.status(200).json({ 
+            status: "Success", 
+            ward: ward.data 
+        });
     } catch (error) {
         return res.status(400).json({
             status: "Fail", 

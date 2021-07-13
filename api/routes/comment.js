@@ -11,14 +11,14 @@ router.get('/khach-hang/:id', commentController.getCommentClient);      // Bình
 router.get('/san-pham/:idPro', commentController.getCommentByProduct);  // Bình luận theo mã sản phẩm
 router.get('/:id/chi-tiet-bluan', commentController.getDetailComment);  // Chi tiết 1 bình luận theo mã bình luận
         // POST
-router.post('/them-binh-luan', commentController.postComment);  // Tạo bình luận
+router.post('/them', commentController.postComment);  // Tạo bình luận
 router.post('/tra-loi-binh-luan', commentController.postReplyComment); // Thêm Rep Comment
         // PUT
-router.put('/cap-nhat-binh-luan', commentController.putEditCommnet);    // Chỉnh sửa bình luận
-router.put('/cap-nhat-tra-loi-bluan', commentController.putEditRepComment); // Chỉnh sửa chi tiết bình luận
+router.put('/cap-nhat', commentController.putEditCommnet);    // Chỉnh sửa bình luận
+router.put('/cap-nhat-tra-loi', commentController.putEditRepComment); // Chỉnh sửa chi tiết bình luận
 router.put('/cap-nhat-trang-thai', commentController.putEditCommentStatus); // Cập nhật trạng thái bình luận
         // DELETE
-router.delete('/xoa-binh-luan/:id', commentController.deleteComment);   // Xoá bình luận
+router.delete('/xoa/:id', commentController.deleteComment);   // Xoá bình luận
 router.delete('/xoa-tra-loi/:id', commentController.deleteRepComment);  // Xoá chi tiết bình luận
     
 

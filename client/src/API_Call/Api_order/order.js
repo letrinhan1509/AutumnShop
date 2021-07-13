@@ -25,6 +25,10 @@ const order = {
         const url = "/tao-don-hang";
         return AxiosOrder.post(url, values);
     },
+    cancelOrder: (id) => {
+        const url = `/xoa/${id}`;
+        return AxiosOrder.delete(url);
+    },
 };
 
 export default order;

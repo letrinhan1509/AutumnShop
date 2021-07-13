@@ -12,26 +12,29 @@ exports.list_products = async () => {
         FROM (((sanpham AS SP JOIN danhmuc ON SP.madm = danhmuc.madm) JOIN loaisp ON SP.maloai = loaisp.maloai)
         JOIN nhasx ON SP.mansx = nhasx.mansx) GROUP BY SP.tensp`;
         db.query(sql, (err, result) => {
-            console.log('List success');
-            dataList = result;
-            hamOK(dataList);
+            if(err) {
+                hamLoi(err);
+            } else {
+                console.log('List success');
+                dataList = result;
+                hamOK(result);
+            }
         })
     })
 }
     // Check code:
 exports.check_Code = async (code) => {
-    let data = [];
     return new Promise( (hamOK, hamLoi) => {
         let sql = `SELECT * FROM sanpham WHERE code='${code}'`;
         db.query(sql, (err, result) => {
             if(err){
                 hamLoi(err);
             }else{
-                if(result.length < 0){
+                if(result.length <= 0){
+                    // Không tồn tại
                     hamOK(-1);
                 } else{
-                    data = result;
-                    hamOK(data);
+                    hamOK(result);
                 }
             }
         })
@@ -48,7 +51,7 @@ exports.get_By_Id = async (productId) => {
             if(err){
                 hamLoi(err);
             }else{
-                if(result[0] == null){
+                if(result.length <= 0){
                     hamOK(-1);
                 } else{
                     hamOK(result[0]);

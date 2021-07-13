@@ -10,7 +10,7 @@ exports.checkEmail = (email) => {
             if(err)
                 hamLoi(err);
             else{
-                if(result.length <= 0)  // Không tìm thấy user trong DB
+                if(result.length <= 0)  // Không tìm thấy user có email này trong DB
                     hamOK(-1);
                 else
                     hamOK(result[0]);
@@ -50,7 +50,7 @@ exports.get_By_Id = (userId) => {
             if(err){
                 hamLoi(err);
             }else{
-                if(result[0] == null){
+                if(result.length <= 0){
                     console.log('Fail! No user!');
                     hamOK(-1);
                 }else{
@@ -62,7 +62,7 @@ exports.get_By_Id = (userId) => {
     });
 }
     // Thêm tài khoản user:
-exports.insertUser = (data) => {
+exports.insert_User = (data) => {
     return new Promise( (resolve, reject) => {
         let sql = "INSERT INTO khachhang SET ?";
         db.query(sql, data, (err, result) => {
@@ -70,8 +70,7 @@ exports.insertUser = (data) => {
                 console.log('Insert user fail')
                 reject(err);
             } else{
-                console.log('Insert user successfully');
-                resolve(result);    // trả về kết quả nếu promise hoàn thành.
+                resolve("Đăng ký tài khoản thành công !" );    // trả về kết quả nếu promise hoàn thành.
             }
         })
     })
@@ -107,22 +106,41 @@ exports.updatePasswordUser = (email, pass) => {
     )
 }
     // Khoá tài khoản khách hàng:
-exports.lockUser = (userId) => {
+exports.lock_User = (userId) => {
     return new Promise( (resolve, reject) => {
         let sql = `UPDATE khachhang SET trangthai = 0 WHERE makh = '${userId}'`;
         db.query(sql, (err, result) => {
-            console.log('Lock user success');
-            resolve(result);
+            if(err) {
+                reject(err);
+            } else {
+                resolve("Khoá tài khoản khách hàng thành công");
+            }
         })
     })
 }
     // Mở khoá tài khoản khách hàng:
-exports.unlockUser = (userId) => {
+exports.unlock_User = (userId) => {
     return new Promise( (resolve, reject) => {
         let sql = `UPDATE khachhang SET trangthai = 1 WHERE makh = '${userId}'`;
         db.query(sql, (err, result) => {
-            console.log('Unlock user success');
-            resolve(result);
+            if(err) {
+                reject(err);
+            } else {
+                resolve("Mở khoá tài khoản khách hàng thành công");
+            }
+        })
+    })
+}
+    // Xoá tài khoản khách hàng:
+exports.delete_User = (userId) => {
+    return new Promise( (resolve, reject) => {
+        let sql = `DELETE FROM khachhang WHERE makh = '${userId}'`;
+        db.query(sql, (err, result) => {
+            if(err) {
+                reject(err);
+            } else {
+                resolve("Xoá tài khoản khách hàng thành công !");
+            }
         })
     })
 }
