@@ -87,6 +87,8 @@
     box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.1);
     .col-one {
         width: 40%;
+        box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.1);
+
     }
     .col-two {
         background-size: cover;
@@ -95,6 +97,7 @@
         flex-direction: column;
         text-align: center;
         width: 100%;
+        background: rgb(230, 230, 230);
         .box {
             display: flex;
             justify-content: center;
@@ -102,7 +105,7 @@
             .form {
                 background: white;
                 margin: 50px 0px;
-                width: 80%;
+                width: 90%;
                 padding: 20px;
                 border-radius: 5px;
                 box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);

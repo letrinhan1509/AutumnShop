@@ -9,7 +9,6 @@ const { Option } = Select;
 const AllProduct = () => {
   let link = useHistory()
   const [idPro, setIdPro] = useState([]);
-  const [a, setA] = useState([]);
   let result = JSON.parse(localStorage.getItem('user'))
 
   //API ListProduct
@@ -24,28 +23,17 @@ const AllProduct = () => {
   //Redirect sua-san-pham 
   const loadEdit = (e) => {
     let i = e.currentTarget.dataset.id;
-    console.log(i);
-    setA(i);
-    setTimeout(() => {
-      link.push('/tat-ca-san-pham/sua-san-pham');
-    }, 100)
+    product.getid(i).then((res) => {
+      if (res.data.status === "Success") {
+        localStorage.setItem('product', JSON.stringify(res.data.dataSpham));
+        setTimeout(() => {
+          link.push('/tat-ca-san-pham/sua-san-pham');
+        }, 100)
+      }
+    })
   }
 
 
-  //Lấy thông tin SP theo ID
-  const [productEdit, setProductEdit] = useState([]);
-  useEffect(() => {
-    if (a != '') {
-      product.getid(a).then((res) => {
-        if (res.data.status === "Success") {
-          setProductEdit(res.data.dataSpham);
-        }
-      })
-    }
-  }, [a]);
-  if (productEdit != '') {
-    localStorage.setItem('product', JSON.stringify(productEdit));
-  }
 
   ///Modal Xoá SP
   const onClick = (e) => {

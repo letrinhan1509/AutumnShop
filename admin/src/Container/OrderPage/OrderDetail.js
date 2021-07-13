@@ -7,10 +7,7 @@ import "Container/scss/orderDetail.scss";
 const { TextArea } = Input;
 
 const OrderDetail = (props) => {
-    const order = JSON.parse(localStorage.getItem("order"));
-    console.log(order);
-    const ORDER = order[0];
-    console.log(ORDER);
+    const ORDER = JSON.parse(localStorage.getItem("order"));
     var date = new Date(ORDER.ngaydat);
     console.log(date.toLocaleString());
     var ngayGiao = new Date(ORDER.ngaygiao);

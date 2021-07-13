@@ -86,9 +86,9 @@ const EditProductType = (props) => {
                 name="register"
                 onFinish={register}
                 initialValues={{
-                    maloai:`${Type.data.maloai}`,
-                    tenloai:`${Type.data.tenloai}`,
-                    madm:`${Type.data.madm}`,
+                    maloai:`${Type.maloai}`,
+                    tenloai:`${Type.tenloai}`,
+                    madm:`${Type.madm}`,
                 }}
                 scrollToFirstError
                 className="register-form"

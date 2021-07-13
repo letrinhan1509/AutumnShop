@@ -9,7 +9,6 @@ import voucher from 'API_Call/Api_discount/discount';
 const { Option } = Select;
 const ListVoucher = (props) => {
     const [listVoucher, setListVoucher] = useState([]);
-    const [a, setA] = useState([]);
     const history = useHistory();
     let user = JSON.parse(localStorage.getItem('user'));
 
@@ -23,23 +22,14 @@ const ListVoucher = (props) => {
     // Sửa voucher:
     const loadEdit = (e) => {
         let id = e.currentTarget.dataset.id;
-        console.log(id);
-        setA(id);
-        console.log(a);
-        setTimeout(() => {
-            history.push('/danh-sach-voucher/sua-voucher');
-        }, 100)
-    }
-    const [voucherID, setVoucherID] = useState([]);
-    useEffect(() => {
-        if (a != "") {
-            voucher.getVoucherID(a).then((res) => {
-                setVoucherID(res.data.voucher);
-            });
-        }
-    }, [a]);
-    if (voucherID != '') {
-        localStorage.setItem('voucherID', JSON.stringify(voucherID));
+        voucher.getVoucherID(id).then((res) => {
+            if (res.data.status === "Success") {
+                localStorage.setItem('voucherID', JSON.stringify(res.data.voucher));
+                setTimeout(() => {
+                    history.push('/danh-sach-voucher/sua-voucher');
+                }, 100)
+            }
+        });
     }
     //Cập nhật trạng thái Voucher:
     const unlock = (e) => {

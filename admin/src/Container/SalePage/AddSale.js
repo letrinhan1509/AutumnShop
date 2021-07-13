@@ -1,5 +1,6 @@
-import React, { useState, useEffect,useRef  } from 'react';
-import { Row, Col, Form, Input, Button, Select, Checkbox, DatePicker, Space, message, Table, Radio } from 'antd';
+import React, { useState, useEffect, useRef } from 'react';
+import { Row, Col, Form, Input, Button, Select, Checkbox, DatePicker, Space, message, Table, Modal, Radio } from 'antd';
+import { CloseOutlined } from '@ant-design/icons';
 import { useHistory, Link } from "react-router-dom"
 import "Container/scss/addSale.scss";
 import moment from 'moment';
@@ -52,9 +53,10 @@ const AddSale = (props) => {
             setDateEnd(date._d);
         }
     }
-    const [title, setTitle] = useState(true);
-    const changett = (e) => {
+    const [title, setTitle] = useState("Hiện");
+    const selectTitle = (e) => {
         setTitle(e.target.value);
+        console.log(title);
     };
 
     const addProduct = (values) => {
@@ -140,30 +142,18 @@ const AddSale = (props) => {
         },
     ];
 
-    const chietkhau = [
-        {
-            key: 20,
-            persen: '20%',
-
-        },
-        {
-            key: 30,
-            persen: '30%',
-        },
-        {
-            key: 40,
-            persen: '40%',
-        },
-    ];
 
     const [add, setAdd] = useState([]);
+    //const add = [];
     let proSelect = [];
     const rowSelection = {
         onChange: (selectedRowKeys, selectedRows) => {
             proSelect = selectedRows;
+            
         },
         onSelect: (record, selected, selectedRows) => {
             console.log(record, selected, selectedRows);
+            
         },
         onSelectAll: (selectedRows, changeRows) => {
             console.log(changeRows);
@@ -171,34 +161,44 @@ const AddSale = (props) => {
         },
     };
 
-    let demo = [];
-    //const [id, setID] = useState(0);
-    let id = 0;
+    //const demo = [];
+    const [lenght, setLenght] = useState(0);
+    const [id, setID] = useState(0);
+    //let id = 0;
+
     const thempro = () => {
-        id = id +1;
+        let tam = id + 1;
         console.log(id);
-            let value=[]
-            let chietkhau = valueOption.current.props.value;
-            console.log(proSelect);
-            //value['id'] = id;
-            value['sanpham'] = proSelect;
-            value['chietkhau'] = chietkhau;
-            setAdd([...add, value]);
-           // document.getElementById("themproduct").reset();
-            console.log(value); 
-            console.log(add);
-          
-    };
-   
-
-    const lick = () => {
-        id = id +1;
-        console.log(id);
+        let value = []
+        let chietkhau = valueOption.current.props.value;
+        value['id'] = tam;
+        value['sanpham'] = proSelect;
+        value['chietkhau'] = chietkhau;
+        setAdd([...add, { ...value }]);
+        setID(tam);
+        //setlistPro([]);
+        //document.getElementById("persen").values = "";
     };
 
-    const plusID = (e) => {
-        
-    };
+    const { confirm } = Modal;
+    function showDeleteProduct(item) {
+        confirm({
+            title: 'Bạn thật sự muốn xóa khuyến mãi này?',
+            okText: 'Xóa',
+            okType: 'danger',
+            cancelText: 'Không',
+            onOk() {
+                setAdd(
+                    add.filter((x) => x.id !== item.id)
+                );
+
+            },
+            onCancel() {
+                console.log('Cancel');
+            },
+        });
+    }
+
 
     return (
         <>
@@ -286,8 +286,10 @@ const AddSale = (props) => {
                             <Form.Item
                                 label="Trạng thái"
                             >
-                                <Checkbox onChange={changett} value="1">Hiện</Checkbox>
-                                <Checkbox onChange={changett} value="0">Ẩn</Checkbox>
+                                <Radio.Group onChange={selectTitle} value={title}>
+                                    <Radio value="Hiện">Hiện</Radio>
+                                    <Radio value="Ẩn">Ẩn</Radio>
+                                </Radio.Group>
                             </Form.Item>
                             <Form.Item {...tailFormItemLayout}>
                                 <Link to={'/danh-sach-voucher'} >
@@ -306,7 +308,7 @@ const AddSale = (props) => {
                             onFinish={thempro}
                             id="themproduct"
                         >
-                        
+
                             <Form.Item
                                 label="Sản phẩm khuyến mãi"
                                 rules={[
@@ -346,38 +348,51 @@ const AddSale = (props) => {
                                         )
                                     })}
                                 </Select> */}
-                                <Input ref={valueOption}  />
+                                <Input ref={valueOption} />
                             </Form.Item>
                             <Button onClick={thempro} >Thêm</Button>
-                            <Button onClick={lick}>ádadasdasd</Button>
                             <Table rowSelection={rowSelection} rowKey={listPro => listPro.masp} dataSource={listPro} columns={columns} pagination={{ pageSize: 5 }} />
-                            <Row>
-                                {add !== "" ? (
-                                    <>
-                                        {add.map((item) => {
-                                            return (
-                                                <>
-                                                    <Col className="box-selected">
-                                                    <p>{item.id}</p>
-                                                        <Row className="title"><span>Chiết khấu: </span>{item.chietkhau}</Row>
-                                                        {item.sanpham.map((sp) => {
-                                                            return (
-                                                                <Row className="product-inf">
-                                                                    <Col><span>Mã: </span>{sp.masp}</Col>
-                                                                    <Col><span>Tên: </span>{sp.tensp}</Col>
-                                                                    <Col><span>Số lượng: </span>{sp.soluong}</Col>
-                                                                    <Col><span>Size: </span>{sp.size}</Col>
-                                                                    <Col><span>Giá: </span>{sp.gia}</Col>
-                                                                    <Col><span>Màu: </span>{sp.mau}</Col>
-                                                                </Row>
-                                                            );
-                                                        })}
-                                                    </Col>
-                                                </>
-                                            );
-                                        })}
-                                    </>
-                                ) : ("")}
+                            <Row className="add-sale">
+                                {
+                                    add !== "" ? (
+                                        <>
+                                            {add.map((item) => {
+                                                return (
+                                                    <>
+                                                        {/* <Col>
+                                                            <Button onClick={() => showDeleteProduct(item)} type="primary" danger>
+                                                                <CloseOutlined />
+                                                            </Button>
+                                                        </Col> */}
+                                                        <Col className="box-selected">
+                                                            {/* <p>{item.id}</p> */}
+                                                            <Row className="title">
+                                                                <Col>
+                                                                    <Button onClick={() => showDeleteProduct(item)} size="small" type="primary" danger>
+                                                                        <CloseOutlined />
+                                                                    </Button>
+                                                                </Col>
+                                                                <Col><span>Chiết khấu: </span>{item.chietkhau}</Col>
+                                                            </Row>
+                                                            {item.sanpham.map((sp) => {
+                                                                return (
+                                                                    <Row className="product-inf">
+                                                                        <Col><span>Mã: </span>{sp.masp}</Col>
+                                                                        <Col><span>Tên: </span>{sp.tensp}</Col>
+                                                                        <Col><span>Số lượng: </span>{sp.soluong}</Col>
+                                                                        <Col><span>Size: </span>{sp.size}</Col>
+                                                                        <Col><span>Giá: </span>{sp.gia}</Col>
+                                                                        <Col><span>Màu: </span>{sp.mau}</Col>
+                                                                    </Row>
+                                                                );
+                                                            })}
+                                                        </Col>
+                                                    </>
+                                                );
+                                            })}
+                                        </>
+                                    ) : ("")
+                                }
                             </Row>
 
                         </Form>

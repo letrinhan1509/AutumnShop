@@ -32,7 +32,7 @@ const tailFormItemLayout = {
 const EditNV = (props) => {
     const [form] = Form.useForm();
     const history = useHistory();
-    const Admin = JSON.parse(localStorage.getItem("admin"))
+    const Admin = JSON.parse(localStorage.getItem("admin"));
     console.log(Admin);
 
     const back = ()=>{
@@ -71,16 +71,16 @@ const EditNV = (props) => {
                 name="update"
                 onFinish={update}
                 initialValues={{
-                    adminId: `${Admin.data.manv}`,
+                    adminId: `${Admin.manv}`,
                     prefix: "86",
-                    email: `${Admin.data.admin}`,
+                    email: `${Admin.admin}`,
 
-                    name: `${Admin.data.tennv}`,
-                    pass: `${Admin.data.matkhau}`,
-                    pass1: `${Admin.data.matkhau}`,
-                    phone: `${Admin.data.sodienthoai}`,
-                    address: `${Admin.data.diachi}`,
-                    permission: `${Admin.data.quyen}`
+                    name: `${Admin.tennv}`,
+                    pass: `${Admin.matkhau}`,
+                    pass1: `${Admin.matkhau}`,
+                    phone: `${Admin.sodienthoai}`,
+                    address: `${Admin.diachi}`,
+                    permission: `${Admin.quyen}`
                 }}
                 scrollToFirstError
                 className="register-form"

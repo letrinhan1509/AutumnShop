@@ -27,7 +27,7 @@ import ListCatalog from "./Container/CatalogPage/listCatalog";
 import ListProducer from "./Container/ProducerPage/listProducer";
 import EditProducer from "./Container/ProducerPage/editProducer";
 import EditCatalog from "./Container/CatalogPage/editCategory";
-import ListComment from "./Container/listComment";
+import ListComment from "./Container/CommentPage/listComment";
 import EditProduct from "./Container/ProductPage/editProduct";
 import ListOrder from "./Container/OrderPage/listOrder";
 import OrderDetail from "./Container/OrderPage/OrderDetail";
@@ -60,7 +60,7 @@ function App() {
     <>
       {localStorage.getItem('user') === null ? ( 
         <Layout>
-          <Content className="box">
+          <Content className="login-box">
             <Router path="/dang-nhap">
               <Login />
             </Router>

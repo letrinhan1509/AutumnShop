@@ -42,8 +42,7 @@ const ListOrder = (props) => {
     const [form] = Form.useForm();
     const history = useHistory();
     const { Option } = Select;
-    const order = JSON.parse(localStorage.getItem("order"));
-    const ORDER = order[0];
+    const ORDER = JSON.parse(localStorage.getItem("order"));
     var date = new Date(ORDER.ngaydat);
 
     const back = () => {
@@ -53,7 +52,7 @@ const ListOrder = (props) => {
 
     const [dateEnd, setDateEnd] = useState("");
     function endChange(date) {
-        if(order !== null){
+        if(ORDER !== null){
             setDateEnd(date._d);
         }
     }
@@ -100,7 +99,7 @@ const ListOrder = (props) => {
                 onFinish={update}
                 scrollToFirstError
                 className="register-form"
-                initialValues={order === null ? ("") : (
+                initialValues={ORDER === null ? ("") : (
                     {
                         trangthai: `${ORDER.tentt}`,
                     }

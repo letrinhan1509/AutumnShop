@@ -19,11 +19,18 @@
                 width: 50%;
                 .box-selected {
                     width: 100%;
-                    margin-bottom: 10px;
+                    margin-bottom: 20px;
+                    border-top: 1px solid #111;
+                    padding-top: 15px;
                     .title {
                         font-weight: 600;
                         font-size: 16px;
-                        
+                        Button{
+                            margin-right: 10px;
+                            span{
+                                margin: 0;
+                            }
+                        }
                         span {
                             margin-right: 10px;
                         }

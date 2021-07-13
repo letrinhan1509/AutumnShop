@@ -24,39 +24,28 @@ const ListOrder = (props) => {
 
     //Redirect sua-san-pham 
     const loadDetail = (e) => {
-        let i = e.currentTarget.dataset.id;
-        console.log(i);
-        setA(i);
-        console.log(a);
-        setTimeout(() => {
-            link.push('/danh-sach-don-hang/chi-tiet');
-        }, 100)
+        let id = e.currentTarget.dataset.id;
+        order.getOrderID(id).then((res) => {
+            if (res.data.status === "Success") {
+                localStorage.setItem('order', JSON.stringify(res.data.data[0]));
+                setTimeout(() => {
+                    link.push('/danh-sach-don-hang/chi-tiet');
+                }, 100)
+            }
+        })
     }
     const loadEdit = (e) => {
-        let i = e.currentTarget.dataset.id;
-        console.log(i);
-        setA(i);
-        console.log(a);
-        setTimeout(() => {
-            link.push('/danh-sach-don-hang/sua-don-hang');
-        }, 100)
+        let id = e.currentTarget.dataset.id;
+        order.getOrderID(id).then((res) => {
+            if (res.data.status === "Success") {
+                localStorage.setItem('order', JSON.stringify(res.data.data[0]));
+                setTimeout(() => {
+                    link.push('/danh-sach-don-hang/sua-don-hang');
+                }, 100)
+            }
+        })
     }
-    //Lấy thông tin SP theo ID
-    const [orderEdit, setOrderEdit] = useState([]);
-    useEffect(() => {
-        if (a != '') {
-            order.getOrderID(a).then((res) => {
-                if (res.data.status === "Success") {
-                    setOrderEdit(res.data.data);
-                    console.log(orderEdit);
-                    console.log(res.data.data);
-                }
-            })
-        }
-    }, [a]);
-    if (orderEdit != '') {
-        localStorage.setItem('order', JSON.stringify(orderEdit));
-    }
+
     //Tìm kiếm
     function removeAccents(str) {
         return str.normalize('NFD')

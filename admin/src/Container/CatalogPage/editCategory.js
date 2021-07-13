@@ -71,8 +71,8 @@ const EditCategory = (props) => {
                 name="update"
                 onFinish={update}
                 initialValues={{
-                    madm:`${Category.data.madm}`,
-                    tendm:`${Category.data.tendm}`
+                    madm:`${Category.madm}`,
+                    tendm:`${Category.tendm}`
                 }}
                 scrollToFirstError
                 className="register-form"

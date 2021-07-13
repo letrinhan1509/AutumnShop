@@ -126,7 +126,7 @@ const EditProduct = (props) => {
     const [listCategory, setlistCategory] = useState([]);
     useEffect(() => {
         catalog.getAll().then((res) => {
-            setlistCategory(res.data.data);
+            setlistCategory(res.data.listCategorys);
         })
     }, []);
 

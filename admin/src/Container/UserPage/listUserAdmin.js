@@ -8,7 +8,6 @@ import admin from 'API_Call/Api_admin/admin';
 const { Option } = Select;
 const ListUserAdmin = () => {
   const link = useHistory();
-  const [a, setA] = useState([]);
   const [ListAdmin, setListAdmin] = useState([]);
   //API ListAdmin
   useEffect(() => {
@@ -21,25 +20,18 @@ const ListUserAdmin = () => {
   //Redirect sua thong tin tai khoan
   const linkto = (e) => {
     let id = e.currentTarget.dataset.id
-    setA(id);
-    console.log(id);
-    setTimeout(() => {
-      link.push('/danh-sach-admin/sua-thong-tin-tai-khoan');
-    }, 100)
+    admin.getID(id).then((res) => {
+      if (res.data.status === "Success") {
+        console.log(res.data.data);
+        localStorage.setItem('admin', JSON.stringify(res.data.data))
+        setTimeout(() => {
+          link.push('/danh-sach-admin/sua-thong-tin-tai-khoan');
+        }, 100)
+      }
+    });
+
   }
 
-  //Lấy thông tin Admin theo ID
-  const [Admin, setAdmin] = useState([]);
-  useEffect(() => {
-    if (a != "") {
-      admin.getID(a).then((res) => {
-        setAdmin(res.data);
-      });
-    }
-  }, [a]);
-  if (Admin != '') {
-    localStorage.setItem('admin', JSON.stringify(Admin))
-  }
   let result = JSON.parse(localStorage.getItem('user'));
 
   //Cập nhật trạng thái admin

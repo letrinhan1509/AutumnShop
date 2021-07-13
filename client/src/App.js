@@ -28,6 +28,7 @@ import SearchResult from "container/MainPage/SearchResult";
 import Accessories from "container/CatalogPage/Acessories";
 import Error404 from "container/MainPage/Error404";
 import Order from "container/MainPage/Order";
+import OrderDetail from "container/MainPage/OrderDetail";
 import Order_NotLogin from "container/MainPage/Order_NotLogin";
 import ScrollToTop from "container/Config/ScrollToTop";
 import product from "API_Call/Api_product/product";
@@ -107,7 +108,6 @@ useEffect(() => {
       );
     }
   };
-
 
   function showDeleteProduct(productItem) {
     confirm({
@@ -265,10 +265,13 @@ useEffect(() => {
                 <Route path="/hoan-tat-don-hang">
                   <Payments3 cart={cart} CountCart={cart.length} PriceCart={sumPrice} />
                 </Route>
-                <Route path="/don-hang">
+                <Route exact path="/don-hang">
                   <Order />
                 </Route>
-                <Route path="/don-hang-khong-dang-nhap">
+                <Route exact path="/don-hang/chi-tiet">
+                  <OrderDetail />
+                </Route>
+                <Route exact path="/don-hang-khong-dang-nhap">
                   <Order_NotLogin />
                 </Route>
                 <Route path="/lien-he">

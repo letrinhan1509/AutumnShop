@@ -10,7 +10,7 @@ const { Option } = Select;
 const user = JSON.parse(localStorage.getItem("user"));
 console.log(user);
 const Order = (props) => {
-    const history = useHistory();
+    const link = useHistory();
     const [ListOrder, setListOrder] = useState([]);
     //API List Order:
     useEffect(() => {
@@ -79,6 +79,24 @@ const Order = (props) => {
         setPageSize(e);
     };
 
+
+    const [orderList, setOrderList] = useState([]);
+    const loadDetail = (e) => {
+        let i = e.currentTarget.dataset.id;
+        console.log(i);
+
+        order.getOrderID(i).then((res) => {
+            if (res.data.status === "Success") {
+                console.log(res.data.data[0]);
+                localStorage.setItem('orderList', JSON.stringify(res.data.data[0]));
+                setTimeout(() => {
+                    link.push('/don-hang/chi-tiet');
+                }, 100)
+            }
+        })
+
+    }
+
     const columns = [
         {
             title: 'Mã đơn hàng',
@@ -106,21 +124,21 @@ const Order = (props) => {
             key: 'ngaydat',
             render: ngaydat => {
                 var date = new Date(ngaydat);
-                return(
+                return (
                     date.toLocaleDateString()
                 );
             }
-        },
-        {
-            title: 'Ngày giao',
-            dataIndex: 'ngaygiao',
-            key: 'ngaygiao',
         },
         {
             title: 'Mã nhân viên',
             dataIndex: 'manv',
             key: 'manv',
         },
+        {
+            dataIndex: "madonhang",
+            key: "madonhang",
+            render: madonhang => (<Button className="detail-btn" data-id={madonhang} onClick={loadDetail} type="primary">Chi tiết</Button>)
+        }
 
     ];
 

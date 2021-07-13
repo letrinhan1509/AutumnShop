@@ -8,7 +8,6 @@ import catalog from 'API_Call/Api_catalog/catalog';
 
 const ListCata = () => {
   const link = useHistory();
-  const [a, setA] = useState([]);
 
   //API ListCategory
   const [listCategory, setListCategory] = useState([]);
@@ -21,25 +20,16 @@ const ListCata = () => {
   //Redirect sửa danh mục theo ID
   const linkto = (e) => {
     let id = e.currentTarget.dataset.id
-    setA(id);
-    console.log(id);
-    setTimeout(() => {
-      link.push('/danh-muc-san-pham/sua-danh-muc');
-    }, 100)
+    catalog.getDanhmucID(id).then((res) => {
+      if (res.data.status === "Success"){
+        localStorage.setItem('category', JSON.stringify(res.data.data));
+        setTimeout(() => {
+          link.push('/danh-muc-san-pham/sua-danh-muc');
+        }, 100)
+      }
+    }); 
   }
 
-  //Lấy thông tin danh mục theo ID
-  const [category, setCategory] = useState([]);
-  useEffect(() => {
-    if (a != "") {
-      catalog.getDanhmucID(a).then((res) => {
-        setCategory(res.data);
-      });
-    }
-  }, [a]);
-  if (category != '') {
-    localStorage.setItem('category', JSON.stringify(category));
-  }
   let result = JSON.parse(localStorage.getItem('user'));
 
   /* const deleteCategory = (e) => {

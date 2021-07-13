@@ -7,7 +7,6 @@ import producers from 'API_Call/Api_producer/producer';
 
 const ListProducer = () => {
   const link = useHistory();
-  const [a, setA] = useState([]);
 
   //API ListProducer
   const [listProducer, setListProducer] = useState([]);
@@ -20,25 +19,16 @@ const ListProducer = () => {
   //Redirect sửa nhà sản xuất theo ID
   const edit = (e) => {
     let id = e.currentTarget.dataset.id
-    setA(id);
-    console.log(id);
-    setTimeout(() => {
-      link.push('/danh-sach-nha-sx/sua-nha-sx');
-    }, 100)
+    producers.getid(id).then((res) => {
+      if (res.data.status === "Success") {
+        localStorage.setItem('producer', JSON.stringify(res.data.data));
+        setTimeout(() => {
+          link.push('/danh-sach-nha-sx/sua-nha-sx');
+        }, 100)
+      }
+    });
   }
 
-  //Lấy thông tin nhà sản xuất theo ID
-  const [producer, setProducer] = useState([]);
-  useEffect(() => {
-    if (a != "") {
-      producers.getid(a).then((res) => {
-        setProducer(res.data);
-      });
-    }
-  }, [a]);
-  if (producer != '') {
-    localStorage.setItem('producer', JSON.stringify(producer));
-  }
   let result = JSON.parse(localStorage.getItem('user'));
 
 
@@ -101,7 +91,7 @@ const ListProducer = () => {
       {
         dataIndex: 'mansx',
         key: 'mansx',
-        render: mansx => (<div className="btn-box"><Button data-id={mansx} key={mansx} onClick={edit}> Sửa </Button></div>)
+        render: mansx => (<div className="btn-box"><Button data-id={mansx} type="primary" key={mansx} onClick={edit}> Sửa </Button></div>)
       } : (<> </>),
     result.permission === 'Admin' ?
       {

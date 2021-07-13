@@ -68,7 +68,7 @@ const UserInfo = (props) => {
                                 <Col className="inf">{user.diachi}</Col>
                             </Row> 
                             <Button value="submit" type="primary">
-                                <Link to="/">Chỉnh sửa</Link>
+                                <Link to="/thong-tin-tai-khoan/chinh-sua-thong-tin">Chỉnh sửa</Link>
                             </Button>
                         </Col>
                     </Row>

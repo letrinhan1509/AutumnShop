@@ -48,11 +48,17 @@ const Payments2 = (props) => {
     setPayValue(e.target.value);
     console.log(payValue);
   };
+  const [deliveryValue, setDelivery] = useState("Hệ thống cửa hàng");
+  const selectDelivery = (e) => {
+    setDelivery(e.target.value);
+    console.log(deliveryValue);
+  };
 
   const pay = (values) => {
     values['order'] = order;
     values['note'] = notes;
     values['pay'] = payValue;
+    values['delivery'] = deliveryValue;
     values['ship'] = ship;
     if (voucher !== null) {
       values['sumpay'] = ship + Number(props.PriceCart) - Number(voucher.giagiam);
@@ -62,7 +68,7 @@ const Payments2 = (props) => {
     }
 
     console.log(values);
-    const url = "http://localhost:5000/api/v1/don-hang/tao-don-hang";
+    /* const url = "http://localhost:5000/api/v1/don-hang/tao-don-hang";
     axios
       .post(url, values)
       .then(async (res) => {
@@ -83,7 +89,7 @@ const Payments2 = (props) => {
         message.error(
           `Đạt hàng thất bại, vui lòng đăng nhập để đặt hàng ! \n ${err}`
         );
-      });
+      }); */
   };
 
   /* useEffect(() => {
@@ -127,23 +133,29 @@ const Payments2 = (props) => {
                   </ul>
                 </div>
                 <div className="col-one-box2">
-                  <Row><h3>Chọn hình thức thanh toán</h3></Row>
-                  {/* <Row>
-                    <Checkbox onChange={onChange} value="Thanh toán khi nhận hàng">Thanh toán khi nhận hàng<DollarCircleOutlined style={{ fontSize: '25px' }} /></Checkbox>
-                  </Row>
-                  <Row><Paypal /></Row> */}
-                  <Row className="select-pay">
-                    <Radio.Group onChange={selectPay} value={payValue}>
-                      <Space direction="vertical">
-                        <Radio value="Thanh toán khi nhận hàng"><img width="30" src="https://www.pngitem.com/pimgs/m/466-4661926_cash-payment-icon-money-icon-hd-png-download.png" />Thanh toán khi nhận hàng</Radio>
-                        <Radio value="Thanh toán Paypal"><img width="30" src="https://cdn.iconscout.com/icon/free/png-256/paypal-1527455-1298285.png" />Thanh toán Paypal</Radio>
-                        <Radio value="Thanh toán MOMO"><img width="30" src="https://developers.momo.vn/images/favicon/ms-icon-310x310.png" />Thanh toán MOMO</Radio>
-                      </Space>
-                    </Radio.Group>
-                    {payValue === "Thanh toán Paypal" ? (
-                      <Col><Paypal order={order} notes={notes} payValue={payValue} ship={ship} PriceCart={props.PriceCart} voucher={voucher}/></Col>
-                    ) : ("")}
-                  </Row>
+                  <Col>
+                    <Row><h3>Hình thức thanh toán</h3></Row>
+                    <Row className="select-pay">
+                      <Radio.Group onChange={selectPay} value={payValue}>
+                        <Space direction="vertical">
+                          <Radio value="Thanh toán khi nhận hàng"><img width="30" src="https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/icon-pay%2Fmoney.png?alt=media&token=b6ce9a3e-7c5a-4dc6-ae58-4bee355d6c60" />Thanh toán khi nhận hàng</Radio>
+                          <Radio value="Thanh toán Paypal"><img width="30" src="https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/icon-pay%2Fpaypal.png?alt=media&token=d14f113b-b997-443d-8aca-ec03dd254371" />Thanh toán Paypal</Radio>
+                          <Radio value="Thanh toán MOMO"><img width="30" src="https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/icon-pay%2Fmomo.png?alt=media&token=090c933f-a9f0-4944-a835-b2d0662e3d45" />Thanh toán MOMO</Radio>
+                        </Space>
+                      </Radio.Group>
+                    </Row>
+                  </Col>
+                  <Col>
+                    <Row><h3>Hệ thống vận chuyển</h3></Row>
+                    <Row className="select-pay">
+                      <Radio.Group onChange={selectDelivery} value={deliveryValue}>
+                        <Space direction="vertical">
+                          <Radio value="Hệ thống cửa hàng"><img width="30" src="https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/icon-pay%2FGHCH.png?alt=media&token=dbff4bfa-eb58-40f4-95dd-e7d5988a3dc5" />Hệ thống cửa hàng</Radio>
+                          <Radio value="Giao hàng tiết kiệm"><img width="30" src="https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/icon-pay%2FGHTK.png?alt=media&token=ac61547a-5896-49b3-a0da-49cf94db70b6" />Giao hàng tiết kiệm</Radio>
+                        </Space>
+                      </Radio.Group>
+                    </Row>
+                  </Col>
                 </div>
               </Col>
               <Col className="col-two">
@@ -187,9 +199,9 @@ const Payments2 = (props) => {
                 <Row><textarea placeholder="Ghi chú" onChange={note} /></Row>
                 <Row className="button-group">
                   {payValue === "Thanh toán Paypal" ? (
-                    <Button className="pay" value="submit" type="primary" htmlType="submit" disabled>
-                      Thanh toán
-                    </Button>
+                    <>
+                      <Col className="paypal"><Paypal order={order} notes={notes} payValue={payValue} ship={ship} PriceCart={props.PriceCart} voucher={voucher} /></Col>
+                    </>
                   ) : (
                     <Button className="pay" value="submit" type="primary" htmlType="submit" >
                       Thanh toán

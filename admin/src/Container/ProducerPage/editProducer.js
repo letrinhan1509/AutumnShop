@@ -70,9 +70,9 @@ const EditProducer = (props) => {
                 name="update"
                 onFinish={update}
                 initialValues={{
-                    mansx: `${Producer.data.mansx}`,
-                    tennsx: `${Producer.data.tennsx}`,
-                    xuatxu: `${Producer.data.xuatxu}`,
+                    mansx: `${Producer.mansx}`,
+                    tennsx: `${Producer.tennsx}`,
+                    xuatxu: `${Producer.xuatxu}`,
                 }}
                 scrollToFirstError
                 className="register-form"

@@ -15,26 +15,20 @@ const ListProductType = () => {
     })
   }, []);
 
-  const [a, setA] = useState([]);
+
   const linkto = (e) => {
     let id = e.currentTarget.dataset.id
-    setA(id);
-    console.log(id);
-    setTimeout(() => {
-      link.push('/danh-sach-loai/sua-loai');
-    }, 100)
+    catalog.getTypeID(id).then((res) => {
+      if (res.data.status === "Success"){
+        localStorage.setItem('type', JSON.stringify(res.data.data));
+        setTimeout(() => {
+          link.push('/danh-sach-loai/sua-loai');
+        }, 100)
+      }
+    });
+    
   }
-  const [Type, setType] = useState([]);
-  useEffect(() => {
-    if (a != "") {
-      catalog.getTypeID(a).then((res) => {
-        setType(res.data);
-      });
-    }
-  }, [a]);
-  if (Type != '') {
-    localStorage.setItem('type', JSON.stringify(Type));
-  }
+
 
   const deleteType = (e) => {
     let id = e.currentTarget.dataset.id;
@@ -99,7 +93,7 @@ const ListProductType = () => {
 
         dataIndex: 'maloai',
         key: 'maloai',
-        render: maloai => (<div className="btn-box"><Button data-id={maloai} key={maloai} onClick={linkto}> Sửa </Button></div>)
+        render: maloai => (<div className="btn-box"><Button data-id={maloai} key={maloai} type="primary" onClick={linkto}> Sửa </Button></div>)
       } : (<> </>),
     result.permission === 'Admin' ?
       {
