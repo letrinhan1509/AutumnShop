@@ -161,7 +161,7 @@ const HeaderPage = (props) => {
                                 ))}
                             </SubMenu>
                         ))}
-                        <Menu.Item key="/khuyen-mai" style={menu}>
+                        <Menu.Item key="khuyen-mai" style={menu}>
                             Khuyến mãi
                         </Menu.Item>
                     </Menu>

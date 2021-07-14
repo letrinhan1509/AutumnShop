@@ -379,7 +379,7 @@ const AddProduct = (props) => {
                             </Button>
                         </Link>
                         {
-                            link == "" ? (
+                            link === "" ? (
                                 <Button type="primary" htmlType="submit" style={{ marginLeft: 30 }} disabled>Thêm sản phẩm</Button>
                             ) : (
                                 <Button type="primary" htmlType="submit" style={{ marginLeft: 30 }}>Thêm sản phẩm</Button>

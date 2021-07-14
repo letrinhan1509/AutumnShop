@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from "axios"
-import { Row, Form, Input, Button, Select, Checkbox, DatePicker, Space, message } from 'antd';
+import { Row, Form, Input, Button, Select, Checkbox, DatePicker, Space, message, Upload } from 'antd';
+import { DownloadOutlined, UploadOutlined } from '@ant-design/icons';
 import { useHistory, Link } from "react-router-dom"
 import "Container/scss/addpro.scss";
 import moment from 'moment';
+import { storage } from 'Container/Firebase/firebase';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -30,7 +32,13 @@ const tailFormItemLayout = {
     },
 };
 
-
+const normFile = (e: any) => {
+    console.log('Upload event:', e);
+    if (Array.isArray(e)) {
+        return e;
+    }
+    return e && e.fileList;
+};
 const EditVoucher = (props) => {
 
     const [form] = Form.useForm();
@@ -42,18 +50,56 @@ const EditVoucher = (props) => {
     const [dateEnd, setDateEnd] = useState("");
     //let a = "";
     function startChange(date) {
-        if(date !== null){
+        if (date !== null) {
             setDatestart(date._d);
         }
     }
     function endChange(date) {
-        if(date !== null){
+        if (date !== null) {
             setDateEnd(date._d);
         }
     }
     const [title, setTitle] = useState("");
     const changett = (e) => {
         setTitle(e.target.value);
+    };
+
+    const [image, setImage] = useState("");
+    const [fileList, setFileList] = useState([]);
+
+    const beforeUpload = file => {
+        setFileList(fileList.concat(file));
+        setImage(file[0]);
+        return false;
+    }
+    const handleChange = file => {
+        if (fileList != "") {
+            setImage(fileList[0]);
+        }
+    };
+
+    //Download link từ Firebase
+    const [link, setLink] = useState("");
+    const upfirebase = () => {
+        const upload = storage.ref(`Product_Img/${image.name}`).put(image);
+        upload.on(
+            "state_changed",
+            snapshot => { },
+            error => {
+                console.log(error);
+            },
+            () => {
+                storage
+                    .ref("Product_Img")
+                    .child(image.name)
+                    .getDownloadURL()
+                    .then(url => {
+                        console.log("ulr:", url);
+                        setLink(url);
+                    });
+                message.success("download link thành công!");
+            }
+        );
     };
 
     const editvoucher = (values) => {
@@ -76,8 +122,7 @@ const EditVoucher = (props) => {
                 message.error(`${err.response.data.message}\n Cập nhật thông tin voucher thất bại !\n `);
             });
     };
-    const [fileList, setFileList] = useState([]);
-    const [listProduct, setlistProduct] = useState([]);
+
 
     const options = [
         { label: '0', value: '0' },
@@ -103,7 +148,7 @@ const EditVoucher = (props) => {
                         dieukien: `${voucherID.dieukien}`,
                         giagiam: `${voucherID.giagiam}`,
                         ghichu: `${voucherID.ghichu}`,
-                        
+                        hinh: `${voucherID.hinh}`,
                     }}
                 >
                     <Form.Item
@@ -120,7 +165,7 @@ const EditVoucher = (props) => {
                             },
                         ]}
                     >
-                        <Input disabled/>
+                        <Input disabled />
                     </Form.Item>
                     <Form.Item
                         name="tenkm"
@@ -181,6 +226,42 @@ const EditVoucher = (props) => {
                         ]}
                     >
                         <TextArea rows={3} />
+                    </Form.Item>
+                    <Form.Item
+                        name="hinh"
+                        label="Ảnh sản phẩm"
+                        rules={[{ required: false }]}
+                    >
+                        <Input />
+                    </Form.Item>
+                    <Form.Item
+                        name="hinhmoi"
+                        label="Up load ảnh mới"
+                        valuePropName="fileList"
+                        getValueFromEvent={normFile}
+
+                    >
+                        <Upload
+                            listType="picture"
+
+                            name='hinhmoi'
+                            multiple='true'
+                            beforeUpload={beforeUpload}
+                            onChange={handleChange}
+                            fileList
+                        >
+                            <Button icon={<UploadOutlined />} >Click to upload</Button>
+                        </Upload>
+                    </Form.Item>
+
+                    <Form.Item label="Downloat link Firebase">
+                        {
+                            link == "" ? (
+                                <Button icon={<DownloadOutlined />} onClick={upfirebase} >Downlink</Button>
+                            ) : (
+                                <Button icon={<DownloadOutlined />} onClick={upfirebase} disabled>Downlink</Button>
+                            )
+                        }
                     </Form.Item>
                     <Form.Item
                         label="Ngày bắt đầu"

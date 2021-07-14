@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from "axios"
-import { Row, Form, Input, Button, Select, Checkbox, DatePicker, Space, message } from 'antd';
+import { Row, Form, Input, Button, Select, Checkbox, DatePicker, Space, message, Upload } from 'antd';
 import { useHistory, Link } from "react-router-dom"
 import "Container/scss/addpro.scss";
 import moment from 'moment';
 import discount from 'API_Call/Api_discount/discount';
+import { storage } from 'Container/Firebase/firebase';
+import { DownloadOutlined, UploadOutlined } from '@ant-design/icons';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -31,6 +33,14 @@ const tailFormItemLayout = {
     },
 };
 
+const normFile = (e: any) => {
+    console.log('Upload event:', e);
+    if (Array.isArray(e)) {
+        return e;
+    }
+    return e && e.fileList;
+};
+
 
 const AddVoucher = (props) => {
 
@@ -41,13 +51,13 @@ const AddVoucher = (props) => {
     const [dateEnd, setDateEnd] = useState("");
     //let a = "";
     function startChange(date) {
-        if(date !== null){
+        if (date !== null) {
             setDatestart(date._d);
 
         }
     }
     function endChange(date) {
-        if(date !== null){
+        if (date !== null) {
             setDateEnd(date._d);
         }
     }
@@ -56,11 +66,50 @@ const AddVoucher = (props) => {
         setTitle(e.target.value);
     };
 
+    const [fileList, setFileList] = useState([]);
+    const [image, setImage] = useState("");
+    const beforeUpload = file => {
+        setFileList(fileList.concat(file));
+        setImage(file[0]);
+        return false;
+    }
+    const handleChange = file => {
+        if (fileList != "") {
+            setImage(fileList[0]);
+        }
+    };
+
+    //Download link từ Firebase
+    const [link, setLink] = useState("");
+    const upfirebase = () => {
+        const upload = storage.ref(`Voucher_img/${image.name}`).put(image);
+        upload.on(
+            "state_changed",
+            snapshot => { },
+            error => {
+                console.log(error);
+            },
+            () => {
+                storage
+                    .ref("Voucher_img")
+                    .child(image.name)
+                    .getDownloadURL()
+                    .then(url => {
+                        console.log("ulr:", url);
+                        setLink(url);
+                    });
+                message.success("download link thành công!");
+            }
+        );
+
+    };
+
     const addProduct = (values) => {
         console.log(datestart.toLocaleDateString());
         values["ngaybd"] = moment(datestart.toLocaleDateString()).format('YYYY-DD-MM');
         values["ngaykt"] = moment(dateEnd.toLocaleDateString()).format('YYYY-DD-MM');
         values["trangthai"] = title;
+        values['img'] = link;
         console.log(values);
 
         //const url = "http://127.0.0.1:5000/api/v1/khuyen-mai/them-voucher"
@@ -78,7 +127,6 @@ const AddVoucher = (props) => {
                 message.error(`Tạo voucher thất bại !\n ${err.response.data.message}`)
             }); */
     };
-    const [fileList, setFileList] = useState([]);
     const [listProduct, setlistProduct] = useState([]);
 
 
@@ -177,6 +225,35 @@ const AddVoucher = (props) => {
                         <TextArea rows={3} />
                     </Form.Item>
                     <Form.Item
+                        name="hinh"
+                        label="Ảnh sản phẩm"
+                        valuePropName="fileList"
+                        getValueFromEvent={normFile}
+
+                    >
+                        <Upload
+                            listType="picture"
+
+                            name='hinh'
+                            multiple='true'
+                            beforeUpload={beforeUpload}
+                            onChange={handleChange}
+                            fileList
+                        >
+                            <Button icon={<UploadOutlined />} >Click to upload</Button>
+                        </Upload>
+                    </Form.Item>
+
+                    <Form.Item label="Downloat link Firebase">
+                        {
+                            link == "" ? (
+                                <Button icon={<DownloadOutlined />} onClick={upfirebase} >Downlink</Button>
+                            ) : (
+                                <Button icon={<DownloadOutlined />} onClick={upfirebase} disabled>Downlink</Button>
+                            )
+                        }
+                    </Form.Item>
+                    <Form.Item
                         label="Ngày bắt đầu"
                         rules={[
                             {
@@ -210,9 +287,16 @@ const AddVoucher = (props) => {
                                 Trở về
                             </Button>
                         </Link>
-                        <Button type="primary" htmlType="submit" style={{ marginLeft: 30 }}>
-                            Thêm voucher
-                        </Button>
+                        {link === "" ? (
+                            <Button type="primary" htmlType="submit" style={{ marginLeft: 30 }} disabled>
+                                Thêm voucher
+                            </Button>
+                        ) : (
+                            <Button type="primary" htmlType="submit" style={{ marginLeft: 30 }}>
+                                Thêm voucher
+                            </Button>
+                        )}
+
                     </Form.Item>
                 </Form>
             </div>

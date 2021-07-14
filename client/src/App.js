@@ -35,7 +35,7 @@ import product from "API_Call/Api_product/product";
 import ForgotPass from "container/UserPage/forgotPass";
 import EditUser from "container/UserPage/EditUser";
 import ChangePass from "container/UserPage/ChangePass";
-
+import SaleInf from "container/MainPage/SaleInf";
 
 
 
@@ -276,6 +276,9 @@ useEffect(() => {
                 </Route>
                 <Route path="/lien-he">
                   <Contact />
+                </Route>
+                <Route path="/san-pham/khuyen-mai">
+                  <SaleInf />
                 </Route>
               </Content>
               <Footer />
