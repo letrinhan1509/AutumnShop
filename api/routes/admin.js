@@ -47,7 +47,7 @@ router.post('/dang-nhap', function (req, res, next) {
                 ),
                 httpOnly: true,
             }; 
-            res.cookie("jwt", token, cookieOptions);
+            res.cookie("jwtAdmin", token, cookieOptions);
             //res.header("auth-token", token).send(token);
             //Remove password from output
             admin.matkhau = undefined;

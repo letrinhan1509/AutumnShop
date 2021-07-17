@@ -139,10 +139,23 @@ exports.create_Discount = (data, chitietKM) => {
         });
     })
 };
-    // Sửa thông tin khuyến mãi:
-exports.update_Discount = (data) => {
+    // Sửa thông tin khuyến mãi không thay đổi hình:
+exports.update_Voucher = (data) => {
     return new Promise( (resolve, reject) => {
         let sql = `UPDATE khuyenmai SET tenkm='${data.tenkm}', voucher='${data.voucher}', ghichu='${data.ghichu}', dieukien='${data.dieukien}', giagiam='${data.giagiam}', ngaybd='${data.ngaybd}', ngaykt='${data.ngaykt}', trangthai='${data.trangthai}'
+        WHERE makm = '${data.makm}'`;
+        db.query(sql, (err, result) => {
+            if(err){
+                reject(err);
+            } else
+                resolve("Cập nhật thông tin khuyến mãi thành công !");
+        });
+    });
+};
+    // Sửa thông tin khuyến mãi có thay đổi hình:
+exports.update_Voucher_Img = (data) => {
+    return new Promise( (resolve, reject) => {
+        let sql = `UPDATE khuyenmai SET tenkm='${data.tenkm}', voucher='${data.voucher}', ghichu='${data.ghichu}', hinh='${data.hinh}', dieukien='${data.dieukien}', giagiam='${data.giagiam}', ngaybd='${data.ngaybd}', ngaykt='${data.ngaykt}', trangthai='${data.trangthai}'
         WHERE makm = '${data.makm}'`;
         db.query(sql, (err, result) => {
             if(err){

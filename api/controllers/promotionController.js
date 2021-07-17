@@ -117,13 +117,14 @@ exports.postPromotionCODE = catchAsync(async (req, res, next) => {
             tenkm: req.body.tenkm,
             voucher: req.body.voucher,
             ghichu: req.body.ghichu,
+            hinh: req.body.hinh,
             dieukien: req.body.dieukien,
             giagiam: req.body.giagiam,
             ngaybd: req.body.ngaybd,
             ngaykt: req.body.ngaykt,
             trangthai: req.body.trangthai
         };
-        if(!data.tenkm || !data.voucher || !data.ghichu || !data.giagiam || !data.ngaybd) {
+        if(!data.tenkm || !data.voucher || !data.ghichu || !data.hinh || !data.giagiam || !data.ngaybd) {
             return res.status(400).json({
                 status: "Fail",
                 message: "Thiếu thông tin voucher. Vui lòng kiểm tra lại thông tin !!!"
@@ -159,12 +160,13 @@ exports.postPromotionProduct = catchAsync(async (req, res, next) => {
         let data = {
             tenkm: req.body.tenkm,
             ghichu: req.body.ghichu,
+            hinh: req.body.hinh,
             ngaybd: req.body.ngaybd,
             ngaykt: req.body.ngaykt,
             trangthai: req.body.trangthai
         }
         let chitietKM = req.body.sanphamCK;
-        if(!data.tenkm || !data.ghichu || !data.ngaybd || !chitietKM) {
+        if(!data.tenkm || !data.ghichu || !data.hinh || !data.ngaybd || !chitietKM) {
             return res.status(400).json({
                 status: "Fail",
                 message: "Thiếu thông tin. Vui lòng kiểm tra lại thông tin !!!"
@@ -194,6 +196,7 @@ exports.putEditPromotionCODE = catchAsync(async (req, res, next) => {
             tenkm: req.body.tenkm,
             voucher: req.body.voucher,
             ghichu: req.body.ghichu,
+            hinh: req.body.hinh,
             dieukien: req.body.dieukien,
             giagiam: req.body.giagiam,
             ngaybd: req.body.ngaybd,
@@ -216,11 +219,30 @@ exports.putEditPromotionCODE = catchAsync(async (req, res, next) => {
             });
         } else {
             // Có voucher trong database
-            let query = await modelDiscount.update_Discount(data);
-            return res.status(200).json({ 
-                status: "Success", 
-                message: query 
-            });
+            if(!data.hinh) {
+                let data1 = {
+                    makm: req.body.makm,
+                    tenkm: req.body.tenkm,
+                    voucher: req.body.voucher,
+                    ghichu: req.body.ghichu,
+                    dieukien: req.body.dieukien,
+                    giagiam: req.body.giagiam,
+                    ngaybd: req.body.ngaybd,
+                    ngaykt: req.body.ngaykt,
+                    trangthai: req.body.trangthai
+                };
+                let query = await modelDiscount.update_Voucher(data1);
+                return res.status(200).json({ 
+                    status: "Success", 
+                    message: query 
+                });
+            } else {
+                let query = await modelDiscount.update_Voucher_Img(data);
+                return res.status(200).json({ 
+                    status: "Success", 
+                    message: query 
+                });
+            }
         };
     } catch (error) {
         return res.status(400).json({

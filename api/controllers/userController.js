@@ -102,7 +102,7 @@ exports.getLogouts = catchAsync(async (res, req, next) => {
 // POST: Create customer account
 exports.postUser = catchAsync(async (req, res, next) => {
     try {
-        let hinh = "undefined";
+        let hinh = "https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/User_Img%2Fuser.png?alt=media&token=6ec247df-90ab-4cc9-b671-7261ef37215f&fbclid=IwAR3CdhcC4tl6LCa9J49reFlp29mFKtXdVJtAgXrIstctjJ_oFKSIRORhFG0";
         let nhaplaimk = req.body.nhaplaimk;
         const data = {
             tenkh: req.body.tenkh,
@@ -135,7 +135,7 @@ exports.postUser = catchAsync(async (req, res, next) => {
             };
             if(data.matkhau == nhaplaimk) {
                 var salt = bcrypt.genSaltSync(10);  // Chuỗi cộng thêm vào mật khẩu để mã hoá
-                var mk_mahoa = bcrypt.hashSync(pass, salt);   // Mã hoá password
+                var mk_mahoa = bcrypt.hashSync(data.matkhau, salt);   // Mã hoá password
                 data.matkhau = mk_mahoa;
                 const query_Create = await modelUser.insert_User(data);
                 return res.status(200).json({ 
@@ -168,10 +168,9 @@ exports.postUserLogin = catchAsync(async (req, res, next) => {
     try {
         let em = req.body.email;
         let mk = req.body.matkhau;
-        console.log(req.body);
         if(!em || !mk) {
             return res.status(400).json({
-                status: "Fail",
+                status: "LoginFail",
                 message: "Thiếu thông tin đăng nhập. Vui lòng kiểm tra lại thông tin !"
             });
         };
@@ -179,11 +178,17 @@ exports.postUserLogin = catchAsync(async (req, res, next) => {
         if(userExist == -1) {
             // Email này không tồn tại
             return res.status(400).json({
-                status: "Fail",
+                status: "LoginFail",
                 message: "Tài khoản email " + `${em}` + " này không tồn tại, vui lòng kiểm tra lại thông tin !"
             });
         } else {
             // Email này tồn tại
+            if(userExist.trangthai == 0){
+                return res.status(400).json({
+                    status: "LoginFail",
+                    message: "Tài khoản này hiện đang tạm khoá, vui lòng liên nhân viên để mở khoá !"
+                });
+            };
             let pass_fromdb = userExist.matkhau;
             var kq = bcrypt.compareSync(mk, pass_fromdb);
             const token = signToken(userExist.makh, userExist.email);
@@ -203,6 +208,7 @@ exports.postUserLogin = catchAsync(async (req, res, next) => {
                         makh: userExist.makh, 
                         username: userExist.tenkh,
                         email: userExist.email,
+                        hinh: userExist.hinh,
                         sdt: userExist.sodienthoai,
                         diachi: userExist.diachi
                     },
@@ -233,9 +239,10 @@ exports.putEditUser = catchAsync(async (req, res, next) => {
         //let makm = req.body.makh;
         let email = req.body.email;
         let ten = req.body.username;
-        let hinh = req.body.hinh;
+        let hinh = req.body.hinhMoi;
         let diachi = req.body.diachi;
         let sdt = req.body.sdt;
+        console.log(req.body);
         if(!email || !ten || !diachi || !sdt) {
             return res.status(400).json({
                 status: "Fail",
@@ -256,22 +263,40 @@ exports.putEditUser = catchAsync(async (req, res, next) => {
             });
         };
         if(!hinh) {
-            hinh = "undefined";
-        };
-        let query = await modelUser.updateProfileUser(email, ten, hinh, sdt, diachi);
-        const user = await modelUser.checkEmail(email);
-        user.matkhau = undefined;   // Xoá mật khẩu khi trả về 1 user
-        return res.status(200).json({ 
-            status: "Success", 
-            message: query,
-            data: {
-                makh: user.makh, 
-                username: user.tenkh,
-                email: user.email,
-                sdt: user.sodienthoai,
-                diachi: user.diachi
-            }
-        });
+            // Cập nhật thông tin không thay đổi hình
+            let query = await modelUser.updateProfile(email, ten, sdt, diachi);
+            const user = await modelUser.checkEmail(email);
+            user.matkhau = undefined;   // Xoá mật khẩu khi trả về 1 user
+            return res.status(200).json({ 
+                status: "Success", 
+                message: query,
+                data: {
+                    makh: user.makh, 
+                    username: user.tenkh,
+                    email: user.email,
+                    hinh: userExist.hinh,
+                    sdt: user.sodienthoai,
+                    diachi: user.diachi
+                }
+            });
+        } else {
+            // Cập nhật thông tin có thay đổi hình
+            let query = await modelUser.updateProfileUser(email, ten, hinh, sdt, diachi);
+            const user = await modelUser.checkEmail(email);
+            user.matkhau = undefined;   // Xoá mật khẩu khi trả về 1 user
+            return res.status(200).json({ 
+                status: "Success", 
+                message: query,
+                data: {
+                    makh: user.makh, 
+                    username: user.tenkh,
+                    email: user.email,
+                    hinh: userExist.hinh,
+                    sdt: user.sodienthoai,
+                    diachi: user.diachi
+                }
+            });
+        }
     } catch (error) {
         return res.status(400).json({
             status: "Fail", 

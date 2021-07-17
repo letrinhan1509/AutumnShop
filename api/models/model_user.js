@@ -75,10 +75,25 @@ exports.insert_User = (data) => {
         })
     })
 }
-    // Cập nhật profile khách hàng:
+    // Cập nhật profile khách hàng có thay đổi hình
 exports.updateProfileUser = (email, ten, hinh, sdt, diachi) => {
     return new Promise( (hamOK, hamLoi) => {
         let sql = `UPDATE khachhang SET tenkh = '${ten}', hinh = '${hinh}', sodienthoai = '${sdt}', diachi = '${diachi}' 
+        WHERE email = '${email}'`;
+        db.query(sql, (err, result) => {
+            if(err)
+                hamLoi(err);
+            else {
+                console.log('Update success');
+                hamOK("Sửa thông tin tài khoản thành công !");
+            };
+        });
+    });
+}
+    // Cập nhật thông tin khách hàng không thay đổi hình
+exports.updateProfile = (email, ten, sdt, diachi) => {
+    return new Promise( (hamOK, hamLoi) => {
+        let sql = `UPDATE khachhang SET tenkh = '${ten}', sodienthoai = '${sdt}', diachi = '${diachi}' 
         WHERE email = '${email}'`;
         db.query(sql, (err, result) => {
             if(err)
