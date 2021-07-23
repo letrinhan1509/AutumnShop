@@ -18,30 +18,36 @@ const ListSale = (props) => {
         discount.getAllSale().then((res) => {
             setListVoucher(res.data.discount);
             setWordSearch(res.data.discount);
+            console.log(res.data.discount);
         })
     }, []);
     console.log(listVoucher);
     // Sửa voucher:
+    const [voucherID, setVoucherID] = useState([]);
     const loadEdit = (e) => {
         let id = e.currentTarget.dataset.id;
-        console.log(id);
-        setA(id);
-        console.log(a);
-        setTimeout(() => {
-            history.push('/danh-sach-khuyen-mai/sua-khuyen-mai');
-        }, 100)
+        discount.getSaleID(id).then((res) => {
+            if (res.data.status === "Success") {
+                localStorage.setItem('saleID', JSON.stringify(res.data.detailPromotion));
+                setTimeout(() => {
+                    history.push('/danh-sach-khuyen-mai/sua-khuyen-mai');
+                }, 100)
+            }
+        });
     }
-    const [voucherID, setVoucherID] = useState([]);
-    useEffect(() => {
-        if (a != "") {
-            discount.getSaleID(a).then((res) => {
-                setVoucherID(res.data.voucher);
-            });
-        }
-    }, [a]);
-    if (voucherID != '') {
-        localStorage.setItem('voucherID', JSON.stringify(voucherID));
+    const loadDetail = (e) => {
+        let id = e.currentTarget.dataset.id;
+        discount.getSaleID(id).then((res) => {
+            if (res.data.status === "Success") {
+                localStorage.setItem('saleID', JSON.stringify(res.data.detailPromotion));
+                setTimeout(() => {
+                    history.push('/danh-sach-khuyen-mai/chi-tiet-khuyen-mai');
+                }, 100)
+            }
+        });
     }
+
+
     //Cập nhật trạng thái Voucher:
     const unlock = (e) => {
         let id = e.currentTarget.dataset.id;
@@ -112,24 +118,9 @@ const ListSale = (props) => {
             key: 'tenkm',
         },
         {
-            title: 'Mã voucher',
-            dataIndex: 'voucher',
-            key: 'voucher',
-        },
-        {
             title: 'Ghi chú',
             dataIndex: 'ghichu',
             key: 'ghichu',
-        },
-        {
-            title: 'Điều kiện',
-            dataIndex: 'dieukien',
-            key: 'dieukien',
-        },
-        {
-            title: 'Giá giảm',
-            dataIndex: 'giagiam',
-            key: 'giagiam',
         },
         {
             title: 'Ngày bắt đầu',
@@ -211,7 +202,7 @@ const ListSale = (props) => {
         user.permission === 'Admin' ? ({
             dataIndex: "makm",
             key: "makm",
-            render: makm => (<div className="btn-box"><Button data-id={makm} onClick={loadEdit} type="primary">Chi tiết</Button></div>)
+            render: makm => (<div className="btn-box"><Button data-id={makm} onClick={loadDetail} type="primary">Chi tiết</Button></div>)
         }) : (<> </>),
     ];
 

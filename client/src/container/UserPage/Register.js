@@ -32,6 +32,7 @@ const RegisterForm = () => {
         </Form.Item>
       );
     const register = (values) => {
+        console.log(values);
         user.register(values).then((res) => {
             message.success("Register successfully!")
             setTimeout(() => { history.push('/dang-nhap') }, 2000)

@@ -57,15 +57,32 @@
         width: 400px;
         height: 500px;
     }
-    .ant-btn{
-        width:250px;
-        height: 40px;
-        margin-left: 50px;
-        cursor: pointer;
-        transition:all 0,2s ease-in;
-        filter: drop-shadow(5px 5px 2px rgba(0, 0, 0, 0.2));
-        background: lightblue;
+    .ant-form-item-control-input-content{
+        display: flex;
+        justify-content: center;
+        
+        .ant-btn{
+            width:150px;
+            height: 40px;
+            font-size: 20px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            padding-bottom: 10px;
+            cursor: pointer;
+            border: none;
+            transition: 0.5s ease;
+            background: #b79c22;
+            &:hover{
+                color: black;
+                transform: translateY(-5px);
+                filter: drop-shadow(5px 5px 2px rgba(0, 0, 0, 0.2));
+                transition: 0.5s ease;
+                border: none;
+            }
+        }
     }
+    
     .ant-form-item{
         padding:8px;
         width: 1200px;

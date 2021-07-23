@@ -34,7 +34,7 @@ const Select_Product = (props) => {
         let idBL = detail.masp;
         comment.getProductID(idBL).then((res) => {
             setListComment(res.data.listComment);
-            console.log(ListComment);
+            console.log(res.data.listComment);
         })
     }, []);
 
@@ -68,13 +68,14 @@ const Select_Product = (props) => {
         value['ngay'] = moment(date2).format('YYYY-MM-DD');
         console.log(value);
         //setSubmitting(true);
-        document.getElementById("cmt").reset();
+        
         comment.addComment(value).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message);
+                document.getElementById("cmt").reset();
                 /* setTimeout(() => {
-                    history.replace();
-                }, 100); */
+                    window.location.reload();
+                }, 100);  */   
             } else {
                 message.error(res.data.message)
             }
@@ -166,7 +167,7 @@ const Select_Product = (props) => {
                                         <Comment
                                             actions={[<span key="comment-list-reply-to-0">Reply to</span>]}
                                             author={item.tenkh}
-                                            avatar={'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png'}
+                                            avatar={item.hinh}
                                             content={item.noidung}
                                             datetime={item.giobl + "  " + date}
                                         />
@@ -180,8 +181,9 @@ const Select_Product = (props) => {
                         <Comment
                             avatar={
                                 <Avatar
-                                    src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"
+                                    src={User.hinh}
                                     alt={User.username}
+                                    width="40"
                                 />
                             }
                             author={User.username}

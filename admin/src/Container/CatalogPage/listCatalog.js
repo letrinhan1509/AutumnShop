@@ -140,6 +140,19 @@ const ListCata = () => {
       onFilter: (value, record) => record.trangthai.stt.includes(value),
     },
     result.permission === 'Admin' ?
+    {
+      dataIndex: 'madm',
+      key: 'madm',
+      render: madm => (<div className="btn-box"><Button data-id={madm} key={madm} type="primary" onClick={linkto}> Sửa </Button></div>)
+    } : (<> </>),
+  /* result.permission === 'Admin' ?
+    {
+      title: 'Hành động',
+      dataIndex: 'maloai',
+      key: 'maloai',
+      render: maloai => (<Button data-id={maloai} key={maloai} type="danger" onClick={deleteCategory}> Xoá </Button>)
+    } : (<> </>) */
+    result.permission === 'Admin' ?
       {
         dataIndex: 'trangthai',
         key: 'trangthai',
@@ -160,19 +173,7 @@ const ListCata = () => {
           </>
         )
       } : (<> </>),
-    result.permission === 'Admin' ?
-      {
-        dataIndex: 'madm',
-        key: 'madm',
-        render: madm => (<div className="btn-box"><Button data-id={madm} key={madm} type="primary" onClick={linkto}> Sửa </Button></div>)
-      } : (<> </>),
-    /* result.permission === 'Admin' ?
-      {
-        title: 'Hành động',
-        dataIndex: 'maloai',
-        key: 'maloai',
-        render: maloai => (<Button data-id={maloai} key={maloai} type="danger" onClick={deleteCategory}> Xoá </Button>)
-      } : (<> </>) */
+
   ];
 
 

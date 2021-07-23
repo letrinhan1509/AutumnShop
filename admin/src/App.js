@@ -36,6 +36,7 @@ import ListVoucher from "./Container/VoucherPage/listVoucher";
 import EditVoucher from "./Container/VoucherPage/EditVoucher";
 import ListSale from "./Container/SalePage/listSale";
 import AddSale from "./Container/SalePage/AddSale";
+import EditSale from "./Container/SalePage/EditSale";
 import AccountInfo from "./Container/AccountPage/AccountInfo";
 import EditAccount from "./Container/AccountPage/EditAccount";
 import ChangePass from "./Container/AccountPage/ChangePass";
@@ -132,6 +133,9 @@ function App() {
                   </Route>
                   <Route exact path="/danh-sach-khuyen-mai">
                     <ListSale />
+                  </Route>
+                  <Route exact path="/danh-sach-khuyen-mai/sua-khuyen-mai">
+                    <EditSale />
                   </Route>
                   <Route exact path="/them-voucher">
                     <AddVoucher />

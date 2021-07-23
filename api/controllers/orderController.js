@@ -161,6 +161,9 @@ exports.getListOrderPhone = catchAsync(async (req, res, next) => {
         // POST
 // POST: Create an order 
 exports.postCreateOrder = catchAsync(async (req, res, next) => {
+
+    let data = req.body;
+    console.log(data);
     let makh = req.body.order.makh;
     let tenkh = req.body.order.tenkh;
     let email = req.body.order.email;

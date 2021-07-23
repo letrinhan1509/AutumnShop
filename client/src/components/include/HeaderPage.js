@@ -36,7 +36,7 @@ const HeaderPage = (props) => {
     const logout = () => {
         localStorage.removeItem("token")
         localStorage.removeItem("user")
-        history.push('/');
+        history.push('/dang-nhap');
         window.location.reload()
     }
     const User = JSON.parse(localStorage.getItem('user'));
@@ -65,6 +65,7 @@ const HeaderPage = (props) => {
             setlistCategory(res.data.listCategorys);
         })
     }, []);
+
     const [listTypes, setlistTypes] = useState([]);
     const onOpenChange = (e) => {
         let id = "";
@@ -74,6 +75,7 @@ const HeaderPage = (props) => {
         } else {
             catalog.getTypeDanhmucID(id).then((res) => {
                 setlistTypes(res.data.data);
+                console.log(res.data.data);
             })
         }
     };
@@ -103,9 +105,9 @@ const HeaderPage = (props) => {
                                 </div>
                             </Badge>
                         </Menu.Item>
-                        <Menu.Item key="price">
+                        {/* <Menu.Item key="price">
                             {props.PriceCart}Đ
-                        </Menu.Item>
+                        </Menu.Item> */}
                         <Menu.Item key="lien-he">
                             Liên hệ
                         </Menu.Item>
@@ -156,9 +158,12 @@ const HeaderPage = (props) => {
                         </Menu.Item> */}
                         {listCategory.map((item) => (
                             <SubMenu key={`${item.madm}`} title={item.tendm} onTitleClick={handClick2} subMenuOpenDelay={0.5} >
-                                {listTypes.map((type) => (
-                                    <Menu.Item key={`${type.maloai}`}>{type.tenloai}</Menu.Item>
-                                ))}
+                                {listTypes.length === 1 ? ("") : (
+                                    listTypes.map((type) => (
+                                        <Menu.Item key={`${type.maloai}`}>{type.tenloai}</Menu.Item>
+                                    ))
+                                )}
+
                             </SubMenu>
                         ))}
                         <Menu.Item key="khuyen-mai" style={menu}>

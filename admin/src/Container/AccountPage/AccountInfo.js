@@ -47,7 +47,7 @@ const AccountInfo = (props) => {
                                 <h1 className="user-title">Thông tin tài khoản</h1>
                                 <Image
                                     width={150}
-                                    src="https://cdn0.iconfinder.com/data/icons/a-restaurant/500/SingleCartoonRestaurantAlice_1-512.png"
+                                    src="https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/User_Img%2Fuser.png?alt=media&token=6ec247df-90ab-4cc9-b671-7261ef37215f"
                                 />
                             </Row>
                             <Row className="box-inf">
@@ -71,7 +71,7 @@ const AccountInfo = (props) => {
                                 <Col className="inf">{user.permission}</Col>
                             </Row> 
                             <Button value="submit" type="primary">
-                                <Link to="/">Chỉnh sửa</Link>
+                                <Link to="/tai-khoan/chinh-sua-tai-khoan">Chỉnh sửa</Link>
                             </Button>
                         </Col>
                     </Row>
