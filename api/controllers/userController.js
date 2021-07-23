@@ -312,7 +312,6 @@ exports.putChangePassword = catchAsync(async (req, res, next) => {
         let password = req.body.password;
         let newPassword = req.body.newPassword;
         let confirmPassword = req.body.confirmPassword;
-
         if(!email || !password || !newPassword || !confirmPassword) {
             return res.status(400).json({
                 status: "Fail",

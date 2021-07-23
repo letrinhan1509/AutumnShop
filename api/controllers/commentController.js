@@ -99,8 +99,8 @@ exports.postComment = catchAsync(async (req, res, next) => {
             makh: req.body.makh,
             noidung: req.body.content,
             giobl: gio,
-            ngaybl: ngay
-            //ngaybl: req.body.date
+            //ngaybl: ngay,
+            ngaybl: req.body.ngay
         };
         console.log(req.body);
         if(!data.masp || !data.makh || !data.noidung || !data.giobl || !data.ngaybl) {

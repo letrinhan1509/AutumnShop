@@ -206,3 +206,23 @@ exports.getDetailWard = catchAsync(async (req, res, next) => {
         });
     }
 });
+// GET: List currency
+exports.getListCurrency = catchAsync(async (req, res, next) => {
+    try {
+        var url = "https://portal.vietcombank.com.vn/Usercontrols/TVPortal.TyGia/pXML.aspx?b=1";
+        //var url = "https://apithanhtoan.com/iframe/ty-gia-ngan-hang/BFTV";
+        const listCurrency = await axios.get(url);
+        //console.log(listCurrency.data);
+        
+        return res.status(200).json({ 
+            status: "Success", 
+            listCurrency: listCurrency.data
+        });
+    } catch (error) {
+        return res.status(400).json({
+            status: "Fail", 
+            message: "Something went wrong",
+            error: error
+        });
+    }
+});

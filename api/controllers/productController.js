@@ -76,6 +76,7 @@ exports.postProduct = catchAsync(async (req, res, next) => {
             maloai: req.body.maloai,
             madm: req.body.madm,
         };
+        console.log(req.body);
         if(!data.tensp || !data.soluong || !data.size || !data.mau || !data.gia || !data.hinh || !data.maloai || !data.madm) {
             return res.status(400).json({ 
                 status: "Fail", 

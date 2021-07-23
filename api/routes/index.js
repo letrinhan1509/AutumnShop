@@ -12,6 +12,7 @@ router.get('/dang-nhap', (req, res, next) => {
 
             // API 
     //GET:
+router.get('/tien-te', indexController.getListCurrency);
 router.get('/city', indexController.getListCities); // Danh sách tất cả thành phố
 router.get('/city/:id', indexController.getDetailCity);   // Chi tiết 1 Tỉnh/Thành phố
 router.get('/city/:id/district', indexController.getListCounties);  // Danh sách toàn bộ Quận/Huyện theo Tỉnh/Thành phố

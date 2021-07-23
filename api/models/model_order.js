@@ -139,7 +139,6 @@ exports.update_Status = (data) => {
 exports.insert_Order = (name, email, phone, address, ship, total, note, promoCode, formality, delivery, orderDate, cart) => {
     return new Promise( (hamOK, hamLoi) => {
         if(promoCode == undefined){
-            console.log('không mã khuyến mãi');
             // Đơn hàng không dùng mã khuyến mãi
             let sql = `INSERT INTO donhang(tenkh, email, sodienthoai, diachi, tienship, tongtien, ghichu, hinhthuc, vanchuyen, ngaydat) 
         VALUES ('${name}', '${email}', '${phone}', '${address}', '${ship}', '${total}', '${note}', '${formality}', '${delivery}', '${orderDate}')`;

@@ -61,6 +61,7 @@ const RegisterForm = () => {
                     <Form.Item
                         name="email"
                         label="E-mail"
+                        tooltip="Địa chỉ email dùng để đăng nhập của bạn."
                         rules={[
                             {
                                 type: "email",
@@ -77,7 +78,7 @@ const RegisterForm = () => {
                     <Form.Item
                         name="tenkh"
                         label="Tên khách hàng"
-                        tooltip="Đây là tên đăng nhập của bạn."
+                        tooltip="Đây là tên của bạn."
                         rules={[
                             {
                                 required: true,
@@ -141,14 +142,14 @@ const RegisterForm = () => {
                     <Form.Item
                         name="diachi"
                         label="Địa chỉ"
-                        tooltip="Địa chỉ giao hàng"
-                      /*   rules={[
+                        tooltip="Địa chỉ của bạn"
+                        rules={[
                             {
                                 required: true,
-                                message: "Vui lòng nhập tên tài khoảng !!!",
+                                message: "Vui lòng nhập địa chỉ !!!",
                                 whitespace: true,
                             },
-                        ]} */
+                        ]}
                     >
                         <Input />
                     </Form.Item>

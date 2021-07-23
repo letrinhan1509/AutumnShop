@@ -68,7 +68,7 @@ const Login = () => {
                 }
             })
             .catch((err) => {
-                message.error(`Đăng nhập thất bại\n ${err}`)
+                message.error(`${err.response.data.message}`)
             })
     }
 

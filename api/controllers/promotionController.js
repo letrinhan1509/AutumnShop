@@ -160,13 +160,12 @@ exports.postPromotionProduct = catchAsync(async (req, res, next) => {
         let data = {
             tenkm: req.body.tenkm,
             ghichu: req.body.ghichu,
-            hinh: req.body.hinh,
             ngaybd: req.body.ngaybd,
             ngaykt: req.body.ngaykt,
             trangthai: req.body.trangthai
         }
         let chitietKM = req.body.sanphamCK;
-        if(!data.tenkm || !data.ghichu || !data.hinh || !data.ngaybd || !chitietKM) {
+        if(!data.tenkm || !data.ghichu || !data.ngaybd || !chitietKM) {
             return res.status(400).json({
                 status: "Fail",
                 message: "Thiếu thông tin. Vui lòng kiểm tra lại thông tin !!!"
