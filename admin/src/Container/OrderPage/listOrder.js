@@ -27,7 +27,7 @@ const ListOrder = (props) => {
         let id = e.currentTarget.dataset.id;
         order.getOrderID(id).then((res) => {
             if (res.data.status === "Success") {
-                localStorage.setItem('order', JSON.stringify(res.data.data[0]));
+                localStorage.setItem('order', JSON.stringify(res.data.data));
                 setTimeout(() => {
                     link.push('/danh-sach-don-hang/chi-tiet');
                 }, 100)
@@ -38,7 +38,7 @@ const ListOrder = (props) => {
         let id = e.currentTarget.dataset.id;
         order.getOrderID(id).then((res) => {
             if (res.data.status === "Success") {
-                localStorage.setItem('order', JSON.stringify(res.data.data[0]));
+                localStorage.setItem('order', JSON.stringify(res.data.data));
                 setTimeout(() => {
                     link.push('/danh-sach-don-hang/sua-don-hang');
                 }, 100)

@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
-import { Image, Input, Button, message, Form, Menu } from 'antd';
+import { Image, Input, Button, message, Form, Menu, Spin } from 'antd';
 import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import Menus from "./Menus";
 import { useHistory, Link } from "react-router-dom";
@@ -8,18 +8,30 @@ import "container/components-css/Form.scss";
 import users from 'API_Call/Api_user/user';
 
 const { TextArea } = Input;
-const user = JSON.parse(localStorage.getItem("user"));
-console.log(user);
 const ChangePass = (props) => {
     const history = useHistory();
+
+    const [user, setUser] = useState([]);
+    const [loading, setLoading] = useState(false);
+    useEffect(() => {
+        setTimeout(() => {
+            setUser(JSON.parse(localStorage.getItem("user")));
+            if (user !== null) {
+                setLoading(true);
+            }
+        }, 1000);
+    }, [])
 
     const update = (values) => {
         console.log(values)
         users.changePass(values).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message)
+                localStorage.removeItem("token")
+                localStorage.removeItem("user")
                 setTimeout(() => {
-                    history.push('/Thong-tin-tai-khoan');
+                    history.push('/dang-nhap');
+                    window.location.reload();
                 }, 2000)
             }
             else {
@@ -34,6 +46,7 @@ const ChangePass = (props) => {
 
     var url = window.location.toString();
     url = url.replace("http://localhost:3000/", '');
+    let pass = "";
 
     return (
         <Container>
@@ -43,46 +56,85 @@ const ChangePass = (props) => {
                 </Col>
                 <Col className="col-two">
                     <Row className="box">
-                        <Form
-                            name="update"
-                            onFinish={update}
-                            initialValues={{
-                                email: `${user.email}`
-                            }}
-                            scrollToFirstError
-                            className="form"
-                        >
-                            <h1 className="user-title">Thay đổi mật khẩu</h1>
-                            <Form.Item
-                                name="email"
-                                id="email"
-                                label="Email"
-                            >
-                                <Input placeholder="email" disabled />
-                            </Form.Item>
-                            <Form.Item
-                                name="password"
-                                id="password"
-                                label="Mật khẩu cũ"
-                            >
-                                <Input.Password placeholder="Nhập mật khẩu cũ" iconRender={visible => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}/>
-                            </Form.Item>
-                            <Form.Item
-                                name="newPassword"
-                                id="newPassword"
-                                label="Mật khẩu mới"
-                            >
-                                <Input.Password placeholder="Nhập mật khẩu mới" iconRender={visible => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}/>
-                            </Form.Item>
-                            <Form.Item
-                                name="confirmPassword"
-                                id="confirmPassword"
-                                label="Nhập lại mật khẩu mới"
-                            >
-                                <Input.Password placeholder="Nhập lại mật khẩu mới" iconRender={visible => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}/>
-                            </Form.Item>
-                            <Button value="submit" type="primary" htmlType="submit">Cập nhật</Button>
-                        </Form>
+                        <Col className="form">
+                            {loading === false ? (
+                                <Row className="spin-wrapper">
+                                    <Spin className="spin" size="large" />
+                                </Row>
+                            ) : (
+                                <Form
+                                    name="update"
+                                    onFinish={update}
+                                    initialValues={{
+                                        email: `${user.email}`,
+                                    }}
+                                >
+                                    <h1 className="user-title">Thay đổi mật khẩu</h1>
+                                    <Form.Item
+                                        name="email"
+
+                                        label="Email"
+                                    >
+                                        <Input placeholder="email" disabled />
+                                    </Form.Item>
+                                    <Form.Item
+                                        name="password"
+                                        label="Mật khẩu cũ"
+                                        rules={[
+                                            {
+                                                required: true,
+                                                message: "Bạn chưa nhập mật khẩu cũ!",
+                                            },
+                                        ]}
+                                    >
+                                        <Input.Password placeholder="Nhập mật khẩu cũ" />
+                                    </Form.Item>
+                                    <Form.Item
+                                        name="newPassword"
+                                        id="newPassword"
+                                        label="Mật khẩu mới"
+                                        rules={[
+                                            {
+                                                required: true,
+                                                message: "Bạn chưa nhập mật khẩu mới!",
+                                            },
+                                        ]}
+                                        hasFeedback
+                                    >
+                                        <Input.Password placeholder="Nhập mật khẩu mới" iconRender={visible => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)} />
+                                    </Form.Item>
+                                    <Form.Item
+                                        name="confirmPassword"
+                                        id="confirmPassword"
+                                        label="Nhập lại mật khẩu mới"
+                                        hasFeedback
+                                        rules={[
+                                            {
+                                                required: true,
+                                                message: "Bạn phải xác nhận mật khẩu!",
+                                            },
+                                            ({ getFieldValue }) => ({
+                                                validator(_, value) {
+                                                    if (!value || getFieldValue("newPassword") === value) {
+                                                        return Promise.resolve();
+                                                    }
+
+                                                    return Promise.reject(
+                                                        new Error(
+                                                            "Hai mật khẩu phải giống nhau!"
+                                                        )
+                                                    );
+                                                },
+                                            }),
+                                        ]}
+
+                                    >
+                                        <Input.Password placeholder="Nhập lại mật khẩu mới" iconRender={visible => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)} />
+                                    </Form.Item>
+                                    <Button value="submit" type="primary" htmlType="submit">Cập nhật</Button>
+                                </Form>
+                            )}
+                        </Col>
                     </Row>
                 </Col>
             </Row>

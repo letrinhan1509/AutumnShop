@@ -59,16 +59,17 @@ const AddSale = (props) => {
         console.log(title);
     };
 
-    const addProduct = (values) => {
-        console.log(datestart.toLocaleDateString());
-        values["ngaybd"] = moment(datestart.toLocaleDateString()).format('YYYY-DD-MM');
-        values["ngaykt"] = moment(dateEnd.toLocaleDateString()).format('YYYY-DD-MM');
+    const addSale = (values) => {
+        console.log(moment(datestart).format('YYYY-MM-DD'));
+
+        values["ngaybd"] = moment(datestart).format('YYYY-MM-DD');
+        values["ngaykt"] = moment(dateEnd).format('YYYY-MM-DD');
         values["trangthai"] = title;
         values["sanphamCK"] = add;
         console.log(values);
 
         //const url = "http://127.0.0.1:5000/api/v1/khuyen-mai/them-khuyen-mai/san-pham"
-        /* discount.addSale(values).then((res) => {
+        discount.addSale(values).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message)
                 setTimeout(() => {
@@ -80,7 +81,7 @@ const AddSale = (props) => {
             .catch(err => {
                 console.log(err.response);
                 message.error(`${err.response.data.message}\n Tạo khuyến mãi sản phẩm thất bại !`);
-            }); */
+            });
     };
 
     const [listTypes, setListTypes] = useState([]);
@@ -210,7 +211,7 @@ const AddSale = (props) => {
                             {...formItemLayout}
                             form={form}
                             name="register"
-                            onFinish={addProduct}
+                            onFinish={addSale}
                             scrollToFirstError
                         >
                             <Form.Item
@@ -220,30 +221,6 @@ const AddSale = (props) => {
                                     {
                                         required: true,
                                         message: 'Vui lòng nhập tên chương trình khuyến mãi!',
-                                    },
-                                ]}
-                            >
-                                <Input />
-                            </Form.Item>
-                            <Form.Item
-                                name="dieukien"
-                                label="Điều kiện"
-                                rules={[
-                                    {
-                                        //required: true,
-                                        message: 'Vui lòng nhập điều kiện !',
-                                    },
-                                ]}
-                            >
-                                <Input />
-                            </Form.Item>
-                            <Form.Item
-                                name="giagiam"
-                                label="Giá giảm"
-                                rules={[
-                                    {
-                                        //required: true,
-                                        message: 'Vui lòng nhập giá được giảm!',
                                     },
                                 ]}
                             >
@@ -292,7 +269,7 @@ const AddSale = (props) => {
                                 </Radio.Group>
                             </Form.Item>
                             <Form.Item {...tailFormItemLayout}>
-                                <Link to={'/danh-sach-voucher'} >
+                                <Link to={'/danh-sach-khuyen-mai'} >
                                     <Button className="ant-btn ant-btn-dashed " htmlType="submit" style={{ marginLeft: -30 }}>
                                         Trở về
                                     </Button>

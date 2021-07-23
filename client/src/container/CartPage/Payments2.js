@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Row, Col, Button, Radio, Input, Space, Steps, message, Form, Layout, Select, Divider, Checkbox } from "antd";
+import { Row, Col, Button, Radio, Input, Space, Steps, message, Form, Layout, Select, Divider, Spin } from "antd";
 import { DollarCircleOutlined, RollbackOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { useHistory, Link } from "react-router-dom";
@@ -14,13 +14,11 @@ const Payments2 = (props) => {
   const history = useHistory();
   const order = JSON.parse(localStorage.getItem("order"));
   const voucher = JSON.parse(localStorage.getItem("voucher"));
-
-  //let CITY = "";
-  //let DISTRICT = "";
-  //let WARD = "";
   const [CITY, setCITY] = useState("");
   const [DISTRICT, setDISTRICT] = useState("");
   const [WARD, setWARD] = useState("");
+  const [loading, setLoading] = useState(false);
+
   //API Thành Phố
   useEffect(() => {
     city.getCityID(order.city).then((res) => {
@@ -32,6 +30,11 @@ const Payments2 = (props) => {
     city.getWardID(order.ward).then((res) => {
       setWARD(res.data.ward.Title);
     })
+    setTimeout(() => {
+      if (order !== null) {
+        setLoading(true);
+      }
+    }, 1000);
   }, []);
 
   /* const [cod, setisCod] = useState(true);
@@ -103,6 +106,12 @@ const Payments2 = (props) => {
   }
 
 
+  const [kq, setKq] = useState("");
+  const receiveData = function (data) {
+    setKq(data);
+    console.log('bbbb', kq);
+  }
+
   return (
     <>
       <Layout className="container">
@@ -115,107 +124,113 @@ const Payments2 = (props) => {
               <Step title="Hoàn tất đơn hàng" />
             </Steps>
           </Row>
-          <Row className="cart-wrapper">
-            <Form
-              name="pay"
-              onFinish={pay}
-            >
-              <Col className="col-one">
-                <div className="col-one-box1">
-                  <Divider orientation="left" plain><h3>Thông tin khách hàng</h3></Divider>
-                  <ul>
-                    <li><span>Họ Tên: </span>{order.tenkh}</li>
-                    <li><span>Điện thoại: </span>{order.sodienthoai}</li>
-                    <li><span>E-mail: </span>{order.email}</li>
-                    <li><span>Địa chỉ: </span>{order.address}</li>
-                    <li><span>Phường/Xã: </span>{WARD}</li>
-                    <li><span>Quận/Huyện: </span>{DISTRICT}</li>
-                    <li><span>Tỉnh/Thành Phố: </span>{CITY}</li>
-                  </ul>
-                </div>
-                <div className="col-one-box2">
-                  <Col>
-                    <Row><h3>Hình thức thanh toán</h3></Row>
-                    <Row className="select-pay">
-                      <Radio.Group onChange={selectPay} value={payValue}>
-                        <Space direction="vertical">
-                          <Radio value="Thanh toán khi nhận hàng"><img width="30" src="https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/icon-pay%2Fmoney.png?alt=media&token=b6ce9a3e-7c5a-4dc6-ae58-4bee355d6c60" />Thanh toán khi nhận hàng</Radio>
-                          <Radio value="Thanh toán Paypal"><img width="30" src="https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/icon-pay%2Fpaypal.png?alt=media&token=d14f113b-b997-443d-8aca-ec03dd254371" />Thanh toán Paypal</Radio>
-                          <Radio value="Thanh toán MOMO"><img width="30" src="https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/icon-pay%2Fmomo.png?alt=media&token=090c933f-a9f0-4944-a835-b2d0662e3d45" />Thanh toán MOMO</Radio>
-                        </Space>
-                      </Radio.Group>
-                    </Row>
-                  </Col>
-                  <Col>
-                    <Row><h3>Hệ thống vận chuyển</h3></Row>
-                    <Row className="select-pay">
-                      <Radio.Group onChange={selectDelivery} value={deliveryValue}>
-                        <Space direction="vertical">
-                          <Radio value="Hệ thống cửa hàng"><img width="30" src="https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/icon-pay%2FGHCH.png?alt=media&token=dbff4bfa-eb58-40f4-95dd-e7d5988a3dc5" />Hệ thống cửa hàng</Radio>
-                          <Radio value="Giao hàng tiết kiệm"><img width="30" src="https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/icon-pay%2FGHTK.png?alt=media&token=ac61547a-5896-49b3-a0da-49cf94db70b6" />Giao hàng tiết kiệm</Radio>
-                        </Space>
-                      </Radio.Group>
-                    </Row>
-                  </Col>
-                </div>
-              </Col>
-              <Col className="col-two">
-                <Row>
-                  <Col><h3>Tóm tắt đơn hàng</h3></Col>
-                </Row>
-                {order.cart.map(item => (
-                  <Row className="product-count">
-                    <Col className="title"><p>{item.qty}x {item.tensp}</p></Col>
-                    <Col><p>{item.qty * item.gia}Đ</p></Col>
+          {loading === false ? (
+            <Row className="spin-wrapper">
+              <Spin className="spin" size="large" />
+            </Row>
+          ) : (
+            <Row className="cart-wrapper">
+              <Form
+                name="pay"
+                onFinish={pay}
+              >
+                <Col className="col-one">
+                  <div className="col-one-box1">
+                    <Divider orientation="left" plain><h3>Thông tin khách hàng</h3></Divider>
+                    <ul>
+                      <li><span>Họ Tên: </span>{order.tenkh}</li>
+                      <li><span>Điện thoại: </span>{order.sodienthoai}</li>
+                      <li><span>E-mail: </span>{order.email}</li>
+                      <li><span>Địa chỉ: </span>{order.address}</li>
+                      <li><span>Phường/Xã: </span>{WARD}</li>
+                      <li><span>Quận/Huyện: </span>{DISTRICT}</li>
+                      <li><span>Tỉnh/Thành Phố: </span>{CITY}</li>
+                    </ul>
+                  </div>
+                  <div className="col-one-box2">
+                    <Col>
+                      <Row><h3>Hình thức thanh toán</h3></Row>
+                      <Row className="select-pay">
+                        <Radio.Group onChange={selectPay} value={payValue}>
+                          <Space direction="vertical">
+                            <Radio value="Thanh toán khi nhận hàng"><img width="30" src="https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/icon-pay%2Fmoney.png?alt=media&token=b6ce9a3e-7c5a-4dc6-ae58-4bee355d6c60" />Thanh toán khi nhận hàng</Radio>
+                            <Radio value="Thanh toán Paypal"><img width="30" src="https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/icon-pay%2Fpaypal.png?alt=media&token=d14f113b-b997-443d-8aca-ec03dd254371" />Thanh toán Paypal</Radio>
+                            <Radio value="Thanh toán MOMO"><img width="30" src="https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/icon-pay%2Fmomo.png?alt=media&token=090c933f-a9f0-4944-a835-b2d0662e3d45" />Thanh toán MOMO</Radio>
+                          </Space>
+                        </Radio.Group>
+                      </Row>
+                    </Col>
+                    <Col>
+                      <Row><h3>Hệ thống vận chuyển</h3></Row>
+                      <Row className="select-pay">
+                        <Radio.Group onChange={selectDelivery} value={deliveryValue}>
+                          <Space direction="vertical">
+                            <Radio value="Hệ thống cửa hàng"><img width="30" src="https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/icon-pay%2FGHCH.png?alt=media&token=dbff4bfa-eb58-40f4-95dd-e7d5988a3dc5" />Hệ thống cửa hàng</Radio>
+                            <Radio value="Giao hàng tiết kiệm"><img width="30" src="https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/icon-pay%2FGHTK.png?alt=media&token=ac61547a-5896-49b3-a0da-49cf94db70b6" />Giao hàng tiết kiệm</Radio>
+                          </Space>
+                        </Radio.Group>
+                      </Row>
+                    </Col>
+                  </div>
+                </Col>
+                <Col className="col-two">
+                  <Row>
+                    <Col><h3>Tóm tắt đơn hàng</h3></Col>
                   </Row>
-                ))}
-                <Row className="product-code">
-                  <Col className="abc">
-                    <Row className="sum-cart">
-                      <Col className="title"><p>Tổng đơn hàng</p></Col>
-                      <Col className="price"><p>{props.PriceCart}Đ</p></Col>
+                  {order.cart.map(item => (
+                    <Row className="product-count">
+                      <Col className="title"><p>{item.qty}x {item.tensp}</p></Col>
+                      <Col><p>{item.qty * item.gia}Đ</p></Col>
                     </Row>
-                    <Row className="ship">
-                      <Col className="title"><p>Phí vận chuyển</p></Col>
-                      <Col className="price"><p>{ship}Đ</p></Col>
-                    </Row>
-                    {voucher === null ? ("") : (
-                      <>
-                        <h3>Áp dụng voucher</h3>
-                        <Row className="voucher">
-                          <Col className="title"><p>{voucher.voucher}</p></Col>
-                          <Col className="price"><p>- {voucher.giagiam}Đ</p></Col>
-                        </Row>
-                      </>
+                  ))}
+                  <Row className="product-code">
+                    <Col className="abc">
+                      <Row className="sum-cart">
+                        <Col className="title"><p>Tổng đơn hàng</p></Col>
+                        <Col className="price"><p>{props.PriceCart}Đ</p></Col>
+                      </Row>
+                      <Row className="ship">
+                        <Col className="title"><p>Phí vận chuyển</p></Col>
+                        <Col className="price"><p>{ship}Đ</p></Col>
+                      </Row>
+                      {voucher === null ? ("") : (
+                        <>
+                          <h3>Áp dụng voucher</h3>
+                          <Row className="voucher">
+                            <Col className="title"><p>{voucher.voucher}</p></Col>
+                            <Col className="price"><p>- {voucher.giagiam}Đ</p></Col>
+                          </Row>
+                        </>
+                      )}
+                    </Col>
+                  </Row>
+                  <Row className="product-sum">
+                    <Col className="title"><p>Tổng Thanh toán</p></Col>
+                    {voucher === null ? (<Col className="price"><p>{ship + Number(props.PriceCart)}Đ</p></Col>) : (
+                      <Col className="price"><p>{ship + Number(props.PriceCart) - Number(voucher.giagiam)}Đ</p></Col>
                     )}
-                  </Col>
-                </Row>
-                <Row className="product-sum">
-                  <Col className="title"><p>Tổng Thanh toán</p></Col>
-                  {voucher === null ? (<Col className="price"><p>{ship + Number(props.PriceCart)}Đ</p></Col>) : (
-                    <Col className="price"><p>{ship + Number(props.PriceCart) - Number(voucher.giagiam)}Đ</p></Col>
-                  )}
 
-                </Row>
-                <Row><textarea placeholder="Ghi chú" onChange={note} /></Row>
-                <Row className="button-group">
-                  {payValue === "Thanh toán Paypal" ? (
-                    <>
-                      <Col className="paypal"><Paypal order={order} notes={notes} payValue={payValue} ship={ship} PriceCart={props.PriceCart} voucher={voucher} /></Col>
-                    </>
-                  ) : (
-                    <Button className="pay" value="submit" type="primary" htmlType="submit" >
-                      Thanh toán
+                  </Row>
+                  <Row><textarea placeholder="Ghi chú" onChange={note} /></Row>
+                  <Row className="button-group">
+                    {payValue === "Thanh toán Paypal" ? (
+                      <>
+                        <Col className="paypal"><Paypal order={order} notes={notes} payValue={payValue} ship={ship} PriceCart={props.PriceCart} voucher={voucher} deliveryValue={deliveryValue} receiveData={receiveData} /></Col>
+                      </>
+                    ) : (
+                      <Button className="pay" value="submit" type="primary" htmlType="submit" >
+                        Thanh toán
+                      </Button>
+                    )}
+
+                    <Button className="continue" onClick={back} >
+                      <Link to="/nhap-thong-tin-giao-hang">Quay lại<RollbackOutlined /></Link>
                     </Button>
-                  )}
-
-                  <Button className="continue" onClick={back} >
-                    <Link to="/nhap-thong-tin-giao-hang">Quay lại<RollbackOutlined /></Link>
-                  </Button>
-                </Row>
-              </Col>
-            </Form>
-          </Row>
+                  </Row>
+                </Col>
+              </Form>
+            </Row>
+          )}
         </div>
       </Layout>
     </>

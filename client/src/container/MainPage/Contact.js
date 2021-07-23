@@ -7,17 +7,6 @@ import emailjs from "emailjs-com";
 //const swal = require('react-swal');
 
 
-const layout = {
-  labelCol: {
-    span: 10,
-
-  },
-  wrapperCol: {
-    span: 8,
-  },
-
-};
-
 /* eslint-disable no-template-curly-in-string */
 
 const validateMessages = {
@@ -53,9 +42,9 @@ const Contact = () => {
 
     <div className="wrapper">
       <div className="form" >
-        <div className="text-contact"> <h1> CONTACT US </h1></div>
-        <Form {...layout} onSubmitCapture={sendemail} name="nest-messages">
-          <div className="name">Name</div>
+        <div className="text-contact"> <h1> THÔNG TIN </h1></div>
+        <Form onSubmitCapture={sendemail} name="nest-messages">
+          <div className="name">Họ và tên</div>
           <Form.Item
             name="name"
             rules={[
@@ -70,7 +59,7 @@ const Contact = () => {
           >
             <Input name="name" />
           </Form.Item>
-          <div className="name">Email</div>
+          <div className="name">Địa chỉ email</div>
           <Form.Item
             name="email"
             rules={[
@@ -81,17 +70,17 @@ const Contact = () => {
           >
             <Input name="email" />
           </Form.Item>
-          <div className="name">Subject</div>
+          <div className="name">Chủ đề</div>
           <Form.Item name="subject">
             <Input name="subject"/>
           </Form.Item>
-          <div className="mess">Message</div>
+          <div className="name">Nội dung</div>
           <Form.Item name="message" >
             <Input.TextArea style={{ height: '100px', width: '400px' }} name="message"/>
           </Form.Item>
-          <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 1, span: 5 }} >
+          <Form.Item>
             <Button type="submit" htmlType="submit" >
-              Submit
+              Gửi
             </Button>
           </Form.Item>
         </Form>

@@ -115,7 +115,7 @@ const EditAccount = (props) => {
                             ) : (
                                 <Image
                                     width={150}
-                                    src="https://cdn0.iconfinder.com/data/icons/a-restaurant/500/SingleCartoonRestaurantAlice_1-512.png"
+                                    src="https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/User_Img%2Fuser.png?alt=media&token=6ec247df-90ab-4cc9-b671-7261ef37215f"
                                 />
                             )}
                             <Form.Item
