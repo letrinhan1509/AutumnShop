@@ -231,7 +231,6 @@ exports.delete = (idProduct) => {
                 }
             }
         });
-        console.log("continue");
         let sql = `DELETE FROM chitietdm WHERE masp='${idProduct}'`;
         let query1 = db.query(sql, (err, result) => {
             if(err)
@@ -243,7 +242,7 @@ exports.delete = (idProduct) => {
                 hamLoi(err);
             else {
                 console.log('Delete success');
-                hamOK(result);
+                hamOK(1);
             }
         });
     });

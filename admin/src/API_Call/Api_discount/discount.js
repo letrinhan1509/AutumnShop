@@ -22,37 +22,37 @@ const discount = {
     },
     //(Chi tiết của 1 voucher theo mã voucher)
     getVoucherID: (id) => {
-        const url = `/check-voucher/${id}`;
+        const url = `/voucher/${id}`;
         return AxiosDiscount.get(url);
     },
     //(Thêm 1 khuyến mãi theo sản phẩm)
     addSale: (values) => {
-        const url = "/them-khuyen-mai/san-pham";
+        const url = "/san-pham";
         return AxiosDiscount.post(url ,values);
     },
     //(Thêm 1 khuyến mãi là voucher)
     addVoucher: (values) => {
-        const url = "/them-voucher";
+        const url = "/voucher";
         return AxiosDiscount.post(url ,values);
     },
     //(Cập nhật chương trình khuyến mãi theo sản phẩm)
     updateSale: (values) => {
-        const url = "/cap-nhat";
+        const url = "/sanpham";
         return AxiosDiscount.put(url ,values);
     },
     //(Cập nhật chương trình khuyến mãi là voucher)
     updateVoucher: (values) => {
-        const url = "/cap-nhat-voucher";
+        const url = "/voucher";
         return AxiosDiscount.put(url ,values);
     },
-    //(Cập nhật chương trình khuyến mãi theo voucher)
-    updateSaleStatus: (values) => {
-        const url = "/cap-nhat-trang-thai";
+    //(Cập nhật trạng thái chương trình khuyến mãi)
+    updateStatus: (values) => {
+        const url = "/";
         return AxiosDiscount.put(url ,values);
     },
     //(Xoá chương trình khuyến mãi theo sản phẩm)
     deleteSale: (id) => {
-        const url = `/xoa-khuyen-mai/${id}`;
+        const url = `/${id}`;
         return AxiosDiscount.delete(url);
     },
 };

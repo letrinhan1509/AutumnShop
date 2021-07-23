@@ -1,4 +1,5 @@
-import { Button, message, Table } from 'antd';
+import { Button, message, Table, Tag } from 'antd';
+import { LockOutlined, UnlockOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
@@ -7,7 +8,7 @@ import producers from 'API_Call/Api_producer/producer';
 
 const ListProducer = () => {
   const link = useHistory();
-
+  let result = JSON.parse(localStorage.getItem('user'));
   //API ListProducer
   const [listProducer, setListProducer] = useState([]);
   useEffect(() => {
@@ -29,8 +30,43 @@ const ListProducer = () => {
     });
   }
 
-  let result = JSON.parse(localStorage.getItem('user'));
-
+  // Cập nhật trạng thái nhà sản xuất
+  const unlock = (e) => {
+    let id = e.currentTarget.dataset.id;
+    let values = {
+      "mansx": id,
+      "trangthai": 1
+    };
+    producers.updateStatus(values).then((res) => {
+      if (res.data.status === "Success") {
+        message.success(res.data.message)
+        setTimeout(() => {
+          link.go({ pathname: '/danh-muc-san-pham' });
+        }, 800)
+      }
+    })
+      .catch(err => {
+        message.error(`${err.response.data.message} !!!`)
+      })
+  };
+  const lock = (e) => {
+    let id = e.currentTarget.dataset.id;
+    let values = {
+      "mansx": id,
+      "trangthai": 0
+    };
+    producers.updateStatus(values).then((res) => {
+      if (res.data.status === "Success") {
+        message.success(res.data.message)
+        setTimeout(() => {
+          link.go('/danh-muc-san-pham')
+        }, 800)
+      }
+    })
+      .catch(err => {
+        message.error(`${err.response.data.message}`)
+      })
+  };
 
   //Xóa nhà sản xuất
   const deleteType = (e) => {
@@ -50,18 +86,18 @@ const ListProducer = () => {
   }
 
 
-  /* ListAdmin.forEach(element => {
+  listProducer.forEach(element => {
     if(element.trangthai === 1){
       element.trangthai = [];
-      element.trangthai.stt = ["Hoạt động"];
-      element.trangthai.id = element.manv;
+      element.trangthai.stt = ["Hiện"];
+      element.trangthai.id = element.mansx;
     }
     if(element.trangthai === 0 ){
       element.trangthai = [];
-      element.trangthai.stt = ["Khoá"];
-      element.trangthai.id = element.manv;
+      element.trangthai.stt = ["Ẩn"];
+      element.trangthai.id = element.mansx;
     }
-  }) */
+  })
 
   const columns = [
     {
@@ -87,11 +123,58 @@ const ListProducer = () => {
       ],
       onFilter: (value, record) => record.xuatxu.includes(value),
     },
+    {
+      title: 'Trạng thái',
+      dataIndex: 'trangthai',
+      key: 'trangthai',
+      render: (trangthai) => (
+        <>
+          {trangthai.stt.map(tragth => {
+            let color = 'green';
+            if (tragth === 'Ẩn') {
+              color = 'red';
+            }
+            return (
+              <Tag color={color} key={tragth}>
+                {tragth.toUpperCase()}
+              </Tag>
+            );
+          })}
+
+        </>
+      ),
+      filters: [
+        { text: "Ẩn", value: "Ẩn" },
+        { text: "Hiện", value: "Hiện" },
+      ],
+      onFilter: (value, record) => record.trangthai.stt.includes(value),
+    },
+    result.permission === 'Admin' ?
+      {
+        dataIndex: 'trangthai',
+        key: 'trangthai',
+        render: (trangthai) =>
+        (
+          <>
+            {trangthai.stt.map(tragth => {
+              if (tragth === 'Ẩn') {
+                return (
+                  <div className="btn-box"><Button data-id={trangthai.id} type="primary" icon={<UnlockOutlined />} onClick={unlock}></Button></div>
+                );
+              } else {
+                return (
+                  <div className="btn-box"><Button data-id={trangthai.id} type="danger" icon={<LockOutlined />} onClick={lock}></Button></div>
+                )
+              }
+            })}
+          </>
+        )
+      } : (<> </>),
     result.permission === 'Admin' ?
       {
         dataIndex: 'mansx',
         key: 'mansx',
-        render: mansx => (<div className="btn-box"><Button data-id={mansx} type="primary" key={mansx} onClick={edit}> Sửa </Button></div>)
+        render: mansx => (<div className="btn-box fix"><Button data-id={mansx} type="primary" key={mansx} onClick={edit}> Sửa </Button></div>)
       } : (<> </>),
     result.permission === 'Admin' ?
       {

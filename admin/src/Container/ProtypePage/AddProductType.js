@@ -44,7 +44,7 @@ const AddProductType = (props) => {
         })
             .catch(err => {
                 console.log(err.response);
-                message.error(`Thêm loại thất bại!\n ${err.response.data.message}`)
+                message.error(`${err.response.data.message}`)
             })
     };
     const [listCategory, setlistCategory] = useState([]);

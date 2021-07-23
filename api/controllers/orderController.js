@@ -156,6 +156,38 @@ exports.getListOrderPhone = catchAsync(async (req, res, next) => {
         });
     }
 });
+// GET: Order list by customer code
+exports.getListStatus = catchAsync(async (req, res, next) => {
+    try {
+        let listStatus = await modelOrder.list_Order_Status();
+        return res.status(200).json({ 
+            status: "Success",
+            data: listStatus
+        });
+    } catch (error) {
+        return res.status(400).json({ 
+            status: "Fail", 
+            message: "Something went wrong!", 
+            error: error 
+        });
+    }
+});
+// GET: Sales and order statistics
+exports.statistical = catchAsync(async (req, res, next) => {
+    try {
+        let statistical = await modelOrder.statistical();
+        return res.status(200).json({ 
+            status: "Success",
+            statistical: statistical
+        });
+    } catch (error) {
+        return res.status(400).json({ 
+            status: "Fail", 
+            message: "Something went wrong!", 
+            error: error 
+        });
+    }
+});
 
 
         // POST
@@ -238,7 +270,7 @@ exports.putEditStatus = catchAsync(async (req, res, next) => {
             ngaygiao: req.body.ngaygiao,
             trangthai: req.body.trangthai
         };
-        if(!data.madonhang || !data.trangthai) {
+        if(!data.madonhang || data.trangthai == undefined) {
             return res.status(400).json({ 
                 status: "Fail", 
                 message: "Thiếu thông tin, vui lòng kiểm tra lại !"

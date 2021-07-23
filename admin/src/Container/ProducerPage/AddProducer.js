@@ -41,7 +41,7 @@ const AddProducer = (props) => {
         })
             .catch(err => {
                 console.log(err.response);
-                message.error(`Login fail!\n ${err.response.data}`)
+                message.error(`${err.response.data.message}`)
             })
     };
 

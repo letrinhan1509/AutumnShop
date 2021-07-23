@@ -57,7 +57,7 @@ const EditCategory = (props) => {
             }
         }) 
             .catch(err => {
-                message.error(`Lỗi...! Sửa danh mục thất bại!\n ${err.response.data.message}`);
+                message.error(`${err.response.data.message}`);
             })
     };
 

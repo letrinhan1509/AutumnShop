@@ -4,7 +4,7 @@ import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import Menus from "./Menus";
 import { useHistory, Link } from "react-router-dom";
 import "Container/scss/account.scss";
-import users from 'API_Call/Api_user/user';
+import admin from 'API_Call/Api_admin/admin';
 
 const { TextArea } = Input;
 const user = JSON.parse(localStorage.getItem("user"));
@@ -13,12 +13,11 @@ const ChangePass = (props) => {
     const history = useHistory();
 
     const update = (values) => {
-        console.log(values)
-        /* users.updateInfo(values).then((res) => {
+        admin.updatePassword(values).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message)
                 setTimeout(() => {
-                    history.push('/Thong-tin-tai-khoan');
+                    history.push('/tai-khoan');
                 }, 2000)
             }
             else {
@@ -28,8 +27,8 @@ const ChangePass = (props) => {
         })
             .catch(err => {
                 console.log(err.response);
-                message.error(`Login fail!\n ${err.response.data}`)
-            }) */
+                message.error(`${err.response.data.message}`)
+            })
     };
 
     var url = window.location.toString();
@@ -58,22 +57,22 @@ const ChangePass = (props) => {
                                 <Input placeholder="email" />
                             </Form.Item>
                             <Form.Item
-                                name="matkhaucu"
-                                id="matkhaucu"
+                                name="password"
+                                id="password"
                                 label="Mật khẩu cũ"
                             >
                                 <Input.Password placeholder="Nhập mật khẩu cũ" iconRender={visible => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}/>
                             </Form.Item>
                             <Form.Item
-                                name="matkhaumoi"
-                                id="matkhaumoi"
+                                name="newPassword"
+                                id="newPassword"
                                 label="Mật khẩu mới"
                             >
                                 <Input.Password placeholder="Nhập mật khẩu mới" iconRender={visible => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}/>
                             </Form.Item>
                             <Form.Item
-                                name="matkhaumoiCheck"
-                                id="matkhaumoiCheck"
+                                name="confirmPassword"
+                                id="confirmPassword"
                                 label="Nhập lại mật khẩu mới"
                             >
                                 <Input.Password placeholder="Nhập lại mật khẩu mới" iconRender={visible => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}/>

@@ -17,12 +17,12 @@ const discount = {
     },
     //(Chi tiết của 1 voucher theo mã khuyến mãi)
     getSaleID: (id) => {
-        const url = `/voucher/${id}`;
+        const url = `/${id}`;
         return AxiosDiscount.get(url);
     },
     //(Chi tiết của 1 voucher theo mã voucher)
     getVoucherID: (id) => {
-        const url = `/check-voucher/${id}`;
+        const url = `/voucher/${id}`;
         return AxiosDiscount.get(url);
     },
 };

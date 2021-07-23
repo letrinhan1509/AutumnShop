@@ -54,7 +54,7 @@ const AllProduct = () => {
       }
     })
       .catch(err => {
-        message.error(`Lỗi...!\n ${err.response.data.message}`);
+        message.error(`${err.response.data.message}`);
       })
     setIsModalVisible(false);
   };

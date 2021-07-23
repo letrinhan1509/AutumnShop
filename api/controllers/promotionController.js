@@ -65,7 +65,7 @@ exports.getDetailPromotion = catchAsync(async (req, res, next) => {
         if(detailPromotion == -1) {
             return res.status(400).json({
                 status: "Fail",
-                message: "Chương trình khuyến mãi này không tồn tại hoặc đã hết hạn, vui lòng kiểm tra lại !",
+                message: "Chương trình khuyến mãi này không tồn tại, vui lòng kiểm tra lại !",
             });
         } else {
             return res.status(200).json({ 
@@ -130,7 +130,7 @@ exports.postPromotionCODE = catchAsync(async (req, res, next) => {
                 message: "Thiếu thông tin voucher. Vui lòng kiểm tra lại thông tin !!!"
             });
         };
-        // Kiểm tra xem voucher đã tồn tại hay chưa?(false là ko tồn tại)
+        // Kiểm tra xem mã voucher đã tồn tại hay chưa?(false là ko tồn tại)
         let voucherExist = await modelDiscount.check_By_voucherName(data.voucher);
         if(voucherExist == false) {
             let voucher = await modelDiscount.create_Voucher(data);
@@ -193,7 +193,7 @@ exports.putEditPromotionCODE = catchAsync(async (req, res, next) => {
         let data = {
             makm: req.body.makm,
             tenkm: req.body.tenkm,
-            voucher: req.body.voucher,
+            voucher: req.body.voucher.toUpperCase(),
             ghichu: req.body.ghichu,
             hinh: req.body.hinh,
             dieukien: req.body.dieukien,
@@ -202,6 +202,7 @@ exports.putEditPromotionCODE = catchAsync(async (req, res, next) => {
             ngaykt: req.body.ngaykt,
             trangthai: req.body.trangthai
         };
+        console.log(data.voucher);
         if(!data.makm || !data.tenkm || !data.voucher || !data.ghichu || !data.giagiam || !data.ngaybd) {
             return res.status(400).json({
                 status: "Fail",
@@ -209,37 +210,28 @@ exports.putEditPromotionCODE = catchAsync(async (req, res, next) => {
             });
         };
         // Kiểm tra xem voucher đã tồn tại hay chưa?(false là ko tồn tại)
-        let voucherExist = await modelDiscount.check_By_voucherName(data.voucher);
-        if(voucherExist == false) {
+        const voucherExist = await modelDiscount.get_By_discountId(data.makm);
+        if(voucherExist == -1) {
             // Voucher không tồn tại
             return res.status(400).json({ 
                 status: "Fail", 
-                message: "Voucher này không có, vui lòng kiểm tra lại thông tin !!!" 
+                message: "Không tìm thấy chương trình khuyến mãi này, vui lòng kiểm tra lại thông tin !!!" 
             });
         } else {
             // Có voucher trong database
             if(!data.hinh) {
-                let data1 = {
-                    makm: req.body.makm,
-                    tenkm: req.body.tenkm,
-                    voucher: req.body.voucher,
-                    ghichu: req.body.ghichu,
-                    dieukien: req.body.dieukien,
-                    giagiam: req.body.giagiam,
-                    ngaybd: req.body.ngaybd,
-                    ngaykt: req.body.ngaykt,
-                    trangthai: req.body.trangthai
-                };
-                let query = await modelDiscount.update_Voucher(data1);
+                data.hinh = undefined;
+            };
+            if(data.voucher != voucherExist.voucher || data.makm == voucherExist.makm){
+                const query = await modelDiscount.update_Voucher(data);
                 return res.status(200).json({ 
                     status: "Success", 
                     message: query 
                 });
             } else {
-                let query = await modelDiscount.update_Voucher_Img(data);
-                return res.status(200).json({ 
-                    status: "Success", 
-                    message: query 
+                return res.status(400).json({ 
+                    status: "Fail", 
+                    message: "Trùng mã CODE, vui lòng nhập mã CODE khác !" 
                 });
             }
         };
@@ -276,18 +268,19 @@ exports.putEditPromotionStatus = catchAsync(async (req, res, next) => {
                 message: "Thiếu thông tin. Vui lòng kiểm tra lại thông tin !!!"
             }); 
         };
-        let promotionExist = await modelDiscount.get_By_discountId(data.makm);
+        const promotionExist = await modelDiscount.get_By_discountId(data.makm);
         if(promotionExist == -1) {
             return res.status(400).json({ 
                 status: "Fail", 
                 message: "Không tìm thấy chương trình khuyến mãi này, vui lòng kiểm tra lại thông tin !!!" 
             });
-        };
-        let voucher = await modelDiscount.lock_Discount(data);
-        return res.status(200).json({ 
-            status: "Success", 
-            message: voucher 
-        });
+        } else {
+            let voucher = await modelDiscount.update_Status(data);
+            return res.status(200).json({ 
+                status: "Success", 
+                message: voucher 
+            });
+        }
     } catch (error) {
         return res.status(400).json({
             status: "Fail", 

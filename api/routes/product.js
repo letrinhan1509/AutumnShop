@@ -6,11 +6,11 @@ const modelComment = require('../models/model_comment');
 
 var breadcrumb = 'Tất cả sản phẩm';
 
-router.get('/api/hot-product', async function(req, res) {
+router.get('/hot-product', async function(req, res) {
   let data = await modelProduct.hotProduct();
   res.json(data);
 })
-router.get('/api/new-product', async function(req, res) {
+router.get('/new-product', async function(req, res) {
   let data = await modelProduct.newProduct();
   res.json(data);
 })

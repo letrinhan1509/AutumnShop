@@ -32,7 +32,23 @@ exports.get_By_Id = async (producerId) => {
             }            
         })
     })
-}
+};
+    // Get nhà sản xuất theo tên:
+exports.get_By_Name = async (name) => {
+    return new Promise( (hamOK, hamLoi) => {
+        let sql = `SELECT * FROM nhasx WHERE tennsx='${name}'`;
+        db.query(sql, (err, result) => {
+            if(err)
+                hamLoi(err);
+            else{
+                if(result.length <= 0)
+                    hamOK(-1)   // Không có nhà sản xuất này trong DB.
+                else
+                    hamOK(result[0]);// Trả về nhà sản xuất tìm thấy trong DB.
+            }            
+        })
+    })
+};
     // Thêm nhà sản xuất:
 exports.insert = (data) => {
     return new Promise( (resolve, reject) => {
@@ -43,6 +59,32 @@ exports.insert = (data) => {
             else{
                 console.log('Insert producer successfully')
                 resolve("Thêm nhà sản xuất thành công !");    // trả về kết quả nếu promise hoàn thành.
+            }
+        })
+    })
+};
+    // Ẩn nhà sản xuất:
+exports.unlock = (mansx) => {
+    return new Promise( (hamOK, hamLoi) => {
+        let sql = `UPDATE nhasx SET trangthai=1  WHERE mansx = '${mansx}'`;
+        db.query(sql, (err, result) => {
+            if(err)
+                hamLoi(err);
+            else{
+                hamOK("Hiện nhà sản xuất thành công !");
+            }
+        })
+    })
+};
+    // Hiện nhà sản xuất:
+exports.lock = (mansx) => {
+    return new Promise( (hamOK, hamLoi) => {
+        let sql = `UPDATE nhasx SET trangthai=0  WHERE mansx = '${mansx}'`;
+        db.query(sql, (err, result) => {
+            if(err)
+                hamLoi(err);
+            else{
+                hamOK("Ẩn nhà sản xuất thành công !");
             }
         })
     })

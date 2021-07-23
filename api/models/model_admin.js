@@ -102,9 +102,9 @@ exports.update_Profile_Admin = (id, ten, matkhau, hinh, diachi, sdt, quyen) => {
     })
 }
     // Đổi mật khẩu tài khoản admin:
-exports.update_Password = (adminId, pas) => {
+exports.update_Password = (email, pas) => {
     return new Promise( (resolve, reject) => {
-        let sql = `UPDATE admin SET matkhau = '${pas}' WHERE manv = '${adminId}'`;
+        let sql = `UPDATE admin SET matkhau = '${pas}' WHERE admin = '${email}'`;
         db.query(sql, (err, result) => {
             if(err){
                 reject(err)

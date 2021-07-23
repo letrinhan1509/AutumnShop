@@ -1,6 +1,7 @@
-import { Button, message, Table } from 'antd';
+import { Button, message, Table, Tag } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
+import { LockOutlined, UnlockOutlined } from '@ant-design/icons';
 import "Container/scss/addpro.scss";
 import catalog from 'API_Call/Api_catalog/catalog';
 
@@ -29,6 +30,47 @@ const ListProductType = () => {
     
   }
 
+  //Cập nhật trạng thái Voucher:
+  const unlock = (e) => {
+    let id = e.currentTarget.dataset.id;
+    //console.log("Id:", id);
+    let values = { maloai: id, trangthai: 1 };
+    catalog.updateStatusType(values).then((res) => {
+        if (res.data.status === "Success") {
+            message.success(res.data.message)
+            setTimeout(() => {
+              link.go({ pathname: '/danh-sach-voucher' });
+            }, 1000);
+        }
+        else {
+            message.error(res.data.message);
+        }
+    })
+        .catch(err => {
+            console.log(err.response);
+            message.error(`Lỗi...! Mở khoá tài khoản thất bại!\n ${err.response.data.message}`);
+        });
+  }
+  const lock = (e) => {
+    let id = e.currentTarget.dataset.id;
+    //console.log("Id:", id);
+    let values = { maloai: id, trangthai: 0 };
+    catalog.updateStatusType(values).then((res) => {
+        if (res.data.status === "Success") {
+            message.success(res.data.message);
+            setTimeout(() => {
+              link.go('/danh-sach-voucher');
+            }, 1000);
+        }
+        else {
+            message.error(res.data.message);
+        }
+    })
+        .catch(err => {
+            message.error(`${err.response.data.message}`);
+        });
+  };
+
 
   const deleteType = (e) => {
     let id = e.currentTarget.dataset.id;
@@ -46,7 +88,7 @@ const ListProductType = () => {
     })
       .catch(err => {
         console.log(err.response);
-        message.error(`Lỗi...! Xoá loại thất bại!\n ${err.response.data.message}`)
+        message.error(`${err.response.data.message}`)
       })
   }
 
@@ -88,12 +130,62 @@ const ListProductType = () => {
       ],
       onFilter: (value, record) => record.madm.includes(value),
     },
+    {
+      title: 'Trạng thái',
+      dataIndex: 'trangthai',
+      key: 'trangthai',
+      render: (trangthai) => (
+          <>
+              {trangthai.stt.map(tragth => {
+                  let color = 'green';
+                  if (tragth === 'Ẩn') {
+                      color = 'red';
+                  }
+                  return (
+                      <Tag color={color} key={tragth}>
+                          {tragth.toUpperCase()}
+                      </Tag>
+                  );
+              })}
+
+          </>
+      ),
+      filters: [
+          { text: "Khoá", value: "Khoá" },
+          { text: "Hoạt động", value: "Hoạt động" },
+      ],
+      onFilter: (value, record) => record.trangthai.stt.includes(value),
+    },
+    result.permission === 'Admin' ? (
+      {
+          dataIndex: 'trangthai',
+          data: 'maloai',
+          key: 'trangthai',
+          render: (trangthai) => //(<Button data-id={text} type="primary" icon={<LockOutlined />} /* onClick={linkto} */></Button>)
+          (
+              <>
+                  {trangthai.stt.map(tragth => {
+                      if (tragth === 'Ẩn') {
+                          return (
+                              <Button data-id={trangthai.id} type="primary" icon={<UnlockOutlined />} onClick={unlock}>
+                              </Button>
+                          );
+                      } else {
+                          return (
+                              <Button data-id={trangthai.id} type="danger" icon={<LockOutlined />} onClick={lock}>
+                              </Button>
+                          )
+                      }
+                  })}
+              </>
+          )
+      }) : (<> </>),
     result.permission === 'Admin' ?
       {
 
         dataIndex: 'maloai',
         key: 'maloai',
-        render: maloai => (<div className="btn-box"><Button data-id={maloai} key={maloai} type="primary" onClick={linkto}> Sửa </Button></div>)
+        render: maloai => (<div className="btn-box fix"><Button data-id={maloai} key={maloai} type="primary" onClick={linkto}> Sửa </Button></div>)
       } : (<> </>),
     result.permission === 'Admin' ?
       {

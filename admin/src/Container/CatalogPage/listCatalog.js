@@ -32,10 +32,10 @@ const ListCata = () => {
 
   let result = JSON.parse(localStorage.getItem('user'));
 
-  /* const deleteCategory = (e) => {
+  // Xoá danh mục
+  const deleteCategory = (e) => {
     let id = e.currentTarget.dataset.id;
-    //const url = "http://127.0.0.1:5000/api/v1/danh-muc/xoa-danh-muc/" + id
-    axios.delete(url).then((res) => {
+    catalog.deleteCatalog(id).then((res) => {
       if (res.data.status === "Success") {
         message.success(res.data.message)
         setTimeout(() => {
@@ -47,9 +47,9 @@ const ListCata = () => {
       }
     })
       .catch(err => {
-        message.error(`Lỗi...! Xoá danh mục thất bại!\n ${err.response.data}`)
+        message.error(`${err.response.data.message} !!!`)
       })
-  } */
+  }
 
   //Cập nhật trạng thái danh mục
   const unlock = (e) => {
@@ -58,16 +58,16 @@ const ListCata = () => {
       "madm": id,
       "trangthai": 1
     };
-    catalog.updateStatus(values).then((res) => {
+    catalog.updateStatusCata(values).then((res) => {
       if (res.data.status === "Success") {
         message.success(res.data.message)
         setTimeout(() => {
-          link.go({ pathname: '/danh-sach-admin' });
+          link.go({ pathname: '/danh-muc-san-pham' });
         }, 800)
       }
     })
       .catch(err => {
-        message.error(`Lỗi...! Hiện danh mục thất bại!\n ${err.response.data.message}`)
+        message.error(`${err.response.data.message} !!!`)
       })
   };
   const lock = (e) => {
@@ -76,16 +76,16 @@ const ListCata = () => {
       "madm": id,
       "trangthai": 0
     };
-    catalog.updateStatus(values).then((res) => {
+    catalog.updateStatusCata(values).then((res) => {
       if (res.data.status === "Success") {
         message.success(res.data.message)
         setTimeout(() => {
-          link.go('/danh-sach-admin')
+          link.go('/danh-muc-san-pham')
         }, 800)
       }
     })
       .catch(err => {
-        message.error(`Lỗi...! Ẩn danh mục thất bại! \n ${err.response.data.message}`)
+        message.error(`${err.response.data.message}`)
       })
   };
 
@@ -140,19 +140,6 @@ const ListCata = () => {
       onFilter: (value, record) => record.trangthai.stt.includes(value),
     },
     result.permission === 'Admin' ?
-    {
-      dataIndex: 'madm',
-      key: 'madm',
-      render: madm => (<div className="btn-box"><Button data-id={madm} key={madm} type="primary" onClick={linkto}> Sửa </Button></div>)
-    } : (<> </>),
-  /* result.permission === 'Admin' ?
-    {
-      title: 'Hành động',
-      dataIndex: 'maloai',
-      key: 'maloai',
-      render: maloai => (<Button data-id={maloai} key={maloai} type="danger" onClick={deleteCategory}> Xoá </Button>)
-    } : (<> </>) */
-    result.permission === 'Admin' ?
       {
         dataIndex: 'trangthai',
         key: 'trangthai',
@@ -173,7 +160,19 @@ const ListCata = () => {
           </>
         )
       } : (<> </>),
-
+    result.permission === 'Admin' ?
+      {
+        dataIndex: 'madm',
+        key: 'madm',
+        render: madm => (<div className="btn-box fix"><Button data-id={madm} key={madm} type="primary" onClick={linkto}> Sửa </Button></div>)
+      } : (<> </>),
+    result.permission === 'Admin' ?
+      {
+        title: 'Hành động',
+        dataIndex: 'madm',
+        key: 'madm',
+        render: madm => (<Button data-id={madm} key={madm} type="danger" onClick={deleteCategory}> Xoá </Button>)
+      } : (<> </>),
   ];
 
 

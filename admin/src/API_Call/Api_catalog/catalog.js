@@ -32,7 +32,7 @@ const catalog = {
     },
     //(Thêm mới 1 danh mục sp)
     addCatalog: (values) => {
-        const url = "/them-danh-muc";
+        const url = "/them";
         return AxiosCatalog.post(url, values);
     },
     //(Cập nhật thông tin loại theo mã loại)
@@ -42,17 +42,27 @@ const catalog = {
     },
     //(Cập nhật thông tin danh mục theo mã danh mục)
     updateCatalog: (values) => {
-        const url = "/cap-nhat-danh-muc";
+        const url = "/cap-nhat";
+        return AxiosCatalog.put(url, values);
+    },
+    //(Cập nhật trạng thái loại theo mã loại)
+    updateStatusType: (values) => {
+        const url = "/cap-nhat-trang-thai-loai";
         return AxiosCatalog.put(url, values);
     },
     //(Cập nhật trạng thái danh mục theo mã danh mục)
-    updateStatus: (values) => {
+    updateStatusCata: (values) => {
         const url = "/cap-nhat-trang-thai";
         return AxiosCatalog.put(url, values);
     },
     //(Xoá loại sản phẩm theo id)
     deleteProtype: (id) => {
         const url = `/xoa-loai/${id}`;
+        return AxiosCatalog.delete(url);
+    },
+    //(Xoá danh mục sản phẩm theo id)
+    deleteCatalog: (id) => {
+        const url = `/xoa/${id}`;
         return AxiosCatalog.delete(url);
     }
 };

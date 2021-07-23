@@ -54,7 +54,7 @@ const Navigation = () => {
                     <Menu.Item key="danh-sach-binh-luan">Danh sách các bình luận</Menu.Item>
                 </SubMenu>
                 <SubMenu key="sub8" icon={<SettingOutlined />} title="Cài đặt">
-                    <Menu.Item key="thong-tin-tai-khoan" icon={<ProfileOutlined />}>Thông tin tài khoản</Menu.Item>
+                    <Menu.Item key="tai-khoan" icon={<ProfileOutlined />}>Thông tin tài khoản</Menu.Item>
                     <Menu.Item onClick={logout} icon={<LogoutOutlined />}>Đăng xuất</Menu.Item>
                 </SubMenu>
             </Menu>

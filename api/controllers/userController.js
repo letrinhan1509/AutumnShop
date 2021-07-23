@@ -29,7 +29,7 @@ exports.getListUsers = catchAsync(async (req, res, next) => {
     } catch (error) {
         return res.status(400).json({
             status: "Fail", 
-            message: "Something went wrong",
+            message: "Something went wrong!",
             error: error
         });
     }

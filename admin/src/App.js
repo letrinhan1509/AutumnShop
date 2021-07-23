@@ -20,7 +20,6 @@ import AddProductType from "./Container/ProtypePage/AddProductType";
 import AddProducer from "./Container/ProducerPage/AddProducer";
 import AddCategory from "./Container/CatalogPage/AddCategory";
 import AddVoucher from "./Container/VoucherPage/AddVoucher";
-import UserInf from "./Container/UserPage/UserInf";
 import ListProductType from "./Container/ProtypePage/ListProductType";
 import EditProductType from "./Container/ProtypePage/EditProductType";
 import ListCatalog from "./Container/CatalogPage/listCatalog";
@@ -142,9 +141,6 @@ function App() {
                   </Route>
                   <Route exact path="/danh-sach-binh-luan">
                     <ListComment />
-                  </Route>
-                  <Route exact path="/thong-tin-tai-khoan">
-                    <UserInf />
                   </Route>
                   <Route exact path="/danh-sach-don-hang">
                     <ListOrder />

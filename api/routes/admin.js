@@ -18,12 +18,32 @@ const signToken = (id) => {
 };
     
             // API GET:
-router.get('/', adminController.getListAdmins);                             // Danh sách tất cả admins.
-router.get('/trang-thai-don-hang', adminController.getListOrderStatus);     // Danh sách trạng thái đơn hàng.
-router.get('/:id', adminController.getAdmin);                               // Chi tiết 1 nhân viên theo mã.
-router.get('/trang-thai-don-hang/:id', adminController.getOrderStatus);     // Chi tiết 1 trạng thái đơn hàng.
-            // API POST:
-router.post('/dev-dang-ky', adminController.signup);
+router
+    .route("/")
+    .get(adminController.getListAdmins) // Danh sách tất cả admins
+    .post(adminController.signup)   // Tạo tài khoản admin
+    .put(adminController.putEditProfile);   // Cập nhật thông tin tài khoản admin
+
+router
+    .route("/trang-thai-don-hang")
+    .get(adminController.getListOrderStatus)    // Danh sách trạng thái đơn hàng
+    .post(adminController.postStatusOrder)      // Thêm 1 trạng thái của đơn hàng
+    .put(adminController.postStatusOrder);  // Cập nhật trạng thái đơn hàng
+
+router
+    .route("/:id")
+    .get(adminController.getAdmin)  // Chi tiết 1 nhân viên theo mã
+    //.delete(adminController.deleteAdmin)  // Xoá tài khoản nhân viên.
+
+router
+    .route("/trang-thai-don-hang/:id")
+    .get(adminController.getOrderStatus)    // Chi tiết 1 trạng thái đơn hàng
+    .delete(adminController.deleteStatusOrder); // Xoá trạng thái đơn hàng
+
+router.post('/dev-dang-nhap', adminController.login);// Đăng nhập
+router.put('/doi-mat-khau', adminController.putEditPassword);// Đổi mật khẩu admin
+router.put('/cap-nhat-trang-thai', adminController.putEditStatusAdmin);
+
     // Đăng nhập:
 router.post('/dang-nhap', function (req, res, next) {
     let em = req.body.email;
@@ -74,7 +94,7 @@ router.post('/dang-nhap', function (req, res, next) {
     });
 });
     // Thêm tài khoản admin:
-router.post('/dang-ky', async function(req, res) {
+/* router.post('/dang-ky', async function(req, res) {
     let email = req.body.email;
     let pass = req.body.pass;
     let pass1 = req.body.pass1;
@@ -135,15 +155,7 @@ router.post('/dang-ky', async function(req, res) {
     } catch (error) {
         res.status(400).json({ "status": "Fail", "message": "Lỗi cú pháp! Đăng ký không thành công!", "error": error });
     } 
-});
-router.post('/them-trang-thai', adminController.postStatusOrder);                   // Thêm trạng thái đơn hàng.
-            // API PUT:
-router.put('/doi-mat-khau', adminController.putEditPassword);                       // Cập nhật mật khẩu cho admin.
-router.put('/cap-nhat-tai-khoan', adminController.putEditProfile);                  // Cập nhật thông tin tài khoản admin.
-router.put('/cap-nhat-trang-thai', adminController.putEditStatusAdmin);             // Cập nhật trạng thái cho admin.
-router.put('/cap-nhat/trang-thai-don-hang', adminController.putEditStatusOrder);    // Cập nhật trạng thái.
-            // API DELETE:
-router.delete('/xoa/trang-thai-don-hang/:id', adminController.deleteStatusOrder);   // Xoá trạng thái.
-
+}); */
+               
 
 module.exports = router;

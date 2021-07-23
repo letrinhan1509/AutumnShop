@@ -53,7 +53,7 @@ const ListSale = (props) => {
         let id = e.currentTarget.dataset.id;
         //console.log("Id:", id);
         let values = { makm: id, trangthai: 1 };
-        discount.updateSaleStatus(values).then((res) => {
+        discount.updateStatus(values).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message)
                 setTimeout(() => {
@@ -73,7 +73,7 @@ const ListSale = (props) => {
         let id = e.currentTarget.dataset.id;
         //console.log("Id:", id);
         let values = { makm: id, trangthai: 0 };
-        discount.updateSaleStatus(values).then((res) => {
+        discount.updateStatus(values).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message);
                 setTimeout(() => {

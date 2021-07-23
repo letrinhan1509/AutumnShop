@@ -81,7 +81,7 @@ const ListOrder = (props) => {
         }
         console.log(demo);
     } */
-    const [pageSize, setPageSize] = useState(6);
+    const [pageSize, setPageSize] = useState(4);
     const size = [
         {
             key: 1,
@@ -168,7 +168,7 @@ const ListOrder = (props) => {
             <div className="View-layout">
                 <div>
                     <span>Đơn hàng hiển thị: </span>
-                    <Select defaultValue="6" Option style={{ width: 70 }} onChange={e => ChangeSize(e)}>
+                    <Select defaultValue="4" Option style={{ width: 70 }} onChange={e => ChangeSize(e)}>
                         {size.map((item) => {
                             return (
                                 <>
@@ -178,11 +178,11 @@ const ListOrder = (props) => {
                         })}
                     </Select>
                 </div>
-                <div className="btn-wrapper" >
+                {/* <div className="btn-wrapper" >
                     <Button type="primary">
                         Đơn hàng GHTK
                     </Button>
-                </div>
+                </div> */}
             </div>
             <Table className="proItem" dataSource={wordSearch} columns={columns} pagination={{ pageSize: `${pageSize}` }} size="middle" />
             {/* <Link to={'/Themnhanvien'}><p className="ant-btn ant-btn-primary" type="primary">Thêm nhân viên</p></Link> */}

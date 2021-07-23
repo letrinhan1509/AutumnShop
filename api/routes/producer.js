@@ -3,12 +3,24 @@ var router = express.Router();
 const producerController = require('../controllers/producerController');
 
 
-            // API
-router.get('/', producerController.getListProducers);   // Danh sách tất cả nhà sản xuất
-router.get('/:id', producerController.getProducer); // Nhà sản xuất theo id 
-router.post('/them', producerController.postProducer);   // Thêm nhà sản xuất
-router.put('/cap-nhat', producerController.putEditProducer); // Cập nhật thông tin nhà sản xuất
-router.delete('/xoa/:id', producerController.deleteProducer);   // Xoá nhà sản xuất
+            // API PRODUCER (TRADEMARK)
+router
+    .route("/")
+    .get(producerController.getListProducers)   // Danh sách tất cả nhà sản xuất
+    .post(producerController.postProducer)      // Thêm nhà sản xuất
+    .put(producerController.putEditProducer);   // Cập nhật thông tin nhà sản xuất
+ 
+router
+    .route("/:id")
+    .get(producerController.getProducer) // Nhà sản xuất theo id
+    .delete(producerController.deleteProducer); // Xoá nhà sản xuất theo id
+
+router.put("/cap-nhat-trang-thai", producerController.putEditStatus); // Cập nhật trạng thái nhà sản xuất
+
+//router.get('/:id', producerController.getProducer);
+//router.post('/them', producerController.postProducer);   
+//router.put('/cap-nhat', producerController.putEditProducer);
+//router.delete('/xoa/:id', producerController.deleteProducer);
 
 
 module.exports = router;

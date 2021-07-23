@@ -57,7 +57,7 @@ const EditProducer = (props) => {
             }
         })
             .catch(err => {
-                message.error(`Lỗi...! Sửa nhà sản xuất thất bại!\n ${err.response.data.message}`);
+                message.error(`${err.response.data.message}`);
             })
     };
 

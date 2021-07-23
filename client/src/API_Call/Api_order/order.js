@@ -1,10 +1,6 @@
 import AxiosOrder from "./AxiosOrder"
 
 const order = {
-    getAll: () => {
-        const url = "/";
-        return AxiosOrder.get(url);
-    },
     //(Chi tiết 1 đơn hàng theo mã đơn hàng)
     getOrderID: (id) => {
         const url = `/${id}`;
@@ -22,11 +18,11 @@ const order = {
     },
     //(Tạo 1 đơn hàng của khách hàng)
     addOrder: (values) => {
-        const url = "/tao-don-hang";
+        const url = "/";
         return AxiosOrder.post(url, values);
     },
     cancelOrder: (id) => {
-        const url = `/xoa/${id}`;
+        const url = `/${id}`;
         return AxiosOrder.delete(url);
     },
 };

@@ -70,7 +70,7 @@ const EditProductType = (props) => {
         }) 
             .catch(err => {
                 console.log(err.response);
-                message.error(`Lỗi...! Sửa loại thất bại!\n ${err.response.data}`)
+                message.error(`${err.response.data.message}`)
             })
     };
     /*  const loadpage= ()=>{

@@ -5,19 +5,32 @@ const orderController = require('../controllers/orderController');
 const authController = require('../controllers/authController');
 
 
-            // API 
-    // GET
-router.get('/', orderController.getListOrders); // Danh sách đơn hàng
-router.get('/:id', orderController.getOrder); // Chi tiết 1 đơn hàng theo mã đơn hàng
+            // API ORDER
+router
+    .route("/")
+    .get(orderController.getListOrders)     // Danh sách đơn hàng
+    .post(orderController.postCreateOrder)  // Tạo đơn hàng
+    .put(orderController.putEditStatus);    // Cập nhật trạng thái đơn hàng
+
+router
+    .route("/thong-ke")
+    .get(orderController.statistical);  // Thống kê doanh thu bán hàng và đơn hàng
+
+
+
+router
+    .route("/:id")
+    .get(orderController.getOrder)  // Chi tiết 1 đơn hàng theo mã đơn hàng
+    .delete(orderController.deleteOrder);   // Huỷ(xoá) đơn hàng
+
 router.get('/:id/chi-tiet-dhang', orderController.getListDetailOrders); // Danh sách các chi tiết đơn hàng theo mã đơn hàng
 router.get('/khach-hang/:id', orderController.getListOrderUser);        // Đơn hàng theo mã khách hàng
 router.get('/so-dien-thoai/:phone', orderController.getListOrderPhone); // Đơn hàng theo số điện thoại
-    // POST
-router.post('/tao-don-hang', orderController.postCreateOrder);  // Tạo đơn hàng
-    // PUT
-router.put('/cap-nhat-trang-thai', orderController.putEditStatus);  // Cập nhật trạng thái đơn hàng
-    // DELETE
-router.delete('/xoa/:id', orderController.deleteOrder);  // Huỷ(xoá) đơn hàng
+
+
+//router.post('/tao-don-hang', orderController.postCreateOrder);
+//router.put('/cap-nhat-trang-thai', orderController.putEditStatus);
+//router.delete('/xoa/:id', orderController.deleteOrder);
 
 
 /* router.post('/tao-don-hang', async function(req, res) {

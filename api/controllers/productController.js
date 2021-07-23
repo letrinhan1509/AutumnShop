@@ -57,7 +57,7 @@ exports.getProduct = catchAsync(async (req, res, next) => {
 
 
         // POST
-
+// Post: Create product
 exports.postProduct = catchAsync(async (req, res, next) => {
     try {
         let trangthai = req.body.trangthai;
@@ -90,7 +90,7 @@ exports.postProduct = catchAsync(async (req, res, next) => {
             if(query == 1) {
                 return res.status(200).json({ 
                     status: "Success", 
-                    message: productExist
+                    message: "Thêm sản phẩm thành công !"
                 });
             } else {
                 return res.status(400).json({ 
@@ -106,6 +106,7 @@ exports.postProduct = catchAsync(async (req, res, next) => {
             });
         }
     } catch (error) {
+        console.log(error);
         return res.status(400).json({ 
             status: "Fail", 
             message: "Something went wrong!", 
@@ -169,7 +170,7 @@ exports.deleteProduct = catchAsync(async (req, res, next) => {
             if(query == -1) {
                 return res.status(400).json({ 
                     status: "Fail", 
-                    message: "Sản phẩm có trong chi tiết đơn hàng! Không thể xoá sản phẩm !"
+                    message: "Sản phẩm đã có trong đơn hàng! Không thể xoá sản phẩm !"
                 });
             } else {
                 return res.status(200).json({ 

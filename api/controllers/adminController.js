@@ -4,34 +4,39 @@ const jwt = require("jsonwebtoken");
 const catchAsync = require('../utils/catchAsync');
 const authController = require('./authController');
 const modelAdmin = require('../models/model_admin');
+const e = require("express");
 
 
-/* const signToken = id => {
-    return jwt.sign( { id }, process.env.JWT_SECRET, {
+const signToken = (user) => {
+    const userData = {
+            _id: user.manv,
+            email: user.admin
+    };
+    return jwt.sign( { userData }, process.env.JWT_SECRET_ADMIN, {
         expiresIn: process.env.JWT_EXPIRES_IN
     });
-}; */
+};
 //Create and send token
-const createSendToken = (user, statusCode, res) => {
-    const token = authController.signToken(user);
+const createSendToken = (admin, statusCode, res) => {
+    //const token = authController.signToken(user);
+    const token = signToken(admin);
     const cookieOptions = {
         expires: new Date(
           Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
         ),
         httpOnly: true
     };
-    res.cookie('jwt', token, cookieOptions);
+    res.cookie('jwtAdmin', token, cookieOptions);
 
     // Remove password from output
-    user.matkhau = undefined;
+    admin.matkhau = undefined;
+    admin.username = admin.tennv;
 
     res.status(statusCode).json({
         status: "LoginSuccess",
         message: "Đăng nhập thành công !",
         token,
-        data: {
-            user
-        }
+        admin
     });
 };
 
@@ -156,12 +161,20 @@ exports.login = catchAsync(async (req, res, next) => {
     const { email, password } =  req.body;
     // 1) Check if email & password exists
     if (!email || !password) {
-        return res.status(400).json({ status: "Fail", message: "Vui lòng cung cấp email and password !" });
+        return res.status(400).json({ 
+            status: "Fail", 
+            message: "Đăng nhập thất bại. Vui lòng cung cấp email and password !" 
+        });
     };
     // 2) Check if user exist and passowrd is correct
     const admin = await modelAdmin.check_Admin(email);
+    console.log(admin);
+    console.log(bcrypt.compareSync(password, admin.matkhau));
     if(admin == -1 || admin.trangthai == 0 || (bcrypt.compareSync(password, admin.matkhau)) == false) {
-        return res.status(400).json({ status: "Fail", message: "Không đúng email, password hay tài khoản bị khóa, vui lòng kiểm tra lại thông tin !" });
+        return res.status(400).json({ 
+            status: "Fail", 
+            message: "Không đúng email, password hay tài khoản bị khóa, vui lòng kiểm tra lại thông tin !" 
+        });
     };
     // 3) If everything Ok
     createSendToken(admin, 200, res);
@@ -237,7 +250,7 @@ exports.putEditProfile = catchAsync(async (req, res, next) => {
     } catch (error) {
         return res.status(400).json({ 
             status: "Fail", 
-            message: "Lỗi....!", 
+            message: "Something went wrong!", 
             error: error 
         });
     };
@@ -281,29 +294,54 @@ exports.putEditStatusAdmin = catchAsync(async (req, res, next) => {
 });
 // Đổi mật khẩu
 exports.putEditPassword = catchAsync(async (req, res, next) => {
-    const id = req.body.adminId;
-    const admin = await modelAdmin.get_Admin_Id(id);
-    if(admin == -1) {
-        return res.status(400).json({ status: "Fail", message: "Không tìm thấy admin này !" });
-    };
-    let email = req.body.email;
-    let password = req.body.password;
-    let newPassword = req.body.newPassword;
-    let confirmPassword = req.body.confirmPassword;
-    let kq = bcrypt.compareSync(password, admin.matkhau);
     try {
-        if(email == admin.admin && kq == true){
-            if(newPassword == confirmPassword){
-                var salt = bcrypt.genSaltSync(10);
-                var pass_mahoa = bcrypt.hashSync(newPassword, salt);
-                let query = await modelAdmin.update_Password(adminId, pass_mahoa);
-                res.status(200).json({ status: "Success", message: query });
-            } else
-                res.status(400).json({ "status": "Fail", "message": "Mật khẩu cũ và mật khẩu mới không trùng nhau, vui lòng nhập lại !" });
-        } else
-            res.status(400).json({ "status": "Fail", "message": "Sai Email hoặc mật khẩu cũ không đúng ! Vui lòng kiểm tra lại thông tin !" });
+        console.log(req.body);
+        let email = req.body.email;
+        let password = req.body.password;
+        let newPassword = req.body.newPassword;
+        let confirmPassword = req.body.confirmPassword;
+        if(!email || !password || !newPassword || !confirmPassword) {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Thiếu thông tin. Vui lòng kiểm tra lại thông tin !"
+            });
+        };
+        const adminExist = await modelAdmin.check_Admin(email);
+        if(adminExist == -1) {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Không tìm thấy tài khoản có email này, vui lòng kiểm tra lại !"
+            });
+        } else {
+            let kq = bcrypt.compareSync(password, adminExist.matkhau);
+            if(kq) {
+                if(newPassword === confirmPassword) {
+                    var salt = bcrypt.genSaltSync(10);
+                    var pass_mahoa = bcrypt.hashSync(newPassword, salt);
+                    let query = await modelAdmin.update_Password(email, pass_mahoa);
+                    return res.status(200).json({ 
+                        status: "Success", 
+                        message: query 
+                    });
+                } else {
+                    return res.status(400).json({ 
+                        status: "Fail", 
+                        message: "Mật khẩu mới và xác nhận mật khẩu mới không trùng nhau, vui lòng nhập lại !" 
+                    });
+                }
+            } else {
+                return res.status(400).json({ 
+                    status: "Fail", 
+                    message: "Mật khẩu cũ không đúng, vui lòng kiểm tra lại thông tin !" 
+                });
+            };
+        };
     } catch (error) {
-        res.status(400).json({ "status": "Fail", "message": "Lỗi...! Đổi mật khẩu thất bại !" });
+        console.log(error);
+        res.status(400).json({ 
+            status: "Fail", 
+            message: "Something went wrong!" 
+        });
     }
 });
 // Cập nhật thông tin của trạng thái đơn hàng

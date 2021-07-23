@@ -36,7 +36,7 @@ const ListVoucher = (props) => {
         let id = e.currentTarget.dataset.id;
         //console.log("Id:", id);
         let values = { makm: id, trangthai: 1 };
-        voucher.updateSaleStatus(values).then((res) => {
+        voucher.updateStatus(values).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message)
                 setTimeout(() => {
@@ -49,14 +49,14 @@ const ListVoucher = (props) => {
         })
             .catch(err => {
                 console.log(err.response);
-                message.error(`Lỗi...! Mở khoá tài khoản thất bại!\n ${err.response.data.message}`);
+                message.error(`${err.response.data.message}`);
             });
     }
     const lock = (e) => {
         let id = e.currentTarget.dataset.id;
         //console.log("Id:", id);
         let values = { makm: id, trangthai: 0 };
-        voucher.updateSaleStatus(values).then((res) => {
+        voucher.updateStatus(values).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message);
                 setTimeout(() => {

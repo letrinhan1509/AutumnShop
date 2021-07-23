@@ -6,6 +6,7 @@ import { useHistory, Link } from "react-router-dom"
 import "Container/scss/addpro.scss";
 import moment from 'moment';
 import { storage } from 'Container/Firebase/firebase';
+import voucher from "API_Call/Api_discount/discount";
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -109,7 +110,7 @@ const EditVoucher = (props) => {
         values["trangthai"] = title;
 
         const url = "http://127.0.0.1:5000/api/v1/khuyen-mai/cap-nhat-voucher"
-        axios.put(url, values).then((res) => {
+        voucher.updateVoucher(values).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message)
                 setTimeout(() => {
@@ -119,7 +120,7 @@ const EditVoucher = (props) => {
                 message.error(res.data.message);
         })
             .catch(err => {
-                message.error(`${err.response.data.message}\n Cập nhật thông tin voucher thất bại !\n `);
+                message.error(`${err.response.data.message}`);
             });
     };
 

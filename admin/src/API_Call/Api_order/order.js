@@ -20,15 +20,15 @@ const order = {
         const url = `/khach-hang/${id}`;
         return AxiosOrder.get(url);
     },
-    //(Tạo 1 đơn hàng của khách hàng)
-    addOrder: (values) => {
-        const url = "/tao-don-hang";
-        return AxiosOrder.post(url, values);
-    },
     //(Cập nhật trạng thái đơn hàng)
     updateStatus: (values) => {
-        const url = "/cap-nhat-trang-thai";
+        const url = "/";
         return AxiosOrder.put(url, values);
+    },
+    //(Thống kê doanh thu bán hàng và đơn hàng)
+    statistical: () => {
+        const url = "/thong-ke";
+        return AxiosOrder.get(url);
     }
 };
 

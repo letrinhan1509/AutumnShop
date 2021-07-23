@@ -54,7 +54,7 @@ exports.getProducer = catchAsync(async (req, res, next) => {
 
 
         // POST
-// POST: Create producer
+// Post: Create producer
 exports.postProducer = catchAsync(async (req, res, next) => {
     try {
         let data = {
@@ -70,23 +70,26 @@ exports.postProducer = catchAsync(async (req, res, next) => {
         };
         const producerExist = await modelProducer.get_By_Id(data.mansx);
         if(producerExist == -1) {
-            return res.status(400).json({ 
-                status: "Fail", 
-                message: "Không tìm thấy nhà sản xuất này, vui lòng kiểm tra lại !"
-            });
-        } else {
-            if(data.tennsx === producerExist.tennsx) {
-                return res.status(400).json({ 
-                    status: "Fail", 
-                    message: "Trùng mã nhà sản xuất, vui lòng nhập mã khác !"
-                });
-            } else {
-                let query = await modelProducer.insert_producer(data);
+            const nameExist = await modelProducer.get_By_Name(data.tennsx);
+            if(nameExist == -1) {
+                let query = await modelProducer.insert(data);
                 return res.status(200).json({ 
                     status: "Success", 
                     message: query
                 });
+            } else {
+                // Trùng tên nhà sản xuất
+                return res.status(400).json({ 
+                    status: "Fail", 
+                    message: "Trùng tên nhà sản xuất, vui lòng nhập tên khác !"
+                });
             }
+        } else {
+            // Trùng mã nhà sản xuất
+            return res.status(400).json({ 
+                status: "Fail", 
+                message: "Trùng mã nhà sản xuất, vui lòng nhập mã khác !"
+            });
         }
     } catch (error) {
         return res.status(400).json({ 
@@ -99,7 +102,7 @@ exports.postProducer = catchAsync(async (req, res, next) => {
 
 
         // PUT
-// PUT: 
+// Put: 
 exports.putEditProducer = catchAsync(async (req, res, next) => {
     try {
         let producerId = req.body.mansx;
@@ -118,11 +121,64 @@ exports.putEditProducer = catchAsync(async (req, res, next) => {
                 message: "Không tìm thấy nhà sản xuất này, vui lòng kiểm tra lại !"
             });
         } else {
-            let query = await modelProducer.update(producerId, name, origin);
-            return res.status(200).json({ 
-                status: "Success", 
-                message: query
+            const nameExist = await modelProducer.get_By_Name(name);
+            if(nameExist == -1) {
+                let query = await modelProducer.update(producerId, name, origin);
+                return res.status(200).json({ 
+                    status: "Success", 
+                    message: query
+                });
+            } else {
+                return res.status(400).json({ 
+                    status: "Fail", 
+                    message: "Trùng tên nhà sản xuất, vui lòng nhập tên khác !"
+                });
+            }
+        }
+    } catch (error) {
+        return res.status(400).json({ 
+            status: "Fail", 
+            message: "Something went wrong!", 
+            error: error 
+        });
+    }
+});
+// Put: 
+exports.putEditStatus = catchAsync(async (req, res, next) => {
+    try {
+        let mansx = req.body.mansx;
+        let trangthai = req.body.trangthai;
+        if(!mansx || trangthai == undefined) {
+            return res.status(400).json({ 
+                status: "Fail", 
+                message: "Thiếu thông tin, vui lòng kiểm tra lại !" 
             });
+        };
+        const producerExist = await modelProducer.get_By_Id(mansx);
+        if(producerExist == -1) {
+            return res.status(400).json({ 
+                status: "Fail", 
+                message: "Không tìm thấy nhà sản xuất này, vui lòng kiểm tra lại !"
+            });
+        } else {
+            if(trangthai == 1) {
+                let queryUnlock = await modelProducer.unlock(mansx);
+                return res.status(200).json({ 
+                    status: "Success", 
+                    message: queryUnlock 
+                });
+            } else if (trangthai == 0) {
+                let queryLock = await modelProducer.lock(mansx);
+                return res.status(200).json({ 
+                    status: "Success", 
+                    message: queryLock 
+                });
+            } else {
+                return res.status(400).json({ 
+                    status: "Fail", 
+                    message: "Thiếu thông tin cập nhật trạng thái nhà sản xuất !" 
+                });
+            }
         }
     } catch (error) {
         return res.status(400).json({ 

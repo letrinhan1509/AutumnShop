@@ -8,10 +8,11 @@ var dataName = [];
     // Danh sách tất cả đơn hàng:
 exports.list_Orders = async () => {
     return new Promise( (hamOK, hamLoi) => {
-        let sql = `SELECT DH.madonhang, DH.makh, DH.tenkh, DH.email, DH.sodienthoai, DH.diachi, DH.tienship, DH.tongtien, DH.ghichu, DH.makm, DH.hinhthuc, DH.ngaydat, DH.ngaygiao, DH.trangthai, TT.tentt as tentt, DH.manv 
+        let sql = `SELECT DH.madonhang, DH.makh, DH.tenkh, DH.email, DH.sodienthoai, DH.diachi, DH.tienship, DH.tongtien, DH.ghichu, DH.makm, DH.hinhthuc, DH.ngaydat, DH.ngaygiao, DH.trangthai, TT.tentt as tentt
         FROM (donhang AS DH JOIN trangthai AS TT ON DH.trangthai = TT.trangthai)`;
         db.query(sql, (err, result) => {
             if(err){
+                console.log(err);
                 hamLoi(err);
             }else{
                 //dataList = result;
@@ -24,7 +25,7 @@ exports.list_Orders = async () => {
 exports.get_By_Id = async (orderId) => {
     //const data = [];
     return new Promise( (hamOK, hamLoi) => {
-        let sql = `SELECT DH.madonhang, DH.makh, DH.tenkh, DH.email, DH.sodienthoai, DH.diachi, DH.tienship, DH.tongtien, DH.ghichu, DH.makm, DH.hinhthuc, DH.ngaydat, DH.ngaygiao, DH.trangthai, TT.tentt as tentt, DH.manv 
+        let sql = `SELECT DH.madonhang, DH.makh, DH.tenkh, DH.email, DH.sodienthoai, DH.diachi, DH.tienship, DH.tongtien, DH.ghichu, DH.makm, DH.hinhthuc, DH.ngaydat, DH.ngaygiao, DH.trangthai, TT.tentt as tentt 
         FROM (donhang AS DH JOIN trangthai AS TT ON DH.trangthai = TT.trangthai)
         WHERE DH.madonhang = '${orderId}'`;
         db.query(sql, (err, result) => {
@@ -56,7 +57,7 @@ exports.get_By_Id = async (orderId) => {
 exports.get_By_userId = async (userId) => {
     return new Promise( (hamOK, hamLoi) => {
         var data = [];
-        let sql = `SELECT DH.madonhang, DH.makh, DH.tenkh, DH.email, DH.sodienthoai, DH.diachi, DH.tienship, DH.tongtien, DH.ghichu, DH.makm, DH.hinhthuc, DH.ngaydat, DH.ngaygiao, DH.trangthai, TT.tentt as tentt, DH.manv 
+        let sql = `SELECT DH.madonhang, DH.makh, DH.tenkh, DH.email, DH.sodienthoai, DH.diachi, DH.tienship, DH.tongtien, DH.ghichu, DH.makm, DH.hinhthuc, DH.ngaydat, DH.ngaygiao, DH.trangthai, TT.tentt as tentt 
         FROM (donhang AS DH JOIN trangthai AS TT ON DH.trangthai = TT.trangthai)
         WHERE DH.makh = '${userId}'`;
         db.query(sql, (err, result) => {
@@ -76,7 +77,7 @@ exports.get_By_userId = async (userId) => {
 exports.get_By_Phone = async (phone) => {
     return new Promise( (hamOK, hamLoi) => {
         let data = [];
-        let sql = `SELECT DH.madonhang, DH.makh, DH.tenkh, DH.email, DH.sodienthoai, DH.diachi, DH.tienship, DH.tongtien, DH.ghichu, DH.makm, DH.hinhthuc, DH.ngaydat, DH.ngaygiao, DH.trangthai, TT.tentt as tentt, DH.manv 
+        let sql = `SELECT DH.madonhang, DH.makh, DH.tenkh, DH.email, DH.sodienthoai, DH.diachi, DH.tienship, DH.tongtien, DH.ghichu, DH.makm, DH.hinhthuc, DH.ngaydat, DH.ngaygiao, DH.trangthai, TT.tentt as tentt 
         FROM (donhang AS DH JOIN trangthai AS TT ON DH.trangthai = TT.trangthai)
         WHERE DH.sodienthoai = '${phone}'`;
         db.query(sql, (err, result) => {
@@ -108,6 +109,20 @@ exports.get_detailOrder = async (orderId) => {
                 } else {
                     hamOK(-1);
                 }
+            }
+        })
+    })
+}
+//
+exports.statistical = async () => {
+    return new Promise( (hamOK, hamLoi) => {
+        let sql = `SELECT madonhang, ngaydat, SUM(tongtien) as tongdoanhthu, COUNT(ngaydat) as tongdonhang FROM donhang
+        GROUP BY ngaydat ORDER BY ngaydat DESC LIMIT 7`;
+        db.query(sql, (err, result) => {
+            if(err){
+                hamLoi(err);
+            }else{
+                hamOK(result);
             }
         })
     })
@@ -295,8 +310,7 @@ exports.insert_Order_User = (userId, name, email, phone, address, ship, total, n
         };
     })
 }
-
-// Xoá đơn hàng:
+    // Xoá đơn hàng:
 exports.delete = (madh) => {
     return new Promise( (hamOK, hamLoi) => {
         let sql = `UPDATE donhang SET trangthai='4' WHERE madonhang='${madh}'`;

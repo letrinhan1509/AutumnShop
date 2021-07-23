@@ -26,7 +26,7 @@ const admin = {
         return AxiosAdmin.get(url);
     },
     register: (values) => {
-        const url = "/dang-ky";
+        const url = "/";
         return AxiosAdmin.post(url, values);
     },
     login: (values) => {
@@ -34,7 +34,7 @@ const admin = {
         return AxiosAdmin.post(url, values);
     },
     updateInfo: (values) => {
-        const url = "/cap-nhat-tai-khoan";
+        const url = "/";
         return AxiosAdmin.put(url, values);
     },
     updateStatus: (values) => {
@@ -42,12 +42,16 @@ const admin = {
         return AxiosAdmin.put(url, values);
     },
     updateSTTorder: (values) => {
-        const url = "/cap-nhat/trang-thai-don-hang";
+        const url = "/trang-thai-don-hang";
         return AxiosAdmin.put(url, values);
     },
     updatePassword: (values) => {
         const url = "/doi-mat-khau";
         return AxiosAdmin.put(url, values);
+    },
+    deleteAdmin: (id) => {
+        const url = `/${id}`;
+        return AxiosAdmin.delete(url);
     }
 };
 

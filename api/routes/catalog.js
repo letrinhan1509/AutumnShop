@@ -9,10 +9,10 @@ router.get('/:id', catalogController.getCategory);    // Chi tiết 1 danh mục
 router.get('/loai/:id', catalogController.getType);   // Chi tiết 1 loại theo mã loại.
 router.get('/:id/loai', catalogController.getTypeCategory); // Tất cả loại theo mã danh mục.
       // POST:
-router.post('/them-danh-muc', catalogController.postCategory);    // Thêm danh mục
+router.post('/them', catalogController.postCategory);    // Thêm danh mục
 router.post('/them-loai', catalogController.postType);      // Thêm loại. 
       // PUT:
-router.put('/cap-nhat-danh-muc', catalogController.putEditCategory);    // Cập nhật danh mục
+router.put('/cap-nhat', catalogController.putEditCategory);    // Cập nhật danh mục
 router.put('/cap-nhat-loai', catalogController.putEditType);      // Cập nhật tên loại
 router.put('/cap-nhat-trang-thai', catalogController.putEditCategoryStatus);  // Cập nhật trạng thái danh mục
 router.put('/cap-nhat-trang-thai-loai', catalogController.putEditTypeStatus); // Cập nhật trạng thái loại
