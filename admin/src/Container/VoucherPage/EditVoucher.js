@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from "axios"
-import { Row, Form, Input, Button, Select, Checkbox, DatePicker, Space, message, Upload } from 'antd';
-import { DownloadOutlined, UploadOutlined } from '@ant-design/icons';
+import { Row, Form, Input, Button, Select, Checkbox, DatePicker, Col, message, Upload, Image } from 'antd';
+import { DownloadOutlined, UploadOutlined, DeleteOutlined } from '@ant-design/icons';
 import { useHistory, Link } from "react-router-dom"
 import "Container/scss/addpro.scss";
 import moment from 'moment';
@@ -65,42 +65,47 @@ const EditVoucher = (props) => {
         setTitle(e.target.value);
     };
 
-    const [image, setImage] = useState("");
+    const [imageName, setImageName] = useState("");
     const [fileList, setFileList] = useState([]);
+    const [link, setLink] = useState("");
 
     const beforeUpload = file => {
         setFileList(fileList.concat(file));
-        setImage(file[0]);
         return false;
     }
     const handleChange = file => {
-        if (fileList != "") {
-            setImage(fileList[0]);
+        if (file.fileList.length !== 0) {
+            const upload = storage.ref(`Voucher_img/${fileList[0].name}`).put(fileList[0]);
+            upload.on(
+                "state_changed",
+                snapshot => { },
+                error => {
+                    console.log(error);
+                },
+                () => {
+                    storage
+                        .ref("Voucher_img")
+                        .child(fileList[0].name)
+                        .getDownloadURL()
+                        .then(url => {
+                            console.log("ulr:", url);
+                            setLink(url);
+                            setImageName(fileList[0]);
+                            setFileList([]);
+                        });
+                    message.success("Tải ảnh thành công!");
+                }
+            );
         }
     };
-
-    //Download link từ Firebase
-    const [link, setLink] = useState("");
-    const upfirebase = () => {
-        const upload = storage.ref(`Product_Img/${image.name}`).put(image);
-        upload.on(
-            "state_changed",
-            snapshot => { },
-            error => {
-                console.log(error);
-            },
-            () => {
-                storage
-                    .ref("Product_Img")
-                    .child(image.name)
-                    .getDownloadURL()
-                    .then(url => {
-                        console.log("ulr:", url);
-                        setLink(url);
-                    });
-                message.success("download link thành công!");
-            }
-        );
+    const onRemove = file => {
+        setLink("");
+        const del = storage.ref(`Product_Img/${imageName.name}`);
+        del.delete().then((res) => {
+            message.success("Đã xóa ảnh!");
+        }).catch((error) => {
+            console.log(error);
+        });
     };
 
     const editvoucher = (values) => {
@@ -108,7 +113,16 @@ const EditVoucher = (props) => {
         values["ngaybd"] = moment(datestart).format('YYYY-MM-DD');
         values["ngaykt"] = moment(dateEnd).format('YYYY-MM-DD');
         values["trangthai"] = title;
-
+        if (imageName !== "") {
+            values['imgName'] = imageName.name;
+        } else {
+            //values['imgName'] = voucherID.imgName;
+        }
+        if (link !== "") {
+            values['hinh'] = link;
+        } else {
+            values['hinh'] = voucherID.hinh;
+        }
         const url = "http://127.0.0.1:5000/api/v1/khuyen-mai/cap-nhat-voucher"
         voucher.updateVoucher(values).then((res) => {
             if (res.data.status === "Success") {
@@ -125,10 +139,14 @@ const EditVoucher = (props) => {
     };
 
 
-    const options = [
-        { label: '0', value: '0' },
-        { label: '1', value: '1' },
-    ];
+    const deleteImg = () => {
+        const del = storage.ref(`Voucher_img/${voucherID.imageName}`);
+        del.delete().then((res) => {
+            message.success("Đã xóa ảnh!");
+        }).catch((error) => {
+            console.log(error);
+        });
+    }
 
 
 
@@ -233,7 +251,15 @@ const EditVoucher = (props) => {
                         label="Ảnh sản phẩm"
                         rules={[{ required: false }]}
                     >
-                        <Input />
+                        <Row>
+                            <Col>
+                                {link !== "" ? (
+                                    <Image src={link} width={120} />
+                                ) : (voucherID.hinh === "" ? (<span>Chưa có ảnh sản phẩm !</span>) : (<Image src={voucherID.hinh} width={120} />))}
+
+                            </Col>
+                            <Col className="del-img">{link !== "" ? ("") : (voucherID.hinh === "" ? ("") : (<Button onClick={deleteImg} type="primary" danger><DeleteOutlined /></Button>))}</Col>
+                        </Row>
                     </Form.Item>
                     <Form.Item
                         name="hinhmoi"
@@ -249,20 +275,11 @@ const EditVoucher = (props) => {
                             multiple='true'
                             beforeUpload={beforeUpload}
                             onChange={handleChange}
+                            onRemove={onRemove}
                             fileList
                         >
-                            <Button icon={<UploadOutlined />} >Click to upload</Button>
+                            <Button icon={<UploadOutlined />} >Tải ảnh lên</Button>
                         </Upload>
-                    </Form.Item>
-
-                    <Form.Item label="Downloat link Firebase">
-                        {
-                            link == "" ? (
-                                <Button icon={<DownloadOutlined />} onClick={upfirebase} >Downlink</Button>
-                            ) : (
-                                <Button icon={<DownloadOutlined />} onClick={upfirebase} disabled>Downlink</Button>
-                            )
-                        }
                     </Form.Item>
                     <Form.Item
                         label="Ngày bắt đầu"

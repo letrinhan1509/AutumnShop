@@ -253,7 +253,6 @@ const AddNV = (props) => {
                     label="Mã quyền"
                 >
                     <Select>
-                        <Option value="Admin">Admin</Option>
                         <Option value="QLCH">Quản lý cửa hàng</Option>
                         <Option value="NVBH">Nhân viên bán hàng</Option>
                         <Option value="NVGH">Nhân viên giao hàng</Option>

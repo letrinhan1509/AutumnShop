@@ -20,14 +20,14 @@ const ListProductType = () => {
   const linkto = (e) => {
     let id = e.currentTarget.dataset.id
     catalog.getTypeID(id).then((res) => {
-      if (res.data.status === "Success"){
+      if (res.data.status === "Success") {
         localStorage.setItem('type', JSON.stringify(res.data.data));
         setTimeout(() => {
           link.push('/danh-sach-loai/sua-loai');
         }, 100)
       }
     });
-    
+
   }
 
   //Cập nhật trạng thái Voucher:
@@ -36,39 +36,39 @@ const ListProductType = () => {
     //console.log("Id:", id);
     let values = { maloai: id, trangthai: 1 };
     catalog.updateStatusType(values).then((res) => {
-        if (res.data.status === "Success") {
-            message.success(res.data.message)
-            setTimeout(() => {
-              link.go({ pathname: '/danh-sach-voucher' });
-            }, 1000);
-        }
-        else {
-            message.error(res.data.message);
-        }
+      if (res.data.status === "Success") {
+        message.success(res.data.message)
+        setTimeout(() => {
+          link.go({ pathname: '/danh-sach-voucher' });
+        }, 1000);
+      }
+      else {
+        message.error(res.data.message);
+      }
     })
-        .catch(err => {
-            console.log(err.response);
-            message.error(`Lỗi...! Mở khoá tài khoản thất bại!\n ${err.response.data.message}`);
-        });
+      .catch(err => {
+        console.log(err.response);
+        message.error(`Lỗi...! Mở khoá tài khoản thất bại!\n ${err.response.data.message}`);
+      });
   }
   const lock = (e) => {
     let id = e.currentTarget.dataset.id;
     //console.log("Id:", id);
     let values = { maloai: id, trangthai: 0 };
     catalog.updateStatusType(values).then((res) => {
-        if (res.data.status === "Success") {
-            message.success(res.data.message);
-            setTimeout(() => {
-              link.go('/danh-sach-voucher');
-            }, 1000);
-        }
-        else {
-            message.error(res.data.message);
-        }
+      if (res.data.status === "Success") {
+        message.success(res.data.message);
+        setTimeout(() => {
+          link.go('/danh-sach-voucher');
+        }, 1000);
+      }
+      else {
+        message.error(res.data.message);
+      }
     })
-        .catch(err => {
-            message.error(`${err.response.data.message}`);
-        });
+      .catch(err => {
+        message.error(`${err.response.data.message}`);
+      });
   };
 
 
@@ -135,64 +135,59 @@ const ListProductType = () => {
       dataIndex: 'trangthai',
       key: 'trangthai',
       render: (trangthai) => (
-          <>
-              {trangthai.stt.map(tragth => {
-                  let color = 'green';
-                  if (tragth === 'Ẩn') {
-                      color = 'red';
-                  }
-                  return (
-                      <Tag color={color} key={tragth}>
-                          {tragth.toUpperCase()}
-                      </Tag>
-                  );
-              })}
+        <>
+          {trangthai.stt.map(tragth => {
+            let color = 'green';
+            if (tragth === 'Ẩn') {
+              color = 'red';
+            }
+            return (
+              <Tag color={color} key={tragth}>
+                {tragth.toUpperCase()}
+              </Tag>
+            );
+          })}
 
-          </>
+        </>
       ),
       filters: [
-          { text: "Khoá", value: "Khoá" },
-          { text: "Hoạt động", value: "Hoạt động" },
+        { text: "Khoá", value: "Khoá" },
+        { text: "Hoạt động", value: "Hoạt động" },
       ],
       onFilter: (value, record) => record.trangthai.stt.includes(value),
     },
-    result.permission === 'Admin' ? (
-      {
-          dataIndex: 'trangthai',
-          data: 'maloai',
-          key: 'trangthai',
-          render: (trangthai) => //(<Button data-id={text} type="primary" icon={<LockOutlined />} /* onClick={linkto} */></Button>)
-          (
-              <>
-                  {trangthai.stt.map(tragth => {
-                      if (tragth === 'Ẩn') {
-                          return (
-                              <Button data-id={trangthai.id} type="primary" icon={<UnlockOutlined />} onClick={unlock}>
-                              </Button>
-                          );
-                      } else {
-                          return (
-                              <Button data-id={trangthai.id} type="danger" icon={<LockOutlined />} onClick={lock}>
-                              </Button>
-                          )
-                      }
-                  })}
-              </>
-          )
-      }) : (<> </>),
-    result.permission === 'Admin' ?
-      {
-
-        dataIndex: 'maloai',
-        key: 'maloai',
-        render: maloai => (<div className="btn-box fix"><Button data-id={maloai} key={maloai} type="primary" onClick={linkto}> Sửa </Button></div>)
-      } : (<> </>),
-    result.permission === 'Admin' ?
+    {
+      dataIndex: 'trangthai',
+      data: 'maloai',
+      key: 'trangthai',
+      render: (trangthai) => //(<Button data-id={text} type="primary" icon={<LockOutlined />} /* onClick={linkto} */></Button>)
+      (
+        <>
+          {trangthai.stt.map(tragth => {
+            if (tragth === 'Ẩn') {
+              return (
+                <div className="btn-box lock"><Button data-id={trangthai.id} type="primary" icon={<UnlockOutlined />} onClick={unlock}></Button></div>
+              );
+            } else {
+              return (
+                <div className="btn-box lock"><Button data-id={trangthai.id} type="danger" icon={<LockOutlined />} onClick={lock}></Button></div>
+              )
+            }
+          })}
+        </>
+      )
+    },
+    {
+      dataIndex: 'maloai',
+      key: 'maloai',
+      render: maloai => (<div className="btn-box fix"><Button data-id={maloai} key={maloai} type="primary" onClick={linkto}> Sửa </Button></div>)
+    },
+    result.permission === 'Admin' || result.permission === 'QL' ?
       {
 
         dataIndex: 'maloai',
         key: 'maloai',
-        render: maloai => (<div className="btn-box"><Button data-id={maloai} key={maloai} type="danger" onClick={deleteType}> Xoá </Button></div>)
+        render: maloai => (<div className="btn-box delete"><Button data-id={maloai} key={maloai} type="danger" onClick={deleteType}> Xoá </Button></div>)
       } : (<> </>)
 
   ];
@@ -201,7 +196,7 @@ const ListProductType = () => {
   return (
     <>
       <div className="form-wrapper">
-        <h2 style={{ textAlign: 'center', marginTop: "30px", marginBottom:"5px" }}>DANH SÁCH LOẠI SẢN PHẨM</h2>
+        <h2 style={{ textAlign: 'center', marginTop: "30px", marginBottom: "5px" }}>DANH SÁCH LOẠI SẢN PHẨM</h2>
         {
           result.permission === 'Admin' ? (
             <div className="btn-wrapper">
@@ -213,9 +208,9 @@ const ListProductType = () => {
             </div>
           ) : ("")
         }
-        <Table className="item" dataSource={ListType} columns={columns} pagination={{ pageSize: 10 }} style={{ padding: 10 }} size="middle" />
-        
-        
+        <Table className="item" dataSource={ListType} columns={columns} pagination={{ pageSize: 6 }} style={{ padding: 10 }} size="middle" />
+
+
       </div>
 
     </>

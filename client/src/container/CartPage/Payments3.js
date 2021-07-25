@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import { Button, Layout } from "antd";
+import { Button, Layout, Steps, Row } from "antd";
 import { Link } from "react-router-dom";
+import { DollarCircleOutlined, RollbackOutlined, FileDoneOutlined, CheckCircleOutlined, FormOutlined } from "@ant-design/icons";
 import "container/components-css/payments3.scss"
 
-
+const { Step } = Steps;
 const Payments3 = (props) => {
   const [size, setSize] = useState('large');
   return (
@@ -11,6 +12,13 @@ const Payments3 = (props) => {
       <Layout className="container">
         <div className="cart-empty">
           <div>
+            <Row className="step">
+              <Steps size="small" current={1}>
+                <Step status="finish" icon={<FormOutlined />} title="Địa chỉ giao hàng" />
+                <Step status="finish" title="Xác nhận và thanh toán" icon={<FileDoneOutlined />} />
+                <Step status="finish" title="Hoàn tất đơn hàng" icon={<CheckCircleOutlined />} />
+              </Steps>
+            </Row>
             <p>Đặt hàng thành công, Autumn chân thành cảm ơn !</p>
             <div>
               <Link to="/">

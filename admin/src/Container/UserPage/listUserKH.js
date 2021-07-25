@@ -153,13 +153,11 @@ const ListUserKH = (props) => {
             {trangthai.stt.map(tragth => {
               if (tragth === 'Khoá') {
                 return (
-                  <Button data-id={trangthai.id} type="primary" icon={<UnlockOutlined />} onClick={unlock}>
-                  </Button>
+                  <div className="btn-box lock"><Button data-id={trangthai.id} type="primary" icon={<UnlockOutlined />} onClick={unlock}></Button></div>
                 );
               } else {
                 return (
-                  <Button data-id={trangthai.id} type="danger" icon={<LockOutlined />} onClick={lock}>
-                  </Button>
+                  <div className="btn-box lock"><Button data-id={trangthai.id} type="danger" icon={<LockOutlined />} onClick={lock}></Button></div>
                 )
               }
             })}

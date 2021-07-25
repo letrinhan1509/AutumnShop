@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import { Image, Input, Button, message, Form, Upload, Tooltip, Spin } from 'antd';
-import { UploadOutlined, DownloadOutlined } from '@ant-design/icons';
+import { UploadOutlined } from '@ant-design/icons';
 import { storage } from 'container/Config/firebase';
 import Menus from "./Menus";
 import { useHistory, Link } from "react-router-dom";
@@ -34,47 +34,66 @@ const EditUser = (props) => {
         }
         return e && e.fileList;
     };
-    const [image, setImage] = useState("");
+    const [imageName, setImageName] = useState("");
     const [fileList, setFileList] = useState([]);
+    const [link, setLink] = useState("");
+
     const beforeUpload = file => {
         setFileList(fileList.concat(file));
-        setImage(file[0]);
         return false;
     }
     const handleChange = file => {
-        if (fileList != "") {
-            setImage(fileList[0]);
+        if (file.fileList.length !== 0) {
+            const upload = storage.ref(`User_Img/${fileList[0].name}`).put(fileList[0]);
+            upload.on(
+                "state_changed",
+                snapshot => { },
+                error => {
+                    console.log(error);
+                },
+                () => {
+                    storage
+                        .ref("User_Img")
+                        .child(fileList[0].name)
+                        .getDownloadURL()
+                        .then(url => {
+                            console.log("ulr:", url);
+                            setLink(url);
+                            setImageName(fileList[0]);
+                            setFileList([]);
+                        });
+                    message.success("Tải ảnh thành công!");
+                }
+            );
         }
     };
-    //Download link từ Firebase
-    const [link, setLink] = useState("");
+    const onRemove = file => {
+        setLink("");
+        const del = storage.ref(`User_Img/${imageName.name}`);
+        setImageName("");
+        del.delete().then((res) => {
+            message.success("Đã xóa ảnh!");
+        }).catch((error) => {
+            console.log(error);
+        });
+    };
+    
     const upfirebase = () => {
-        const upload = storage.ref(`Product_Img/${image.name}`).put(image);
-        upload.on(
-            "state_changed",
-            snapshot => { },
-            error => {
-                console.log(error);
-            },
-            () => {
-                storage
-                    .ref("Product_Img")
-                    .child(image.name)
-                    .getDownloadURL()
-                    .then(url => {
-                        console.log("ulr:", url);
-                        setLink(url);
-                    });
-                message.success("download link thành công!");
-            }
-        );
+        
     };
     const update = (values) => {
-        if (link !== "") {
-            values['hinhMoi'] = link;
+        if(imageName !== ""){
+            values['imgName'] = imageName.name;
+        }else{
+            //values['imgName'] = user.imgName;
+        }
+        if(link !== ""){
+            values['hinh'] = link;
+        }else{
+            values['hinh'] = user.hinh;
         }
         console.log(values)
-        users.updateInfo(values).then((res) => {
+        /* users.updateInfo(values).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message)
                 localStorage.removeItem("user");
@@ -91,7 +110,7 @@ const EditUser = (props) => {
             .catch(err => {
                 console.log(err.response);
                 message.error(`ERROR !\n ${err.response.data.message}`)
-            })
+            }) */
     };
 
     return (
@@ -145,26 +164,15 @@ const EditUser = (props) => {
                                     >
                                         <Upload
                                             listType="picture"
-
                                             name='hinh'
                                             multiple='true'
                                             beforeUpload={beforeUpload}
                                             onChange={handleChange}
+                                            onRemove={onRemove}
                                             fileList
                                         >
-                                            <Button icon={<UploadOutlined />} >Click to upload</Button>
+                                            <Button icon={<UploadOutlined />} >Tải ảnh lên</Button>
                                         </Upload>
-                                    </Form.Item>
-
-                                    <Form.Item label="Downloat link ảnh" className="load-img" >
-
-                                        {
-                                            link == "" ? (
-                                                <Button icon={<DownloadOutlined />} onClick={upfirebase} >Downlink</Button>
-                                            ) : (
-                                                <Button icon={<DownloadOutlined />} onClick={upfirebase} disabled>Downlink</Button>
-                                            )
-                                        }
                                     </Form.Item>
                                     <Form.Item
                                         name="username"

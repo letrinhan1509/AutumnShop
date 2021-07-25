@@ -4,8 +4,8 @@ import catalog from 'API_Call/Api_catalog/catalog';
 import producer from 'API_Call/Api_producer/producer';
 import admins from 'API_Call/Api_admin/admin';
 import user from 'API_Call/Api_user/user';
+import order from 'API_Call/Api_order/order';
 import { Row, Col } from 'antd';
-import { DownloadOutlined, UploadOutlined } from '@ant-design/icons';
 import "Container/scss/dashboard.scss";
 import { Link } from 'react-router-dom';
 import { Line, Bar } from 'react-chartjs-2';
@@ -20,6 +20,7 @@ const Dashboard = () => {
     const [ListCatalog, setListCatalog] = useState([]);
     const [ListAdmin, setListAdmin] = useState([]);
     const [ListUser, setListUser] = useState([]);
+    const [statistical, setStatistical] = useState([]);
     useEffect(() => {
         product.getAll().then((res) => {
             setListProduct(res.data.data);
@@ -39,8 +40,11 @@ const Dashboard = () => {
         user.getAll().then((res) => {
             setListUser(res.data.data);
         });
+        order.statistical().then((res) => {
+            setStatistical(res.data.statistical);
+        });
     }, []);
-    console.log(ListCatalog);
+    const [date, setDate] = useState([]);
 
     return (
         <>
@@ -48,11 +52,20 @@ const Dashboard = () => {
                 <div>
                     <Bar
                         data={{
-                            labels: ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'Chủ nhật'],
+                            labels: statistical.map((item) => {
+                                var date = new Date(item.ngaydat);
+                                return (
+                                    date.toLocaleDateString()
+                                );
+                            }),
                             datasets: [
                                 {
                                     label: 'Tổng đơn hàng',
-                                    data: [12, 19, 3, 5, 2, 3, 7],
+                                    data: statistical.map((item) => {
+                                        return (
+                                            item.tongdonhang 
+                                        );
+                                    }),
                                     backgroundColor: [
                                         'rgba(255, 99, 132, 0.2)',
                                         'rgba(54, 162, 235, 0.2)',
@@ -88,11 +101,20 @@ const Dashboard = () => {
                 <div>
                     <Bar
                         data={{
-                            labels: ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'Chủ nhật'],
+                            labels: statistical.map((item) => {
+                                var date = new Date(item.ngaydat);
+                                return (
+                                    date.toLocaleDateString()
+                                );
+                            }),
                             datasets: [
                                 {
                                     label: 'Doanh thu bán hàng',
-                                    data: [3, 8, 3, 5, 18, 20, 30],
+                                    data: statistical.map((item) => {
+                                        return (
+                                            item.tongdoanhthu
+                                        );
+                                    }),
                                     backgroundColor: [
                                         'rgba(255, 99, 132, 0.2)',
                                         'rgba(54, 162, 235, 0.2)',
@@ -109,7 +131,7 @@ const Dashboard = () => {
                                         'rgba(153, 102, 255, 1)',
                                         'rgba(255, 159, 64, 1)'
                                     ],
-                                    borderWidth: 2
+                                    borderWidth: 1,
                                 }
                             ]
                         }}
@@ -118,8 +140,16 @@ const Dashboard = () => {
                         options={{
                             maintainAspectRatio: false,
                             scales: {
+                                x:{
+                                        labelString: 'Ngày',
+                                            display:true,
+                                        scaleLabel:{
+                                            
+                                        }
+                                 }
+                                ,
                                 y: {
-                                    beginAtZero: true
+                                    beginAtZero: true,
                                 }
                             }
                         }}

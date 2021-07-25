@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Row, Col, Button, Input, Steps, message, Form, Layout, Select, Divider, Spin } from "antd";
-import { CloseOutlined, RollbackOutlined } from "@ant-design/icons";
+import { CloseOutlined, RollbackOutlined, LoadingOutlined, CheckCircleOutlined, FileDoneOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { useHistory, Link } from "react-router-dom";
 import "container/components-css/payments.scss"
@@ -116,9 +116,9 @@ const Payments = (props) => {
           <h1>Quy trình đặt hàng</h1>
           <Row className="step">
             <Steps size="small" current={0}>
-              <Step title="Địa chỉ giao hàng" />
-              <Step title="Xác nhận và thanh toán" />
-              <Step title="Hoàn tất đơn hàng" />
+              <Step status="process" icon={<LoadingOutlined />} title="Địa chỉ giao hàng" />
+              <Step title="Xác nhận và thanh toán" icon={<FileDoneOutlined />} />
+              <Step title="Hoàn tất đơn hàng" icon={<CheckCircleOutlined />} />
             </Steps>
           </Row>
           {loading === false ? (

@@ -146,11 +146,6 @@ const ListComment = (props) => {
         </>
       )
     },
-    {
-      dataIndex: 'mabl',
-      key: 'mabl',
-      render: (mabl) => <Button className="detail-btn" data-id={mabl} type="primary" onClick={detail}>Chi tiết</Button>
-    },
     result.permission === 'Admin' ? (
       {
         dataIndex: 'trangthai',
@@ -162,19 +157,22 @@ const ListComment = (props) => {
             {trangthai.stt.map(tragth => {
               if (tragth === 'Ẩn') {
                 return (
-                  <Button data-id={trangthai.id} type="primary" icon={<UnlockOutlined />} onClick={unlockCmt}>
-                  </Button>
+                  <div className="btn-box lock"><Button data-id={trangthai.id} type="primary" icon={<UnlockOutlined />} onClick={unlockCmt}></Button></div>
                 );
               } else {
                 return (
-                  <Button data-id={trangthai.id} type="danger" icon={<LockOutlined />} onClick={lockCmt}>
-                  </Button>
+                  <div className="btn-box lock"><Button data-id={trangthai.id} type="danger" icon={<LockOutlined />} onClick={lockCmt}></Button></div>
                 )
               }
             })}
           </>
         )
-      }) : (<> </>)
+      }) : (<> </>),
+      {
+        dataIndex: 'mabl',
+        key: 'mabl',
+        render: (mabl) => <Button className="detail-btn" data-id={mabl} type="primary" onClick={detail}>Chi tiết</Button>
+      },
 
   ];
 

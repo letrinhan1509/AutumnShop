@@ -1,5 +1,5 @@
-import { DownloadOutlined, UploadOutlined } from '@ant-design/icons';
-import { Button, Form, Input, InputNumber, message, Select, Upload } from "antd";
+import { DeleteOutlined, UploadOutlined } from '@ant-design/icons';
+import { Button, Form, Input, InputNumber, message, Select, Upload, Image, Col, Row } from "antd";
 import product from 'API_Call/Api_product/product';
 import catalog from 'API_Call/Api_catalog/catalog';
 import producer from 'API_Call/Api_producer/producer';
@@ -52,42 +52,48 @@ const EditProduct = (props) => {
     const [form] = Form.useForm();
     const history = useHistory();
     const ProductEdit = JSON.parse(localStorage.getItem("product"))
-    const [image, setImage] = useState("");
+    const [imageName, setImageName] = useState("");
     const [fileList, setFileList] = useState([]);
+    const [link, setLink] = useState("");
+
 
     const beforeUpload = file => {
         setFileList(fileList.concat(file));
-        setImage(file[0]);
         return false;
     }
     const handleChange = file => {
-        if (fileList != "") {
-            setImage(fileList[0]);
+        if (file.fileList.length !== 0) {
+            const upload = storage.ref(`Product_Img/${fileList[0].name}`).put(fileList[0]);
+            upload.on(
+                "state_changed",
+                snapshot => { },
+                error => {
+                    console.log(error);
+                },
+                () => {
+                    storage
+                        .ref("Product_Img")
+                        .child(fileList[0].name)
+                        .getDownloadURL()
+                        .then(url => {
+                            console.log("ulr:", url);
+                            setLink(url);
+                            setImageName(fileList[0]);
+                            setFileList([]);
+                        });
+                    message.success("Tải ảnh thành công!");
+                }
+            );
         }
     };
-
-    //Download link từ Firebase
-    const [link, setLink] = useState("");
-    const upfirebase = () => {
-        const upload = storage.ref(`Product_Img/${image.name}`).put(image);
-        upload.on(
-            "state_changed",
-            snapshot => { },
-            error => {
-                console.log(error);
-            },
-            () => {
-                storage
-                    .ref("Product_Img")
-                    .child(image.name)
-                    .getDownloadURL()
-                    .then(url => {
-                        console.log("ulr:", url);
-                        setLink(url);
-                    });
-                message.success("download link thành công!");
-            }
-        );
+    const onRemove = file => {
+        setLink("");
+        const del = storage.ref(`Product_Img/${imageName.name}`);
+        del.delete().then((res) => {
+            message.success("Đã xóa ảnh!");
+        }).catch((error) => {
+            console.log(error);
+        });
     };
 
     const back = () => {
@@ -96,9 +102,16 @@ const EditProduct = (props) => {
     }
 
     const update = (values) => {
-        let idPro = values.code;
-        values['img'] = link;
-        console.log(idPro);
+        if (imageName !== "") {
+            values['imgName'] = imageName.name;
+        } else {
+            //values['imgName'] = ProductEdit.imgName;
+        }
+        if (link !== "") {
+            values['hinh'] = link;
+        } else {
+            values['hinh'] = ProductEdit.hinh;
+        }
         console.log(values);
         product.updatePro(values).then((res) => {
             if (res.data.status === "Success") {
@@ -136,6 +149,15 @@ const EditProduct = (props) => {
             setlistTypes(res.data.data);
         })
     }, []);
+
+    const deleteImg = () => {
+        const del = storage.ref(`Product_Img/${ProductEdit.imageName}`);
+        del.delete().then((res) => {
+            message.success("Đã xóa ảnh!");
+        }).catch((error) => {
+            console.log(error);
+        });
+    }
 
 
     const size = [
@@ -180,7 +202,7 @@ const EditProduct = (props) => {
 
     return (
         <div className="form-wrapper">
-            <h2 style={{ textAlign: 'center' }}>SỬA THÔNG TIN NHÀ SẢN XUẤT</h2>
+            <h2 style={{ textAlign: 'center' }}>SỬA THÔNG TIN SẢN PHẨM</h2>
             <Form
                 {...formItemLayout}
                 form={form}
@@ -280,7 +302,15 @@ const EditProduct = (props) => {
                     label="Ảnh sản phẩm"
                     rules={[{ required: false }]}
                 >
-                    <Input />
+                    <Row>
+                        <Col>
+                            {link !== "" ? (
+                                <Image src={link} width={120} />
+                            ) : (ProductEdit.hinh === "" ? (<span>Chưa có ảnh sản phẩm !</span>) : (<Image src={ProductEdit.hinh} width={120} />))}
+                            
+                        </Col>
+                        <Col className="del-img">{link !== "" ? ("") : (ProductEdit.hinh === "" ? ("") : (<Button onClick={deleteImg} type="primary" danger><DeleteOutlined /></Button>))}</Col>
+                    </Row>
                 </Form.Item>
                 <Form.Item
                     name="hinhmoi"
@@ -296,20 +326,11 @@ const EditProduct = (props) => {
                         multiple='true'
                         beforeUpload={beforeUpload}
                         onChange={handleChange}
+                        onRemove={onRemove}
                         fileList
                     >
-                        <Button icon={<UploadOutlined />} >Click to upload</Button>
+                        <Button icon={<UploadOutlined />} >Tải ảnh lên</Button>
                     </Upload>
-                </Form.Item>
-
-                <Form.Item label="Downloat link Firebase">
-                    {
-                        link == "" ? (
-                            <Button icon={<DownloadOutlined />} onClick={upfirebase} >Downlink</Button>
-                        ) : (
-                            <Button icon={<DownloadOutlined />} onClick={upfirebase} disabled>Downlink</Button>
-                        )
-                    }
                 </Form.Item>
                 <Form.Item
                     name="img"
@@ -336,7 +357,7 @@ const EditProduct = (props) => {
                     label="Trạng thái"
                 //rules={[{ required: true, message: 'Chọn trạng thái!' }]}
                 >
-                    
+
                     <Select style={{ width: 150 }}>
                         <Option value="1" >Hiện</Option>
                         <Option value="0" >Ẩn</Option>

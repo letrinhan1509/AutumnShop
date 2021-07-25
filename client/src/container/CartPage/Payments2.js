@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Row, Col, Button, Radio, Input, Space, Steps, message, Form, Layout, Select, Divider, Spin } from "antd";
-import { DollarCircleOutlined, RollbackOutlined } from "@ant-design/icons";
+import { RollbackOutlined, LoadingOutlined, CheckCircleOutlined, FormOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { useHistory, Link } from "react-router-dom";
 import "container/components-css/payments2.scss"
@@ -52,9 +52,9 @@ const Payments2 = (props) => {
     setPayValue(e.target.value);
     console.log(payValue);
   };
-  const [deliveryValue, setDelivery] = useState("Hệ thống cửa hàng");
+  const [deliveryValue, setDeliveryValue] = useState("Hệ thống cửa hàng");
   const selectDelivery = (e) => {
-    setDelivery(e.target.value);
+    setDeliveryValue(e.target.value);
     console.log(deliveryValue);
   };
 
@@ -72,9 +72,9 @@ const Payments2 = (props) => {
     }
     console.log(values);
     //Oder.addOrder(values)
-    const url = "http://localhost:5000/api/v1/don-hang/tao-don-hang";
-    axios
-      .post(url, values)
+    //const url = "http://localhost:5000/api/v1/don-hang/";
+    Oder
+      .addOrder(values)
       .then(async (res) => {
         if (res.data.status === "Success") {
           console.log(values);
@@ -112,6 +112,20 @@ const Payments2 = (props) => {
     console.log('bbbb', kq);
   }
 
+  let pays = {};
+  pays['order'] = order;
+  pays['note'] = notes;
+  pays['pay'] = payValue;
+  pays['ship'] = ship;
+  pays['delivery'] = deliveryValue;
+  if (voucher !== null) {
+    pays['sumpay'] = ship + Number(props.PriceCart) - Number(voucher.giagiam);
+    pays['makm'] = voucher.makm;
+  } else {
+    pays['sumpay'] = ship + Number(props.PriceCart);
+  }
+  const demo = pays;
+  localStorage.setItem('payment', JSON.stringify(demo));
   return (
     <>
       <Layout className="container">
@@ -119,9 +133,9 @@ const Payments2 = (props) => {
           <h1>Quy trình đặt hàng</h1>
           <Row className="step">
             <Steps size="small" current={1}>
-              <Step title="Địa chỉ giao hàng" />
-              <Step title="Xác nhận và thanh toán" />
-              <Step title="Hoàn tất đơn hàng" />
+              <Step status="finish" icon={<FormOutlined />} title="Địa chỉ giao hàng" />
+              <Step status="process" title="Xác nhận và thanh toán" icon={<LoadingOutlined />} />
+              <Step title="Hoàn tất đơn hàng" icon={<CheckCircleOutlined />} />
             </Steps>
           </Row>
           {loading === false ? (
@@ -215,7 +229,7 @@ const Payments2 = (props) => {
                   <Row className="button-group">
                     {payValue === "Thanh toán Paypal" ? (
                       <>
-                        <Col className="paypal"><Paypal order={order} notes={notes} payValue={payValue} ship={ship} PriceCart={props.PriceCart} voucher={voucher} deliveryValue={deliveryValue} receiveData={receiveData} /></Col>
+                        <Col className="paypal"><Paypal/></Col>
                       </>
                     ) : (
                       <Button className="pay" value="submit" type="primary" htmlType="submit" >

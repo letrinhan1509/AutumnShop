@@ -1,74 +1,65 @@
-import React, { useState } from "react";
-import { Row, Col, Card, Image, Button, Carousel, Menu } from "antd";
+import React, { useState, useEffect } from "react";
+import { Row, Col, Card, Image, Button, Carousel, Menu, Pagination } from "antd";
 import { Link, useParams } from "react-router-dom";
 import { ShoppingCartOutlined, EyeOutlined } from "@ant-design/icons";
 import "container/components-css/ProductType.scss";
-
-
+import PRODUCT from 'API_Call/Api_product/product';
+import catalog from 'API_Call/Api_catalog/catalog';
 
 const { Meta } = Card;
 const { SubMenu } = Menu;
 const rootSubmenuKeys = ['sub1', 'sub2', 'sub4'];
-
+const keyDM = (localStorage.getItem("keyDM"));
+const keyType = (localStorage.getItem("keyType"));
 const Shirt = (props) => {
-  const { kieu } = useParams();
-  const ak = props.ListProductHome.filter(ListProductHome => ListProductHome.tendm === "Áo");
-  console.log(kieu);
-  let Ao = [];
-  Ao = ak;
-  console.log(props.ListProductHome);
-  console.log(Ao);
+  const [ListProduct, setListProduct] = useState([]);
+  const [listTypes, setlistTypes] = useState([]);
+  useEffect(() => {
+    //Lấy sản phẩm theo danh mục
+    if(keyDM !== null){
+      PRODUCT.getDM(keyDM).then((res) => {
+        if(res.data.status === "Success"){
+          setListProduct(res.data.data);
+        }
+      });
+    }
+    //Lấy sản phẩm theo loại
+    if(keyType !== null){
+      PRODUCT.getLoai(keyType).then((res) => {
+        if(res.data.status === "Success"){
+          setListProduct(res.data.data);
+        }
+      });
+    }
+    let id = "DMA";
+    catalog.getTypeDanhmucID(id).then((res) => {
+            setlistTypes(res.data.data);
+        })
+  }, [])
+  //const ak = props.ListProductHome.filter(ListProductHome => ListProductHome.tendm === "Áo");
+  //let Ao = [];
+  //Ao = ak;
+  console.log(listTypes);
+
+
   const [visible, setVisible] = useState(6);
   const showMoreProduct = () => {
     setVisible((preValueProduct) => preValueProduct + 6);
   };
+  const handleClick = (productItem) => {
+        localStorage.setItem('detail', JSON.stringify(productItem));
+    };
 
   const onChange = () => {
-    if (visible > Ao.length) {
+    /* if (visible > Ao.length) {
       document.getElementById("load").style.display = "none";
-    }
+    } */
   }
-
-  const [openKeys, setOpenKeys] = React.useState(['sub1']);
-
-  const onOpenChange = keys => {
-    const latestOpenKey = keys.find(key => openKeys.indexOf(key) === -1);
-    if (rootSubmenuKeys.indexOf(latestOpenKey) === -1) {
-      setOpenKeys(keys);
-    } else {
-      setOpenKeys(latestOpenKey ? [latestOpenKey] : []);
-    }
-  };
-
 
 
   return (
     <>
-      <Row className="content-box">
-        <Col className="left">
-          <Menu mode="inline" openKeys={openKeys} onOpenChange={onOpenChange} style={{ width: 300 }}>
-            <SubMenu key="sub1" title="Navigation One">
-              <Menu.Item key="1">Option 1</Menu.Item>
-              <Menu.Item key="2">Option 2</Menu.Item>
-              <Menu.Item key="3">Option 3</Menu.Item>
-              <Menu.Item key="4">Option 4</Menu.Item>
-            </SubMenu>
-            <SubMenu key="sub2" title="Navigation Two">
-              <Menu.Item key="5">Option 5</Menu.Item>
-              <Menu.Item key="6">Option 6</Menu.Item>
-              <SubMenu key="sub3" title="Submenu">
-                <Menu.Item key="7">Option 7</Menu.Item>
-                <Menu.Item key="8">Option 8</Menu.Item>
-              </SubMenu>
-            </SubMenu>
-            <SubMenu key="sub4" title="Navigation Three">
-              <Menu.Item key="9">Option 9</Menu.Item>
-              <Menu.Item key="10">Option 10</Menu.Item>
-              <Menu.Item key="11">Option 11</Menu.Item>
-              <Menu.Item key="12">Option 12</Menu.Item>
-            </SubMenu>
-          </Menu>
-        </Col>
+        <Row className="content-box">
         <Col className="right">
           <Carousel dots="" autoplay className="carousel">
             <div>
@@ -82,10 +73,15 @@ const Shirt = (props) => {
             </div>
           </Carousel>
           <div className="site-card-wrapper product_home">
-            <Row >
-              {Ao.slice(0, visible).map((productItem) => {
+            <Row>
+                  {listTypes.map((item) => (
+                    <Col>{item.tenloai}</Col>
+                  ))}
+            </Row>
+            <Row  justify="space-around">
+              {ListProduct.slice(0, visible).map((productItem) => {
                 return (
-                  <Col key={productItem.masp} span={7} offset={1}>
+                  <Col key={productItem.masp} style={{width: 350}}>
                     <Card
                       width={'100%'}
                       key={productItem.masp}
@@ -106,7 +102,7 @@ const Shirt = (props) => {
                                   style={{ fontSize: '36px' }} />
                               </span>
                               <span>
-                                <Link to={`/san-pham/chi-tiet-san-pham/${productItem.masp}`}>
+                                <Link onClick={() => handleClick(productItem)} to={`/san-pham/chi-tiet-san-pham/${productItem.masp}`}>
                                   <EyeOutlined
                                     style={{ fontSize: '36px' }}
                                   />
@@ -127,8 +123,9 @@ const Shirt = (props) => {
                 );
               })}
             </Row>
+            {/* <Pagination defaultCurrent={1} total={50} /> */}
             {
-              Ao.length > 6 ? (
+              ListProduct.length > 6 ? (
                 <Row className="btn-box">
                   <Col>
                     <Button
@@ -148,7 +145,6 @@ const Shirt = (props) => {
           </div>
         </Col>
       </Row>
-
     </>
   );
 };

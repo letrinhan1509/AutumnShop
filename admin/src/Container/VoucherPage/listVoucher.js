@@ -121,6 +121,7 @@ const ListVoucher = (props) => {
             render: ngaybd => {
                 var date = new Date(ngaybd);
                 return (
+                    console.log(date),
                     date.toLocaleDateString()
                 );
             }
@@ -173,13 +174,11 @@ const ListVoucher = (props) => {
                         {trangthai.stt.map(tragth => {
                             if (tragth === 'Khoá') {
                                 return (
-                                    <Button data-id={trangthai.id} type="primary" icon={<UnlockOutlined />} onClick={unlock}>
-                                    </Button>
+                                    <div className="btn-box lock"><Button data-id={trangthai.id} type="primary" icon={<UnlockOutlined />} onClick={unlock}></Button></div>
                                 );
                             } else {
                                 return (
-                                    <Button data-id={trangthai.id} type="danger" icon={<LockOutlined />} onClick={lock}>
-                                    </Button>
+                                    <div className="btn-box lock"><Button data-id={trangthai.id} type="danger" icon={<LockOutlined />} onClick={lock}></Button></div>
                                 )
                             }
                         })}
@@ -189,7 +188,7 @@ const ListVoucher = (props) => {
         user.permission === 'Admin' ? ({
             dataIndex: "voucher",
             key: "voucher",
-            render: voucher => (<div className="btn-box fix"><Button data-id={voucher} onClick={loadEdit} type="primary">Cập nhật</Button></div>)
+            render: voucher => (<div className="btn-box fix"><Button data-id={voucher} onClick={loadEdit} type="primary">Sửa</Button></div>)
         }) : (<> </>)
     ];
 
@@ -257,17 +256,19 @@ const ListVoucher = (props) => {
             <div className="product-wrapper">
                 <h2 style={{ textAlign: 'center', marginTop: "50px" }}>DANH SÁCH VOUCHER</h2>
                 <div className="View-layout">
-                    <div>
-                        <span>Voucher hiển thị: </span>
-                        <Select defaultValue="6" Option style={{ width: 70 }} onChange={e => ChangeSize(e)}>
-                            {size.map((item) => {
-                                return (
-                                    <>
-                                        <Option value={item.PSize}>{item.PSize}</Option>
-                                    </>
-                                )
-                            })}
-                        </Select>
+                    <div className="View-layout-left">
+                        <div>
+                            <span>Voucher hiển thị: </span>
+                            <Select defaultValue="6" Option style={{ width: 70 }} onChange={e => ChangeSize(e)}>
+                                {size.map((item) => {
+                                    return (
+                                        <>
+                                            <Option value={item.PSize}>{item.PSize}</Option>
+                                        </>
+                                    )
+                                })}
+                            </Select>
+                        </div>
                         {user.permission === 'Admin' ? (
                             <div className="btn-wrapper">
                                 <Link to={'/them-voucher'}>

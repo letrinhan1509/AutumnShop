@@ -14,9 +14,8 @@ const { SubMenu } = Menu;
 const HeaderPage = (props) => {
 
     const history = useHistory();
-    const [current, setCurrent] = useState("home");
+
     const handClick1 = (e) => {
-        setCurrent(e.key);
         if (e.key === '/') {
             history.push('/')
         }
@@ -25,17 +24,24 @@ const HeaderPage = (props) => {
         }
     }
     const handClick2 = (e) => {
-        setCurrent(e.key);
-        if (e.key === '/') {
-            history.push('/')
-        }
-        else {
-            history.push(`/san-pham/${e.key}`);
-        }
+        localStorage.setItem('keyDM', e.key);
+        console.log(e.key);
+        history.push(`/san-pham/${e.key}`);
+    }
+    const handClick3 = (e) => {
+        setTimeout(() => {
+            history.push(`/san-pham/${e.madm}`);
+        }, 1);
+        localStorage.setItem('keyType', e.maloai);
+        
     }
     const logout = () => {
         localStorage.removeItem("token")
         localStorage.removeItem("user")
+        const cart = JSON.parse(localStorage.getItem("cart"));
+        if(cart !== null){
+            localStorage.removeItem("cart")
+        }
         history.push('/dang-nhap');
         window.location.reload()
     }
@@ -87,7 +93,7 @@ const HeaderPage = (props) => {
                     <Menu mode="horizontal"
                         className="menu1"
                         onClick={handClick1}
-                        selectedKeys={[current]}>
+                        >
 
                         <div className="logo-box">
                             <Link className="logo" to={'/'}>
@@ -137,7 +143,6 @@ const HeaderPage = (props) => {
                     <Menu mode="horizontal"
                         className="menu2"
                         onClick={handClick2}
-                        selectedKeys={[current]}
                         onOpenChange={onOpenChange}
                     >
 
@@ -160,13 +165,13 @@ const HeaderPage = (props) => {
                             <SubMenu key={`${item.madm}`} title={item.tendm} onTitleClick={handClick2} subMenuOpenDelay={0.5} >
                                 {listTypes.length === 1 ? ("") : (
                                     listTypes.map((type) => (
-                                        <Menu.Item key={`${type.maloai}`}>{type.tenloai}</Menu.Item>
+                                        <Menu.Item onClick={() => handClick3(type)} key={`${type.maloai}`}>{type.tenloai}</Menu.Item>
                                     ))
                                 )}
 
                             </SubMenu>
                         ))}
-                        <Menu.Item key="khuyen-mai" style={menu}>
+                        <Menu.Item className="sale" key="khuyen-mai" style={menu}>
                             Khuyến mãi
                         </Menu.Item>
                     </Menu>

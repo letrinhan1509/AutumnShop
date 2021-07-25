@@ -172,13 +172,11 @@ const ListUserAdmin = () => {
             {trangthai.stt.map(tragth => {
               if (tragth === 'Khoá') {
                 return (
-                  <Button data-id={trangthai.id} type="primary" icon={<UnlockOutlined />} onClick={unlock}>
-                  </Button>
+                  <div className="btn-box lock"><Button data-id={trangthai.id} type="primary" icon={<UnlockOutlined />} onClick={unlock}></Button></div>
                 );
               } else {
                 return (
-                  <Button data-id={trangthai.id} type="danger" icon={<LockOutlined />} onClick={lock}>
-                  </Button>
+                  <div className="btn-box lock"><Button data-id={trangthai.id} type="danger" icon={<LockOutlined />} onClick={lock}></Button></div>
                 )
               }
             })}
@@ -190,7 +188,7 @@ const ListUserAdmin = () => {
         title: 'Hành động',
         dataIndex: 'manv',
         key: 'manv',
-        render: manv => (<Button data-id={manv} key={manv} type="primary" onClick={linkto}>Sửa</Button>)
+        render: manv => (<div className="btn-box fix"><Button data-id={manv} key={manv} type="primary" onClick={linkto}>Sửa</Button></div>)
       } : (<> </>)
 
   ];
@@ -259,17 +257,19 @@ const ListUserAdmin = () => {
       <div className="product-wrapper" >
         <h2 style={{ textAlign: 'center', marginTop: "20px", marginBottom: "20px" }}>DANH SÁCH TÀI KHOẢN NHÂN VIÊN</h2>
         <div className="View-layout">
-          <div>
-            <span>Sản phẩm hiển thị: </span>
-            <Select defaultValue="6" Option style={{ width: 70 }} onChange={e => ChangeSize(e)}>
-              {size.map((item) => {
-                return (
-                  <>
-                    <Option value={item.PSize}>{item.PSize}</Option>
-                  </>
-                )
-              })}
-            </Select>
+          <div className="View-layout-left">
+            <div>
+              <span>Sản phẩm hiển thị: </span>
+              <Select defaultValue="6" Option style={{ width: 70 }} onChange={e => ChangeSize(e)}>
+                {size.map((item) => {
+                  return (
+                    <>
+                      <Option value={item.PSize}>{item.PSize}</Option>
+                    </>
+                  )
+                })}
+              </Select>
+            </div>
             {result.permission === 'Admin' ? (
               <div className="btn-wrapper" >
                 <Link to={'/them-nhan-vien'}>

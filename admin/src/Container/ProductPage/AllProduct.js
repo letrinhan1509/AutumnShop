@@ -194,17 +194,16 @@ const AllProduct = () => {
       ],
       onFilter: (value, record) => record.tendm.includes(value),
     },
-    result.permission === 'Admin' ?
+    {
+      dataIndex: "masp",
+      key: "masp",
+      render: masp => (<div className="btn-box fix"><Button data-id={masp} onClick={loadEdit} type="primary">Sửa</Button></div>)
+    },
+    result.permission === 'Admin' || result.permission === 'QL' ?
       {
         dataIndex: "masp",
         key: "masp",
-        render: masp => (<div className="btn-box"><Button data-id={masp} onClick={loadEdit} type="primary">Sửa</Button></div>)
-      } : (<> </>),
-    result.permission === 'Admin' ?
-      {
-        dataIndex: "masp",
-        key: "masp",
-        render: masp => (<div className="btn-box"><Button data-id={masp} onClick={onClick} type="danger" >Xoá</Button></div>)
+        render: masp => (<div className="btn-box delete"><Button data-id={masp} onClick={onClick} type="danger">Xoá</Button></div>)
       } : (<> </>)
   ];
 
@@ -272,26 +271,26 @@ const AllProduct = () => {
       <div className="product-wrapper">
         <h2>Danh sách sản phẩm</h2>
         <div className="View-layout">
-          <div>
-            <span>Sản phẩm hiển thị: </span>
-            <Select defaultValue="4" Option style={{ width: 70 }} onChange={e => ChangeSize(e)}>
-              {size.map((item) => {
-                return (
-                  <>
-                    <Option value={item.PSize}>{item.PSize}</Option>
-                  </>
-                )
-              })}
-            </Select>
-            {result.permission === 'Admin' ? (
-              <div className="btn-wrapper">
-                <Link to={'/them-san-pham'}>
-                  <Button type="primary">
-                    Thêm sản phẩm
-                  </Button>
-                </Link>
-              </div>
-            ) : ("")}
+          <div className="View-layout-left">
+            <div>
+              <span>Sản phẩm hiển thị: </span>
+              <Select defaultValue="4" Option style={{ width: 70 }} onChange={e => ChangeSize(e)}>
+                {size.map((item) => {
+                  return (
+                    <>
+                      <Option value={item.PSize}>{item.PSize}</Option>
+                    </>
+                  )
+                })}
+              </Select>
+            </div>
+            <div className="btn-wrapper">
+              <Link to={'/them-san-pham'}>
+                <Button type="primary">
+                  Thêm sản phẩm
+                </Button>
+              </Link>
+            </div>
           </div>
           <div className="search-box">
             <span>Tìm kiếm: </span>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from "axios"
-import { Row, Form, Input, Button, Select, Checkbox, DatePicker, Space, message, Upload } from 'antd';
+import { Row, Form, Input, Button, Select, Checkbox, DatePicker, Modal, message, Upload, Col, Image } from 'antd';
 import { useHistory, Link } from "react-router-dom"
 import "Container/scss/addpro.scss";
 import moment from 'moment';
@@ -10,6 +10,7 @@ import { DownloadOutlined, UploadOutlined } from '@ant-design/icons';
 
 const { Option } = Select;
 const { TextArea } = Input;
+const { confirm } = Modal;
 const formItemLayout = {
     labelCol: {
         xs: { span: 22 },
@@ -67,41 +68,68 @@ const AddVoucher = (props) => {
     };
 
     const [fileList, setFileList] = useState([]);
-    const [image, setImage] = useState("");
+    const [imageName, setImageName] = useState("");
+    const [link, setLink] = useState("");
     const beforeUpload = file => {
         setFileList(fileList.concat(file));
-        setImage(file[0]);
         return false;
     }
     const handleChange = file => {
-        if (fileList != "") {
-            setImage(fileList[0]);
+        if (file.fileList.length !== 0) {
+            const upload = storage.ref(`Voucher_img/${fileList[0].name}`).put(fileList[0]);
+            upload.on(
+                "state_changed",
+                snapshot => { },
+                error => {
+                    console.log(error);
+                },
+                () => {
+                    storage
+                        .ref("Voucher_img")
+                        .child(fileList[0].name)
+                        .getDownloadURL()
+                        .then(url => {
+                            console.log("ulr:", url);
+                            setLink(url);
+                            setImageName(fileList[0]);
+                            setFileList([]);
+                        });
+                    message.success("Tải ảnh thành công!");
+                }
+            );
         }
     };
+    const onRemove = file => {
+        setLink("");
+        const del = storage.ref(`Voucher_img/${imageName.name}`);
+        del.delete().then((res) => {
+            message.success("Đã xóa ảnh!");
+        }).catch((error) => {
+            console.log(error);
+        });
+    };
 
-    //Download link từ Firebase
-    const [link, setLink] = useState("");
-    const upfirebase = () => {
-        const upload = storage.ref(`Voucher_img/${image.name}`).put(image);
-        upload.on(
-            "state_changed",
-            snapshot => { },
-            error => {
-                console.log(error);
-            },
-            () => {
-                storage
-                    .ref("Voucher_img")
-                    .child(image.name)
-                    .getDownloadURL()
-                    .then(url => {
-                        console.log("ulr:", url);
-                        setLink(url);
+    const back = () => {
+        confirm({
+            title: 'Bạn muốn trở về trang danh sách voucher?',
+            okText: 'Trở về',
+            okType: 'danger',
+            cancelText: 'Không',
+            onOk() {
+                if (link !== "") {
+                    const del = storage.ref(`Voucher_img/${imageName.name}`);
+                    del.delete().then((res) => {
+                        history.push('/danh-sach-voucher');
+                    }).catch((error) => {
+                        console.log(error);
                     });
-                message.success("download link thành công!");
-            }
-        );
-
+                }
+                history.push('/danh-sach-voucher');
+            },
+            onCancel() {
+                console.log('Cancel');
+            },
+        });
     };
 
     const addProduct = (values) => {
@@ -110,6 +138,7 @@ const AddVoucher = (props) => {
         values["ngaykt"] = moment(dateEnd.toLocaleDateString()).format('YYYY-DD-MM');
         values["trangthai"] = title;
         values['img'] = link;
+        values['imageName'] = imageName.name;
         console.log(values);
 
         //const url = "http://127.0.0.1:5000/api/v1/khuyen-mai/them-voucher"
@@ -227,32 +256,30 @@ const AddVoucher = (props) => {
                     <Form.Item
                         name="hinh"
                         label="Ảnh sản phẩm"
+                    >
+                        {link !== "" ? (
+                            <Image src={link} width={120} />
+                        ) : (<span>Chưa có ảnh sản phẩm !</span>)}
+                    </Form.Item>
+                    <Form.Item
+                        name="hinh"
+                        label=" "
                         valuePropName="fileList"
                         getValueFromEvent={normFile}
 
                     >
                         <Upload
                             listType="picture"
-
                             name='hinh'
                             multiple='true'
                             beforeUpload={beforeUpload}
                             onChange={handleChange}
+                            onRemove={onRemove}
                             fileList
                         >
-                            <Button icon={<UploadOutlined />} >Click to upload</Button>
+                            <Button icon={<UploadOutlined />} >Tải ảnh lên</Button>
                         </Upload>
-                    </Form.Item>
-
-                    <Form.Item label="Downloat link Firebase">
-                        {
-                            link == "" ? (
-                                <Button icon={<DownloadOutlined />} onClick={upfirebase} >Downlink</Button>
-                            ) : (
-                                <Button icon={<DownloadOutlined />} onClick={upfirebase} disabled>Downlink</Button>
-                            )
-                        }
-                    </Form.Item>
+                    </Form.Item> 
                     <Form.Item
                         label="Ngày bắt đầu"
                         rules={[
@@ -282,11 +309,9 @@ const AddVoucher = (props) => {
                         <Checkbox onChange={changett} value="0">Ẩn</Checkbox>
                     </Form.Item>
                     <Form.Item {...tailFormItemLayout}>
-                        <Link to={'/danh-sach-voucher'} >
-                            <Button className="ant-btn ant-btn-dashed " htmlType="submit" style={{ marginLeft: -30 }}>
-                                Trở về
-                            </Button>
-                        </Link>
+                        <Button className="ant-btn ant-btn-dashed" onClick={back} style={{ marginLeft: -30 }}>
+                            Trở về
+                        </Button>
                         {link === "" ? (
                             <Button type="primary" htmlType="submit" style={{ marginLeft: 30 }} disabled>
                                 Thêm voucher

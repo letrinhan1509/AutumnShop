@@ -21,13 +21,13 @@ const ListCata = () => {
   const linkto = (e) => {
     let id = e.currentTarget.dataset.id
     catalog.getDanhmucID(id).then((res) => {
-      if (res.data.status === "Success"){
+      if (res.data.status === "Success") {
         localStorage.setItem('category', JSON.stringify(res.data.data));
         setTimeout(() => {
           link.push('/danh-muc-san-pham/sua-danh-muc');
         }, 100)
       }
-    }); 
+    });
   }
 
   let result = JSON.parse(localStorage.getItem('user'));
@@ -139,39 +139,36 @@ const ListCata = () => {
       ],
       onFilter: (value, record) => record.trangthai.stt.includes(value),
     },
-    result.permission === 'Admin' ?
-      {
-        dataIndex: 'trangthai',
-        key: 'trangthai',
-        render: (trangthai) =>
-        (
-          <>
-            {trangthai.stt.map(tragth => {
-              if (tragth === 'Ẩn') {
-                return (
-                  <div className="btn-box"><Button data-id={trangthai.id} type="primary" icon={<UnlockOutlined />} onClick={unlock}></Button></div>
-                );
-              } else {
-                return (
-                  <div className="btn-box"><Button data-id={trangthai.id} type="danger" icon={<LockOutlined />} onClick={lock}></Button></div>
-                )
-              }
-            })}
-          </>
-        )
-      } : (<> </>),
-    result.permission === 'Admin' ?
+    {
+      dataIndex: 'trangthai',
+      key: 'trangthai',
+      render: (trangthai) =>
+      (
+        <>
+          {trangthai.stt.map(tragth => {
+            if (tragth === 'Ẩn') {
+              return (
+                <div className="btn-box lock"><Button data-id={trangthai.id} type="primary" icon={<UnlockOutlined />} onClick={unlock}></Button></div>
+              );
+            } else {
+              return (
+                <div className="btn-box lock"><Button data-id={trangthai.id} type="danger" icon={<LockOutlined />} onClick={lock}></Button></div>
+              )
+            }
+          })}
+        </>
+      )
+    },
+    {
+      dataIndex: 'madm',
+      key: 'madm',
+      render: madm => (<div className="btn-box fix"><Button data-id={madm} key={madm} type="primary" onClick={linkto}> Sửa </Button></div>)
+    },
+    result.permission === 'Admin' || result.permission === 'QL' ?
       {
         dataIndex: 'madm',
         key: 'madm',
-        render: madm => (<div className="btn-box fix"><Button data-id={madm} key={madm} type="primary" onClick={linkto}> Sửa </Button></div>)
-      } : (<> </>),
-    result.permission === 'Admin' ?
-      {
-        title: 'Hành động',
-        dataIndex: 'madm',
-        key: 'madm',
-        render: madm => (<Button data-id={madm} key={madm} type="danger" onClick={deleteCategory}> Xoá </Button>)
+        render: madm => (<div className="btn-box delete"><Button data-id={madm} key={madm} type="danger" onClick={deleteCategory}> Xoá </Button></div>)
       } : (<> </>),
   ];
 
@@ -189,7 +186,7 @@ const ListCata = () => {
             </Link>
           </div>
         ) : ("")}
-        <Table className="item" dataSource={listCategory} columns={columns} pagination={{ pageSize: 10 }} style={{ padding: 10 }} size="middle" />
+        <Table className="item" dataSource={listCategory} columns={columns} pagination={{ pageSize: 6 }} style={{ padding: 10 }} size="middle" />
       </div>
     </>
   );

@@ -87,12 +87,12 @@ const ListProducer = () => {
 
 
   listProducer.forEach(element => {
-    if(element.trangthai === 1){
+    if (element.trangthai === 1) {
       element.trangthai = [];
       element.trangthai.stt = ["Hiện"];
       element.trangthai.id = element.mansx;
     }
-    if(element.trangthai === 0 ){
+    if (element.trangthai === 0) {
       element.trangthai = [];
       element.trangthai.stt = ["Ẩn"];
       element.trangthai.id = element.mansx;
@@ -149,38 +149,36 @@ const ListProducer = () => {
       ],
       onFilter: (value, record) => record.trangthai.stt.includes(value),
     },
-    result.permission === 'Admin' ?
-      {
-        dataIndex: 'trangthai',
-        key: 'trangthai',
-        render: (trangthai) =>
-        (
-          <>
-            {trangthai.stt.map(tragth => {
-              if (tragth === 'Ẩn') {
-                return (
-                  <div className="btn-box"><Button data-id={trangthai.id} type="primary" icon={<UnlockOutlined />} onClick={unlock}></Button></div>
-                );
-              } else {
-                return (
-                  <div className="btn-box"><Button data-id={trangthai.id} type="danger" icon={<LockOutlined />} onClick={lock}></Button></div>
-                )
-              }
-            })}
-          </>
-        )
-      } : (<> </>),
-    result.permission === 'Admin' ?
-      {
-        dataIndex: 'mansx',
-        key: 'mansx',
-        render: mansx => (<div className="btn-box fix"><Button data-id={mansx} type="primary" key={mansx} onClick={edit}> Sửa </Button></div>)
-      } : (<> </>),
-    result.permission === 'Admin' ?
+    {
+      dataIndex: 'trangthai',
+      key: 'trangthai',
+      render: (trangthai) =>
+      (
+        <>
+          {trangthai.stt.map(tragth => {
+            if (tragth === 'Ẩn') {
+              return (
+                <div className="btn-box lock"><Button data-id={trangthai.id} type="primary" icon={<UnlockOutlined />} onClick={unlock}></Button></div>
+              );
+            } else {
+              return (
+                <div className="btn-box lock"><Button data-id={trangthai.id} type="danger" icon={<LockOutlined />} onClick={lock}></Button></div>
+              )
+            }
+          })}
+        </>
+      )
+    },
+    {
+      dataIndex: 'mansx',
+      key: 'mansx',
+      render: mansx => (<div className="btn-box fix"><Button data-id={mansx} type="primary" key={mansx} onClick={edit}> Sửa </Button></div>)
+    },
+    result.permission === 'Admin' || result.permission === 'QL' ?
       {
         dataIndex: 'mansx',
         key: 'mansx',
-        render: mansx => (<div className="btn-box"><Button data-id={mansx} key={mansx} type="danger" onClick={deleteType}> Xoá </Button></div>)
+        render: mansx => (<div className="btn-box delete"><Button data-id={mansx} key={mansx} type="danger" onClick={deleteType}> Xoá </Button></div>)
       } : (<> </>)
 
   ];
@@ -199,7 +197,7 @@ const ListProducer = () => {
             </Link>
           </div>
         ) : ("")}
-        <Table className="item" dataSource={listProducer} columns={columns} pagination={{ pageSize: 10 }} style={{ padding: 10 }} size="middle" />
+        <Table className="item" dataSource={listProducer} columns={columns} pagination={{ pageSize: 6 }} style={{ padding: 10 }} size="middle" />
       </div>
       {/* <Link to={'/Themnhanvien'}><p className="ant-btn ant-btn-primary" type="primary">Thêm nhân viên</p></Link> */}
 

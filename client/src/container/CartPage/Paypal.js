@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react'
+import React, { useRef, useEffect, useState } from 'react'
 import { message } from 'antd';
 import ORDER from 'API_Call/Api_order/order';
 import { useHistory } from "react-router-dom";
@@ -9,14 +9,15 @@ export default function Paypal(props) {
     const history = useHistory();
     console.log(props.order);
     let coin = 0;
-    let thongbao = "";
     if (props.voucher !== null) {
         coin = ((props.ship + Number(props.PriceCart) - Number(props.voucher.giagiam)) / 23000).toFixed(2);
     } else {
         coin = ((props.ship + Number(props.PriceCart)) / 23000).toFixed(2);
     }
+    const payment = JSON.parse(localStorage.getItem("payment"));
 
     useEffect(() => {
+        
         window.paypal.Buttons({
             createOrder: (data, actions, err) => {
                 return actions.order.create({
@@ -33,27 +34,15 @@ export default function Paypal(props) {
                 });
             },
             onApprove: async (data, actions) => {
-                message.loading("Dang su li...");
+                message.loading("Dang xu li...");
                 const bill = await actions.order.capture();
+                console.log(bill);
+                console.log(actions);
+
                 if (bill.status === "COMPLETED") {
                     message.success("Ban da thanh toan thanh cong !!!");
-                    console.log(bill.status);
-                    let values = [];
-                    values['order'] = props.order;
-                    values['note'] = props.notes;
-                    values['pay'] = props.payValue;
-                    values['ship'] = props.ship;
-                    values['delivery'] = props.deliveryValue;
-                    if (props.voucher !== null) {
-                        values['sumpay'] = props.ship + Number(props.PriceCart) - Number(props.voucher.giagiam);
-                        values['makm'] = props.voucher.makm;
-                    } else {
-                        values['sumpay'] = props.ship + Number(props.PriceCart);
-                    }
-                    const url = "http://localhost:5000/api/v1/don-hang/tao-don-hang";
-                    console.log(values);
-                    axios
-                      .post(url,{ value: values})
+                    const url = "http://localhost:5000/api/v1/don-hang/";
+                    return axios.post(url,payment)
                         .then(async (res) => {
                             if (res.data.status === "Success") {
                                 message.success(res.data.message);
@@ -69,8 +58,9 @@ export default function Paypal(props) {
                             }
                         })
                         .catch((err) => {
+                            console.log(err);
                             message.error(
-                                `Đạt hàng thất bạiiiiiiii! \n ${err.response.data.message}`
+                                `iiiiiiii! \n ${err.response.data.message}`
                             );
                         });
                 }
@@ -80,7 +70,7 @@ export default function Paypal(props) {
                 console.log(err);
             }
         }).render(paypal.current)
-    }, [])
+    }, [payment, coin])
 
     return (
         <div>
