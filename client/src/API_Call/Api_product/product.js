@@ -5,6 +5,11 @@ const product = {
         const url = "/";
         return AxiosProduct.get(url);
     },
+    //(Sản phẩm mới)
+    getNewProduct: () => {
+        const url = "/new-product";
+        return AxiosProduct.get(url);
+    },
     //(Sản phẩm theo id)
     getid: (id) => {
         const url = `/${id}`;

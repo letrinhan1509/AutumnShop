@@ -25,24 +25,24 @@ const catalog = {
         const url = `/loai/${id}`;
         return AxiosCatalog.get(url);
     },
-    //(Thêm mới 1 loại sp)
-    addProtype: (values) => {
-        const url = "/them-loai";
-        return AxiosCatalog.post(url, values);
-    },
     //(Thêm mới 1 danh mục sp)
     addCatalog: (values) => {
-        const url = "/them";
+        const url = "/";
         return AxiosCatalog.post(url, values);
     },
-    //(Cập nhật thông tin loại theo mã loại)
-    updateProtype: (values) => {
-        const url = "/cap-nhat-loai";
-        return AxiosCatalog.put(url, values);
+    //(Thêm mới 1 loại sp)
+    addProtype: (values) => {
+        const url = "/loai";
+        return AxiosCatalog.post(url, values);
     },
     //(Cập nhật thông tin danh mục theo mã danh mục)
     updateCatalog: (values) => {
-        const url = "/cap-nhat";
+        const url = "/";
+        return AxiosCatalog.put(url, values);
+    },
+    //(Cập nhật thông tin loại theo mã loại)
+    updateProtype: (values) => {
+        const url = "/loai";
         return AxiosCatalog.put(url, values);
     },
     //(Cập nhật trạng thái loại theo mã loại)
@@ -57,12 +57,12 @@ const catalog = {
     },
     //(Xoá loại sản phẩm theo id)
     deleteProtype: (id) => {
-        const url = `/xoa-loai/${id}`;
+        const url = `/loai/${id}`;
         return AxiosCatalog.delete(url);
     },
     //(Xoá danh mục sản phẩm theo id)
     deleteCatalog: (id) => {
-        const url = `/xoa/${id}`;
+        const url = `/${id}`;
         return AxiosCatalog.delete(url);
     }
 };

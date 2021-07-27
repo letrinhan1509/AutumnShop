@@ -23,6 +23,7 @@ router
     .get(adminController.getListAdmins) // Danh sách tất cả admins
     .post(adminController.signup)   // Tạo tài khoản admin
     .put(adminController.putEditProfile);   // Cập nhật thông tin tài khoản admin
+//router.get('/', authController.restrictTo, adminController.getListAdmins)
 
 router
     .route("/trang-thai-don-hang")
@@ -40,7 +41,9 @@ router
     .get(adminController.getOrderStatus)    // Chi tiết 1 trạng thái đơn hàng
     .delete(adminController.deleteStatusOrder); // Xoá trạng thái đơn hàng
 
-router.post('/dev-dang-nhap', adminController.login);// Đăng nhập
+router.get("/dang-xuat", adminController.logout);
+router.post("/dev-dang-nhap", adminController.login);// Đăng nhập
+router.put('/quen-mat-khau', adminController.putForgotPassword);
 router.put('/doi-mat-khau', adminController.putEditPassword);// Đổi mật khẩu admin
 router.put('/cap-nhat-trang-thai', adminController.putEditStatusAdmin);
 

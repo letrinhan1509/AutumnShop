@@ -188,6 +188,22 @@ exports.statistical = catchAsync(async (req, res, next) => {
         });
     }
 });
+// GET: Monthly statistics
+exports.statisticalMonth = catchAsync(async (req, res, next) => {
+    try {
+        let statistical = await modelOrder.statisticalMonth();
+        return res.status(200).json({ 
+            status: "Success",
+            statistical: statistical
+        });
+    } catch (error) {
+        return res.status(400).json({ 
+            status: "Fail", 
+            message: "Something went wrong!", 
+            error: error 
+        });
+    }
+});
 
 
         // POST

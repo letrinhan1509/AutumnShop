@@ -5,6 +5,10 @@ const product = {
         const url = "/";
         return AxiosProduct.get(url);
     },
+    getSize: () => {
+        const url = "/bang-size";
+        return AxiosProduct.get(url);
+    },
     //(Sản phẩm theo id)
     getid: (id) => {
         const url = `/${id}`;
@@ -25,8 +29,17 @@ const product = {
         const url = `/nha-san-xuat/${id}`;
         return AxiosProduct.get(url);
     },
+    //(Size theo id)
+    getSizeId: (id) => {
+        const url = `/bang-size/${id}`;
+        return AxiosProduct.get(url);
+    },
     addproduct: (values) => {
-        const url = "/them-san-pham";
+        const url = "/";
+        return AxiosProduct.post(url, values);
+    },
+    addSize: (values) => {
+        const url = "/bang-size";
         return AxiosProduct.post(url, values);
     },
     updatePro: (values) => {
@@ -37,10 +50,18 @@ const product = {
         const url = "/cap-nhat-trang-thai";
         return AxiosProduct.put(url, values);
     },
+    updateSize: (values) => {
+        const url = "/bang-size";
+        return AxiosProduct.put(url, values);
+    },
     deletePro: (id) => {
-        const url = `/xoa/${id}`;
+        const url = `/${id}`;
         return AxiosProduct.delete(url);
     },
+    deleteSize: (id) => {
+        const url = `/bang-size/${id}`;
+        return AxiosProduct.delete(url);
+    }
 };
 
 export default product;

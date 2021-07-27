@@ -74,6 +74,7 @@ router.post('/dang-nhap', userController.postUserLogin);    // Đăng nhập tà
 router.post('/dang-ky/gmail', userController.postUser);   // Đăng ký tài khoản khi đăng nhập bằng gmail
 router.post('/dang-nhap/gmail', userController.postUserLogin);    // Đăng nhập tài khoản thông qua tài khoản gmail
     // PUT
+router.put('/dev-quen-mat-khau', userController.putForgotPassword);
 router.put('/doi-mat-khau', userController.putChangePassword);  // Đổi mật khẩu tài khoản user
 router.put('/cap-nhat-tai-khoan', userController.putEditUser); // Cập nhật thông tin tài khoản user
 router.put('/cap-nhat-trang-thai', userController.putEditUserStatus);   // Cập nhật trạng thái tài khoản user

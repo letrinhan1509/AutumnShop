@@ -1,7 +1,7 @@
 import React from "react";
 import { Menu } from 'antd';
-import { AppstoreOutlined, AppstoreAddOutlined, SettingOutlined, DashboardOutlined, IdcardOutlined } from '@ant-design/icons';
-import { MessageOutlined, ProfileOutlined, OrderedListOutlined, UserAddOutlined, LogoutOutlined } from '@ant-design/icons';
+import { AppstoreOutlined, SettingOutlined, DashboardOutlined, IdcardOutlined } from '@ant-design/icons';
+import { MessageOutlined, ProfileOutlined, OrderedListOutlined, UserAddOutlined, LogoutOutlined, SkinOutlined } from '@ant-design/icons';
 import { UnorderedListOutlined, FileAddOutlined, PercentageOutlined } from '@ant-design/icons';
 import { BrowserRouter as Router, useHistory } from "react-router-dom";
 import "../Components/scss/nav.scss"
@@ -53,6 +53,7 @@ const Navigation = () => {
                 <SubMenu key="sub6" icon={<MessageOutlined />} title="Quản lý bình luận">
                     <Menu.Item key="danh-sach-binh-luan">Danh sách các bình luận</Menu.Item>
                 </SubMenu>
+                <Menu.Item key="bang-size" icon={<SkinOutlined />}>Bảng size quần áo</Menu.Item>
                 <SubMenu key="sub8" icon={<SettingOutlined />} title="Cài đặt">
                     <Menu.Item key="tai-khoan" icon={<ProfileOutlined />}>Thông tin tài khoản</Menu.Item>
                     <Menu.Item onClick={logout} icon={<LogoutOutlined />}>Đăng xuất</Menu.Item>

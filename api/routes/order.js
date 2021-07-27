@@ -12,11 +12,8 @@ router
     .post(orderController.postCreateOrder)  // Tạo đơn hàng
     .put(orderController.putEditStatus);    // Cập nhật trạng thái đơn hàng
 
-router
-    .route("/thong-ke")
-    .get(orderController.statistical);  // Thống kê doanh thu bán hàng và đơn hàng
-
-
+router.get("/thong-ke", orderController.statistical);  // Thống kê doanh thu bán hàng và đơn hàng theo ngày
+router.get("/thong-ke-thang", orderController.statisticalMonth); // Thống kê doanh thu bán hàng và đơn hàng theo tháng
 
 router
     .route("/:id")

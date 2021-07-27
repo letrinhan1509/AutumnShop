@@ -41,7 +41,7 @@ const Login = () => {
       .then(async (res) => {
         console.log(res.data.message);
         if (res.data.status === "LoginSuccess") {
-          message.success(`Đăng nhập thành công, Xin chào ${res.data.admin.tennv}`)
+          message.success(`Đăng nhập thành công, Xin chào ${res.data.admin.username}`)
           console.log(res.data.admin)
           localStorage.setItem('token', res.data.token)
           localStorage.setItem('user', JSON.stringify(res.data.admin))

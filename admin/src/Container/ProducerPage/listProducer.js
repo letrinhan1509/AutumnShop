@@ -41,7 +41,7 @@ const ListProducer = () => {
       if (res.data.status === "Success") {
         message.success(res.data.message)
         setTimeout(() => {
-          link.go({ pathname: '/danh-muc-san-pham' });
+          link.go({ pathname: '/danh-sach-nha-sx' });
         }, 800)
       }
     })
@@ -59,7 +59,7 @@ const ListProducer = () => {
       if (res.data.status === "Success") {
         message.success(res.data.message)
         setTimeout(() => {
-          link.go('/danh-muc-san-pham')
+          link.go('/danh-sach-nha-sx')
         }, 800)
       }
     })
@@ -75,7 +75,7 @@ const ListProducer = () => {
       if (res.data.status === "Success") {
         message.success(res.data.message)
         setTimeout(() => {
-          link.go({ pathname: '/danh-sach-admin' });
+          link.go({ pathname: '/danh-sach-nha-sx' });
         }, 800)
       }
     })

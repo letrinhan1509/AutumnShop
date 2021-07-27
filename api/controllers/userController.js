@@ -239,11 +239,11 @@ exports.putEditUser = catchAsync(async (req, res, next) => {
         //let makm = req.body.makh;
         let email = req.body.email;
         let ten = req.body.username;
+        let tenhinh = req.body.imgName;
         let hinh = req.body.hinhMoi;
         let diachi = req.body.diachi;
         let sdt = req.body.sdt;
-        console.log(req.body);
-        if(!email || !ten || !diachi || !sdt) {
+        if(!email || !ten || !tenhinh || !hinh || !diachi || !sdt) {
             return res.status(400).json({
                 status: "Fail",
                 message: "Thiếu thông tin. Vui lòng kiểm tra lại thông tin !"
@@ -350,7 +350,43 @@ exports.putChangePassword = catchAsync(async (req, res, next) => {
     } catch (error) {
         return res.status(400).json({
             status: "Fail", 
-            message: "Something went wrong",
+            message: "Something went wrong!",
+            error: error
+        });
+    }
+});
+
+exports.putForgotPassword = catchAsync(async (req, res, next) => {
+    try {
+        let email = req.body.email;
+        if(!email) {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Vui lòng nhập Email để lấy lại mật khẩu !"
+            });
+        };
+        const userExist = await modelUser.checkEmail(email);
+        console.log(userExist);
+        if(userExist == -1) {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Không tìm thấy tài khoản có email này, vui lòng kiểm tra lại !"
+            });
+        } else {
+            let newPassword = Math.random().toString(36).substring(7);
+            var salt = bcrypt.genSaltSync(10);
+            var pass_mahoa = bcrypt.hashSync(newPassword, salt);
+            const pass = await modelUser.updatePasswordUser(email, pass_mahoa);
+            return res.status(200).json({
+                status: "Success",
+                message: "Mật khẩu mới đã được gửi qua email của bạn. Vui lòng kiểm tra lại email để nhận mật khẩu !",
+                pass: newPassword
+            });
+        };
+    } catch (error) {
+        return res.status(400).json({
+            status: "Fail", 
+            message: "Something went wrong!",
             error: error
         });
     }

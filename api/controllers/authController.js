@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 const { promisify } = require('util');
-
+const catchAsync = require('../utils/catchAsync');
 const modelAdmin = require('../models/model_admin');
 const modelUser = require('../models/model_user');
 
@@ -37,30 +37,37 @@ const verifyToken = (token) => {
 };
 
 exports.isLoggedIn = async (req, res, next) => {
-    if(req.cookies.jwt) {
+    console.log(req.cookies.jwtAdmin);
+    if(req.cookies.jwtAdmin) {
         try {
             // 1) verify token
             const decoded = await promisify(jwt.verify)(
-                req.cookies.jwt,
-                process.env.JWT_SECRET
+                req.cookies.jwtAdmin,
+                process.env.JWT_SECRET_ADMIN
             );
-
             // 2) Check if user still exists
-            const currentUser = await modelAdmin.get_Admin_Id(decoded.id);
-            if (currentUser != -1) {
+            const adminExist = await modelAdmin.get_Admin_Id(decoded.id);
+            if (adminExist == -1) {
+                return res.status(403).json({ 
+                    status: "Fail", 
+                    message: "This token does not exist !"
+                });
+            } else {
                 return next();
-            };
-
-            return next();
+            }
+            //return next();
         } catch (error) {
-            res.status(400).json({ 
+            return res.status(400).json({ 
                 status: "Fail", 
-                message: "Lỗi... !", 
+                message: "Something went wrong!", 
                 error: error 
             });
         };
     };
-    next();
+    return res.status(401).json({ 
+        status: "Fail", 
+        message: "No login !"
+    });
 };
 
 exports.verifyTokenUser = (token) => {
@@ -141,6 +148,18 @@ exports.protectUser = Model => catchAsync(async (req, res, next) => {
     req.user = currentUser;
     res.locals.user = currentUser;
     next();
+});
+
+exports.restrictTo = catchAsync(async (req, res, next) => {
+    const admin = await this.isLoggedInUser(req.cookies.jwtAdmin);
+    if(admin.quyen == 'Admin' || admin.quyen == 'QLCH') {
+        return next();
+    } else {
+        return res.status(403).json({
+            status: 'Fail',
+            message: 'Bạn không có quyền truy cập vào đây !'
+        })
+    }
 });
 
 module.exports = {

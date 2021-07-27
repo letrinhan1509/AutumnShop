@@ -112,8 +112,8 @@ exports.get_detailOrder = async (orderId) => {
             }
         })
     })
-}
-//
+};
+    // Thống kê doanh thu bán hàng và số đơn hàng theo ngày:
 exports.statistical = async () => {
     return new Promise( (hamOK, hamLoi) => {
         let sql = `SELECT madonhang, ngaydat, SUM(tongtien) as tongdoanhthu, COUNT(ngaydat) as tongdonhang FROM donhang
@@ -126,7 +126,21 @@ exports.statistical = async () => {
             }
         })
     })
-}
+};
+    // Thống kê doanh thu bán hàng và số đơn hàng theo tháng:
+exports.statisticalMonth = async () => {
+    return new Promise( (hamOK, hamLoi) => {
+        let sql = `SELECT madonhang, ngaydat, MONTH (ngaydat) as doanhthuthang, SUM(tongtien) as tongdoanhthu, COUNT(ngaydat) as tongdonhang 
+        FROM donhang GROUP BY MONTH (ngaydat) ORDER BY doanhthuthang DESC`;
+        db.query(sql, (err, result) => {
+            if(err){
+                hamLoi(err);
+            }else{
+                hamOK(result);
+            }
+        })
+    })
+};
     // Cập nhật trạng thái đơn hàng:
 exports.update_Status = (data) => {
     return new Promise( (hamOK, hamLoi) => {

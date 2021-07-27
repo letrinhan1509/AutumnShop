@@ -63,15 +63,16 @@ const EditAccount = (props) => {
     console.log(link);
 
     const update = (values) => {
+        values['manv'] = user.manv;
         if (link !== "") {
             values['img'] = link;
         }
         console.log(values)
-        /* users.updateInfo(values).then((res) => {
+        admin.updateInfo(values).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message)
                 setTimeout(() => {
-                    history.push('/Thong-tin-tai-khoan');
+                    history.push('/tai-khoan');
                 }, 2000)
             }
             else {
@@ -81,8 +82,8 @@ const EditAccount = (props) => {
         })
             .catch(err => {
                 console.log(err.response);
-                message.error(`Login fail!\n ${err.response.data}`)
-            }) */
+                message.error(`${err.response.data.message}`)
+            })
     };
 
     return (
@@ -97,7 +98,7 @@ const EditAccount = (props) => {
                             name="update"
                             onFinish={update}
                             initialValues={{
-                                username: `${user.username}`,
+                                tennv: `${user.username}`,
                                 email: `${user.email}`,
                                 sdt: `${user.phone}`,
                                 diachi: `${user.diachi}`,
@@ -149,8 +150,8 @@ const EditAccount = (props) => {
                                 }
                             </Form.Item>
                             <Form.Item
-                                name="username"
-                                id="username"
+                                name="tennv"
+                                id="tennv"
                                 label="Tên nhân viên"
                             >
                                 <Input placeholder="User name" />
@@ -160,7 +161,7 @@ const EditAccount = (props) => {
                                 id="email"
                                 label="Email"
                             >
-                                <Input placeholder="email" />
+                                <Input placeholder="email" disabled/>
                             </Form.Item>
                             <Form.Item
                                 name="phone"

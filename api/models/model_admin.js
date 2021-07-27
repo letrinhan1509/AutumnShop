@@ -86,17 +86,16 @@ exports.insert_Admin = (data) => {
     })
 }
     // Cập nhật thông tin tài khoản admin:
-exports.update_Profile_Admin = (id, ten, matkhau, hinh, diachi, sdt, quyen) => {
+exports.update_Profile_Admin = (id, ten, tenhinh, hinh, diachi, sdt) => {
     return new Promise( (resolve, reject) => {
-        let sql = `UPDATE admin SET tennv = '${ten}', matkhau = '${matkhau}', hinh = '${hinh}', diachi = '${diachi}', sodienthoai = '${sdt}', quyen = '${quyen}'
+        let sql = `UPDATE admin SET tennv = '${ten}', tenhinh = '${tenhinh}', hinh = '${hinh}', diachi = '${diachi}', sodienthoai = '${sdt}'
         WHERE manv = '${id}'`;
         db.query(sql, (err, result) => {
             if(err){
                 console.log('Fail');
                 reject(err)
             }else{
-                console.log('Update profile success');
-                resolve("Cập nhật thông tin tài khoản admin thành công !")
+                resolve("Cập nhật thông tin tài khoản thành công !")
             }     
         })
     })

@@ -70,9 +70,9 @@ exports.insert_category = async (data) => {
     })
 }
     // Sửa danh mục:
-exports.update_category = async (categoryId, name) => {
+exports.update_category = async (categoryId, name, imgName, img) => {
     return new Promise( (hamOK, hamLoi) => {
-        let sql = `UPDATE danhmuc SET tendm = '${name}' WHERE madm = '${categoryId}'`;
+        let sql = `UPDATE danhmuc SET tendm = '${name}', tenhinh = '${imgName}', hinh = '${img}' WHERE madm = '${categoryId}'`;
         db.query(sql, (err, result) => {
             if(err)
                 hamLoi(err);
@@ -233,9 +233,9 @@ exports.insert_Type = (data) => {
     })
 }
     // Cập nhật loại sản phẩm:
-exports.update_Type = (maloai, ten, madm) => {
+exports.update_Type = (maloai, ten, tenhinh, hinh, madm) => {
     return new Promise( (resolve, reject) => {
-        let sql = `UPDATE loaisp SET tenloai = '${ten}', madm = '${madm}' WHERE maloai = '${maloai}'`;
+        let sql = `UPDATE loaisp SET tenloai = '${ten}', tenhinh = '${tenhinh}', hinh = '${hinh}', madm = '${madm}' WHERE maloai = '${maloai}'`;
         db.query(sql, (err, result) => {
             if(err)
                 reject(err);

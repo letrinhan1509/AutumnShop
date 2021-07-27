@@ -39,6 +39,9 @@ import EditSale from "./Container/SalePage/EditSale";
 import AccountInfo from "./Container/AccountPage/AccountInfo";
 import EditAccount from "./Container/AccountPage/EditAccount";
 import ChangePass from "./Container/AccountPage/ChangePass";
+import ListSize from "./Container/SizePage/ListSize";
+import AddSize from "./Container/SizePage/AddSize";
+import EditSize from "./Container/SizePage/EditSize";
 
 function App() {
   const PrivateRoute = ({ component: Component, ...rest }) => (
@@ -165,6 +168,15 @@ function App() {
                   </Route>
                   <Route exact path="/tai-khoan/doi-mat-khau">
                     <ChangePass />
+                  </Route>
+                  <Route exact path="/bang-size">
+                    <ListSize />
+                  </Route>
+                  <Route exact path="/them-size">
+                    <AddSize />
+                  </Route>
+                  <Route exact path="/bang-size/sua-size">
+                    <EditSize />
                   </Route>
                 </Content>
               </Col>

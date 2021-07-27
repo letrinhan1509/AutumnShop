@@ -104,42 +104,44 @@ exports.signup = catchAsync(async (req, res, next) => {
     //let pass1 = req.body.pass1;
     let name = req.body.name;
     let img = req.body.img;
+    let tenhinh = req.body.imgName;
     let address = req.body.address;
     let phone = req.body.phone;
     let permission = req.body.permission;
     let ward = req.body.ward;
+    if(!email || !name || !mk || !tenhinh || !img || !address || !phone || !permission) {
+        return res.status(400).json({ 
+            status: "Fail", 
+            message: "Thiếu thông tin, cập nhật thất bại, vui lòng kiểm tra lại !" 
+        });
+    };
     const admin = await modelAdmin.check_Admin(email);
     if(email === admin.admin) {
-        return res.status(400).json({ status: "Fail", message: "Email này đã đăng ký tài khoản, vui lòng nhập email khác !" });
+        return res.status(400).json({ 
+            status: "Fail", 
+            message: "Email này đã đăng ký tài khoản, vui lòng nhập email khác !" 
+        });
     };
     if(!img) {
         img = 'https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/User_Img%2FuserICON.png?alt=media&token=b64576ab-18b6-4d7a-9864-c15f59d5717c&fbclid=IwAR0UVyyCkNoF_dfbguTVOkC5lzvHPk-0C4Ef_iFmPxl8lKX2xQsKObTo568';
     };
     if(!ward) {
         var url = "https://thongtindoanhnghiep.co/api/ward/" + ward;
-        axios.get(url)
-            .then(async function (response) {
-                let tpho = response.data.TinhThanhTitle;
-                let quan = response.data.QuanHuyenTitle;
-                let phuong = response.data.Title;
-                let diachi = address + ', ' + phuong + ', ' + quan + ', ' + tpho;
-                var salt = bcrypt.genSaltSync(10); // Chuỗi cộng thêm vào mật khẩu để mã hoá.
-                var pass_mahoa = bcrypt.hashSync(mk, salt);   // Mã hoá password.
-                let data = {
-                    admin: email,
-                    matkhau: pass_mahoa,
-                    tennv: name,
-                    hinh: img,
-                    diachi: diachi,
-                    sodienthoai: phone,
-                    quyen: permission
-                };
-                let query = await modelAdmin.insert_Admin(data);
-                res.status(200).json({ status: "Success", message: query });
-            })
-            .catch(function (error) {
-                res.status(400).json({ status: "Fail", message: "Lỗi GET DETAIL DISTRICT !!!", error: error });
-            });
+        const list = await axios.get(url);
+        let diachi = address+ ', ' +list.data.Title+ ', ' +list.data.QuanHuyenTitle+ ', ' +list.data.TinhThanhTitle;
+        var salt = bcrypt.genSaltSync(10); // Chuỗi cộng thêm vào mật khẩu để mã hoá.
+        var pass_mahoa = bcrypt.hashSync(mk, salt);   // Mã hoá password.
+        let data = {
+            admin: email,
+            matkhau: pass_mahoa,
+            tennv: name,
+            hinh: img,
+            diachi: diachi,
+            sodienthoai: phone,
+            quyen: permission
+        };
+        let query = await modelAdmin.insert_Admin(data);
+        return res.status(200).json({ status: "Success", message: query });
     } else {
         var salt = bcrypt.genSaltSync(10);
         var pass_mahoa = bcrypt.hashSync(mk, salt);
@@ -153,7 +155,7 @@ exports.signup = catchAsync(async (req, res, next) => {
             quyen: permission
         };
         let query = await modelAdmin.insert_Admin(data);
-        res.status(200).json({ status: "Success", message: query });
+        return res.status(200).json({ status: "Success", message: query });
     };
 });
 // Đăng nhập
@@ -181,7 +183,7 @@ exports.login = catchAsync(async (req, res, next) => {
 });
 // Đăng xuất
 exports.logout = (req, res) => {
-    res.cookie('jwt', 'loggedout', {
+    res.cookie('jwtAdmin', 'loggedout', {
         expires: new Date(Date.now() + 10 * 1000),
         httpOnly: true
     });
@@ -202,9 +204,13 @@ exports.postStatusOrder = catchAsync(async (req, res, next) => {
     };
     try {
         let query = await modelAdmin.insert_Status_Or(data);
-        res.status(200).json({ status: "Success", message: query });
+        return res.status(200).json({ status: "Success", message: query });
     } catch (error) {
-        res.status(400).json({ status: "Fail", message: "Lỗi... ! Thêm trạng thái thất bại !", error: error });
+        return res.status(400).json({ 
+            status: "Fail", 
+            message: "Something went wrong!", 
+            error: error 
+        });
     };
 });
 
@@ -213,40 +219,39 @@ exports.postStatusOrder = catchAsync(async (req, res, next) => {
 // Cập nhật thông tin tài khoản
 exports.putEditProfile = catchAsync(async (req, res, next) => {
     try {
-        let id = req.body.adminId;
-        const admin = await modelAdmin.get_Admin_Id(id);
-        if(admin == -1) {
-            return res.status(400).json({ 
-                status: "Fail", 
-                message: "Không tìm thấy admin này !" 
-            });
-        };
-        let mk = req.body.pass;
-        let ten = req.body.name;
+        let id = req.body.manv;
+        let ten = req.body.tennv;
+        let email = req.body.email;
+        let tenhinh = req.body.imgName;
         let hinh = req.body.img;
-        let diachi = req.body.address;
+        let diachi = req.body.diachi;
         let sdt = req.body.phone;
-        let quyen = req.body.permission;
-        //let trangthai = req.body.trangthai;
-        //let ward = req.body.ward;
-        if(ten == undefined || diachi == undefined || sdt == undefined || quyen == undefined) {
+        if(!id || !ten || !email || !diachi || !sdt) {
             return res.status(400).json({ 
                 status: "Fail", 
-                message: "Thiếu thông tin ! Cập nhật thất bại !" 
+                message: "Thiếu thông tin, cập nhật thất bại, vui lòng kiểm tra lại !" 
             });
         };
-        if(!hinh) {
-            hinh = "undefined";
-        };
-        if(mk != admin.matkhau) {
-            var salt = bcrypt.genSaltSync(10); // Chuỗi cộng thêm vào mật khẩu để mã hoá.
-            mk = bcrypt.hashSync(mk, salt);
-        };
-        let query = await modelAdmin.update_Profile_Admin(id, ten, mk, hinh, diachi, sdt, quyen);
-        return res.status(200).json({ 
-            status: "Success", 
-            message: query 
-        });
+        const adminExist = await modelAdmin.get_Admin_Id(id);
+        if(adminExist == -1) {
+            return res.status(400).json({ 
+                status: "Fail", 
+                message: "Không tìm thấy admin này, vui lòng kiểm tra lại !" 
+            });
+        } else {
+            if(!hinh && !tenhinh) {
+                tenhinh = "noImg";
+                hinh = "https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/User_Img%2FuserICON.png?alt=media&token=b64576ab-18b6-4d7a-9864-c15f59d5717c&fbclid=IwAR0UVyyCkNoF_dfbguTVOkC5lzvHPk-0C4Ef_iFmPxl8lKX2xQsKObTo568";
+            };
+            if(email == adminExist.admin) {
+                const query = await modelAdmin.update_Profile_Admin(id, ten, tenhinh, hinh, diachi, sdt);
+                return res.status(200).json({ 
+                    status: "Success", 
+                    message: query,
+                    admin: adminExist
+                });
+            }
+        }
     } catch (error) {
         return res.status(400).json({ 
             status: "Fail", 
@@ -337,7 +342,40 @@ exports.putEditPassword = catchAsync(async (req, res, next) => {
             };
         };
     } catch (error) {
-        console.log(error);
+        res.status(400).json({ 
+            status: "Fail", 
+            message: "Something went wrong!" 
+        });
+    }
+});
+// Put: Forgot Password
+exports.putForgotPassword = catchAsync(async (req, res, next) => {
+    try {
+        let email = req.body.email;
+        if(!email) {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Vui lòng nhập Email để lấy lại mật khẩu !"
+            });
+        };
+        const adminExist = await modelAdmin.check_Admin(email);
+        if(adminExist == -1) {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Không tìm thấy tài khoản có email này, vui lòng kiểm tra lại !"
+            });
+        } else {
+            let newPassword = Math.random().toString(36).substring(7);
+            var salt = bcrypt.genSaltSync(10);
+            var pass_mahoa = bcrypt.hashSync(newPassword, salt);
+            const pass = await modelAdmin.update_Password(email, pass_mahoa);
+            return res.status(200).json({
+                status: "Success",
+                message: "Mật khẩu mới đã được gửi qua email của bạn. Vui lòng kiểm tra lại email để nhận mật khẩu !",
+                pass: newPassword
+            });
+        };
+    } catch (error) {
         res.status(400).json({ 
             status: "Fail", 
             message: "Something went wrong!" 

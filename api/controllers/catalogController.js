@@ -80,9 +80,11 @@ exports.postCategory = catchAsync(async (req, res, next) => {
     try {   
         let data = {
             madm: req.body.madm,
-            tendm: req.body.tendm
+            tendm: req.body.tendm,
+            tenhinh: req.body.tenhinh,
+            hinh: req.body.hinh
         };
-        if(!data.madm || !data.tendm) {
+        if(!data.madm || !data.tendm || !data.tenhinh || !data.hinh) {
             return res.status(400).json({ status: "Fail", message: "Thiếu thông tin, vui lòng nhập đầy đủ thông tin !" });
         };
         const categoryCode = await modelCatalog.get_Category_Id(data.madm);
@@ -117,9 +119,11 @@ exports.postType = catchAsync(async (req, res, next) => {
         let data = {
             maloai: req.body.maloai,
             tenloai: req.body.tenloai,
+            tenhinh: req.body.tenhinh,
+            hinh: req.body.hinh, 
             madm: req.body.madm
         };
-        if(!data.maloai || !data.tenloai || !data.madm) {
+        if(!data.maloai || !data.tenloai || !data.tenhinh || !data.hinh || !data.madm) {
             return res.status(400).json({ status: "Fail", message: "Thiếu thông tin, vui lòng nhập đầy đủ thông tin !" });
         };
         const typeCode = await modelCatalog.get_Type_Id(data.maloai);
@@ -158,18 +162,30 @@ exports.postType = catchAsync(async (req, res, next) => {
 exports.putEditCategory = catchAsync(async (req, res, next) => {
     let madm = req.body.madm;
     let tendm = req.body.tendm;
-    if(!madm || !tendm) {
-        return res.status(400).json({ status: "Fail", message: "Thiếu thông tin, vui lòng nhập đầy đủ thông tin !" });
+    let tenhinh = req.body.tenhinh;
+    let hinh = req.body.hinh;
+    if(!madm || !tendm || !tenhinh || !hinh) {
+        return res.status(400).json({ 
+            status: "Fail", 
+            message: "Thiếu thông tin, vui lòng nhập đầy đủ thông tin !" 
+        });
     };
     const CategoryName = await modelCatalog.get_Category_Name(tendm);
     if(tendm == CategoryName.tendm) {
-        return res.status(400).json({ status: "Fail", message: "Trùng tên danh mục, vui lòng nhập tên khác !" });
+        return res.status(400).json({ 
+            status: "Fail", 
+            message: "Trùng tên danh mục, vui lòng nhập tên khác !" 
+        });
     };
     try {
-        let query = await modelCatalog.update_category(madm, tendm);
+        let query = await modelCatalog.update_category(madm, tendm, tenhinh, hinh);
         return res.status(200).json({ status: "Success", message: query });
     } catch (error) {
-        return res.status(400).json({ status: "Fail", message: "Lỗi...!", error: error });
+        return res.status(400).json({ 
+            status: "Fail", 
+            message: "Something went wrong!", 
+            error: error 
+        });
     }
 });
 // Cập nhật loại sản phẩm
@@ -177,18 +193,30 @@ exports.putEditType = catchAsync(async (req, res, next) => {
     let maloai = req.body.maloai;
     let ten = req.body.tenloai;
     let madm = req.body.madm;
-    if(!maloai || !ten || !madm) {
-        return res.status(400).json({ status: "Fail", message: "Thiếu thông tin, vui lòng nhập đầy đủ thông tin !" });
+    let tenhinh = req.body.tenhinh;
+    let hinh = req.body.hinh;
+    if(!maloai || !ten || !tenhinh || !hinh || !madm) {
+        return res.status(400).json({ 
+            status: "Fail", 
+            message: "Thiếu thông tin, vui lòng nhập đầy đủ thông tin !" 
+        });
     };
     const typeName = await modelCatalog.get_Type_Name(ten);
     if(ten == typeName.tenloai) {
-        return res.status(400).json({ status: "Fail", message: "Trùng tên loại, vui lòng nhập tên khác !" });
+        return res.status(400).json({ 
+            status: "Fail", 
+            message: "Trùng tên loại, vui lòng nhập tên khác !" 
+        });
     };
     try {
-        let query = await modelCatalog.update_Type(maloai, ten, madm);
+        let query = await modelCatalog.update_Type(maloai, ten, tenhinh, hinh, madm);
         return res.status(200).json({ status: "Success", message: query });
     } catch (error) {
-        return res.status(400).json({ status: "Fail", message: "Lỗi...!", error: error });
+        return res.status(400).json({ 
+            status: "Fail", 
+            message: "Something went wrong!", 
+            error: error 
+        });
     };
 });
 // Cập nhật trạng thái danh mục
@@ -245,7 +273,7 @@ exports.putEditTypeStatus = catchAsync(async (req, res, next) => {
         } else
             return res.status(400).json({ status: "Fail", message: "Thiếu thông tin cập nhật trạng thái loại !" });
     } catch (error) {
-        return res.status(400).json({ status: "Fail", message: "Lỗi...!", error: error })
+        return res.status(400).json({ status: "Fail", message: "Something went wrong!", error: error })
     };
 });
 
