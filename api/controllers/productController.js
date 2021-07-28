@@ -374,9 +374,12 @@ exports.putEditProduct = catchAsync(async (req, res, next) => {
         let hinh = req.body.hinh;
         let hinhchitiet = req.body.hinhchitiet;
         let mota = req.body.mota;
-        var today = new Date();
-        var ngaytao = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate()+' '+today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-        if(!masp || !tensp || !soluong || !size || !mau || !gia || !hinh ) {
+        let trangthai = req.body.trangthai;
+        let mansx = req.body.mansx;
+        let maloai = req.body.maloai;
+        let madm = req.body.madm;
+        
+        if(!masp || !tensp || !soluong || !size || !mau || !gia || !hinh || !trangthai || !mansx || !maloai || !madm) {
             return res.status(400).json({ 
                 status: "Fail", 
                 message: "Thiếu thông tin sản phẩm, vui lòng kiểm tra lại !"
@@ -392,7 +395,7 @@ exports.putEditProduct = catchAsync(async (req, res, next) => {
             /* if(!hinhchitiet) {
                 hinhchitiet = "undefined";
             }; */
-            let query = await modelProduct.update_product(masp, code, tensp, soluong, size, mau, gia, hinh, hinhchitiet, mota, ngaytao);
+            let query = await modelProduct.update_product(masp, code, tensp, soluong, size, mau, gia, hinh, hinhchitiet, mota, trangthai, mansx, maloai, madm);
             return res.status(200).json({ 
                 status: "Success", 
                 message: "Cập nhật sản phẩm thành công!"

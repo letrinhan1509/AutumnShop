@@ -30,7 +30,7 @@ const admin = {
         return AxiosAdmin.post(url, values);
     },
     login: (values) => {
-        const url = "/dang-nhap";
+        const url = "/dev-dang-nhap";
         return AxiosAdmin.post(url, values);
     },
     updateInfo: (values) => {

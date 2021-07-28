@@ -142,11 +142,9 @@ const AddVoucher = (props) => {
         values["ngaykt"] = moment(dateEnd.toLocaleDateString()).format('YYYY-DD-MM');
         values["trangthai"] = title;
         values['img'] = link;
-        values['imageName'] = imageName.name;
+        values['imgName'] = imageName.name;
         console.log(values);
-
-        //const url = "http://127.0.0.1:5000/api/v1/khuyen-mai/them-voucher"
-        /* discount.addVoucher(values).then((res) => {
+        discount.addVoucher(values).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message)
                 setTimeout(() => {
@@ -158,7 +156,7 @@ const AddVoucher = (props) => {
             .catch(err => {
                 console.log(err.response);
                 message.error(`Tạo voucher thất bại !\n ${err.response.data.message}`)
-            }); */
+            });
     };
     const [listProduct, setlistProduct] = useState([]);
 
@@ -311,7 +309,7 @@ const AddVoucher = (props) => {
                     >
                         <Radio.Group onChange={selectTitle} value={title}>
                             <Radio value="Hiện">Hiện</Radio>
-                            <Radio value="Ẩn">Ẩn</Radio>
+                            <Radio value="Ẩn">Ẩn</Radio>
                         </Radio.Group>
                         {/* <Checkbox onChange={changett} value="1">Hiện</Checkbox>
                         <Checkbox onChange={changett} value="0">Ẩn</Checkbox> */}

@@ -102,7 +102,7 @@ const EditProductType = (props) => {
             values['img'] = Type.hinh;
         }
         console.log(values)
-        /* catalog.updateProtype(values).then((res) => {
+        catalog.updateProtype(values).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message)
                 localStorage.removeItem("type");
@@ -118,7 +118,7 @@ const EditProductType = (props) => {
             .catch(err => {
                 console.log(err.response);
                 message.error(`${err.response.data.message}`)
-            }) */
+            })
     };
 
     //upload ảnh lên firebase
@@ -143,6 +143,7 @@ const EditProductType = (props) => {
                         .then(url => {
                             console.log("ulr:", url);
                             setLink(url);
+                            setImgEdit(url);
                             setImageName(fileList[0]);
                             setFileList([]);
                         });
@@ -165,7 +166,7 @@ const EditProductType = (props) => {
 
     //xóa ảnh hiện tại để có thể tải ảnh mới lên firebase
     const deleteImg = () => {
-        const del = storage.ref(`ProductType_Img/${Type.imgName}`);
+        const del = storage.ref(`ProductType_Img/${Type.tenhinh}`);
         del.delete().then((res) => {
             setImgEdit("");
             message.success("Đã xóa ảnh!");

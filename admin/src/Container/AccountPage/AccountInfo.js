@@ -3,7 +3,6 @@ import { Row, Col, Image, Input, Button, Spin } from 'antd';
 import Menus from "./Menus";
 import { useHistory, Link } from "react-router-dom";
 import "Container/scss/account.scss";
-import admin from 'API_Call/Api_admin/admin';
 
 const { TextArea } = Input;
 const AccountInfo = (props) => {
@@ -18,7 +17,8 @@ const AccountInfo = (props) => {
             }
         }, 1000);
     }, [])
-
+    console.log(user);
+    console.log(user.sodienthoai);
     var url = window.location.toString();
     url = url.replace("http://localhost:3000/", '');
 
@@ -47,23 +47,23 @@ const AccountInfo = (props) => {
                                     </Row>
                                     <Row className="box-inf">
                                         <Col className="label-inf">Tên nhân viên: </Col>
-                                        <Col className="inf">{user.username}</Col>
+                                        <Col className="inf">{user.tennv}</Col>
                                     </Row>
                                     <Row className="box-inf">
                                         <Col className="label-inf">Email: </Col>
-                                        <Col className="inf">{user.email}</Col>
+                                        <Col className="inf">{user.admin}</Col>
                                     </Row>
                                     <Row className="box-inf">
                                         <Col className="label-inf">Số điện thoại: </Col>
-                                        <Col className="inf">{user.phone}</Col>
+                                        <Col className="inf">{user.sodienthoai}</Col>
                                     </Row>
                                     <Row className="box-inf">
                                         <Col className="label-inf">Địa chỉ: </Col>
-                                        <Col className="inf">{user.address}</Col>
+                                        <Col className="inf">{user.diachi}</Col>
                                     </Row>
                                     <Row className="box-inf">
                                         <Col className="label-inf">Quyền hạn: </Col>
-                                        <Col className="inf">{user.permission}</Col>
+                                        <Col className="inf">{user.quyen}</Col>
                                     </Row>
                                     <Button value="submit" type="primary">
                                         <Link to="/tai-khoan/chinh-sua-tai-khoan">Chỉnh sửa</Link>

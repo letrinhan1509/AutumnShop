@@ -27,7 +27,7 @@ exports.getListTypes = catchAsync(async (req, res, next) => {
         let listTypes = await modelCatalog.list_types();
         return res.status(200).json({ status: "Success", data: listTypes });
       } catch (error) {
-        return res.status(400).json({ status: "Fail", message: "Lỗi...!", error: error })
+        return res.status(400).json({ status: "Fail", message: "Something went wrong!", error: error })
     };
 });
 // GET Category
@@ -40,7 +40,7 @@ exports.getCategory = catchAsync(async (req, res, next) => {
         } else
             return res.status(200).json({ status: "Success", data: category });
     } catch (error) {
-        return res.status(400).json({ status: "Fail", message: "Lỗi...!", error: error });
+        return res.status(400).json({ status: "Fail", message: "Something went wrong!", error: error });
     };
 });
 // GET Type
@@ -53,7 +53,7 @@ exports.getType = catchAsync(async (req, res, next) => {
         } else
             return res.status(200).json({ status: "Success", data: type });
     } catch (error) {
-        return res.status(400).json({ status: "Fail", message: "Lỗi...!", error: error });
+        return res.status(400).json({ status: "Fail", message: "Something went wrong!", error: error });
     };
 });
 // GET Type By Category Code
@@ -69,7 +69,11 @@ exports.getTypeCategory = catchAsync(async (req, res, next) => {
         } else
             return res.status(200).json({ status: "Success", data: type });
     } catch (error) {
-        return res.status(400).json({ status: "Fail", message: "Lỗi...! ", error: error })
+        return res.status(400).json({ 
+            status: "Fail", 
+            message: "Something went wrong!", 
+            error: error 
+        })
     };
 });
 
@@ -110,7 +114,11 @@ exports.postCategory = catchAsync(async (req, res, next) => {
             });
         }
     } catch (error) {
-        return res.status(400).json({ status: "Fail", message: "Lỗi...!", error: error });
+        return res.status(400).json({ 
+            status: "Fail", 
+            message: "Something went wrong!", 
+            error: error 
+        });
     }
 });
 // Thêm loại sản phẩm
@@ -160,26 +168,38 @@ exports.postType = catchAsync(async (req, res, next) => {
         // PUT:
 // Cập nhật danh mục sản phẩm
 exports.putEditCategory = catchAsync(async (req, res, next) => {
-    let madm = req.body.madm;
-    let tendm = req.body.tendm;
-    let tenhinh = req.body.tenhinh;
-    let hinh = req.body.hinh;
-    if(!madm || !tendm || !tenhinh || !hinh) {
-        return res.status(400).json({ 
-            status: "Fail", 
-            message: "Thiếu thông tin, vui lòng nhập đầy đủ thông tin !" 
-        });
-    };
-    const CategoryName = await modelCatalog.get_Category_Name(tendm);
-    if(tendm == CategoryName.tendm) {
-        return res.status(400).json({ 
-            status: "Fail", 
-            message: "Trùng tên danh mục, vui lòng nhập tên khác !" 
-        });
-    };
     try {
-        let query = await modelCatalog.update_category(madm, tendm, tenhinh, hinh);
-        return res.status(200).json({ status: "Success", message: query });
+        let madm = req.body.madm;
+        let tendm = req.body.tendm;
+        let tenhinh = req.body.imgName;
+        let hinh = req.body.img;
+        if(!madm || !tendm || !tenhinh || !hinh) {
+            return res.status(400).json({ 
+                status: "Fail", 
+                message: "Thiếu thông tin, vui lòng nhập đầy đủ thông tin !" 
+            });
+        };
+        const categoryExist = await modelCatalog.get_Category_Id(madm);
+        if(categoryExist == -1) {
+            return res.status(400).json({ 
+                status: "Fail", 
+                message: "Không tìm thấy danh mục này, vui lòng kiểm tra lại !" 
+            });
+        } else {
+            const CategoryName = await modelCatalog.get_Category_Name(tendm);
+            if(CategoryName == -1) {
+                let query = await modelCatalog.update_category(madm, tendm, tenhinh, hinh);
+                return res.status(200).json({ 
+                    status: "Success", 
+                    message: query 
+                });
+            } else {
+                return res.status(400).json({ 
+                    status: "Fail", 
+                    message: "Trùng tên danh mục, vui lòng nhập tên khác !" 
+                });
+            }   
+        }
     } catch (error) {
         return res.status(400).json({ 
             status: "Fail", 

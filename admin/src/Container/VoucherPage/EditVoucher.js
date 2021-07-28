@@ -113,7 +113,7 @@ const EditVoucher = (props) => {
     };
 
     const deleteImg = () => {
-        const del = storage.ref(`Voucher_img/${voucherID.imgName}`);
+        const del = storage.ref(`Voucher_img/${voucherID.tenhinh}`);
         del.delete().then((res) => {
             setImgEdit("");
             message.success("Đã xóa ảnh!");

@@ -31,6 +31,7 @@ const createSendToken = (admin, statusCode, res) => {
     // Remove password from output
     admin.matkhau = undefined;
     admin.username = admin.tennv;
+    admin.permission = admin.quyen;
 
     res.status(statusCode).json({
         status: "LoginSuccess",
@@ -161,6 +162,7 @@ exports.signup = catchAsync(async (req, res, next) => {
 // Đăng nhập
 exports.login = catchAsync(async (req, res, next) => {
     const { email, password } =  req.body;
+    console.log(req.body);
     // 1) Check if email & password exists
     if (!email || !password) {
         return res.status(400).json({ 
@@ -226,6 +228,7 @@ exports.putEditProfile = catchAsync(async (req, res, next) => {
         let hinh = req.body.img;
         let diachi = req.body.diachi;
         let sdt = req.body.phone;
+
         if(!id || !ten || !email || !diachi || !sdt) {
             return res.status(400).json({ 
                 status: "Fail", 
@@ -233,6 +236,7 @@ exports.putEditProfile = catchAsync(async (req, res, next) => {
             });
         };
         const adminExist = await modelAdmin.get_Admin_Id(id);
+        console.log(adminExist.admin);
         if(adminExist == -1) {
             return res.status(400).json({ 
                 status: "Fail", 
@@ -245,10 +249,18 @@ exports.putEditProfile = catchAsync(async (req, res, next) => {
             };
             if(email == adminExist.admin) {
                 const query = await modelAdmin.update_Profile_Admin(id, ten, tenhinh, hinh, diachi, sdt);
+                const admin = await modelAdmin.get_Admin_Id(id);
+                admin.matkhau = undefined;
+                admin.permission = admin.quyen;
                 return res.status(200).json({ 
                     status: "Success", 
                     message: query,
-                    admin: adminExist
+                    admin: admin
+                });
+            } else {
+                return res.status(400).json({ 
+                    status: "Fail", 
+                    message: "Something went wrong!"
                 });
             }
         }

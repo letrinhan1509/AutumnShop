@@ -69,6 +69,7 @@ const EditCategory = (props) => {
                         .then(url => {
                             console.log("ulr:", url);
                             setLink(url);
+                            setImgEdit(url);
                             setImageName(fileList[0]);
                             setFileList([]);
                         });
@@ -118,7 +119,7 @@ const EditCategory = (props) => {
 
         //xóa ảnh đã có để tải ảnh mới lên firebase
         const deleteImg = () => {
-            const del = storage.ref(`Catalog_Img/${Category.imgName}`);
+            const del = storage.ref(`Catalog_Img/${Category.tenhinh}`);
             del.delete().then((res) => {
                 setImgEdit("");
                 message.success("Đã xóa ảnh!");
@@ -139,7 +140,7 @@ const EditCategory = (props) => {
             values['img'] = Category.hinh;
         }
         console.log(values)
-        /* catalog.updateCatalog(values).then((res) => {
+        catalog.updateCatalog(values).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message)
                 localStorage.removeItem("category");
@@ -150,7 +151,7 @@ const EditCategory = (props) => {
         })
             .catch(err => {
                 message.error(`${err.response.data.message}`);
-            }) */
+            })
     };
 
     return (

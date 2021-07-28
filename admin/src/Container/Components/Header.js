@@ -1,4 +1,4 @@
-import { Row, Col, Menu,Avatar } from 'antd';
+import { Row, Col, Menu,Avatar, Image } from 'antd';
 import { LogoutOutlined } from '@ant-design/icons';
 import React from "react";
 /* import {  LoginOutlined } from '@ant-design/icons'; */
@@ -34,8 +34,8 @@ const admin = JSON.parse(localStorage.getItem('user'));
                         <Col span={20} offset={1}>
                             <Menu  mode="horizontal">
                                     <Menu.Item onClick={linkto} key="tai-khoan">
-                                        <Avatar>N</Avatar> &nbsp;
-                                        {admin.username}
+                                        <Image src={admin.hinh} width={ 50 } /> &nbsp;
+                                        {admin.tennv}
                                     </Menu.Item>
                                     <Menu.Item onClick={logout} key="item" icon={<LogoutOutlined />}>
                                         Đăng xuất

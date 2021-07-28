@@ -12,11 +12,13 @@ const EditAccount = (props) => {
     const history = useHistory();
     const [user, setUser] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [ImgEdit, setImgEdit] = useState("");
     useEffect(() => {
         setTimeout(() => {
             setUser(JSON.parse(localStorage.getItem("user")));
             if (user !== null) {
                 setLoading(true);
+                setImgEdit(user.hinh);
             }
         }, 1000);
     }, [])
@@ -34,7 +36,7 @@ const EditAccount = (props) => {
     const [imageName, setImageName] = useState("");
     const [fileList, setFileList] = useState([]);
     const [link, setLink] = useState("");
-    const [ImgEdit, setImgEdit] = useState(user.hinh);
+    
     const beforeUpload = file => {
         setFileList(fileList.concat(file));
         return false;
@@ -77,7 +79,7 @@ const EditAccount = (props) => {
     };
     //xóa ảnh đã có để tải ảnh mới lên firebase
     const deleteImg = () => {
-        const del = storage.ref(`Product_Img/${user.imgName}`);
+        const del = storage.ref(`User_Img/${user.tenhinh}`);
         del.delete().then((res) => {
             setImgEdit("");
             message.success("Đã xóa ảnh!");
@@ -87,11 +89,18 @@ const EditAccount = (props) => {
     }
     const update = (values) => {
         values['manv'] = user.manv;
+        if (imageName !== "") {
+            values['imgName'] = imageName.name;
+        } else {
+            values['imgName'] = user.tenhinh;
+        }
         if (link !== "") {
             values['img'] = link;
+        } else {
+            values['img'] = user.hinh;
         }
         console.log(values);
-        /* admin.updateInfo(values).then((res) => {
+        admin.updateInfo(values).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message)
                 localStorage.removeItem("user");
@@ -109,7 +118,7 @@ const EditAccount = (props) => {
             .catch(err => {
                 console.log(err.response);
                 message.error(`${err.response.data.message}`)
-            }) */
+            })
     };
 
     return (
@@ -130,11 +139,11 @@ const EditAccount = (props) => {
                                     name="update"
                                     onFinish={update}
                                     initialValues={{
-                                        tennv: `${user.username}`,
-                                        email: `${user.email}`,
-                                        sdt: `${user.phone}`,
+                                        tennv: `${user.tennv}`,
+                                        email: `${user.admin}`,
+                                        phone: `${user.sodienthoai}`,
                                         diachi: `${user.diachi}`,
-                                        permission: `${user.permission}`,
+                                        permission: `${user.quyen}`,
                                     }}
                                     scrollToFirstError
                                 >
@@ -145,7 +154,7 @@ const EditAccount = (props) => {
                                                 width={150}
                                                 src={link}
                                             />
-                                        ) : (ImgEdit === "" ? (<span>Chưa có ảnh sản phẩm !</span>) : (<Image src={ImgEdit} width={120} />)
+                                        ) : (ImgEdit === "" ? (<span>Tài khoản chưa có ảnh !</span>) : (<Image src={user.hinh} width={120} />)
                                         )}
                                         <Button type="danger" onClick={deleteImg}>Xóa ảnh</Button>
                                     </Row>

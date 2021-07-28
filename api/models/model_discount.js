@@ -90,14 +90,12 @@ exports.check_By_voucherName = async (name) => {
 };
     // Tạo khuyến mãi là voucher:
 exports.create_Voucher = (data) => {
-    console.log(data);
     return new Promise( (resolve, reject) => {
         let sql = "INSERT INTO khuyenmai SET ?";
         db.query(sql, data, (err, result) => {
             if(err)
                 reject(err);
             else{
-                console.log('Insert successfully');
                 resolve("Tạo voucher thành công !");
             }
         })
@@ -142,7 +140,7 @@ exports.create_Discount = (data, chitietKM) => {
     // Cập nhật thông tin khuyến mãi là voucher:
 exports.update_Voucher = (data) => {
     return new Promise( (resolve, reject) => {
-        let sql = `UPDATE khuyenmai SET tenkm='${data.tenkm}', voucher='${data.voucher}', ghichu='${data.ghichu}', hinh='${data.hinh}', dieukien='${data.dieukien}', giagiam='${data.giagiam}', ngaybd='${data.ngaybd}', ngaykt='${data.ngaykt}', trangthai='${data.trangthai}'
+        let sql = `UPDATE khuyenmai SET tenkm='${data.tenkm}', voucher='${data.voucher}', ghichu='${data.ghichu}', tenhinh='${data.tenhinh}', hinh='${data.hinh}', dieukien='${data.dieukien}', giagiam='${data.giagiam}', ngaybd='${data.ngaybd}', ngaykt='${data.ngaykt}', trangthai='${data.trangthai}'
         WHERE makm = '${data.makm}'`;
         db.query(sql, (err, result) => {
             if(err){

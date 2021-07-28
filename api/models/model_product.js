@@ -10,7 +10,7 @@ exports.list_products = async () => {
         let sql = `SELECT SP.masp, SP.code, SP.tensp, SP.soluong, SP.size, SP.mau, SP.gia, SP.hinh, 
         SP.hinhchitiet, SP.mota, SP.trangthai, nhasx.tennsx, loaisp.tenloai, danhmuc.tendm
         FROM (((sanpham AS SP JOIN danhmuc ON SP.madm = danhmuc.madm) JOIN loaisp ON SP.maloai = loaisp.maloai)
-        JOIN nhasx ON SP.mansx = nhasx.mansx) GROUP BY SP.tensp`;
+        JOIN nhasx ON SP.mansx = nhasx.mansx)`;
         db.query(sql, (err, result) => {
             if(err) {
                 hamLoi(err);
@@ -181,19 +181,22 @@ exports.create_product = (data) => {
     });
 }
     // Sửa sản phẩm:
-exports.update_product = (masp, code, tensp, soluong, size, mau, gia, hinh, hinhchitiet, mota, ngaytao) => {
+exports.update_product = (masp, tensp, soluong, size, mau, gia, tenhinh, hinh, hinhchitiet, mota, trangthai, mansx, maloai, madm) => {
     return new Promise( (hamOK, hamLoi) => {
-        let sql = `UPDATE sanpham SET  
-        code='${code}', 
+        let sql = `UPDATE sanpham SET   
         tensp='${tensp}', 
         soluong='${soluong}', 
         size='${size}', 
         mau='${mau}', 
         gia='${gia}', 
+        tenhinh='${tenhinh}', 
         hinh='${hinh}', 
         hinhchitiet='${hinhchitiet}',
         mota='${mota}',
-        ngaytao='${ngaytao}'
+        trangthai='${trangthai}',
+        mansx='${mansx}',
+        maloai='${maloai}',
+        madm='${madm}'
         WHERE masp='${masp}'`;
         let query = db.query(sql, (err, result) => {
             if(err){

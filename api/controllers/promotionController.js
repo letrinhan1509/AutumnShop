@@ -117,14 +117,15 @@ exports.postPromotionCODE = catchAsync(async (req, res, next) => {
             tenkm: req.body.tenkm,
             voucher: req.body.voucher,
             ghichu: req.body.ghichu,
-            hinh: req.body.hinh,
+            tenhinh: req.body.imgName,
+            hinh: req.body.img,
             dieukien: req.body.dieukien,
             giagiam: req.body.giagiam,
             ngaybd: req.body.ngaybd,
             ngaykt: req.body.ngaykt,
-            trangthai: req.body.trangthai
+            //trangthai: req.body.trangthai
         };
-        if(!data.tenkm || !data.voucher || !data.ghichu || !data.hinh || !data.giagiam || !data.ngaybd) {
+        if(!data.tenkm || !data.voucher || !data.ghichu || !data.tenhinh || !data.hinh || !data.giagiam || !data.ngaybd) {
             return res.status(400).json({
                 status: "Fail",
                 message: "Thiếu thông tin voucher. Vui lòng kiểm tra lại thông tin !!!"
@@ -195,7 +196,8 @@ exports.putEditPromotionCODE = catchAsync(async (req, res, next) => {
             tenkm: req.body.tenkm,
             voucher: req.body.voucher.toUpperCase(),
             ghichu: req.body.ghichu,
-            hinh: req.body.hinh,
+            tenhinh: req.body.imgName,
+            hinh: req.body.img,
             dieukien: req.body.dieukien,
             giagiam: req.body.giagiam,
             ngaybd: req.body.ngaybd,
@@ -203,7 +205,7 @@ exports.putEditPromotionCODE = catchAsync(async (req, res, next) => {
             trangthai: req.body.trangthai
         };
         console.log(data.voucher);
-        if(!data.makm || !data.tenkm || !data.voucher || !data.ghichu || !data.giagiam || !data.ngaybd) {
+        if(!data.makm || !data.tenkm || !data.voucher || !data.ghichu || !data.tenhinh || !data.hinh || !data.giagiam || !data.ngaybd) {
             return res.status(400).json({
                 status: "Fail",
                 message: "Thiếu thông tin voucher. Vui lòng kiểm tra lại thông tin !!!"
@@ -219,9 +221,6 @@ exports.putEditPromotionCODE = catchAsync(async (req, res, next) => {
             });
         } else {
             // Có voucher trong database
-            if(!data.hinh) {
-                data.hinh = undefined;
-            };
             if(data.voucher != voucherExist.voucher || data.makm == voucherExist.makm){
                 const query = await modelDiscount.update_Voucher(data);
                 return res.status(200).json({ 
