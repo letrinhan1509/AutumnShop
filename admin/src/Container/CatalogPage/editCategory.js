@@ -229,9 +229,13 @@ const EditCategory = (props) => {
                     <Button className="ant-btn ant-btn-dashed" onClick={back} style={{ marginLeft: -30 }}>
                         Trở về
                     </Button>
-                    <Button value="submit" type="primary" htmlType="submit" style={{ marginLeft: 30 }}>
-                        Xác nhận
-                    </Button>
+                    {
+                        link === "" || ImgEdit === ""? (
+                            <Button type="primary" htmlType="submit" style={{ marginLeft: 30 }} disabled>Xác nhận</Button>
+                        ) : (
+                            <Button type="primary" htmlType="submit" style={{ marginLeft: 30 }}>Xác nhận</Button>
+                        )
+                    }
                 </Form.Item>
             </Form>
         </div>

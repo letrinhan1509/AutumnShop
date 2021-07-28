@@ -22,9 +22,21 @@
                 background: white;
                 margin: 50px 0px;
                 width: 90%;
+                min-height: 300px;
                 padding: 20px;
                 border-radius: 5px;
-                box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
+                box-shadow: 0px 5px 10px rgba(54, 45, 45, 0.2);
+                .spin-wrapper{
+                    height: 100%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    .ant-spin-dot{
+                        .ant-spin-dot-item{
+                            background-color: #b76e22;
+                        }
+                    }
+                }
                 .img_account{
                     display: flex;
                     justify-content: center;
@@ -36,6 +48,23 @@
                     justify-content: center;
                     align-items: center;
                     flex-direction: column;
+                    .img-box {
+                        margin: 20px 0px;
+                        .ant-image {
+                            //border: 1px solid #333;
+                            box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.4);
+                            border-radius: 50%;
+                            img {
+                                width: 150px;
+                                height: 150px;
+                                border-radius: 50%;
+                                object-fit: cover;
+                            }
+                            .ant-image-mask{
+                                border-radius: 50%;
+                            }
+                        }
+                    }
                 }
                 .user-title {
                     text-transform: uppercase;

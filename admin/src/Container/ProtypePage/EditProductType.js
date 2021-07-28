@@ -165,7 +165,7 @@ const EditProductType = (props) => {
 
     //xóa ảnh hiện tại để có thể tải ảnh mới lên firebase
     const deleteImg = () => {
-        const del = storage.ref(`ProductType_Img/${Type.imageName}`);
+        const del = storage.ref(`ProductType_Img/${Type.imgName}`);
         del.delete().then((res) => {
             setImgEdit("");
             message.success("Đã xóa ảnh!");
@@ -265,9 +265,13 @@ const EditProductType = (props) => {
                     <Button className="ant-btn ant-btn-dashed" onClick={back} style={{ marginLeft: -30 }}>
                         Trở về
                     </Button>
-                    <Button value="submit" type="primary" htmlType="submit" style={{ marginLeft: 30 }}>
-                        Xác nhận
-                    </Button>
+                    {
+                        link === "" || ImgEdit === ""? (
+                            <Button type="primary" htmlType="submit" style={{ marginLeft: 30 }} disabled>Xác nhận</Button>
+                        ) : (
+                            <Button type="primary" htmlType="submit" style={{ marginLeft: 30 }}>Xác nhận</Button>
+                        )
+                    }
                 </Form.Item>
             </Form>
         </div>
