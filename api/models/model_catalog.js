@@ -12,10 +12,8 @@ exports.list_Categorys = async () => {
         let sql = `SELECT * FROM danhmuc`;
         db.query(sql, (err, result) => {
             if(err){
-                console.log("Error!!!");
                 hamLoi(err);
             }else{
-                console.log('List success');
                 hamOK(result);
             }
         })
@@ -141,7 +139,6 @@ exports.list_types = async () => {
             if(err) {
                 hamLoi(err);
             } else {
-                console.log('List success');
                 dataList = d;
                 hamOK(dataList);
             }

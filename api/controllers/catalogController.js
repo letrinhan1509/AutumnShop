@@ -81,8 +81,8 @@ exports.postCategory = catchAsync(async (req, res, next) => {
         let data = {
             madm: req.body.madm,
             tendm: req.body.tendm,
-            tenhinh: req.body.tenhinh,
-            hinh: req.body.hinh
+            tenhinh: req.body.imageName,
+            hinh: req.body.img
         };
         if(!data.madm || !data.tendm || !data.tenhinh || !data.hinh) {
             return res.status(400).json({ status: "Fail", message: "Thiếu thông tin, vui lòng nhập đầy đủ thông tin !" });
@@ -119,8 +119,8 @@ exports.postType = catchAsync(async (req, res, next) => {
         let data = {
             maloai: req.body.maloai,
             tenloai: req.body.tenloai,
-            tenhinh: req.body.tenhinh,
-            hinh: req.body.hinh, 
+            tenhinh: req.body.imgName,
+            hinh: req.body.img, 
             madm: req.body.madm
         };
         if(!data.maloai || !data.tenloai || !data.tenhinh || !data.hinh || !data.madm) {
@@ -193,8 +193,8 @@ exports.putEditType = catchAsync(async (req, res, next) => {
     let maloai = req.body.maloai;
     let ten = req.body.tenloai;
     let madm = req.body.madm;
-    let tenhinh = req.body.tenhinh;
-    let hinh = req.body.hinh;
+    let tenhinh = req.body.imgName;
+    let hinh = req.body.img;
     if(!maloai || !ten || !tenhinh || !hinh || !madm) {
         return res.status(400).json({ 
             status: "Fail", 

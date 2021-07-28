@@ -26,7 +26,6 @@ exports.list = () => {
             if(err){
                 hamLoi(err);
             }else{
-                console.log('List All Users Success!');
                 hamOK(result);
             }
         });

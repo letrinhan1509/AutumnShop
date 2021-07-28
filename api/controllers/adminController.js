@@ -240,7 +240,7 @@ exports.putEditProfile = catchAsync(async (req, res, next) => {
             });
         } else {
             if(!hinh && !tenhinh) {
-                tenhinh = "noImg";
+                tenhinh = "user.png";
                 hinh = "https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/User_Img%2FuserICON.png?alt=media&token=b64576ab-18b6-4d7a-9864-c15f59d5717c&fbclid=IwAR0UVyyCkNoF_dfbguTVOkC5lzvHPk-0C4Ef_iFmPxl8lKX2xQsKObTo568";
             };
             if(email == adminExist.admin) {

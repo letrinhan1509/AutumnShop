@@ -114,7 +114,7 @@ const AddCategory = (props) => {
         values['img'] = link;
         values['imageName'] = imageName.name;
         console.log(values);
-        /* catalog.addCatalog(values).then((res) => {
+        catalog.addCatalog(values).then((res) => {
             message.success(res.data.message)
             setTimeout(() => {
                 history.push('/danh-muc-san-pham');
@@ -123,7 +123,7 @@ const AddCategory = (props) => {
             .catch(err => {
                 console.log(err.response);
                 message.error(`${err.response.data.message}`)
-            }) */
+            })
     };
 
 

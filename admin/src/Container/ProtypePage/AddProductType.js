@@ -113,9 +113,9 @@ const AddProductType = (props) => {
 
     const addProductType = (values) => {
         values['img'] = link;
-        values['imageName'] = imageName.name;
+        values['imgName'] = imageName.name;
         console.log(values);
-        /* catalog.addProtype(values).then((res) => {
+        catalog.addProtype(values).then((res) => {
             message.success(res.data.message)
             setTimeout(() => {
                 history.push('/danh-sach-loai');
@@ -124,7 +124,7 @@ const AddProductType = (props) => {
             .catch(err => {
                 console.log(err.response);
                 message.error(`${err.response.data.message}`)
-            }) */
+            })
     };
     const [listCategory, setlistCategory] = useState([]);
     useEffect(() => {

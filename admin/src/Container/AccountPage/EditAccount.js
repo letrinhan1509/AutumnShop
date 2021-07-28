@@ -83,8 +83,8 @@ const EditAccount = (props) => {
         if (link !== "") {
             values['img'] = link;
         }
-        console.log(values)
-        admin.updateInfo(values).then((res) => {
+        console.log(values);
+        /* admin.updateInfo(values).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message)
                 localStorage.removeItem("user");
@@ -102,7 +102,7 @@ const EditAccount = (props) => {
             .catch(err => {
                 console.log(err.response);
                 message.error(`${err.response.data.message}`)
-            })
+            }) */
     };
 
     return (
@@ -119,8 +119,8 @@ const EditAccount = (props) => {
                             initialValues={{
                                 tennv: `${user.username}`,
                                 email: `${user.email}`,
-                                sdt: `${user.phone}`,
-                                diachi: `${user.diachi}`,
+                                phone: `${user.phone}`,
+                                diachi: `${user.address}`,
                                 permission: `${user.permission}`,
                             }}
                             scrollToFirstError
