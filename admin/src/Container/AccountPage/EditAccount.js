@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Image, Input, Button, message, Form, Upload, Tooltip , Row, Col} from 'antd';
-import { UploadOutlined, DownloadOutlined, InfoCircleOutlined } from '@ant-design/icons';
+import { Image, Input, Button, message, Form, Upload, Tooltip, Row, Col } from 'antd';
+import { UploadOutlined, DownloadOutlined, DeleteOutlined } from '@ant-design/icons';
 import { storage } from 'Container/Firebase/firebase';
 import Menus from "./Menus";
 import { useHistory, Link } from "react-router-dom";
@@ -24,44 +24,60 @@ const EditAccount = (props) => {
         }
         return e && e.fileList;
     };
-    const [image, setImage] = useState("");
+    const [imageName, setImageName] = useState("");
     const [fileList, setFileList] = useState([]);
+    const [link, setLink] = useState("");
+    const [ImgEdit, setImgEdit] = useState(user.hinh);
     const beforeUpload = file => {
         setFileList(fileList.concat(file));
-        setImage(file[0]);
         return false;
     }
     const handleChange = file => {
-        if (fileList != "") {
-            setImage(fileList[0]);
+        if (file.fileList.length !== 0) {
+            const upload = storage.ref(`User_Img/${fileList[0].name}`).put(fileList[0]);
+            upload.on(
+                "state_changed",
+                snapshot => { },
+                error => {
+                    console.log(error);
+                },
+                () => {
+                    storage
+                        .ref("User_Img")
+                        .child(fileList[0].name)
+                        .getDownloadURL()
+                        .then(url => {
+                            console.log("ulr:", url);
+                            setLink(url);
+                            setImageName(fileList[0]);
+                            setFileList([]);
+                        });
+                    message.success("Tải ảnh thành công!");
+                }
+            );
         }
     };
-    //Download link từ Firebase
-    const [link, setLink] = useState("");
-    const upfirebase = () => {
-        const upload = storage.ref(`Product_Img/${image.name}`).put(image);
-        upload.on(
-            "state_changed",
-            snapshot => { },
-            error => {
-                console.log(error);
-            },
-            () => {
-                storage
-                    .ref("Product_Img")
-                    .child(image.name)
-                    .getDownloadURL()
-                    .then(url => {
-                        console.log("ulr:", url);
-                        setLink(url);
-                    });
-                message.success("download link thành công!");
-            }
-        );
 
+    const onRemove = file => {
+        setLink("");
+        const del = storage.ref(`User_Img/${imageName.name}`);
+        del.delete().then((res) => {
+            setImageName("");
+            message.success("Đã xóa ảnh!");
+        }).catch((error) => {
+            console.log(error);
+        });
     };
-    console.log(link);
-
+    //xóa ảnh đã có để tải ảnh mới lên firebase
+    const deleteImg = () => {
+        const del = storage.ref(`Product_Img/${user.imgName}`);
+        del.delete().then((res) => {
+            setImgEdit("");
+            message.success("Đã xóa ảnh!");
+        }).catch((error) => {
+            console.log(error);
+        });
+    }
     const update = (values) => {
         values['manv'] = user.manv;
         if (link !== "") {
@@ -71,8 +87,11 @@ const EditAccount = (props) => {
         admin.updateInfo(values).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message)
+                localStorage.removeItem("user");
+                localStorage.setItem('user', JSON.stringify(res.data.admin));
                 setTimeout(() => {
                     history.push('/tai-khoan');
+                    window.location.reload();
                 }, 2000)
             }
             else {
@@ -108,17 +127,16 @@ const EditAccount = (props) => {
                             className="form"
                         >
                             <h1 className="user-title">Chỉnh sửa thông tin</h1>
-                            {link !== "" ? (
-                                <Image
-                                    width={150}
-                                    src={link}
-                                />
-                            ) : (
-                                <Image
-                                    width={150}
-                                    src="https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/User_Img%2Fuser.png?alt=media&token=6ec247df-90ab-4cc9-b671-7261ef37215f"
-                                />
-                            )}
+                            <Row className="img_account">
+                                {link !== "" ? (
+                                    <Image
+                                        width={150}
+                                        src={link}
+                                    />
+                                ) : (ImgEdit === "" ? (<span>Chưa có ảnh sản phẩm !</span>) : (<Image src={ImgEdit} width={120} />)
+                                )}
+                                <Button type="danger" onClick={deleteImg}>Xóa ảnh</Button>
+                            </Row>
                             <Form.Item
                                 name="hinh"
                                 label="Ảnh nhân viên"
@@ -128,26 +146,17 @@ const EditAccount = (props) => {
                             >
                                 <Upload
                                     listType="picture"
-
                                     name='hinh'
                                     multiple='true'
                                     beforeUpload={beforeUpload}
                                     onChange={handleChange}
+                                    onRemove={onRemove}
                                     fileList
                                 >
-                                    <Button icon={<UploadOutlined />} >Click to upload</Button>
+                                    {link !== "" ? (
+                                        <Button disabled icon={<UploadOutlined />} >Tải ảnh lên</Button>
+                                    ) : (<Button icon={<UploadOutlined />} >Tải ảnh lên</Button>)}
                                 </Upload>
-                            </Form.Item>
-
-                            <Form.Item label="Downloat link ảnh" className="load-img" >
-
-                                {
-                                    link == "" ? (
-                                        <Button icon={<DownloadOutlined />} onClick={upfirebase} >Downlink</Button>
-                                    ) : (
-                                        <Button icon={<DownloadOutlined />} onClick={upfirebase} disabled>Downlink</Button>
-                                    )
-                                }
                             </Form.Item>
                             <Form.Item
                                 name="tennv"
@@ -161,7 +170,7 @@ const EditAccount = (props) => {
                                 id="email"
                                 label="Email"
                             >
-                                <Input placeholder="email" disabled/>
+                                <Input placeholder="email" disabled />
                             </Form.Item>
                             <Form.Item
                                 name="phone"

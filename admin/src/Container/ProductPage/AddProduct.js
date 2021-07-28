@@ -1,15 +1,14 @@
-import { DownloadOutlined, UploadOutlined } from '@ant-design/icons';
+import { UploadOutlined } from '@ant-design/icons';
 import { Button, Form, Input, InputNumber, message, Select, Upload, Modal, Image } from 'antd';
 import product from 'API_Call/Api_product/product';
 import catalog from 'API_Call/Api_catalog/catalog';
 import producer from 'API_Call/Api_producer/producer';
 import { storage } from 'Container/Firebase/firebase';
-//import { deleteObject } from "firebase/storage";
 import React, { useEffect, useState } from 'react';
 import { Link, useHistory } from "react-router-dom";
 import "Container/scss/addpro.scss";
-const { TextArea } = Input;
 
+const { TextArea } = Input;
 const { Option } = Select;
 const formItemLayout = {
     labelCol: {
@@ -29,7 +28,7 @@ const tailFormItemLayout = {
         },
         sm: {
             span: 16,
-            offset: 10,
+            offset: 9,
         },
     },
 };
@@ -50,6 +49,7 @@ const AddProduct = (props) => {
     const [link, setLink] = useState("");
     const { confirm } = Modal;
 
+    //upload ảnh lên firebase
     const beforeUpload = file => {
         setFileList(fileList.concat(file));
         return false;
@@ -79,7 +79,7 @@ const AddProduct = (props) => {
             );
         }
     };
-
+    //xóa ảnh trên firebase
     const onRemove = file => {
         setLink("");
         const del = storage.ref(`Product_Img/${imageName.name}`);
@@ -89,7 +89,7 @@ const AddProduct = (props) => {
             console.log(error);
         });
     };
-
+    //nút trở về
     const back = () => {
         confirm({
             title: 'Bạn muốn trở về trang danh sách sản phẩm?',
@@ -104,8 +104,9 @@ const AddProduct = (props) => {
                     }).catch((error) => {
                         console.log(error);
                     });
+                }else{
+                    history.push('/tat-ca-san-pham');
                 }
-                history.push('/tat-ca-san-pham');
             },
             onCancel() {
                 console.log('Cancel');
@@ -114,7 +115,6 @@ const AddProduct = (props) => {
     };
 
     const addProduct = (values) => {
-        console.log(link);
         values['img'] = link;
         values['imageName'] = imageName.name;
         console.log(values);
@@ -314,18 +314,11 @@ const AddProduct = (props) => {
                             onRemove={onRemove}
                             fileList
                         >
-                            <Button icon={<UploadOutlined />} >Click to upload</Button>
+                            {link !== "" ? (
+                                <Button disabled icon={<UploadOutlined />} >Tải ảnh lên</Button>
+                            ) : (<Button icon={<UploadOutlined />} >Tải ảnh lên</Button>)}
                         </Upload>
                     </Form.Item>
-                    <Form.Item
-                        name="img"
-                        label="img"
-                        hidden
-                    >
-                        <Input />
-                    </Form.Item>
-                    {/* <input type="file" onChange={handleChange}/>
-                <button onClick={handleUpload}>Upload</button> */}
                     <Form.Item
                         name="mota"
                         label="Mô tả"

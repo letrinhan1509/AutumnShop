@@ -1,5 +1,5 @@
 import { DeleteOutlined, UploadOutlined } from '@ant-design/icons';
-import { Button, Form, Input, InputNumber, message, Select, Upload, Image, Col, Row } from "antd";
+import { Button, Form, Input, InputNumber, message, Select, Upload, Image, Col, Row, Modal } from "antd";
 import product from 'API_Call/Api_product/product';
 import catalog from 'API_Call/Api_catalog/catalog';
 import producer from 'API_Call/Api_producer/producer';
@@ -9,6 +9,7 @@ import { Link, useHistory } from "react-router-dom";
 import "Container/scss/addpro.scss";
 
 const { Option } = Select;
+const { confirm } = Modal;
 const formItemLayout = {
     labelCol: {
         xs: {
@@ -52,11 +53,12 @@ const EditProduct = (props) => {
     const [form] = Form.useForm();
     const history = useHistory();
     const ProductEdit = JSON.parse(localStorage.getItem("product"))
+    const [ImgEdit, setImgEdit] = useState(ProductEdit.hinh);
     const [imageName, setImageName] = useState("");
     const [fileList, setFileList] = useState([]);
     const [link, setLink] = useState("");
 
-
+    //Upload ảnh lên firebase
     const beforeUpload = file => {
         setFileList(fileList.concat(file));
         return false;
@@ -86,34 +88,59 @@ const EditProduct = (props) => {
             );
         }
     };
+
+    //Xóa ảnh trên firebase
     const onRemove = file => {
         setLink("");
         const del = storage.ref(`Product_Img/${imageName.name}`);
         del.delete().then((res) => {
+            setImageName("");
             message.success("Đã xóa ảnh!");
         }).catch((error) => {
             console.log(error);
         });
     };
 
+    //nút trở về
     const back = () => {
-        localStorage.removeItem("product");
-        history.goBack();
+        confirm({
+            title: 'Bạn muốn trở về trang danh sách sản phẩm?',
+            okText: 'Xóa',
+            okType: 'danger',
+            cancelText: 'Trở về',
+            onOk() {
+                if (link !== "") {
+                    localStorage.removeItem("product");
+                    const del = storage.ref(`Product_Img/${imageName.name}`);
+                    del.delete().then((res) => {
+                        history.push('/tat-ca-san-pham');
+                    }).catch((error) => {
+                        console.log(error);
+                    });
+                } else {
+                    localStorage.removeItem("product");
+                    history.push('/tat-ca-san-pham');
+                }
+            },
+            onCancel() {
+                console.log('Cancel');
+            },
+        });
     }
 
     const update = (values) => {
         if (imageName !== "") {
             values['imgName'] = imageName.name;
         } else {
-            //values['imgName'] = ProductEdit.imgName;
+            values['imgName'] = ProductEdit.imgName;
         }
         if (link !== "") {
-            values['hinh'] = link;
+            values['img'] = link;
         } else {
-            values['hinh'] = ProductEdit.hinh;
+            values['img'] = ProductEdit.hinh;
         }
         console.log(values);
-        product.updatePro(values).then((res) => {
+        /* product.updatePro(values).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message)
                 localStorage.removeItem("product");
@@ -124,7 +151,7 @@ const EditProduct = (props) => {
         })
             .catch(err => {
                 message.error(`Lỗi...! Sửa sản phẩm thất bại!\n ${err.response.data.message}`);
-            })
+            }) */
     };
 
 
@@ -150,9 +177,11 @@ const EditProduct = (props) => {
         })
     }, []);
 
+    //xóa ảnh đã có để tải ảnh mới lên firebase
     const deleteImg = () => {
-        const del = storage.ref(`Product_Img/${ProductEdit.imageName}`);
+        const del = storage.ref(`Product_Img/${ProductEdit.imgName}`);
         del.delete().then((res) => {
+            setImgEdit("");
             message.success("Đã xóa ảnh!");
         }).catch((error) => {
             console.log(error);
@@ -215,7 +244,6 @@ const EditProduct = (props) => {
                     size: `${ProductEdit.size}`,
                     mau: `${ProductEdit.mau}`,
                     gia: `${ProductEdit.gia}`,
-                    hinh: `${ProductEdit.hinh}`,
                     mota: `${ProductEdit.mota}`,
                     trangthai: `${ProductEdit.trangthai}`,
                     mansx: `${ProductEdit.tennsx}`,
@@ -306,41 +334,31 @@ const EditProduct = (props) => {
                         <Col>
                             {link !== "" ? (
                                 <Image src={link} width={120} />
-                            ) : (ProductEdit.hinh === "" ? (<span>Chưa có ảnh sản phẩm !</span>) : (<Image src={ProductEdit.hinh} width={120} />))}
-                            
+                            ) : (ImgEdit === "" ? (<span>Chưa có ảnh sản phẩm !</span>) : (<Image src={ImgEdit} width={120} />))}
+
                         </Col>
-                        <Col className="del-img">{link !== "" ? ("") : (ProductEdit.hinh === "" ? ("") : (<Button onClick={deleteImg} type="primary" danger><DeleteOutlined /></Button>))}</Col>
+                        <Col className="del-img">{link !== "" ? ("") : (ImgEdit === "" ? ("") : (<Button onClick={deleteImg} type="primary" danger><DeleteOutlined /></Button>))}</Col>
                     </Row>
                 </Form.Item>
                 <Form.Item
-                    name="hinhmoi"
-                    label="Up load ảnh mới"
+                    label="Tải ảnh mới"
                     valuePropName="fileList"
                     getValueFromEvent={normFile}
-
+                    name=" "
                 >
                     <Upload
                         listType="picture"
-
-                        name='hinhmoi'
                         multiple='true'
                         beforeUpload={beforeUpload}
                         onChange={handleChange}
                         onRemove={onRemove}
                         fileList
                     >
-                        <Button icon={<UploadOutlined />} >Tải ảnh lên</Button>
+                        {link !== "" || ImgEdit !== "" ? (
+                            <Button disabled icon={<UploadOutlined />} >Tải ảnh lên</Button>
+                        ) : (<Button icon={<UploadOutlined />} >Tải ảnh lên</Button>)}
                     </Upload>
                 </Form.Item>
-                <Form.Item
-                    name="img"
-                    label="img"
-                    hidden
-                >
-                    <Input />
-                </Form.Item>
-                {/* <input type="file" onChange={handleChange}/>
-                <button onClick={handleUpload}>Upload</button> */}
                 <Form.Item
                     name="mota"
                     label="Mô tả"
@@ -408,8 +426,10 @@ const EditProduct = (props) => {
                     </Select>
                 </Form.Item>
                 <Form.Item {...tailFormItemLayout}>
-                    <Link onClick={back} ><p style={{ marginRight: "20px", }} className="ant-btn ant-btn-dashed ">Trở về</p></Link>
-                    <Button value="submit" type="primary" htmlType="submit">
+                    <Button className="ant-btn ant-btn-dashed" onClick={back} style={{ marginLeft: -30 }}>
+                        Trở về
+                    </Button>
+                    <Button value="submit" type="primary" htmlType="submit" style={{ marginLeft: 30 }}>
                         Xác nhận
                     </Button>
                 </Form.Item>

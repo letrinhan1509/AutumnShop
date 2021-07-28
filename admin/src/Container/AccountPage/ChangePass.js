@@ -47,6 +47,9 @@ const ChangePass = (props) => {
                             onFinish={update}
                             scrollToFirstError
                             className="form"
+                            initialValues={{
+                                email: `${user.email}`
+                            }}
                         >
                             <h1 className="user-title">Thay đổi mật khẩu</h1>
                             <Form.Item
@@ -54,7 +57,7 @@ const ChangePass = (props) => {
                                 id="email"
                                 label="Email"
                             >
-                                <Input placeholder="email" />
+                                <Input disabled placeholder="email" />
                             </Form.Item>
                             <Form.Item
                                 name="password"

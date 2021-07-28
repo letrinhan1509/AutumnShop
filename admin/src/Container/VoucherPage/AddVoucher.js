@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from "axios"
-import { Row, Form, Input, Button, Select, Checkbox, DatePicker, Modal, message, Upload, Col, Image } from 'antd';
+import { Row, Form, Input, Button, Select, Radio, DatePicker, Modal, message, Upload, Col, Image } from 'antd';
 import { useHistory, Link } from "react-router-dom"
 import "Container/scss/addpro.scss";
 import moment from 'moment';
@@ -62,10 +62,12 @@ const AddVoucher = (props) => {
             setDateEnd(date._d);
         }
     }
-    const [title, setTitle] = useState(true);
-    const changett = (e) => {
+    const [title, setTitle] = useState("Hiện");
+    const selectTitle = (e) => {
         setTitle(e.target.value);
+        console.log(title);
     };
+
 
     const [fileList, setFileList] = useState([]);
     const [imageName, setImageName] = useState("");
@@ -123,8 +125,10 @@ const AddVoucher = (props) => {
                     }).catch((error) => {
                         console.log(error);
                     });
+                }else{
+                    history.push('/danh-sach-voucher');
                 }
-                history.push('/danh-sach-voucher');
+                
             },
             onCancel() {
                 console.log('Cancel');
@@ -163,8 +167,6 @@ const AddVoucher = (props) => {
         { label: '0', value: '0' },
         { label: '1', value: '1' },
     ];
-
-
 
     return (
         <>
@@ -259,7 +261,7 @@ const AddVoucher = (props) => {
                     >
                         {link !== "" ? (
                             <Image src={link} width={120} />
-                        ) : (<span>Chưa có ảnh sản phẩm !</span>)}
+                        ) : (<span>Chưa có ảnh voucher !</span>)}
                     </Form.Item>
                     <Form.Item
                         name="hinh"
@@ -277,9 +279,11 @@ const AddVoucher = (props) => {
                             onRemove={onRemove}
                             fileList
                         >
-                            <Button icon={<UploadOutlined />} >Tải ảnh lên</Button>
+                            {link !== "" ? (
+                                <Button disabled icon={<UploadOutlined />} >Tải ảnh lên</Button>
+                            ) : (<Button icon={<UploadOutlined />} >Tải ảnh lên</Button>)}
                         </Upload>
-                    </Form.Item> 
+                    </Form.Item>
                     <Form.Item
                         label="Ngày bắt đầu"
                         rules={[
@@ -305,8 +309,12 @@ const AddVoucher = (props) => {
                     <Form.Item
                         label="Trạng thái"
                     >
-                        <Checkbox onChange={changett} value="1">Hiện</Checkbox>
-                        <Checkbox onChange={changett} value="0">Ẩn</Checkbox>
+                        <Radio.Group onChange={selectTitle} value={title}>
+                            <Radio value="Hiện">Hiện</Radio>
+                            <Radio value="Ẩn">Ẩn</Radio>
+                        </Radio.Group>
+                        {/* <Checkbox onChange={changett} value="1">Hiện</Checkbox>
+                        <Checkbox onChange={changett} value="0">Ẩn</Checkbox> */}
                     </Form.Item>
                     <Form.Item {...tailFormItemLayout}>
                         <Button className="ant-btn ant-btn-dashed" onClick={back} style={{ marginLeft: -30 }}>
@@ -321,7 +329,6 @@ const AddVoucher = (props) => {
                                 Thêm voucher
                             </Button>
                         )}
-
                     </Form.Item>
                 </Form>
             </div>

@@ -12,7 +12,6 @@ const menu = {
 }
 const { SubMenu } = Menu;
 const HeaderPage = (props) => {
-
     const history = useHistory();
 
     const handClick1 = (e) => {
@@ -25,14 +24,14 @@ const HeaderPage = (props) => {
     }
     const handClick2 = (e) => {
         localStorage.setItem('keyDM', e.key);
-        console.log(e.key);
         history.push(`/san-pham/${e.key}`);
     }
-    const handClick3 = (e) => {
-        setTimeout(() => {
-            history.push(`/san-pham/${e.madm}`);
-        }, 1);
+    const handClick3 = (e) => {   
         localStorage.setItem('keyType', e.maloai);
+        setTimeout(() => { 
+            history.push(`/san-pham/theo-loai`);
+        }, 1);
+          
         
     }
     const logout = () => {
@@ -46,7 +45,6 @@ const HeaderPage = (props) => {
         window.location.reload()
     }
     const User = JSON.parse(localStorage.getItem('user'));
-
 
     const drops = (
         <Menu>
@@ -94,14 +92,12 @@ const HeaderPage = (props) => {
                         className="menu1"
                         onClick={handClick1}
                         >
-
                         <div className="logo-box">
                             <Link className="logo" to={'/'}>
                                 <img width="50px" alt='logo' src="/images/icon/images.png" />
                                 <p>autumn</p>
                             </Link>
                         </div>
-
                         <SearchBar ListProductHome={props.ListProductHome} receiveDataa={props.receiveData} />
                         <Menu.Item key="gio-hang">
                             <Badge size="small" count={props.CountCart}>
@@ -111,9 +107,6 @@ const HeaderPage = (props) => {
                                 </div>
                             </Badge>
                         </Menu.Item>
-                        {/* <Menu.Item key="price">
-                            {props.PriceCart}Đ
-                        </Menu.Item> */}
                         <Menu.Item key="lien-he">
                             Liên hệ
                         </Menu.Item>
@@ -145,22 +138,6 @@ const HeaderPage = (props) => {
                         onClick={handClick2}
                         onOpenChange={onOpenChange}
                     >
-
-                        {/* <Menu.Item key="/" style={menu} >
-                            Home
-                        </Menu.Item>
-                        <Menu.Item key="san-pham/ao" style={menu}>
-                            Shirt
-                        </Menu.Item>
-                        <Menu.Item key="san-pham/balo" style={menu}>
-                            Bag
-                        </Menu.Item>
-                        <Menu.Item key="san-pham/giay" style={menu}>
-                            Shoes
-                        </Menu.Item>
-                        <Menu.Item key="san-pham/phu-kien" style={menu}>
-                            Acessories
-                        </Menu.Item> */}
                         {listCategory.map((item) => (
                             <SubMenu key={`${item.madm}`} title={item.tendm} onTitleClick={handClick2} subMenuOpenDelay={0.5} >
                                 {listTypes.length === 1 ? ("") : (

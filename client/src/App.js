@@ -18,6 +18,7 @@ import Contact from "container/MainPage/Contact";
 import axios from "axios";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import Shirt from "container/CatalogPage/Shirt";
+import Type from "container/CatalogPage/Type";
 import firebase from 'container/Config/firebase';
 //import { storage } from "./container/firebase";
 //import AllProduct from './container/All-Product';
@@ -236,6 +237,9 @@ useEffect(() => {
                 </Route>
                 <Route path="/san-pham/DMPK">
                   <Accessories ListProductHome={ListProductHome} link={link}  Thongbao_Them={Thongbao_Them} />
+                </Route>
+                <Route path="/san-pham/theo-loai">
+                  <Type Thongbao_Them={Thongbao_Them} />
                 </Route>
                 <Route path="/Timkiem">
                   <SearchResult kqSearch={kqSearch} countkqSearch={kqSearch.length} Thongbao_Them={Thongbao_Them} />

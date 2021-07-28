@@ -1,8 +1,10 @@
-import { Button, Form, Input, message, Select } from 'antd';
+import { Button, Form, Input, message, Select, Image, Modal, Upload } from 'antd';
+import { UploadOutlined } from '@ant-design/icons';
 import catalog from 'API_Call/Api_catalog/catalog';
 import React, { useEffect, useState } from 'react';
 import { Link, useHistory } from "react-router-dom";
 import "Container/scss/addpro.scss";
+import { storage } from 'Container/Firebase/firebase';
 
 const { Option } = Select;
 const formItemLayout = {
@@ -28,15 +30,92 @@ const tailFormItemLayout = {
     },
 };
 
+const normFile = (e: any) => {
+    console.log('Upload event:', e);
+    if (Array.isArray(e)) {
+        return e;
+    }
+    return e && e.fileList;
+};
 
 const AddProductType = (props) => {
 
     const [form] = Form.useForm();
     const history = useHistory();
+    const [imageName, setImageName] = useState("");
+    const [fileList, setFileList] = useState([]);
+    const [link, setLink] = useState("");
+    const { confirm } = Modal;
 
+    const beforeUpload = file => {
+        setFileList(fileList.concat(file));
+        return false;
+    }
+    const handleChange = file => {
+        if (file.fileList.length !== 0) {
+            const upload = storage.ref(`ProductType_Img/${fileList[0].name}`).put(fileList[0]);
+            upload.on(
+                "state_changed",
+                snapshot => { },
+                error => {
+                    console.log(error);
+                },
+                () => {
+                    storage
+                        .ref("ProductType_Img")
+                        .child(fileList[0].name)
+                        .getDownloadURL()
+                        .then(url => {
+                            console.log("ulr:", url);
+                            setLink(url);
+                            setImageName(fileList[0]);
+                            setFileList([]);
+                        });
+                    message.success("Tải ảnh thành công!");
+                }
+            );
+        }
+    };
+
+    const onRemove = file => {
+        setLink("");
+        const del = storage.ref(`ProductType_Img/${imageName.name}`);
+        del.delete().then((res) => {
+            message.success("Đã xóa ảnh!");
+        }).catch((error) => {
+            console.log(error);
+        });
+    };
+
+    const back = () => {
+        confirm({
+            title: 'Bạn muốn trở về trang danh sách loại sản phẩm?',
+            okText: 'Trở về',
+            okType: 'danger',
+            cancelText: 'Không',
+            onOk() {
+                if (link !== "") {
+                    const del = storage.ref(`ProductType_Img/${imageName.name}`);
+                    del.delete().then((res) => {
+                        history.push('/danh-sach-loai');
+                    }).catch((error) => {
+                        console.log(error);
+                    });
+                } else {
+                    history.push('/danh-sach-loai');
+                }
+            },
+            onCancel() {
+                console.log('Cancel');
+            },
+        });
+    };
 
     const addProductType = (values) => {
-        catalog.addProtype(values).then((res) => {
+        values['img'] = link;
+        values['imageName'] = imageName.name;
+        console.log(values);
+        /* catalog.addProtype(values).then((res) => {
             message.success(res.data.message)
             setTimeout(() => {
                 history.push('/danh-sach-loai');
@@ -45,7 +124,7 @@ const AddProductType = (props) => {
             .catch(err => {
                 console.log(err.response);
                 message.error(`${err.response.data.message}`)
-            })
+            }) */
     };
     const [listCategory, setlistCategory] = useState([]);
     useEffect(() => {
@@ -94,6 +173,33 @@ const AddProductType = (props) => {
                         <Input />
                     </Form.Item>
                     <Form.Item
+                        name="hinh"
+                        label="Ảnh loại sản phẩm"
+                    >
+                        {link !== "" ? (
+                            <Image src={link} width={120} />
+                        ) : (<span>Chưa có ảnh loại sản phẩm !</span>)}
+                    </Form.Item>
+                    <Form.Item
+                        name="hinh"
+                        label=" "
+                        valuePropName="fileList"
+                        getValueFromEvent={normFile}
+
+                    >
+                        <Upload
+                            listType="picture"
+                            name='hinh'
+                            multiple='true'
+                            beforeUpload={beforeUpload}
+                            onChange={handleChange}
+                            onRemove={onRemove}
+                            fileList
+                        >
+                            {link !== "" ? (<Button disabled icon={<UploadOutlined />} >Tải ảnh lên</Button>) : (<Button icon={<UploadOutlined />} >Tải ảnh lên</Button>)}
+                        </Upload>
+                    </Form.Item>
+                    <Form.Item
                         name="madm"
                         label="Danh mục"
                     //rules={[{ required: true, message: 'Chọn mã loại!' }]}
@@ -109,14 +215,16 @@ const AddProductType = (props) => {
                         </Select>
                     </Form.Item>
                     <Form.Item {...tailFormItemLayout}>
-                        <Link to={'/danh-sach-loai'} >
-                            <Button className="ant-btn ant-btn-dashed " htmlType="submit" style={{ marginLeft: -30 }}>
-                                Trở về
-                            </Button>
-                        </Link>
-                        <Button type="primary" htmlType="submit" style={{marginLeft: 30}}>
-                            Thêm loại sảm phẩm
+                        <Button onClick={back} className="ant-btn ant-btn-dashed " style={{ marginLeft: -30 }}>
+                            Trở về
                         </Button>
+                        {link !== "" ? (<Button type="primary" htmlType="submit" style={{ marginLeft: 30 }}>
+                            Thêm loại sảm phẩm
+                        </Button>) : (
+                            <Button disabled type="primary" htmlType="submit" style={{ marginLeft: 30 }}>
+                                Thêm loại sảm phẩm
+                            </Button>
+                        )}
                     </Form.Item>
                 </Form>
             </div>

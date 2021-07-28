@@ -6,25 +6,23 @@ import "container/components-css/ProductType.scss";
 import PRODUCT from 'API_Call/Api_product/product';
 
 const { Option } = Select;
-const keyDM = (localStorage.getItem("keyDM"));
-
+const keyType = (localStorage.getItem("keyType"));
 const Shirt = (props) => {
   const [ListProduct, setListProduct] = useState([]);
   const [ListFilter, setListFilter] = useState([]);
   
   useEffect(() => {
-    //Lấy sản phẩm theo danh mục
+    //Lấy sản phẩm theo loại
     try {
-      PRODUCT.getDM(keyDM).then((res) => {
-        if (res.data.status === "Success") {
-          setListProduct(res.data.data);
-          setListFilter(res.data.data);
-          console.log(res.data.data);
-        }
-      });
-    } catch (error) {
-      console.log(error);
-    }
+        PRODUCT.getLoai(keyType).then((res) => {
+          if (res.data.status === "Success") {
+            setListProduct(res.data.data);
+            setListFilter(res.data.data)
+          }
+        });
+      } catch (error) {
+        console.log(error);
+      }
   }, [])
   //const ak = props.ListProductHome.filter(ListProductHome => ListProductHome.tendm === "Áo");
   const [visible, setVisible] = useState(8);
@@ -60,66 +58,51 @@ const Shirt = (props) => {
   const price = [
     {
       key: 1,
-      value: 'Mặc định',
-      name: 'Mặc định'
+      value: 'Mặc định'
     },
     {
       key: 2,
-      value: '10000',
-      name: '< 10000đ'
+      value: 10000
     },
     {
       key: 3,
-      value: '20000',
-      name: '< 20000đ'
+      value: 20000
     },
     {
       key: 4,
-      value: '30000',
-      name: '< 30000đ'
+      value: 30000
     },
     {
       key: 5,
-      value: '40000',
-      name: '< 40000đ'
+      value: 40000
     }
   ];
   const [tempSize, setTempSize] = useState("");
-  const [tempPrice, setTempPrice] = useState("");
+  const [tempPrice, setTempPrice] = useState(0);
   function findSize(value) {
-    console.log(value);
     if (value === "Mặc định") {
       setListFilter(ListProduct);
       setTempSize("");
-      console.log(1);
-    } else if (tempPrice !== "") {
-      setTempSize(value);
-      const filSize = ListProduct.filter(ListProduct => (ListProduct.size === value && ListProduct.gia <= tempPrice));
+    } else if (tempPrice !== 0) {
+      const filSize = ListProduct.filter(ListProduct => (ListProduct.size === value && Number(ListProduct.gia) <= tempPrice));
       setListFilter(filSize);
-      console.log(2);
     } else {
       setTempSize(value);
       const filSize = ListProduct.filter(ListProduct => ListProduct.size === value);
       setListFilter(filSize);
-      console.log(3);
     }
   }
   function findPrice(value) {
-    console.log(value);
     if (value === "Mặc định") {
       setListFilter(ListProduct);
-      setTempPrice("");
-      console.log(4);
+      setTempPrice(0);
     } else if (tempSize !== "") {
-      setTempPrice(value);
-      const filPrice = ListProduct.filter(ListProduct => (ListProduct.gia <= value && ListProduct.size === tempSize));
+      const filPrice = ListProduct.filter(ListProduct => (Number(ListProduct.gia) <= value && ListProduct.size === tempSize));
       setListFilter(filPrice);
-      console.log(5);
     } else {
       setTempPrice(value);
-      const filPrice = ListProduct.filter(ListProduct => (ListProduct.gia <= value));
+      const filPrice = ListProduct.filter(ListProduct => Number(ListProduct.gia) <= value);
       setListFilter(filPrice);
-      console.log(6);
     }
   }
 
@@ -154,11 +137,11 @@ const Shirt = (props) => {
               </Col>
               <Col>
                 <h3>Lọc sản phẩm theo GIÁ</h3>
-                <Select defaultValue="Mặc định" onChange={findPrice} style={{ width: 120 }}>
+                <Select id="gia" defaultValue="Mặc định" onChange={findPrice} style={{ width: 120 }}>
                   {price.map((item) => {
                     return (
                       <>
-                        <Option value={item.value}>{item.name}</Option>
+                        <Option value={item.value}>{item.value}</Option>
                       </>
                     )
                   })}

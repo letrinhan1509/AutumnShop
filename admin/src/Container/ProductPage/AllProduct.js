@@ -8,6 +8,7 @@ import "Container/scss/addpro.scss";
 const { Option } = Select;
 const AllProduct = () => {
   let link = useHistory()
+  const { confirm } = Modal;
   const [idPro, setIdPro] = useState([]);
   let result = JSON.parse(localStorage.getItem('user'))
 
@@ -35,33 +36,33 @@ const AllProduct = () => {
 
 
 
-  ///Modal Xoá SP
-  const onClick = (e) => {
+  ///Xoá SP
+  const deletePro = (e) => {
     let id = e.currentTarget.dataset.id
-    setIdPro(id)
-    console.log('Content: ', e.currentTarget.dataset.id);
-    console.log(idPro);
-    setIsModalVisible(true);
+    console.log(id);
+    confirm({
+      title: 'Bạn muốn xóa sản phẩm này?',
+      okText: 'Xóa',
+      okType: 'danger',
+      cancelText: 'Không',
+      onOk() {
+        product.deletePro(id).then((res) => {
+          if (res.data.status === "Success") {
+            message.success(res.data.message);
+            window.location.reload()
+          } if (res.data.status === "Fail") {
+            message.error(res.data.message);
+          }
+        })
+          .catch(err => {
+            message.error(`${err.response.data.message}`);
+          })
+      },
+      onCancel() {
+        console.log('Cancel');
+      },
+    });
   }
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const handleOk = () => {
-    product.deletePro(idPro).then((res) => {
-      if (res.data.status === "Success") {
-        message.success(res.data.message);
-        window.location.reload()
-      } if (res.data.status === "Fail") {
-        message.error(res.data.message);
-      }
-    })
-      .catch(err => {
-        message.error(`${err.response.data.message}`);
-      })
-    setIsModalVisible(false);
-  };
-  const handleCancel = () => {
-    setIsModalVisible(false);
-  };
-
 
   //DataTable
   const columns = [
@@ -203,7 +204,7 @@ const AllProduct = () => {
       {
         dataIndex: "masp",
         key: "masp",
-        render: masp => (<div className="btn-box delete"><Button data-id={masp} onClick={onClick} type="danger">Xoá</Button></div>)
+        render: masp => (<div className="btn-box delete"><Button data-id={masp} onClick={deletePro} type="danger">Xoá</Button></div>)
       } : (<> </>)
   ];
 
@@ -298,10 +299,6 @@ const AllProduct = () => {
           </div>
         </div>
         <Table className="proItem" dataSource={wordSearch} rowKey="uid" columns={columns} pagination={{ pageSize: `${pageSize}` }} style={{ padding: 10 }} size="middle" />
-        <Modal title="Thông báo" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
-          <p>Bạn có muốn xoá sản phẩm này không ?</p>
-        </Modal>
-
       </div>
     </>
   );

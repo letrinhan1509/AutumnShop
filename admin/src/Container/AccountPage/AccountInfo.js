@@ -11,26 +11,6 @@ console.log(user);
 const AccountInfo = (props) => {
     const history = useHistory();
 
-    const update = (values) => {
-        console.log(values)
-        /* users.updateInfo(values).then((res) => {
-            if (res.data.status === "Success") {
-                message.success(res.data.message)
-                setTimeout(() => {
-                    history.push('/Thong-tin-tai-khoan');
-                }, 2000)
-            }
-            else {
-                //message.error("Sửa thông tin thất bại")
-                message.error(res.data.message)
-            }
-        })
-            .catch(err => {
-                console.log(err.response);
-                message.error(`Login fail!\n ${err.response.data}`)
-            }) */
-    };
-
     var url = window.location.toString();
     url = url.replace("http://localhost:3000/", '');
     

@@ -77,20 +77,17 @@ const EditUser = (props) => {
             console.log(error);
         });
     };
-    
-    const upfirebase = () => {
-        
-    };
+
     const update = (values) => {
-        if(imageName !== ""){
+        if (imageName !== "") {
             values['imgName'] = imageName.name;
-        }else{
-            //values['imgName'] = user.imgName;
+        } else {
+            values['imgName'] = user.imgName;
         }
-        if(link !== ""){
-            values['hinh'] = link;
-        }else{
-            values['hinh'] = user.hinh;
+        if (link !== "") {
+            values['img'] = link;
+        } else {
+            values['img'] = user.hinh;
         }
         console.log(values)
         /* users.updateInfo(values).then((res) => {
@@ -171,7 +168,9 @@ const EditUser = (props) => {
                                             onRemove={onRemove}
                                             fileList
                                         >
-                                            <Button icon={<UploadOutlined />} >Tải ảnh lên</Button>
+                                            {link !== "" ? (
+                                                <Button disabled icon={<UploadOutlined />} >Tải ảnh lên</Button>
+                                            ) : (<Button icon={<UploadOutlined />} >Tải ảnh lên</Button>)}
                                         </Upload>
                                     </Form.Item>
                                     <Form.Item

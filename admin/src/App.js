@@ -58,10 +58,10 @@ function App() {
   )
   const [isAuth, setIsAuth] = useState(true);
   //localStorage.getItem('user') === null ? setIsAuth(false) : setIsAuth(true)
-  const admin = localStorage.getItem('user'); 
+  const admin = JSON.parse(localStorage.getItem('user'));
   return (
     <>
-      {localStorage.getItem('user') === null ? ( 
+      {admin === null ? (
         <Layout>
           <Content className="login-box">
             <Router path="/dang-nhap">
@@ -69,11 +69,35 @@ function App() {
             </Router>
           </Content>
         </Layout>
-      ): (
-        <Router exact path="/admin">
+      ) : (
+        admin.permission === "NVGH" ? (
+          <>
+            <Router>
+              <Layout>
+                <HeaderPage />
+                <Row className="content-box" style={{ minHeight: 750 }, { marginTop: 64 }}>
+                  <Col className="aa" offset={2} span={18} push={1} width={'100%'}>
+                    <Content className="content-wrapper">
+                      <Route exact path="/">
+                        <Redirect to="/danh-sach-don-hang" />
+                      </Route>
+                      <Route exact path="/danh-sach-don-hang">
+                        <ListOrder />
+                      </Route>
+                      <Route exact path="/danh-sach-don-hang/chi-tiet">
+                        <OrderDetail />
+                      </Route>
+                    </Content>
+                  </Col>
+                </Row>
+                <Footer />
+              </Layout>
+            </Router>
+          </>
+        ) : (<Router>
           <Layout>
             <HeaderPage />
-            <Row className="content-box" style={{minHeight: 750}, {marginTop: 64}}>
+            <Row className="content-box" style={{ minHeight: 750 }, { marginTop: 64 }}>
               <Col>
                 <Navigation />
               </Col>
@@ -183,7 +207,8 @@ function App() {
             </Row>
             <Footer />
           </Layout>
-        </Router>
+        </Router>)
+
       )}
     </>
   );

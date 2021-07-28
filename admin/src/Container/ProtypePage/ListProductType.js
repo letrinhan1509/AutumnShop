@@ -1,4 +1,4 @@
-import { Button, message, Table, Tag } from 'antd';
+import { Button, message, Table, Tag, Modal } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { LockOutlined, UnlockOutlined } from '@ant-design/icons';
@@ -6,6 +6,7 @@ import "Container/scss/addpro.scss";
 import catalog from 'API_Call/Api_catalog/catalog';
 
 const ListProductType = () => {
+  const { confirm } = Modal;
   const link = useHistory();
   let result = JSON.parse(localStorage.getItem('user'));
 
@@ -71,25 +72,35 @@ const ListProductType = () => {
       });
   };
 
-
+  //xóa loại SP
   const deleteType = (e) => {
     let id = e.currentTarget.dataset.id;
-    console.log("Id:", id);
-    catalog.deleteProtype(id).then((res) => {
-      if (res.data.status === "Success") {
-        message.success(res.data.message)
-        setTimeout(() => {
-          link.go({ pathname: '/danh-sach-loai' });
-        }, 800)
-      }
-      else {
-        message.error(res.data.message)
-      }
-    })
-      .catch(err => {
-        console.log(err.response);
-        message.error(`${err.response.data.message}`)
-      })
+    confirm({
+      title: 'Bạn muốn xóa loại sản phẩm này?',
+      okText: 'Xóa',
+      okType: 'danger',
+      cancelText: 'Không',
+      onOk() {
+        catalog.deleteProtype(id).then((res) => {
+          if (res.data.status === "Success") {
+            message.success(res.data.message)
+            setTimeout(() => {
+              link.go({ pathname: '/danh-sach-loai' });
+            }, 800)
+          }
+          else {
+            message.error(res.data.message)
+          }
+        })
+          .catch(err => {
+            console.log(err.response);
+            message.error(`${err.response.data.message}`)
+          })
+      },
+      onCancel() {
+        console.log('Cancel');
+      },
+    });
   }
 
   ListType.forEach(element => {
@@ -209,10 +220,7 @@ const ListProductType = () => {
           ) : ("")
         }
         <Table className="item" dataSource={ListType} columns={columns} pagination={{ pageSize: 6 }} style={{ padding: 10 }} size="middle" />
-
-
       </div>
-
     </>
   );
 }

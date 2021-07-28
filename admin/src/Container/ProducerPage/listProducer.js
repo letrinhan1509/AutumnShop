@@ -1,4 +1,4 @@
-import { Button, message, Table, Tag } from 'antd';
+import { Button, message, Table, Tag, Modal } from 'antd';
 import { LockOutlined, UnlockOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
@@ -8,6 +8,7 @@ import producers from 'API_Call/Api_producer/producer';
 
 const ListProducer = () => {
   const link = useHistory();
+  const { confirm } = Modal;
   let result = JSON.parse(localStorage.getItem('user'));
   //API ListProducer
   const [listProducer, setListProducer] = useState([]);
@@ -69,20 +70,31 @@ const ListProducer = () => {
   };
 
   //Xóa nhà sản xuất
-  const deleteType = (e) => {
+  const deleteProducer = (e) => {
     let id = e.currentTarget.dataset.id;
-    producers.deleteProducer(id).then((res) => {
-      if (res.data.status === "Success") {
-        message.success(res.data.message)
-        setTimeout(() => {
-          link.go({ pathname: '/danh-sach-nha-sx' });
-        }, 800)
-      }
-    })
-      .catch(err => {
-        //message.error(`${err.response.data.message}\n Có sản phẩm chứa nhà sản xuất nên không thể xoá!!! `);
-        message.error(`Lỗi!!! Có sản phẩm chứa nhà sản xuất nên không thể xoá!!! `);
-      })
+    confirm({
+      title: 'Bạn muốn xóa nhà sản xuất này?',
+      okText: 'Xóa',
+      okType: 'danger',
+      cancelText: 'Không',
+      onOk() {
+        producers.deleteProducer(id).then((res) => {
+          if (res.data.status === "Success") {
+            message.success(res.data.message)
+            setTimeout(() => {
+              link.go({ pathname: '/danh-sach-nha-sx' });
+            }, 800)
+          }
+        })
+          .catch(err => {
+            //message.error(`${err.response.data.message}\n Có sản phẩm chứa nhà sản xuất nên không thể xoá!!! `);
+            message.error(`Lỗi!!! Có sản phẩm chứa nhà sản xuất nên không thể xoá!!! `);
+          })
+      },
+      onCancel() {
+        console.log('Cancel');
+      },
+    });
   }
 
 
@@ -178,7 +190,7 @@ const ListProducer = () => {
       {
         dataIndex: 'mansx',
         key: 'mansx',
-        render: mansx => (<div className="btn-box delete"><Button data-id={mansx} key={mansx} type="danger" onClick={deleteType}> Xoá </Button></div>)
+        render: mansx => (<div className="btn-box delete"><Button data-id={mansx} key={mansx} type="danger" onClick={deleteProducer}> Xoá </Button></div>)
       } : (<> </>)
 
   ];
@@ -199,8 +211,6 @@ const ListProducer = () => {
         ) : ("")}
         <Table className="item" dataSource={listProducer} columns={columns} pagination={{ pageSize: 6 }} style={{ padding: 10 }} size="middle" />
       </div>
-      {/* <Link to={'/Themnhanvien'}><p className="ant-btn ant-btn-primary" type="primary">Thêm nhân viên</p></Link> */}
-
     </>
   );
 }

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { LockOutlined, UnlockOutlined } from '@ant-design/icons';
-import { Button, Table, Tag, message } from 'antd';
+import { Button, Table, Tag, message, Modal } from 'antd';
 import { useHistory, Link } from 'react-router-dom';
 import axios from 'axios';
 import "Container/scss/addpro.scss";
@@ -8,7 +8,7 @@ import catalog from 'API_Call/Api_catalog/catalog';
 
 const ListCata = () => {
   const link = useHistory();
-
+  const { confirm } = Modal;
   //API ListCategory
   const [listCategory, setListCategory] = useState([]);
   useEffect(() => {
@@ -35,20 +35,31 @@ const ListCata = () => {
   // Xoá danh mục
   const deleteCategory = (e) => {
     let id = e.currentTarget.dataset.id;
-    catalog.deleteCatalog(id).then((res) => {
-      if (res.data.status === "Success") {
-        message.success(res.data.message)
-        setTimeout(() => {
-          link.go({ pathname: '/danh-muc-san-pham' });
-        }, 800)
-      }
-      else {
-        message.error(res.data.message)
-      }
-    })
-      .catch(err => {
-        message.error(`${err.response.data.message} !!!`)
-      })
+    confirm({
+      title: 'Bạn muốn xóa danh mục này?',
+      okText: 'Xóa',
+      okType: 'danger',
+      cancelText: 'Không',
+      onOk() {
+        catalog.deleteCatalog(id).then((res) => {
+          if (res.data.status === "Success") {
+            message.success(res.data.message)
+            setTimeout(() => {
+              link.go({ pathname: '/danh-muc-san-pham' });
+            }, 800)
+          }
+          else {
+            message.error(res.data.message)
+          }
+        })
+          .catch(err => {
+            message.error(`${err.response.data.message} !!!`)
+          })
+      },
+      onCancel() {
+        console.log('Cancel');
+      },
+    });
   }
 
   //Cập nhật trạng thái danh mục

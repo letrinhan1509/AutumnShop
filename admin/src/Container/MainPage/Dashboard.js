@@ -166,9 +166,9 @@ const Dashboard = () => {
                 </Row>
                 <Row className="box2">
                     <Link to={'/danh-sach-nha-sx'}><Col className="PRODUCER">PRODUCER: {ListProducer.length}</Col></Link>
-                    <Link to={'/danh-muc-san-pham'}><Col className="CATALOG">CATAKIG: {ListCatalog.length}</Col></Link>
-                    <Link to={'/danh-muc-san-pham'}><Col className="CATALOG2">CATAKIG: {ListCatalog.length}</Col></Link>
-                    <Link to={'/danh-muc-san-pham'}><Col className="CATALOG3">CATAKIG: {ListCatalog.length}</Col></Link>
+                    <Link to={'/danh-muc-san-pham'}><Col className="CATALOG">CATALOG: {ListCatalog.length}</Col></Link>
+                    {/* <Link to={'/danh-muc-san-pham'}><Col className="CATALOG2">CATAKIG: {ListCatalog.length}</Col></Link>
+                    <Link to={'/danh-muc-san-pham'}><Col className="CATALOG3">CATAKIG: {ListCatalog.length}</Col></Link> */}
                 </Row>
             </div>
         </>

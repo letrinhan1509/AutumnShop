@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from "axios"
-import { Row, Form, Input, Button, Select, Checkbox, DatePicker, Col, message, Upload, Image } from 'antd';
+import { Row, Form, Input, Button, Select, Radio, DatePicker, Col, message, Upload, Image, Modal } from 'antd';
 import { DownloadOutlined, UploadOutlined, DeleteOutlined } from '@ant-design/icons';
 import { useHistory, Link } from "react-router-dom"
 import "Container/scss/addpro.scss";
@@ -10,6 +10,7 @@ import voucher from "API_Call/Api_discount/discount";
 
 const { Option } = Select;
 const { TextArea } = Input;
+const { confirm } = Modal;
 const formItemLayout = {
     labelCol: {
         xs: { span: 22 },
@@ -44,9 +45,10 @@ const EditVoucher = (props) => {
 
     const [form] = Form.useForm();
     const history = useHistory();
-
     let voucherID = JSON.parse(localStorage.getItem('voucherID'));
-    console.log(voucherID);
+    const [ImgEdit, setImgEdit] = useState(voucherID.hinh);
+    var dateBD = new Date(voucherID.ngaybd);
+    var dateKT = new Date(voucherID.ngaykt);
     const [datestart, setDatestart] = useState("");
     const [dateEnd, setDateEnd] = useState("");
     //let a = "";
@@ -60,9 +62,10 @@ const EditVoucher = (props) => {
             setDateEnd(date._d);
         }
     }
-    const [title, setTitle] = useState("");
-    const changett = (e) => {
+    const [title, setTitle] = useState(voucherID.trangthai);
+    const selectTitle = (e) => {
         setTitle(e.target.value);
+        console.log(title);
     };
 
     const [imageName, setImageName] = useState("");
@@ -100,31 +103,73 @@ const EditVoucher = (props) => {
     };
     const onRemove = file => {
         setLink("");
-        const del = storage.ref(`Product_Img/${imageName.name}`);
+        const del = storage.ref(`Voucher_img/${imageName.name}`);
         del.delete().then((res) => {
+            setImageName("");
             message.success("Đã xóa ảnh!");
         }).catch((error) => {
             console.log(error);
         });
     };
 
+    const deleteImg = () => {
+        const del = storage.ref(`Voucher_img/${voucherID.imageName}`);
+        del.delete().then((res) => {
+            setImgEdit("");
+            message.success("Đã xóa ảnh!");
+        }).catch((error) => {
+            console.log(error);
+        });
+    }
+
+    const back = () => {
+        confirm({
+            title: 'Bạn muốn trở về trang danh sách voucher?',
+            okText: 'Trở về',
+            okType: 'danger',
+            cancelText: 'Không',
+            onOk() {
+                if (link !== "") {
+                    const del = storage.ref(`Voucher_img/${imageName.name}`);
+                    del.delete().then((res) => {
+                        localStorage.removeItem("voucherID");
+                        history.push('/danh-sach-voucher');
+                    }).catch((error) => {
+                        console.log(error);
+                    });
+                }else{
+                    localStorage.removeItem("voucherID");
+                    history.push('/danh-sach-voucher');
+                }
+                
+            },
+            onCancel() {
+                console.log('Cancel');
+            },
+        });
+    };
+
     const editvoucher = (values) => {
-        console.log(datestart.toLocaleDateString());
-        values["ngaybd"] = moment(datestart).format('YYYY-MM-DD');
-        values["ngaykt"] = moment(dateEnd).format('YYYY-MM-DD');
+        if (datestart !== "" && dateEnd !== "") {
+            values["ngaybd"] = moment(datestart).format('YYYY-MM-DD');
+            values["ngaykt"] = moment(dateEnd).format('YYYY-MM-DD');
+        }else{
+            values["ngaybd"] = moment(dateBD).format('YYYY-MM-DD');
+            values["ngaykt"] = moment(dateKT).format('YYYY-MM-DD');
+        }
         values["trangthai"] = title;
         if (imageName !== "") {
             values['imgName'] = imageName.name;
         } else {
-            //values['imgName'] = voucherID.imgName;
+            values['imgName'] = voucherID.imgName;
         }
         if (link !== "") {
-            values['hinh'] = link;
+            values['img'] = link;
         } else {
-            values['hinh'] = voucherID.hinh;
+            values['img'] = voucherID.hinh;
         }
-        const url = "http://127.0.0.1:5000/api/v1/khuyen-mai/cap-nhat-voucher"
-        voucher.updateVoucher(values).then((res) => {
+        console.log(values);
+        /* voucher.updateVoucher(values).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message)
                 setTimeout(() => {
@@ -135,20 +180,17 @@ const EditVoucher = (props) => {
         })
             .catch(err => {
                 message.error(`${err.response.data.message}`);
-            });
+            }); */
     };
 
-
-    const deleteImg = () => {
-        const del = storage.ref(`Voucher_img/${voucherID.imageName}`);
-        del.delete().then((res) => {
-            message.success("Đã xóa ảnh!");
-        }).catch((error) => {
-            console.log(error);
-        });
-    }
-
-
+    const [datePickers, setDatePickers] = useState(false);
+    const changeDate = () => {
+        if(datestart !== "" || dateEnd !== ""){
+            setDatestart("");
+            setDateEnd("");
+        }
+        setDatePickers(!datePickers);
+    };
 
     return (
         <>
@@ -255,14 +297,14 @@ const EditVoucher = (props) => {
                             <Col>
                                 {link !== "" ? (
                                     <Image src={link} width={120} />
-                                ) : (voucherID.hinh === "" ? (<span>Chưa có ảnh sản phẩm !</span>) : (<Image src={voucherID.hinh} width={120} />))}
+                                ) : (ImgEdit === "" ? (<span>Chưa có ảnh sản phẩm !</span>) : (<Image src={ImgEdit} width={120} />))}
 
                             </Col>
-                            <Col className="del-img">{link !== "" ? ("") : (voucherID.hinh === "" ? ("") : (<Button onClick={deleteImg} type="primary" danger><DeleteOutlined /></Button>))}</Col>
+                            <Col className="del-img">{link !== "" ? ("") : (ImgEdit === "" ? ("") : (<Button onClick={deleteImg} type="primary" danger><DeleteOutlined /></Button>))}</Col>
                         </Row>
                     </Form.Item>
                     <Form.Item
-                        name="hinhmoi"
+                        name=" "
                         label="Up load ảnh mới"
                         valuePropName="fileList"
                         getValueFromEvent={normFile}
@@ -271,14 +313,16 @@ const EditVoucher = (props) => {
                         <Upload
                             listType="picture"
 
-                            name='hinhmoi'
+                            name=' '
                             multiple='true'
                             beforeUpload={beforeUpload}
                             onChange={handleChange}
                             onRemove={onRemove}
                             fileList
                         >
-                            <Button icon={<UploadOutlined />} >Tải ảnh lên</Button>
+                            {link !== "" || ImgEdit !== "" ? (
+                                <Button disabled icon={<UploadOutlined />} >Tải ảnh lên</Button>
+                            ) : (<Button icon={<UploadOutlined />} >Tải ảnh lên</Button>)}
                         </Upload>
                     </Form.Item>
                     <Form.Item
@@ -290,7 +334,8 @@ const EditVoucher = (props) => {
                             },
                         ]}
                     >
-                        <DatePicker onChange={startChange} />
+                        {datePickers === false ? (<span>{dateBD.toLocaleDateString()}</span>) : (<DatePicker onChange={startChange} />)}
+                        <Button type="primary" onClick={changeDate} style={{ marginLeft: 10 }}>Đổi</Button>
                     </Form.Item>
                     <Form.Item
                         label="Ngày kết thúc"
@@ -301,20 +346,20 @@ const EditVoucher = (props) => {
                             },
                         ]}
                     >
-                        <DatePicker onChange={endChange} />
+                        {datePickers === false ? (<span>{dateKT.toLocaleDateString()}</span>) : (<DatePicker onChange={endChange} />)}
                     </Form.Item>
                     <Form.Item
                         label="Trạng thái"
                     >
-                        <Checkbox onChange={changett} value="1">Hiện</Checkbox>
-                        <Checkbox onChange={changett} value="0">Ẩn</Checkbox>
+                        <Radio.Group onChange={selectTitle} value={title}>
+                            <Radio value={1}>Hiện</Radio>
+                            <Radio value={0}>Ẩn</Radio>
+                        </Radio.Group>
                     </Form.Item>
                     <Form.Item {...tailFormItemLayout}>
-                        <Link to={'/danh-sach-voucher'} >
-                            <Button className="ant-btn ant-btn-dashed " htmlType="submit" style={{ marginLeft: -30 }}>
-                                Trở về
-                            </Button>
-                        </Link>
+                        <Button className="ant-btn ant-btn-dashed" onClick={back} style={{ marginLeft: -30 }}>
+                            Trở về
+                        </Button>
                         <Button type="primary" htmlType="submit" style={{ marginLeft: 30 }}>
                             Xác nhận
                         </Button>
