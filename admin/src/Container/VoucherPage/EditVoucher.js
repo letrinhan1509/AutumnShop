@@ -113,7 +113,7 @@ const EditVoucher = (props) => {
     };
 
     const deleteImg = () => {
-        const del = storage.ref(`Voucher_img/${voucherID.imageName}`);
+        const del = storage.ref(`Voucher_img/${voucherID.imgName}`);
         del.delete().then((res) => {
             setImgEdit("");
             message.success("Đã xóa ảnh!");
@@ -137,11 +137,11 @@ const EditVoucher = (props) => {
                     }).catch((error) => {
                         console.log(error);
                     });
-                }else{
+                } else {
                     localStorage.removeItem("voucherID");
                     history.push('/danh-sach-voucher');
                 }
-                
+
             },
             onCancel() {
                 console.log('Cancel');
@@ -153,7 +153,7 @@ const EditVoucher = (props) => {
         if (datestart !== "" && dateEnd !== "") {
             values["ngaybd"] = moment(datestart).format('YYYY-MM-DD');
             values["ngaykt"] = moment(dateEnd).format('YYYY-MM-DD');
-        }else{
+        } else {
             values["ngaybd"] = moment(dateBD).format('YYYY-MM-DD');
             values["ngaykt"] = moment(dateKT).format('YYYY-MM-DD');
         }
@@ -185,7 +185,7 @@ const EditVoucher = (props) => {
 
     const [datePickers, setDatePickers] = useState(false);
     const changeDate = () => {
-        if(datestart !== "" || dateEnd !== ""){
+        if (datestart !== "" || dateEnd !== "") {
             setDatestart("");
             setDateEnd("");
         }
@@ -360,9 +360,13 @@ const EditVoucher = (props) => {
                         <Button className="ant-btn ant-btn-dashed" onClick={back} style={{ marginLeft: -30 }}>
                             Trở về
                         </Button>
-                        <Button type="primary" htmlType="submit" style={{ marginLeft: 30 }}>
-                            Xác nhận
-                        </Button>
+                        {
+                            link === "" || ImgEdit === "" ? (
+                                <Button type="primary" htmlType="submit" style={{ marginLeft: 30 }} disabled>Xác nhận</Button>
+                            ) : (
+                                <Button type="primary" htmlType="submit" style={{ marginLeft: 30 }}>Xác nhận</Button>
+                            )
+                        }
                     </Form.Item>
                 </Form>
             </div>

@@ -70,8 +70,6 @@ const UserInfo = (props) => {
                     </Row>
                 </Col>
             </Row>
-
-
         </Container>
 
     );

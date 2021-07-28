@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Image, Input, Button, message, Form, Upload, Tooltip, Row, Col } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { Image, Input, Button, message, Form, Upload, Spin, Row, Col } from 'antd';
 import { UploadOutlined, DownloadOutlined, DeleteOutlined } from '@ant-design/icons';
 import { storage } from 'Container/Firebase/firebase';
 import Menus from "./Menus";
@@ -8,11 +8,18 @@ import "Container/scss/account.scss";
 import admin from 'API_Call/Api_admin/admin';
 
 const { TextArea } = Input;
-const user = JSON.parse(localStorage.getItem("user"));
-console.log(user);
 const EditAccount = (props) => {
     const history = useHistory();
-
+    const [user, setUser] = useState([]);
+    const [loading, setLoading] = useState(false);
+    useEffect(() => {
+        setTimeout(() => {
+            setUser(JSON.parse(localStorage.getItem("user")));
+            if (user !== null) {
+                setLoading(true);
+            }
+        }, 1000);
+    }, [])
     var url = window.location.toString();
     url = url.replace("http://localhost:3000/", '');
 
@@ -113,88 +120,95 @@ const EditAccount = (props) => {
                 </Col>
                 <Col className="col-two">
                     <Row className="account-box">
-                        <Form
-                            name="update"
-                            onFinish={update}
-                            initialValues={{
-                                tennv: `${user.username}`,
-                                email: `${user.email}`,
-                                phone: `${user.phone}`,
-                                diachi: `${user.address}`,
-                                permission: `${user.permission}`,
-                            }}
-                            scrollToFirstError
-                            className="form"
-                        >
-                            <h1 className="user-title">Chỉnh sửa thông tin</h1>
-                            <Row className="img_account">
-                                {link !== "" ? (
-                                    <Image
-                                        width={150}
-                                        src={link}
-                                    />
-                                ) : (ImgEdit === "" ? (<span>Chưa có ảnh sản phẩm !</span>) : (<Image src={ImgEdit} width={120} />)
-                                )}
-                                <Button type="danger" onClick={deleteImg}>Xóa ảnh</Button>
-                            </Row>
-                            <Form.Item
-                                name="hinh"
-                                label="Ảnh nhân viên"
-                                valuePropName="fileList"
-                                getValueFromEvent={normFile}
-                                className="load-img"
-                            >
-                                <Upload
-                                    listType="picture"
-                                    name='hinh'
-                                    multiple='true'
-                                    beforeUpload={beforeUpload}
-                                    onChange={handleChange}
-                                    onRemove={onRemove}
-                                    fileList
+                        <Col className="form">
+                            {loading === false ? (
+                                <Row className="spin-wrapper">
+                                    <Spin className="spin" size="large" />
+                                </Row>
+                            ) : (
+                                <Form
+                                    name="update"
+                                    onFinish={update}
+                                    initialValues={{
+                                        tennv: `${user.username}`,
+                                        email: `${user.email}`,
+                                        sdt: `${user.phone}`,
+                                        diachi: `${user.diachi}`,
+                                        permission: `${user.permission}`,
+                                    }}
+                                    scrollToFirstError
                                 >
-                                    {link !== "" ? (
-                                        <Button disabled icon={<UploadOutlined />} >Tải ảnh lên</Button>
-                                    ) : (<Button icon={<UploadOutlined />} >Tải ảnh lên</Button>)}
-                                </Upload>
-                            </Form.Item>
-                            <Form.Item
-                                name="tennv"
-                                id="tennv"
-                                label="Tên nhân viên"
-                            >
-                                <Input placeholder="User name" />
-                            </Form.Item>
-                            <Form.Item
-                                name="email"
-                                id="email"
-                                label="Email"
-                            >
-                                <Input placeholder="email" disabled />
-                            </Form.Item>
-                            <Form.Item
-                                name="phone"
-                                id="phone"
-                                label="Số điện thoại"
-                            >
-                                <Input placeholder="Số điện thoại" />
-                            </Form.Item>
-                            <Form.Item
-                                name="diachi"
-                                id="diachi"
-                                label="Địa chỉ"
-                            >
-                                <Input placeholder="Địa chỉ" />
-                            </Form.Item>
-                            <Form.Item
-                                name="permission"
-                                id="permission"
-                                label="Quyền hạn"
-                            >
-                                <Input placeholder="Quyền hạn" disabled />
-                            </Form.Item>
-                            <Button value="submit" type="primary" htmlType="submit">Cập nhật</Button>
-                        </Form>
+                                    <h1 className="user-title">Chỉnh sửa thông tin</h1>
+                                    <Row className="img_account">
+                                        {link !== "" ? (
+                                            <Image
+                                                width={150}
+                                                src={link}
+                                            />
+                                        ) : (ImgEdit === "" ? (<span>Chưa có ảnh sản phẩm !</span>) : (<Image src={ImgEdit} width={120} />)
+                                        )}
+                                        <Button type="danger" onClick={deleteImg}>Xóa ảnh</Button>
+                                    </Row>
+                                    <Form.Item
+                                        name="hinh"
+                                        label="Ảnh nhân viên"
+                                        valuePropName="fileList"
+                                        getValueFromEvent={normFile}
+                                        className="load-img"
+                                    >
+                                        <Upload
+                                            listType="picture"
+                                            name='hinh'
+                                            multiple='true'
+                                            beforeUpload={beforeUpload}
+                                            onChange={handleChange}
+                                            onRemove={onRemove}
+                                            fileList
+                                        >
+                                            {link !== "" ? (
+                                                <Button disabled icon={<UploadOutlined />} >Tải ảnh lên</Button>
+                                            ) : (<Button icon={<UploadOutlined />} >Tải ảnh lên</Button>)}
+                                        </Upload>
+                                    </Form.Item>
+                                    <Form.Item
+                                        name="tennv"
+                                        id="tennv"
+                                        label="Tên nhân viên"
+                                    >
+                                        <Input placeholder="User name" />
+                                    </Form.Item>
+                                    <Form.Item
+                                        name="email"
+                                        id="email"
+                                        label="Email"
+                                    >
+                                        <Input placeholder="email" disabled />
+                                    </Form.Item>
+                                    <Form.Item
+                                        name="phone"
+                                        id="phone"
+                                        label="Số điện thoại"
+                                    >
+                                        <Input placeholder="Số điện thoại" />
+                                    </Form.Item>
+                                    <Form.Item
+                                        name="diachi"
+                                        id="diachi"
+                                        label="Địa chỉ"
+                                    >
+                                        <Input placeholder="Địa chỉ" />
+                                    </Form.Item>
+                                    <Form.Item
+                                        name="permission"
+                                        id="permission"
+                                        label="Quyền hạn"
+                                    >
+                                        <Input placeholder="Quyền hạn" disabled />
+                                    </Form.Item>
+                                    <Button value="submit" type="primary" htmlType="submit">Cập nhật</Button>
+                                </Form>
+                            )}
+                        </Col>
                     </Row>
                 </Col>
             </Row>
