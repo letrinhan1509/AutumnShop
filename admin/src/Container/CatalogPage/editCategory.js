@@ -8,13 +8,14 @@ import { storage } from 'Container/Firebase/firebase';
 
 const formItemLayout = {
     labelCol: {
-        xs: {span: 22},
+        xs: { span: 22 },
         sm: {
-            span: 6},
+            span: 6
+        },
     },
     wrapperCol: {
-        xs: {span: 20},
-        sm: {span: 15},
+        xs: { span: 20 },
+        sm: { span: 15 },
     },
 };
 const tailFormItemLayout = {
@@ -117,22 +118,16 @@ const EditCategory = (props) => {
         });
     }
 
-        //xóa ảnh đã có để tải ảnh mới lên firebase
-        const deleteImg = () => {
-            const del = storage.ref(`Catalog_Img/${Category.tenhinh}`);
-            del.delete().then((res) => {
-                setImgEdit("");
-                message.success("Đã xóa ảnh!");
-            }).catch((error) => {
-                console.log(error);
-            });
-        }
+    //xóa ảnh đã có để tải ảnh mới lên firebase
+    const deleteImg = () => {
+        setImgEdit("");
+    }
 
     const update = (values) => {
         if (imageName !== "") {
             values['imgName'] = imageName.name;
         } else {
-            values['imgName'] = Category.imgName;
+            values['imgName'] = Category.tenhinh;
         }
         if (link !== "") {
             values['img'] = link;
@@ -143,6 +138,14 @@ const EditCategory = (props) => {
         catalog.updateCatalog(values).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message)
+                if (link !== "") {
+                    const del = storage.ref(`Catalog_Img/${Category.tenhinh}`);
+                    del.delete().then((res) => {
+                        message.success("Đã xóa ảnh!");
+                    }).catch((error) => {
+                        console.log(error);
+                    });
+                }
                 localStorage.removeItem("category");
                 setTimeout(() => {
                     history.push('/danh-muc-san-pham');
@@ -231,7 +234,7 @@ const EditCategory = (props) => {
                         Trở về
                     </Button>
                     {
-                        link === "" || ImgEdit === ""? (
+                        link === "" && ImgEdit === "" ? (
                             <Button type="primary" htmlType="submit" style={{ marginLeft: 30 }} disabled>Xác nhận</Button>
                         ) : (
                             <Button type="primary" htmlType="submit" style={{ marginLeft: 30 }}>Xác nhận</Button>

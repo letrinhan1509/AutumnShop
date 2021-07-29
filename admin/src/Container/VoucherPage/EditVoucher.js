@@ -93,6 +93,7 @@ const EditVoucher = (props) => {
                         .then(url => {
                             console.log("ulr:", url);
                             setLink(url);
+                            setImgEdit(url);
                             setImageName(fileList[0]);
                             setFileList([]);
                         });
@@ -113,13 +114,7 @@ const EditVoucher = (props) => {
     };
 
     const deleteImg = () => {
-        const del = storage.ref(`Voucher_img/${voucherID.tenhinh}`);
-        del.delete().then((res) => {
-            setImgEdit("");
-            message.success("Đã xóa ảnh!");
-        }).catch((error) => {
-            console.log(error);
-        });
+        setImgEdit("");
     }
 
     const back = () => {
@@ -161,7 +156,7 @@ const EditVoucher = (props) => {
         if (imageName !== "") {
             values['imgName'] = imageName.name;
         } else {
-            values['imgName'] = voucherID.imgName;
+            values['imgName'] = voucherID.tenhinh;
         }
         if (link !== "") {
             values['img'] = link;
@@ -169,9 +164,17 @@ const EditVoucher = (props) => {
             values['img'] = voucherID.hinh;
         }
         console.log(values);
-        /* voucher.updateVoucher(values).then((res) => {
+        voucher.updateVoucher(values).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message)
+                if (link !== "") {
+                    const del = storage.ref(`Voucher_img/${voucherID.tenhinh}`);
+                    del.delete().then((res) => {
+                        message.success("Đã xóa ảnh!");
+                    }).catch((error) => {
+                        console.log(error);
+                    });
+                }
                 setTimeout(() => {
                     history.push('/danh-sach-voucher');
                 }, 1000)
@@ -180,7 +183,7 @@ const EditVoucher = (props) => {
         })
             .catch(err => {
                 message.error(`${err.response.data.message}`);
-            }); */
+            });
     };
 
     const [datePickers, setDatePickers] = useState(false);
@@ -361,7 +364,7 @@ const EditVoucher = (props) => {
                             Trở về
                         </Button>
                         {
-                            link === "" || ImgEdit === "" ? (
+                            link === "" && ImgEdit === "" ? (
                                 <Button type="primary" htmlType="submit" style={{ marginLeft: 30 }} disabled>Xác nhận</Button>
                             ) : (
                                 <Button type="primary" htmlType="submit" style={{ marginLeft: 30 }}>Xác nhận</Button>

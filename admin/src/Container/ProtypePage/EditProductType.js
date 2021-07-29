@@ -94,7 +94,7 @@ const EditProductType = (props) => {
         if (imageName !== "") {
             values['imgName'] = imageName.name;
         } else {
-            values['imgName'] = Type.imgName;
+            values['imgName'] = Type.tenhinh;
         }
         if (link !== "") {
             values['img'] = link;
@@ -105,6 +105,14 @@ const EditProductType = (props) => {
         catalog.updateProtype(values).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message)
+                if (link !== "") {
+                    const del = storage.ref(`ProductType_Img/${Type.tenhinh}`);
+                    del.delete().then((res) => {
+                        message.success("Đã xóa ảnh!");
+                    }).catch((error) => {
+                        console.log(error);
+                    });
+                }
                 localStorage.removeItem("type");
                 setTimeout(() => {
                     history.push('/danh-sach-loai');
@@ -114,7 +122,7 @@ const EditProductType = (props) => {
                 //message.error("Sửa thông tin thất bại")
                 message.error(res.data.message)
             }
-        }) 
+        })
             .catch(err => {
                 console.log(err.response);
                 message.error(`${err.response.data.message}`)
@@ -166,13 +174,7 @@ const EditProductType = (props) => {
 
     //xóa ảnh hiện tại để có thể tải ảnh mới lên firebase
     const deleteImg = () => {
-        const del = storage.ref(`ProductType_Img/${Type.tenhinh}`);
-        del.delete().then((res) => {
-            setImgEdit("");
-            message.success("Đã xóa ảnh!");
-        }).catch((error) => {
-            console.log(error);
-        });
+        setImgEdit("");
     }
 
     return (
@@ -214,7 +216,7 @@ const EditProductType = (props) => {
                 >
                     <Input />
                 </Form.Item>
-                <Form.Item   
+                <Form.Item
                     label="Ảnh loại sản phẩm"
                     rules={[{ required: false }]}
                 >
@@ -267,7 +269,7 @@ const EditProductType = (props) => {
                         Trở về
                     </Button>
                     {
-                        link === "" || ImgEdit === ""? (
+                        link === "" && ImgEdit === "" ? (
                             <Button type="primary" htmlType="submit" style={{ marginLeft: 30 }} disabled>Xác nhận</Button>
                         ) : (
                             <Button type="primary" htmlType="submit" style={{ marginLeft: 30 }}>Xác nhận</Button>

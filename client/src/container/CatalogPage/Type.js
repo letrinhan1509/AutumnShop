@@ -10,7 +10,7 @@ const keyType = (localStorage.getItem("keyType"));
 const Shirt = (props) => {
   const [ListProduct, setListProduct] = useState([]);
   const [ListFilter, setListFilter] = useState([]);
-  
+  console.log(keyType);
   useEffect(() => {
     //Lấy sản phẩm theo loại
     try {

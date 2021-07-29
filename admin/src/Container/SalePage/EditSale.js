@@ -49,7 +49,7 @@ const EditSale = (props) => {
 
     const back = () => {
         confirm({
-            title: 'Bạn muốn trở về trang danh sách voucher?',
+            title: 'Bạn muốn trở về trang danh sách Khuyến mãi?',
             okText: 'Trở về',
             okType: 'danger',
             cancelText: 'Không',
@@ -85,7 +85,7 @@ const EditSale = (props) => {
         }
         values["trangthai"] = title;
         console.log(values);
-        /* orders.updateStatus(values).then((res) => {
+        orders.updateStatus(values).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message)
                 localStorage.removeItem("order");
@@ -96,7 +96,7 @@ const EditSale = (props) => {
         })
             .catch(err => {
                 message.error(`${err.response.data.message}\n Cập nhật đơn hàng thất bại! `);
-            }) */
+            })
     };
     const [datePickers, setDatePickers] = useState(false);
     const changeDate = () => {

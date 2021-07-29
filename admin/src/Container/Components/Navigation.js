@@ -25,7 +25,7 @@ const Navigation = () => {
         <>
             <Menu
                 /* onClick={this.handleClick} */
-                style={{ width: 256, height: 'auto' }}
+                style={{ width: 256, minHeight: 600 }}
                 defaultSelectedKeys={['1']}
                 defaultOpenKeys={['sub3', 'sub2']}
                 mode="inline"

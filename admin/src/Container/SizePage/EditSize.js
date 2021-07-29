@@ -1,5 +1,5 @@
 import "Container/scss/addpro.scss";
-import { Button, Form, Input, message, Select } from "antd";
+import { Button, Form, Input, message, Select, Modal } from "antd";
 import React from 'react';
 import { Link, useHistory } from "react-router-dom";
 import SIZE from 'API_Call/Api_product/product';
@@ -11,7 +11,7 @@ const formItemLayout = {
             span: 22,
         },
         sm: {
-            span: 6,
+            span: 9,
         },
     },
     wrapperCol: {
@@ -39,12 +39,9 @@ const tailFormItemLayout = {
 const EditSize = (props) => {
     const [form] = Form.useForm();
     const history = useHistory();
+    const { confirm } = Modal;
     const Size = JSON.parse(localStorage.getItem("size"))
 
-    const back = ()=>{
-        localStorage.removeItem("size");
-        history.goBack();
-    }
 
     const register = (values) => {
         console.log(values)
@@ -59,7 +56,7 @@ const EditSize = (props) => {
             else {
                 message.error(res.data.message)
             }
-        }) 
+        })
             .catch(err => {
                 message.error(`${err.response.data.message}`)
             })
@@ -100,7 +97,23 @@ const EditSize = (props) => {
             ten: 'Nữ',
         }
     ];
-    
+
+    const back = () => {
+        confirm({
+            title: 'Bạn muốn trở về trang danh sách bảng size?',
+            okText: 'Trở về',
+            okType: 'danger',
+            cancelText: 'Không',
+            onOk() {
+                localStorage.removeItem("size");
+                history.push('/bang-size');
+            },
+            onCancel() {
+                console.log('Cancel');
+            },
+        });
+    };
+
     return (
         <div className="form-wrapper">
             <h2 style={{ textAlign: 'center' }}>SỬA THÔNG TIN SIZE QUẦN ÁO</h2>
@@ -111,13 +124,13 @@ const EditSize = (props) => {
                 name="register"
                 onFinish={register}
                 initialValues={{
-                    masize:`${Size.masize}`,
-                    size:`${Size.size}`,
-                    gioitinh:`${Size.gioitinh}`,
-                    cannangtu:`${Size.cannangtu}`,
-                    cannangden:`${Size.cannangden}`,
-                    chieucaotu:`${Size.chieucaotu}`,
-                    chieucaoden:`${Size.chieucaoden}`
+                    masize: `${Size.masize}`,
+                    size: `${Size.size}`,
+                    gioitinh: `${Size.gioitinh}`,
+                    cannangtu: `${Size.cannangtu}`,
+                    cannangden: `${Size.cannangden}`,
+                    chieucaotu: `${Size.chieucaotu}`,
+                    chieucaoden: `${Size.chieucaoden}`
                 }}
                 scrollToFirstError
                 className="register-form"
@@ -129,7 +142,7 @@ const EditSize = (props) => {
                     label="Mã size"
 
                 >
-                    <Input disabled />
+                    <Input style={{ width: 200 }} disabled />
                 </Form.Item>
                 <Form.Item
                     name="size"
@@ -142,12 +155,12 @@ const EditSize = (props) => {
                         },
                     ]}
                 >
-                    <Select>
+                    <Select style={{ width: 200 }}>
                         {size.map((item) => {
-                        return (
-                            <>
-                                <Option value={item.masize}>{item.tensize}</Option>
-                            </>
+                            return (
+                                <>
+                                    <Option value={item.masize}>{item.tensize}</Option>
+                                </>
                             )
                         })}
                     </Select>
@@ -157,12 +170,12 @@ const EditSize = (props) => {
                     id="gioitinh"
                     label="Giới tính"
                 >
-                    <Select>
+                    <Select style={{ width: 200 }}>
                         {gioitinh.map((item) => {
-                        return (
-                            <>
-                                <Option value={item.ma}>{item.ten}</Option>
-                            </>
+                            return (
+                                <>
+                                    <Option value={item.ma}>{item.ten}</Option>
+                                </>
                             )
                         })}
                     </Select>
@@ -178,7 +191,7 @@ const EditSize = (props) => {
                         },
                     ]}
                 >
-                    <Input style={{ width: 200 }} placeholder="Nhập số cân nặng"/>
+                    <Input style={{ width: 200 }} placeholder="Nhập số cân nặng" />
                 </Form.Item>
                 <Form.Item
                     name="cannangden"
@@ -191,7 +204,7 @@ const EditSize = (props) => {
                         },
                     ]}
                 >
-                    <Input style={{ width: 200 }} placeholder="Nhập số cân nặng"/>
+                    <Input style={{ width: 200 }} placeholder="Nhập số cân nặng" />
                 </Form.Item>
                 <Form.Item
                     name="chieucaotu"
@@ -204,7 +217,7 @@ const EditSize = (props) => {
                         },
                     ]}
                 >
-                    <Input style={{ width: 200 }} placeholder="Nhập chiều cao"/>
+                    <Input style={{ width: 200 }} placeholder="Nhập chiều cao" />
                 </Form.Item>
                 <Form.Item
                     name="chieucaoden"
@@ -217,11 +230,13 @@ const EditSize = (props) => {
                         },
                     ]}
                 >
-                    <Input style={{ width: 200 }} placeholder="Nhập chiều cao"/>
+                    <Input style={{ width: 200 }} placeholder="Nhập chiều cao" />
                 </Form.Item>
                 <Form.Item {...tailFormItemLayout}>
-                    <Link onClick={back} ><p style={{marginRight:"20px",}} className="ant-btn ant-btn-dashed ">Trở về</p></Link>
-                    <Button value="submit" type="primary" htmlType="submit">
+                    <Button className="ant-btn ant-btn-dashed " onClick={back} style={{ marginLeft: -30 }}>
+                        Trở về
+                    </Button>
+                    <Button value="submit" type="primary" htmlType="submit" style={{ marginLeft: 30 }}>
                         Xác nhận
                     </Button>
                 </Form.Item>

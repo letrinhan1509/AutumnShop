@@ -150,11 +150,11 @@ const AddSale = (props) => {
     const rowSelection = {
         onChange: (selectedRowKeys, selectedRows) => {
             proSelect = selectedRows;
-            
+
         },
         onSelect: (record, selected, selectedRows) => {
             console.log(record, selected, selectedRows);
-            
+
         },
         onSelectAll: (selectedRows, changeRows) => {
             console.log(changeRows);
@@ -199,6 +199,20 @@ const AddSale = (props) => {
             },
         });
     }
+    const back = () => {
+        confirm({
+            title: 'Bạn muốn trở về trang danh sách khuyến mãi?',
+            okText: 'Trở về',
+            okType: 'danger',
+            cancelText: 'Không',
+            onOk() {
+                history.push('/danh-sach-khuyen-mai');
+            },
+            onCancel() {
+                console.log('Cancel');
+            },
+        });
+    };
 
 
     return (
@@ -269,11 +283,9 @@ const AddSale = (props) => {
                                 </Radio.Group>
                             </Form.Item>
                             <Form.Item {...tailFormItemLayout}>
-                                <Link to={'/danh-sach-khuyen-mai'} >
-                                    <Button className="ant-btn ant-btn-dashed " htmlType="submit" style={{ marginLeft: -30 }}>
-                                        Trở về
-                                    </Button>
-                                </Link>
+                                <Button className="ant-btn ant-btn-dashed " onClick={back} style={{ marginLeft: -30 }}>
+                                    Trở về
+                                </Button>
                                 <Button type="primary" htmlType="submit" style={{ marginLeft: 30 }}>
                                     Thêm voucher
                                 </Button>
@@ -371,7 +383,6 @@ const AddSale = (props) => {
                                     ) : ("")
                                 }
                             </Row>
-
                         </Form>
                     </div>
                 </div>

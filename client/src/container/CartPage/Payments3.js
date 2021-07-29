@@ -27,7 +27,7 @@ const Payments3 = (props) => {
                 </Button>
               </Link>
             </div>
-            <img src="https://jerichochambers.com/wp-content/uploads/2016/06/paper-shopping-bags-white-background-51453600-1.jpg" alt="empty" />
+            <img src="https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/Voucher_img%2FPayment3.jpg?alt=media&token=3b735f98-bc98-4501-b87b-e2138849e5b8" alt="empty" />
           </div>
         </div>
       </Layout>

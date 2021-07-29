@@ -36,7 +36,7 @@ const EditAccount = (props) => {
     const [imageName, setImageName] = useState("");
     const [fileList, setFileList] = useState([]);
     const [link, setLink] = useState("");
-    
+
     const beforeUpload = file => {
         setFileList(fileList.concat(file));
         return false;
@@ -79,13 +79,8 @@ const EditAccount = (props) => {
     };
     //xóa ảnh đã có để tải ảnh mới lên firebase
     const deleteImg = () => {
-        const del = storage.ref(`User_Img/${user.tenhinh}`);
-        del.delete().then((res) => {
-            setImgEdit("");
-            message.success("Đã xóa ảnh!");
-        }).catch((error) => {
-            console.log(error);
-        });
+        setImgEdit("");
+
     }
     const update = (values) => {
         values['manv'] = user.manv;
@@ -103,6 +98,14 @@ const EditAccount = (props) => {
         admin.updateInfo(values).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message)
+                if (link !== "") {
+                    const del = storage.ref(`User_Img/${user.tenhinh}`);
+                    del.delete().then((res) => {
+                        message.success("Đã xóa ảnh!");
+                    }).catch((error) => {
+                        console.log(error);
+                    });
+                }
                 localStorage.removeItem("user");
                 localStorage.setItem('user', JSON.stringify(res.data.admin));
                 setTimeout(() => {
@@ -135,87 +138,97 @@ const EditAccount = (props) => {
                                     <Spin className="spin" size="large" />
                                 </Row>
                             ) : (
-                                <Form
-                                    name="update"
-                                    onFinish={update}
-                                    initialValues={{
-                                        tennv: `${user.tennv}`,
-                                        email: `${user.admin}`,
-                                        phone: `${user.sodienthoai}`,
-                                        diachi: `${user.diachi}`,
-                                        permission: `${user.quyen}`,
-                                    }}
-                                    scrollToFirstError
-                                >
-                                    <h1 className="user-title">Chỉnh sửa thông tin</h1>
-                                    <Row className="img_account">
-                                        {link !== "" ? (
-                                            <Image
-                                                width={150}
-                                                src={link}
-                                            />
-                                        ) : (ImgEdit === "" ? (<span>Tài khoản chưa có ảnh !</span>) : (<Image src={user.hinh} width={120} />)
-                                        )}
-                                        <Button type="danger" onClick={deleteImg}>Xóa ảnh</Button>
-                                    </Row>
-                                    <Form.Item
-                                        name="hinh"
-                                        label="Ảnh nhân viên"
-                                        valuePropName="fileList"
-                                        getValueFromEvent={normFile}
-                                        className="load-img"
-                                    >
-                                        <Upload
-                                            listType="picture"
-                                            name='hinh'
-                                            multiple='true'
-                                            beforeUpload={beforeUpload}
-                                            onChange={handleChange}
-                                            onRemove={onRemove}
-                                            fileList
-                                        >
+                                <>
+
+                                    <Row className="title-box">
+                                        <h1 className="user-title">Chỉnh sửa thông tin</h1>
+                                        <Col className="img-box">
                                             {link !== "" ? (
-                                                <Button disabled icon={<UploadOutlined />} >Tải ảnh lên</Button>
-                                            ) : (<Button icon={<UploadOutlined />} >Tải ảnh lên</Button>)}
-                                        </Upload>
-                                    </Form.Item>
-                                    <Form.Item
-                                        name="tennv"
-                                        id="tennv"
-                                        label="Tên nhân viên"
+                                                <Image
+                                                    src={link}
+                                                />
+                                            ) : (ImgEdit === "" ? (<span>Tài khoản chưa có ảnh !</span>) : (<Image src={user.hinh} />)
+                                            )}
+                                        </Col>
+                                        {link !== "" ? ("") : (ImgEdit === "" ? ("") : (<Button type="danger" onClick={deleteImg}>Xóa ảnh</Button>))}
+                                        
+                                    </Row>
+                                    <Form
+                                        name="update"
+                                        onFinish={update}
+                                        initialValues={{
+                                            tennv: `${user.tennv}`,
+                                            email: `${user.admin}`,
+                                            phone: `${user.sodienthoai}`,
+                                            diachi: `${user.diachi}`,
+                                            permission: `${user.quyen}`,
+                                        }}
+                                        scrollToFirstError
                                     >
-                                        <Input placeholder="User name" />
-                                    </Form.Item>
-                                    <Form.Item
-                                        name="email"
-                                        id="email"
-                                        label="Email"
-                                    >
-                                        <Input placeholder="email" disabled />
-                                    </Form.Item>
-                                    <Form.Item
-                                        name="phone"
-                                        id="phone"
-                                        label="Số điện thoại"
-                                    >
-                                        <Input placeholder="Số điện thoại" />
-                                    </Form.Item>
-                                    <Form.Item
-                                        name="diachi"
-                                        id="diachi"
-                                        label="Địa chỉ"
-                                    >
-                                        <Input placeholder="Địa chỉ" />
-                                    </Form.Item>
-                                    <Form.Item
-                                        name="permission"
-                                        id="permission"
-                                        label="Quyền hạn"
-                                    >
-                                        <Input placeholder="Quyền hạn" disabled />
-                                    </Form.Item>
-                                    <Button value="submit" type="primary" htmlType="submit">Cập nhật</Button>
-                                </Form>
+                                        <Form.Item
+                                            name="hinh"
+                                            label="Ảnh nhân viên"
+                                            valuePropName="fileList"
+                                            getValueFromEvent={normFile}
+                                            className="load-img"
+                                        >
+                                            <Upload
+                                                listType="picture"
+                                                name='hinh'
+                                                multiple='true'
+                                                beforeUpload={beforeUpload}
+                                                onChange={handleChange}
+                                                onRemove={onRemove}
+                                                fileList
+                                            >
+                                                {link !== "" || ImgEdit !== "" ? (
+                                                    <Button disabled icon={<UploadOutlined />} >Tải ảnh lên</Button>
+                                                ) : (<Button icon={<UploadOutlined />} >Tải ảnh lên</Button>)}
+                                            </Upload>
+                                        </Form.Item>
+                                        <Form.Item
+                                            name="tennv"
+                                            id="tennv"
+                                            label="Tên nhân viên"
+                                        >
+                                            <Input placeholder="User name" />
+                                        </Form.Item>
+                                        <Form.Item
+                                            name="email"
+                                            id="email"
+                                            label="Email"
+                                        >
+                                            <Input placeholder="email" disabled />
+                                        </Form.Item>
+                                        <Form.Item
+                                            name="phone"
+                                            id="phone"
+                                            label="Số điện thoại"
+                                        >
+                                            <Input placeholder="Số điện thoại" />
+                                        </Form.Item>
+                                        <Form.Item
+                                            name="diachi"
+                                            id="diachi"
+                                            label="Địa chỉ"
+                                        >
+                                            <Input placeholder="Địa chỉ" />
+                                        </Form.Item>
+                                        <Form.Item
+                                            name="permission"
+                                            id="permission"
+                                            label="Quyền hạn"
+                                        >
+                                            <Input placeholder="Quyền hạn" disabled />
+                                        </Form.Item>
+                                        { link === "" && ImgEdit === "" ? (
+                                            <Button value="submit" type="primary" htmlType="submit" disabled>Cập nhật</Button>
+                                        ) : (
+                                            <Button value="submit" type="primary" htmlType="submit">Cập nhật</Button>
+                                        )}
+                                        
+                                    </Form>
+                                </>
                             )}
                         </Col>
                     </Row>

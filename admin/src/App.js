@@ -75,7 +75,7 @@ function App() {
             <Router>
               <Layout>
                 <HeaderPage />
-                <Row className="content-box" style={{ minHeight: 750 }, { marginTop: 64 }}>
+                <Row className="content-box" style={{ minHeight: 800 }, { marginTop: 64 }}>
                   <Col className="aa" offset={2} span={18} push={1} width={'100%'}>
                     <Content className="content-wrapper">
                       <Route exact path="/">
@@ -97,7 +97,7 @@ function App() {
         ) : (<Router>
           <Layout>
             <HeaderPage />
-            <Row className="content-box" style={{ minHeight: 750 }, { marginTop: 64 }}>
+            <Row className="content-box" style={{ minHeight: 900 }, { marginTop: 64 }}>
               <Col>
                 <Navigation />
               </Col>

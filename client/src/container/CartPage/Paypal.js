@@ -9,11 +9,6 @@ export default function Paypal(props) {
     const history = useHistory();
     console.log(props.order);
     let coin = 0;
-    if (props.voucher !== null) {
-        coin = ((props.ship + Number(props.PriceCart) - Number(props.voucher.giagiam)) / 23000).toFixed(2);
-    } else {
-        coin = ((props.ship + Number(props.PriceCart)) / 23000).toFixed(2);
-    }
     const payment = JSON.parse(localStorage.getItem("payment"));
 
     useEffect(() => {

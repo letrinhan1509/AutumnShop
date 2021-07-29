@@ -82,33 +82,45 @@
 
                 .size-color {
                     margin-top: 30px;
-                    .box-one {
-                        margin-bottom: 20px;
-                        .select-color {
-                            width: 30px;
-                            height: 30px;
-                            border-radius: 15px;
-                            margin-right: 10px;
-                            border: 2px solid #ddd;
-                            outline: none;
+                    display: flex;
+                    justify-content: space-between;
+                    .size-color-wrapper{
+                        .one {
+                            margin-bottom: 20px;
+                            .select-color {
+                                width: 30px;
+                                height: 30px;
+                                border-radius: 15px;
+                                margin-right: 10px;
+                                border: 2px solid #ddd;
+                                outline: none;
+                            }
+                            span {
+                                margin-right: 10px;
+                                font-weight: 600;
+                            }
                         }
-                        span {
-                            margin-right: 10px;
-                            font-weight: 600;
+                        .two {
+                            span {
+                                margin-right: 20px;
+                                font-weight: 600;
+                            }
+                        }
+                        .three{
+                            margin-top: 20px;
+                            width: 280px;
                         }
                     }
-                    .box-two {
-                        span {
-                            margin-right: 20px;
-                            font-weight: 600;
-                        }
+                    .check-size{
+
+                        
                     }
                     &::after {
                         position: absolute;
                         content: "";
                         height: 2px;
                         width: 500px;
-                        margin-top: 20px;
+                        margin-top: 240px;
                         background-color: rgb(245, 245, 245);
                     }
                 }

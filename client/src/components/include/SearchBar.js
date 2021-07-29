@@ -50,10 +50,11 @@ const SearchBar = (props) => {
         }
     }
 
-    function xoaWord() {
+    function xoaWord(value) {
         setWordSearch("");
         setHidden(false);
         setVisible(false);
+        localStorage.setItem('detail', JSON.stringify(value));
     }
 
 
@@ -71,8 +72,9 @@ const SearchBar = (props) => {
                                 <div className="dropList" >
                                     {
                                         visible ? filterItems(wordData, wordSearch).map(value => {
+                                            console.log(value)
                                             return (
-                                                <Link to={`/san-pham/chi-tiet-san-pham/${value.masp}`} onClick={xoaWord}>
+                                                <Link to={`/san-pham/chi-tiet-san-pham/${value.masp}`} onClick={() => xoaWord(value)}>
                                                     <div className="box_link">
                                                         <div className="link-item" key={value.masp}>
                                                             <img src={value.hinh} />

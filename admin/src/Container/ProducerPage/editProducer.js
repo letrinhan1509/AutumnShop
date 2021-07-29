@@ -1,4 +1,4 @@
-import { Button, Form, Input, message } from "antd";
+import { Button, Form, Input, message, Modal } from "antd";
 import React from 'react';
 import { Link, useHistory } from "react-router-dom";
 import "Container/scss/addpro.scss";
@@ -38,11 +38,24 @@ const tailFormItemLayout = {
 const EditProducer = (props) => {
     const [form] = Form.useForm();
     const history = useHistory();
+    const { confirm } = Modal;
     const Producer = JSON.parse(localStorage.getItem("producer"))
 
     const back = () => {
-        localStorage.removeItem("producer");
-        history.goBack();
+        confirm({
+            title: 'Bạn muốn trở về trang danh sách nhà sản xuất?',
+            okText: 'Trở về',
+            okType: 'danger',
+            cancelText: 'Không',
+            onOk() {
+                localStorage.removeItem("producer");
+                history.push('/danh-sach-nha-sx');
+            },
+            onCancel() {
+                console.log('Cancel');
+            },
+        });
+
     }
 
     const update = (values) => {

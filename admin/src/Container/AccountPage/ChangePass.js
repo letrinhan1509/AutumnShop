@@ -62,7 +62,7 @@ const ChangePass = (props) => {
                                     onFinish={update}
                                     scrollToFirstError
                                     initialValues={{
-                                        email: `${user.email}`
+                                        email: `${user.admin}`
                                     }}
                                 >
                                     <h1 className="user-title">Thay đổi mật khẩu</h1>

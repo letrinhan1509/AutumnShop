@@ -17,6 +17,8 @@
             }
         }
         .SearchResult {
+            margin-bottom: 20px;
+            
             p {
                 font-size: 1.5em;
                 font-weight: 700;
@@ -115,9 +117,14 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    
     h1 {
-        font-size: 3em;
-        font-weight: 400;
+        font-size: 2em;
+        font-weight: 700;
+        box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.4);
+        border-radius: 10px;
+        padding: 20px;
+        text-transform: uppercase;
     }
     img {
         width: 700px;

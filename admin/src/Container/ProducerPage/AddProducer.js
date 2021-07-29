@@ -1,4 +1,4 @@
-import { Button, Form, Input, message } from 'antd';
+import { Button, Form, Input, message, Modal } from 'antd';
 import producer from 'API_Call/Api_producer/producer';
 import React from 'react';
 import { Link, useHistory } from "react-router-dom";
@@ -30,7 +30,7 @@ const tailFormItemLayout = {
 const AddProducer = (props) => {
     const [form] = Form.useForm();
     const history = useHistory();
-
+    const { confirm } = Modal;
     const addProducer = (values) => {
         console.log(values);
         producer.addProducer(values).then((res) => {
@@ -43,6 +43,20 @@ const AddProducer = (props) => {
                 console.log(err.response);
                 message.error(`${err.response.data.message}`)
             })
+    };
+    const back = () => {
+        confirm({
+            title: 'Bạn muốn trở về trang danh sách nhà sản xuất?',
+            okText: 'Trở về',
+            okType: 'danger',
+            cancelText: 'Không',
+            onOk() {
+                history.push('/danh-sach-nha-sx');
+            },
+            onCancel() {
+                console.log('Cancel');
+            },
+        });
     };
 
     return (
@@ -97,11 +111,9 @@ const AddProducer = (props) => {
                         <Input />
                     </Form.Item>
                     <Form.Item {...tailFormItemLayout}>
-                        <Link to={'/danh-sach-nha-sx'} >
-                            <Button className="ant-btn ant-btn-dashed " htmlType="submit" style={{ marginLeft: -30 }}>
-                                Trở về
-                            </Button>
-                        </Link>
+                        <Button className="ant-btn ant-btn-dashed " onClick={back} style={{ marginLeft: -30 }}>
+                            Trở về
+                        </Button>
                         <Button type="primary" htmlType="submit" style={{ marginLeft: 30 }}>
                             Thêm nhà sản xuất
                         </Button>

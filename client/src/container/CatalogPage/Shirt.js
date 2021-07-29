@@ -214,7 +214,6 @@ const Shirt = (props) => {
             <Row className="btn-box">
               {
                 visible < ListProduct.length ? (
-
                   <Col>
                     <Button
                       id="load"

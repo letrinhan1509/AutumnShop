@@ -1,4 +1,4 @@
-import { Button, Form, Input, message, Select } from 'antd';
+import { Button, Form, Input, message, Select, Modal } from 'antd';
 import React from 'react';
 import { Link, useHistory } from "react-router-dom";
 import "Container/scss/addpro.scss";
@@ -8,7 +8,7 @@ const { Option } = Select;
 const formItemLayout = {
     labelCol: {
         xs: { span: 22 },
-        sm: { span: 6 },
+        sm: { span: 9 },
     },
     wrapperCol: {
         xs: { span: 20 },
@@ -18,7 +18,7 @@ const formItemLayout = {
 const tailFormItemLayout = {
     wrapperCol: {
         xs: {
-            span: 22,
+            span: 24,
             offset: 0,
         },
         sm: {
@@ -30,7 +30,7 @@ const tailFormItemLayout = {
 
 
 const AddSize = (props) => {
-
+    const { confirm } = Modal;
     const [form] = Form.useForm();
     const history = useHistory();
     /* const [listSize, setListSize] = useState([]);
@@ -42,7 +42,7 @@ const AddSize = (props) => {
 
     const addSize = (values) => {
         SIZE.addSize(values).then((res) => {
-            if(res.data.status === "Success") {
+            if (res.data.status === "Success") {
                 message.success(res.data.message)
                 setTimeout(() => {
                     history.push('/bang-size');
@@ -90,6 +90,21 @@ const AddSize = (props) => {
         }
     ];
 
+    const back = () => {
+        confirm({
+            title: 'Bạn muốn trở về trang danh sách bảng size?',
+            okText: 'Trở về',
+            okType: 'danger',
+            cancelText: 'Không',
+            onOk() {
+                history.push('/bang-size');
+            },
+            onCancel() {
+                console.log('Cancel');
+            },
+        });
+    };
+
     return (
         <>
             <div className="form-wrapper">
@@ -104,18 +119,18 @@ const AddSize = (props) => {
                     <Form.Item
                         name="size"
                         label="Size"
-                        /* rules={[
-                            {
-                                type: 'string',
-                                message: 'Mã loại sản phẩm không được để trống!',
-                            },
-                            {
-                                required: true,
-                                message: 'Điền mã loại sảm phẩm',
-                            },
-                        ]} */
+                    /* rules={[
+                        {
+                            type: 'string',
+                            message: 'Mã loại sản phẩm không được để trống!',
+                        },
+                        {
+                            required: true,
+                            message: 'Điền mã loại sảm phẩm',
+                        },
+                    ]} */
                     >
-                        <Select style={{ width: 150 }}>
+                        <Select style={{ width: 200 }}>
                             {size.map((item) => {
                                 return (
                                     <>
@@ -130,7 +145,7 @@ const AddSize = (props) => {
                         label="Giới tính"
                     //rules={[{ required: true, message: 'Chọn mã loại!' }]}
                     >
-                        <Select style={{ width: 150 }}>
+                        <Select style={{ width: 200 }}>
                             {gioitinh.map((item) => {
                                 return (
                                     <>
@@ -150,7 +165,7 @@ const AddSize = (props) => {
                             },
                         ]}
                     >
-                        <Input style={{ width: 200 }} placeholder="Nhập số cân nặng"/>
+                        <Input style={{ width: 200 }} placeholder="Nhập số cân nặng" />
                     </Form.Item>
                     <Form.Item
                         name="cannangden"
@@ -162,7 +177,7 @@ const AddSize = (props) => {
                             },
                         ]}
                     >
-                        <Input style={{ width: 200 }} placeholder="Nhập số cân nặng"/>
+                        <Input style={{ width: 200 }} placeholder="Nhập số cân nặng" />
                     </Form.Item>
                     <Form.Item
                         name="chieucaotu"
@@ -174,7 +189,7 @@ const AddSize = (props) => {
                             },
                         ]}
                     >
-                        <Input style={{ width: 200 }} placeholder="Nhập chiều cao"/>
+                        <Input style={{ width: 200 }} placeholder="Nhập chiều cao" />
                     </Form.Item>
                     <Form.Item
                         name="chieucaoden"
@@ -186,15 +201,13 @@ const AddSize = (props) => {
                             },
                         ]}
                     >
-                        <Input style={{ width: 200 }} placeholder="Nhập chiều cao"/>
+                        <Input style={{ width: 200 }} placeholder="Nhập chiều cao" />
                     </Form.Item>
                     <Form.Item {...tailFormItemLayout}>
-                        <Link to={'/bang-size'} >
-                            <Button className="ant-btn ant-btn-dashed " htmlType="submit" style={{ marginLeft: -30 }}>
-                                Trở về
-                            </Button>
-                        </Link>
-                        <Button type="primary" htmlType="submit" style={{marginLeft: 30}}>
+                        <Button className="ant-btn ant-btn-dashed " onClick={back} style={{ marginLeft: -30 }}>
+                            Trở về
+                        </Button>
+                        <Button type="primary" htmlType="submit" style={{ marginLeft: 30 }}>
                             Thêm size
                         </Button>
                     </Form.Item>

@@ -80,6 +80,7 @@ const EditProduct = (props) => {
                         .then(url => {
                             console.log("ulr:", url);
                             setLink(url);
+                            setImgEdit(url);
                             setImageName(fileList[0]);
                             setFileList([]);
                         });
@@ -105,9 +106,9 @@ const EditProduct = (props) => {
     const back = () => {
         confirm({
             title: 'Bạn muốn trở về trang danh sách sản phẩm?',
-            okText: 'Xóa',
+            okText: 'Trở về',
             okType: 'danger',
-            cancelText: 'Trở về',
+            cancelText: 'Không',
             onOk() {
                 if (link !== "") {
                     localStorage.removeItem("product");
@@ -132,7 +133,7 @@ const EditProduct = (props) => {
         if (imageName !== "") {
             values['imgName'] = imageName.name;
         } else {
-            values['imgName'] = ProductEdit.imgName;
+            values['imgName'] = ProductEdit.tenhinh;
         }
         if (link !== "") {
             values['img'] = link;
@@ -140,9 +141,17 @@ const EditProduct = (props) => {
             values['img'] = ProductEdit.hinh;
         }
         console.log(values);
-        /* product.updatePro(values).then((res) => {
+        product.updatePro(values).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message)
+                if (link !== "") {
+                    const del = storage.ref(`Product_Img/${ProductEdit.tenhinh}`);
+                    del.delete().then((res) => {
+                        message.success("Đã xóa ảnh!");
+                    }).catch((error) => {
+                        console.log(error);
+                    });
+                }
                 localStorage.removeItem("product");
                 setTimeout(() => {
                     history.push('/tat-ca-san-pham');
@@ -151,7 +160,7 @@ const EditProduct = (props) => {
         })
             .catch(err => {
                 message.error(`Lỗi...! Sửa sản phẩm thất bại!\n ${err.response.data.message}`);
-            }) */
+            })
     };
 
 
@@ -179,13 +188,7 @@ const EditProduct = (props) => {
 
     //xóa ảnh đã có để tải ảnh mới lên firebase
     const deleteImg = () => {
-        const del = storage.ref(`Product_Img/${ProductEdit.imgName}`);
-        del.delete().then((res) => {
-            setImgEdit("");
-            message.success("Đã xóa ảnh!");
-        }).catch((error) => {
-            console.log(error);
-        });
+        setImgEdit("");
     }
 
 
@@ -430,7 +433,7 @@ const EditProduct = (props) => {
                         Trở về
                     </Button>
                     {
-                        link === "" || ImgEdit === ""? (
+                        link === "" && ImgEdit === "" ? (
                             <Button type="primary" htmlType="submit" style={{ marginLeft: 30 }} disabled>Xác nhận</Button>
                         ) : (
                             <Button type="primary" htmlType="submit" style={{ marginLeft: 30 }}>Xác nhận</Button>

@@ -30,6 +30,11 @@ const product = {
         const url = `/nha-san-xuat/${id}`;
         return AxiosProduct.get(url);
     },
+    //(check size)
+    getChecksize: (values) => {
+        const url = `/check-size`;
+        return AxiosProduct.post(url, values);
+    },
 };
 
 export default product;

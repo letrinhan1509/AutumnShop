@@ -25,11 +25,13 @@ const HeaderPage = (props) => {
     const handClick2 = (e) => {
         localStorage.setItem('keyDM', e.key);
         history.push(`/san-pham/${e.key}`);
+        window.location.reload();
     }
     const handClick3 = (e) => {   
         localStorage.setItem('keyType', e.maloai);
         setTimeout(() => { 
             history.push(`/san-pham/theo-loai`);
+            window.location.reload();
         }, 1);
           
         

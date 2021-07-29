@@ -1,4 +1,4 @@
-import { Col, Layout, Row, Rate, Statistic, Select, Button, Card, Carousel, Tabs, Comment, Tooltip, List, Form, Input, Avatar, message } from "antd";
+import { Col, Layout, Row, Rate, Statistic, Select, Button, Card, Carousel, Tabs, Comment, Tooltip, List, Form, Input, Avatar, message, Radio } from "antd";
 import moment from 'moment';
 import { ShoppingCartOutlined, HeartOutlined, FacebookOutlined, TwitterOutlined } from '@ant-design/icons';
 import React, { createContext, useState, useEffect } from 'react';
@@ -229,6 +229,30 @@ const Select_Product = (props) => {
         }
 
     }; */
+    const [title, setTitle] = useState("Nam");
+    const [check, setCheck] = useState("");
+    const selectTitle = (e) => {
+        setTitle(e.target.value);
+        console.log(title);
+    };
+
+    const findSize = (values) => {
+        values["gioitinh"] = title;
+        console.log(values);
+        PRODUCT.getChecksize(values).then((res) => {
+            if (res.data.status === "Success") {
+                message.success(res.data.message);
+                setCheck(res.data.message);
+                console.log(res.data);
+            } else {
+                message.error(res.data.message)
+            }
+        })
+            .catch(err => {
+                console.log(err.response);
+                message.error(`ERROR !\n ${err.response.data.message}`)
+            })
+    };
 
 
 
@@ -275,39 +299,77 @@ const Select_Product = (props) => {
                                 </Row>
                             </div>
                             <div className="size-color">
-                                <Row className="box-one">
-                                    <Col>
-                                        <span>Select Color</span>
-                                    </Col>
-                                    <Col>
-                                        {
-                                            product.map((items) => {
-                                                return (
-                                                    <div >
-                                                        {items.color.map((item) => {
-                                                            return (
-                                                                <button className="select-color" style={{ background: item }}></button>
-                                                            );
-                                                        })}
-                                                    </div>
-                                                );
-                                            })
-                                        }
-                                    </Col>
-                                </Row>
-                                <Row className="box-two">
-                                    <Col>
-                                        <span>Size</span>
-                                    </Col>
-                                    <Col>
-                                        <Select defaultValue="S" style={{ width: 120 }} onChange={Changecolor}>
-                                            <Option value="S">S</Option>
-                                            <Option value="M">M</Option>
-                                            <Option value="L">L</Option>
-                                            <Option value="XL">XL</Option>
-                                        </Select>
-                                    </Col>
-                                </Row>
+                                <Col className="size-color-wrapper">
+                                    <Row className="one">
+                                        <Col>
+                                            <span>Select Color</span>
+                                        </Col>
+                                        <Col>
+                                            {
+                                                product.map((items) => {
+                                                    return (
+                                                        <div >
+                                                            {items.color.map((item) => {
+                                                                return (
+                                                                    <button className="select-color" style={{ background: item }}></button>
+                                                                );
+                                                            })}
+                                                        </div>
+                                                    );
+                                                })
+                                            }
+                                        </Col>
+                                    </Row>
+                                    <Row className="two">
+                                        <Col>
+                                            <span>Size</span>
+                                        </Col>
+                                        <Col>
+                                            <Select defaultValue="S" style={{ width: 120 }} onChange={Changecolor}>
+                                                <Option value="S">S</Option>
+                                                <Option value="M">M</Option>
+                                                <Option value="L">L</Option>
+                                                <Option value="XL">XL</Option>
+                                            </Select>
+                                        </Col>
+                                    </Row>
+                                    <Row className="three">
+                                        <p>{check}</p>
+                                    </Row>
+                                </Col>
+                                <Col className="check-size">
+                                     <Form
+                                        name="basic"
+                                        initialValues={{ remember: true }}
+                                        onFinish={findSize}
+                                        >
+                                            <Form.Item
+                                                label="Chiều cao"
+                                                name="chieucao"
+                                                rules={[{ required: true, message: 'Vui lòng nhập chiều cao!' }]}
+                                            >
+                                                <Input style={{ width: 100 }}/>
+                                            </Form.Item>
+                                            <Form.Item
+                                                label="Cân nặng"
+                                                name="cannang"
+                                                rules={[{ required: true, message: 'Vui lòng nhập cân nặng!' }]}
+                                            >
+                                                <Input style={{ width: 100 }}/>
+                                            </Form.Item>
+                                            <Form.Item
+                                                label="Giới tính"
+                                            >
+                                                <Radio.Group onChange={selectTitle} value={title}>
+                                                    <Radio value="Nam">Nam</Radio>
+                                                    <Radio value="Nữ">Nữ</Radio>
+                                                </Radio.Group>
+                                            </Form.Item>
+                                            <Form.Item >
+                                                <Button type="primary" htmlType="submit">Tìm size</Button>
+                                            </Form.Item>
+                                        </Form>
+                                </Col>
                             </div>
                             <div className="add-cart">
                                 <Row>
