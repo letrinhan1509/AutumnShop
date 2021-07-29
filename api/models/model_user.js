@@ -21,7 +21,7 @@ exports.checkEmail = (email) => {
     //Danh sách khách hàng
 exports.list = () => {
     return new Promise( (hamOK, hamLoi) => {
-        let sql = 'SELECT makh, tenkh, email, sodienthoai, diachi, trangthai FROM khachhang'
+        let sql = 'SELECT makh, tenkh, email, tenhinh, hinh, sodienthoai, diachi, trangthai FROM khachhang'
         db.query(sql, (err, result) => {
             if(err){
                 hamLoi(err);
@@ -34,7 +34,7 @@ exports.list = () => {
     // Lọc khách hàng theo tên:
 exports.detailByName = (nameUser) => {
     return new Promise( (hamOK, hamLoi) => {
-        let sql = `SELECT tenkh, email, sodienthoai, diachi FROM khachhang WHERE tenkh LIKE '${nameUser}'`;
+        let sql = `SELECT tenkh, email, tenhinh, hinh, sodienthoai, diachi FROM khachhang WHERE tenkh LIKE '${nameUser}'`;
         db.query(sql, (err, result) => {
             console.log('User Success!');
             hamOK(result[0]);
@@ -44,7 +44,7 @@ exports.detailByName = (nameUser) => {
     // Lọc khách hàng theo ID:
 exports.get_By_Id = (userId) => {
     return new Promise( (hamOK, hamLoi) => {
-        let sql = `SELECT makh, tenkh, email, sodienthoai, diachi, trangthai FROM khachhang WHERE makh='${userId}'`;
+        let sql = `SELECT makh, tenkh, email, tenhinh, hinh, sodienthoai, diachi, trangthai FROM khachhang WHERE makh='${userId}'`;
         db.query(sql, (err, result) => {
             if(err){
                 hamLoi(err);
@@ -74,31 +74,15 @@ exports.insert_User = (data) => {
         })
     })
 }
-    // Cập nhật profile khách hàng có thay đổi hình
-exports.updateProfileUser = (email, ten, hinh, sdt, diachi) => {
+    // Cập nhật thông tin khách hàng
+exports.updateProfile = (email, ten, tenhinh, hinh, sdt, diachi) => {
     return new Promise( (hamOK, hamLoi) => {
-        let sql = `UPDATE khachhang SET tenkh = '${ten}', hinh = '${hinh}', sodienthoai = '${sdt}', diachi = '${diachi}' 
+        let sql = `UPDATE khachhang SET tenkh = '${ten}', tenhinh = '${tenhinh}', hinh = '${hinh}', sodienthoai = '${sdt}', diachi = '${diachi}' 
         WHERE email = '${email}'`;
         db.query(sql, (err, result) => {
             if(err)
                 hamLoi(err);
             else {
-                console.log('Update success');
-                hamOK("Sửa thông tin tài khoản thành công !");
-            };
-        });
-    });
-}
-    // Cập nhật thông tin khách hàng không thay đổi hình
-exports.updateProfile = (email, ten, sdt, diachi) => {
-    return new Promise( (hamOK, hamLoi) => {
-        let sql = `UPDATE khachhang SET tenkh = '${ten}', sodienthoai = '${sdt}', diachi = '${diachi}' 
-        WHERE email = '${email}'`;
-        db.query(sql, (err, result) => {
-            if(err)
-                hamLoi(err);
-            else {
-                console.log('Update success');
                 hamOK("Sửa thông tin tài khoản thành công !");
             };
         });

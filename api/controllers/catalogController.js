@@ -187,7 +187,7 @@ exports.putEditCategory = catchAsync(async (req, res, next) => {
             });
         } else {
             const CategoryName = await modelCatalog.get_Category_Name(tendm);
-            if(CategoryName == -1) {
+            if(CategoryName == -1 || madm === CategoryName.madm) {
                 let query = await modelCatalog.update_category(madm, tendm, tenhinh, hinh);
                 return res.status(200).json({ 
                     status: "Success", 
@@ -210,27 +210,39 @@ exports.putEditCategory = catchAsync(async (req, res, next) => {
 });
 // Cập nhật loại sản phẩm
 exports.putEditType = catchAsync(async (req, res, next) => {
-    let maloai = req.body.maloai;
-    let ten = req.body.tenloai;
-    let madm = req.body.madm;
-    let tenhinh = req.body.imgName;
-    let hinh = req.body.img;
-    if(!maloai || !ten || !tenhinh || !hinh || !madm) {
-        return res.status(400).json({ 
-            status: "Fail", 
-            message: "Thiếu thông tin, vui lòng nhập đầy đủ thông tin !" 
-        });
-    };
-    const typeName = await modelCatalog.get_Type_Name(ten);
-    if(ten == typeName.tenloai) {
-        return res.status(400).json({ 
-            status: "Fail", 
-            message: "Trùng tên loại, vui lòng nhập tên khác !" 
-        });
-    };
     try {
-        let query = await modelCatalog.update_Type(maloai, ten, tenhinh, hinh, madm);
-        return res.status(200).json({ status: "Success", message: query });
+        let maloai = req.body.maloai;
+        let ten = req.body.tenloai;
+        let madm = req.body.madm;
+        let tenhinh = req.body.imgName;
+        let hinh = req.body.img;
+        if(!maloai || !ten || !tenhinh || !hinh || !madm) {
+            return res.status(400).json({ 
+                status: "Fail", 
+                message: "Thiếu thông tin, vui lòng nhập đầy đủ thông tin !" 
+            });
+        };
+        const typeExist = await modelCatalog.get_Type_Id(maloai);
+        if(typeExist == -1) {
+            return res.status(400).json({ 
+                status: "Fail", 
+                message: "Không tìm thấy loại sản phẩm này, vui lòng kiểm tra lại !" 
+            });
+        } else {
+            const typeName = await modelCatalog.get_Type_Name(ten);
+            if(typeName == -1 || maloai === typeName.maloai) {
+                let query = await modelCatalog.update_Type(maloai, ten, tenhinh, hinh, madm);
+                return res.status(200).json({ 
+                    status: "Success", 
+                    message: query 
+                }); 
+            } else {
+                return res.status(400).json({ 
+                    status: "Fail", 
+                    message: "Trùng tên loại, vui lòng nhập tên khác !" 
+                });
+            }
+        }
     } catch (error) {
         return res.status(400).json({ 
             status: "Fail", 

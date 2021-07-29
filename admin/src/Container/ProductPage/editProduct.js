@@ -130,6 +130,7 @@ const EditProduct = (props) => {
     }
 
     const update = (values) => {
+        values['masp'] = ProductEdit.masp;
         if (imageName !== "") {
             values['imgName'] = imageName.name;
         } else {
@@ -159,7 +160,7 @@ const EditProduct = (props) => {
             }
         })
             .catch(err => {
-                message.error(`Lỗi...! Sửa sản phẩm thất bại!\n ${err.response.data.message}`);
+                message.error(`Sửa sản phẩm thất bại!\n ${err.response.data.message}`);
             })
     };
 
@@ -207,6 +208,11 @@ const EditProduct = (props) => {
             key: 3,
             masize: 'L',
             tensize: 'L',
+        },
+        {
+            key: 4,
+            masize: 'XL',
+            tensize: 'XL',
         }
     ];
     const mau = [
@@ -249,14 +255,14 @@ const EditProduct = (props) => {
                     gia: `${ProductEdit.gia}`,
                     mota: `${ProductEdit.mota}`,
                     trangthai: `${ProductEdit.trangthai}`,
-                    mansx: `${ProductEdit.tennsx}`,
-                    madm: `${ProductEdit.tendm}`,
-                    maloai: `${ProductEdit.tenloai}`,
+                    mansx: `${ProductEdit.mansx}`,
+                    madm: `${ProductEdit.madm}`,
+                    maloai: `${ProductEdit.maloai}`,
                 }}
                 scrollToFirstError
                 className="register-form"
             >
-                <Form.Item
+                {/* <Form.Item
                     name="code"
                     label="Code"
                     rules={[
@@ -267,7 +273,7 @@ const EditProduct = (props) => {
                     ]}
                 >
                     <Input />
-                </Form.Item>
+                </Form.Item> */}
                 <Form.Item
                     name="tensp"
                     label="Tên sản phẩm"

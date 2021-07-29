@@ -7,8 +7,8 @@ var dataName = [];
     // Danh sách tất cả sản phẩm:
 exports.list_products = async () => {
     return new Promise( (hamOK, hamLoi) => {
-        let sql = `SELECT SP.masp, SP.code, SP.tensp, SP.soluong, SP.size, SP.mau, SP.gia, SP.hinh, 
-        SP.hinhchitiet, SP.mota, SP.trangthai, nhasx.tennsx, loaisp.tenloai, danhmuc.tendm
+        let sql = `SELECT SP.masp, SP.code, SP.tensp, SP.soluong, SP.size, SP.mau, SP.gia, SP.tenhinh, SP.hinh, 
+        SP.hinhchitiet, SP.mota, SP.trangthai, SP.mansx, nhasx.tennsx, SP.maloai, loaisp.tenloai, SP.madm, danhmuc.tendm
         FROM (((sanpham AS SP JOIN danhmuc ON SP.madm = danhmuc.madm) JOIN loaisp ON SP.maloai = loaisp.maloai)
         JOIN nhasx ON SP.mansx = nhasx.mansx)`;
         db.query(sql, (err, result) => {
@@ -38,11 +38,11 @@ exports.check_Code = async (code) => {
         })
     })
 };
-    // Lọc sản phẩm theo ID:
+    // Chi tiết 1 sản phẩm theo ID:
 exports.get_By_Id = async (productId) => {
     return new Promise( (hamOK, hamLoi) => {
-        let sql = `SELECT SP.masp, SP.code, SP.tensp, SP.soluong, SP.size, SP.mau, SP.gia, SP.hinh, 
-        SP.hinhchitiet, SP.mota, SP.trangthai, nhasx.tennsx, loaisp.tenloai, danhmuc.tendm
+        let sql = `SELECT SP.masp, SP.code, SP.tensp, SP.soluong, SP.size, SP.mau, SP.gia, SP.tenhinh, SP.hinh, 
+        SP.hinhchitiet, SP.mota, SP.trangthai, SP.mansx, nhasx.tennsx, SP.maloai, loaisp.tenloai, SP.madm, danhmuc.tendm
         FROM (((sanpham AS SP JOIN danhmuc ON SP.madm = danhmuc.madm) JOIN loaisp ON SP.maloai = loaisp.maloai)
         JOIN nhasx ON SP.mansx = nhasx.mansx) WHERE SP.masp='${productId}'`;
         db.query(sql, (err, result) => {
@@ -61,10 +61,10 @@ exports.get_By_Id = async (productId) => {
     // Sản phẩm mới nhất
 exports.newProduct = async () => {
     return new Promise( (hamOK, hamLoi) => {
-        let sql = `SELECT SP.masp, SP.code, SP.tensp, SP.soluong, SP.size, SP.mau, SP.gia, SP.hinh, 
-        SP.hinhchitiet, SP.mota, SP.trangthai, nhasx.tennsx, loaisp.tenloai, danhmuc.tendm
+        let sql = `SELECT SP.masp, SP.code, SP.tensp, SP.soluong, SP.size, SP.mau, SP.gia, SP.tenhinh, SP.hinh, 
+        SP.hinhchitiet, SP.mota, SP.trangthai, SP.mansx, nhasx.tennsx, SP.maloai, loaisp.tenloai, SP.madm, danhmuc.tendm
         FROM (((sanpham AS SP JOIN danhmuc ON SP.madm = danhmuc.madm) JOIN loaisp ON SP.maloai = loaisp.maloai)
-        JOIN nhasx ON SP.mansx = nhasx.mansx) ORDER BY ngaytao DESC LIMIT 5`;
+        JOIN nhasx ON SP.mansx = nhasx.mansx) ORDER BY ngaytao DESC LIMIT 4`;
         db.query(sql, (err, result) => {
             if(err) {
                 hamLoi(err);
@@ -72,8 +72,7 @@ exports.newProduct = async () => {
                 hamOK(result);
             }
         })
-        }
-    )
+    })
 }
     // Lọc danh sách sản phẩm theo danh mục:
 exports.get_by_category = async (madm) => {
@@ -143,10 +142,8 @@ exports.detailByName = async (name) => {
                     }
                 }
                 hamOK(filterProduct);
-            })
-            
-        }
-    )
+            })     
+    })
 }
     // Thêm sản phẩm:
 exports.create_product = (data) => {
@@ -181,7 +178,7 @@ exports.create_product = (data) => {
     });
 }
     // Sửa sản phẩm:
-exports.update_product = (masp, tensp, soluong, size, mau, gia, tenhinh, hinh, hinhchitiet, mota, trangthai, mansx, maloai, madm) => {
+exports.update_product = (masp, tensp, soluong, size, mau, gia, tenhinh, hinh, mota, trangthai, mansx, maloai, madm) => {
     return new Promise( (hamOK, hamLoi) => {
         let sql = `UPDATE sanpham SET   
         tensp='${tensp}', 
@@ -190,8 +187,7 @@ exports.update_product = (masp, tensp, soluong, size, mau, gia, tenhinh, hinh, h
         mau='${mau}', 
         gia='${gia}', 
         tenhinh='${tenhinh}', 
-        hinh='${hinh}', 
-        hinhchitiet='${hinhchitiet}',
+        hinh='${hinh}',
         mota='${mota}',
         trangthai='${trangthai}',
         mansx='${mansx}',

@@ -72,7 +72,7 @@ const AddNV = (props) => {
 
     const register = (values) => {
         let a = JSON.stringify({ admin: "adas@gmail.com" });
-        console.log(a);
+        console.log(values);
         admin.register(values).then((res) => {
             if (res.data.status ==="Success") {
                 message.success(res.data.message)
@@ -81,13 +81,11 @@ const AddNV = (props) => {
                 }, 2000)
             }
             else{
-                //message.error("Thêm nhân viên thất bại!")
                 message.error(res.data.message)
             }
         })
             .catch(err => {
-                console.log(err.response);
-                message.error(`Thêm nhân viên thất bại !\n ${err.response.data}`)
+                message.error(`Thêm nhân viên thất bại !\n ${err.response.data.message}`)
             })
     };
 

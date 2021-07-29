@@ -235,6 +235,7 @@ exports.postProduct = catchAsync(async (req, res, next) => {
             size: req.body.size,
             mau: req.body.mau,
             gia: req.body.gia,
+            tenhinh: req.body.imgName,
             hinh: req.body.img,
             hinhchitiet: req.body.hinhchitiet,
             mota: req.body.mota,
@@ -366,20 +367,21 @@ exports.putEditProduct = catchAsync(async (req, res, next) => {
     try {
         let masp = req.body.masp;
         let code = req.body.code;
-        let tensp = req.body.ten;
+        let tensp = req.body.tensp;
         let soluong = req.body.soluong;
         let size = req.body.size;
         let mau = req.body.mau;
         let gia = req.body.gia;
-        let hinh = req.body.hinh;
-        let hinhchitiet = req.body.hinhchitiet;
+        let tenhinh = req.body.imgName;
+        let hinh = req.body.img;
+        //let hinhchitiet = req.body.hinhchitiet;
         let mota = req.body.mota;
         let trangthai = req.body.trangthai;
         let mansx = req.body.mansx;
         let maloai = req.body.maloai;
         let madm = req.body.madm;
         
-        if(!masp || !tensp || !soluong || !size || !mau || !gia || !hinh || !trangthai || !mansx || !maloai || !madm) {
+        if(!masp || !tensp || !soluong || !size || !mau || !gia || !tenhinh || !hinh || !trangthai || !mansx || !maloai || !madm) {
             return res.status(400).json({ 
                 status: "Fail", 
                 message: "Thiếu thông tin sản phẩm, vui lòng kiểm tra lại !"
@@ -395,13 +397,14 @@ exports.putEditProduct = catchAsync(async (req, res, next) => {
             /* if(!hinhchitiet) {
                 hinhchitiet = "undefined";
             }; */
-            let query = await modelProduct.update_product(masp, code, tensp, soluong, size, mau, gia, hinh, hinhchitiet, mota, trangthai, mansx, maloai, madm);
+            let query = await modelProduct.update_product(masp, tensp, soluong, size, mau, gia, tenhinh, hinh, mota, trangthai, mansx, maloai, madm);
             return res.status(200).json({ 
                 status: "Success", 
                 message: "Cập nhật sản phẩm thành công!"
             });
         }
     } catch (error) {
+        console.log(error);
         return res.status(400).json({ 
             status: "Fail", 
             message: "Something went wrong!", 

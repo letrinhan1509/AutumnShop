@@ -104,13 +104,11 @@ exports.signup = catchAsync(async (req, res, next) => {
     let mk = req.body.pass;
     //let pass1 = req.body.pass1;
     let name = req.body.name;
-    let img = req.body.img;
-    let tenhinh = req.body.imgName;
     let address = req.body.address;
     let phone = req.body.phone;
     let permission = req.body.permission;
     let ward = req.body.ward;
-    if(!email || !name || !mk || !tenhinh || !img || !address || !phone || !permission) {
+    if(!email || !name || !mk || !address || !phone || !permission) {
         return res.status(400).json({ 
             status: "Fail", 
             message: "Thiếu thông tin, cập nhật thất bại, vui lòng kiểm tra lại !" 
@@ -123,9 +121,8 @@ exports.signup = catchAsync(async (req, res, next) => {
             message: "Email này đã đăng ký tài khoản, vui lòng nhập email khác !" 
         });
     };
-    if(!img) {
-        img = 'https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/User_Img%2FuserICON.png?alt=media&token=b64576ab-18b6-4d7a-9864-c15f59d5717c&fbclid=IwAR0UVyyCkNoF_dfbguTVOkC5lzvHPk-0C4Ef_iFmPxl8lKX2xQsKObTo568';
-    };
+    let tenhinh = "user.png";
+    let hinh = "https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/User_Img%2Fuser.png?alt=media&token=6ec247df-90ab-4cc9-b671-7261ef37215f&fbclid=IwAR2WTfoELEQhDxDpM3qKj0XcNtFNZyR1_5AYxYWNWpzzoIsuOWOIOqH9K9k";
     if(!ward) {
         var url = "https://thongtindoanhnghiep.co/api/ward/" + ward;
         const list = await axios.get(url);
@@ -136,7 +133,8 @@ exports.signup = catchAsync(async (req, res, next) => {
             admin: email,
             matkhau: pass_mahoa,
             tennv: name,
-            hinh: img,
+            tenhinh: tenhinh,
+            hinh: hinh,
             diachi: diachi,
             sodienthoai: phone,
             quyen: permission
@@ -150,7 +148,8 @@ exports.signup = catchAsync(async (req, res, next) => {
             admin: email,
             matkhau: pass_mahoa,
             tennv: name,
-            hinh: img,
+            tenhinh: tenhinh,
+            hinh: hinh,
             diachi: address,
             sodienthoai: phone,
             quyen: permission

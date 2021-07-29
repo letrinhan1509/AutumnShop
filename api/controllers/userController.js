@@ -102,8 +102,7 @@ exports.getLogouts = catchAsync(async (res, req, next) => {
 // POST: Create customer account
 exports.postUser = catchAsync(async (req, res, next) => {
     try {
-        let hinh = "https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/User_Img%2Fuser.png?alt=media&token=6ec247df-90ab-4cc9-b671-7261ef37215f&fbclid=IwAR3CdhcC4tl6LCa9J49reFlp29mFKtXdVJtAgXrIstctjJ_oFKSIRORhFG0";
-        let nhaplaimk = req.body.nhaplaimk;
+        let hinh = "https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/User_Img%2Fuser.png?alt=media&token=6ec247df-90ab-4cc9-b671-7261ef37215f&fbclid=IwAR2WTfoELEQhDxDpM3qKj0XcNtFNZyR1_5AYxYWNWpzzoIsuOWOIOqH9K9k";
         const data = {
             tenkh: req.body.tenkh,
             email: req.body.email,
@@ -240,7 +239,7 @@ exports.putEditUser = catchAsync(async (req, res, next) => {
         let email = req.body.email;
         let ten = req.body.username;
         let tenhinh = req.body.imgName;
-        let hinh = req.body.hinhMoi;
+        let hinh = req.body.img;
         let diachi = req.body.diachi;
         let sdt = req.body.sdt;
         if(!email || !ten || !tenhinh || !hinh || !diachi || !sdt) {
@@ -255,46 +254,20 @@ exports.putEditUser = catchAsync(async (req, res, next) => {
                 status: "Fail",
                 message: "Không tìm thấy tài khoản có email " + `${email}` + " này, vui lòng kiểm tra lại email !"
             });
-        };
-        if(sdt.length <= 9 || sdt.length > 10) {
-            return res.status(400).json({
-                status: "Fail",
-                message: "Số điện thoại không được ít hơn 9 số và không vượt quá 10 số, vui lòng kiểm tra lại !"
-            });
-        };
-        if(!hinh) {
-            // Cập nhật thông tin không thay đổi hình
-            let query = await modelUser.updateProfile(email, ten, sdt, diachi);
-            const user = await modelUser.checkEmail(email);
-            user.matkhau = undefined;   // Xoá mật khẩu khi trả về 1 user
-            return res.status(200).json({ 
-                status: "Success", 
-                message: query,
-                data: {
-                    makh: user.makh, 
-                    username: user.tenkh,
-                    email: user.email,
-                    hinh: userExist.hinh,
-                    sdt: user.sodienthoai,
-                    diachi: user.diachi
-                }
-            });
         } else {
-            // Cập nhật thông tin có thay đổi hình
-            let query = await modelUser.updateProfileUser(email, ten, hinh, sdt, diachi);
+            if(sdt.length <= 9 || sdt.length > 10) {
+                return res.status(400).json({
+                    status: "Fail",
+                    message: "Số điện thoại không được ít hơn 9 số và không vượt quá 10 số, vui lòng kiểm tra lại !"
+                });
+            };
+            let query = await modelUser.updateProfile(email, ten, tenhinh, hinh, sdt, diachi);
             const user = await modelUser.checkEmail(email);
             user.matkhau = undefined;   // Xoá mật khẩu khi trả về 1 user
             return res.status(200).json({ 
                 status: "Success", 
                 message: query,
-                data: {
-                    makh: user.makh, 
-                    username: user.tenkh,
-                    email: user.email,
-                    hinh: userExist.hinh,
-                    sdt: user.sodienthoai,
-                    diachi: user.diachi
-                }
+                user: user
             });
         }
     } catch (error) {

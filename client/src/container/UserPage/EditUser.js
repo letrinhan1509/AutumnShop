@@ -108,7 +108,7 @@ const EditUser = (props) => {
                     });
                 }
                 localStorage.removeItem("user");
-                localStorage.setItem('user', JSON.stringify(res.data.data));
+                localStorage.setItem('user', JSON.stringify(res.data.user));
                 setTimeout(() => {
                     history.push('/Thong-tin-tai-khoan');
                     window.location.reload();

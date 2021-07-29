@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 23, 2021 at 04:16 PM
+-- Generation Time: Jul 29, 2021 at 06:01 PM
 -- Server version: 10.4.19-MariaDB
 -- PHP Version: 8.0.7
 
@@ -32,6 +32,7 @@ CREATE TABLE `admin` (
   `admin` varchar(200) NOT NULL,
   `matkhau` varchar(100) NOT NULL,
   `tennv` varchar(100) NOT NULL,
+  `tenhinh` varchar(100) NOT NULL,
   `hinh` varchar(250) DEFAULT NULL,
   `diachi` varchar(100) NOT NULL,
   `sodienthoai` varchar(10) NOT NULL,
@@ -43,11 +44,39 @@ CREATE TABLE `admin` (
 -- Dumping data for table `admin`
 --
 
-INSERT INTO `admin` (`manv`, `admin`, `matkhau`, `tennv`, `hinh`, `diachi`, `sodienthoai`, `quyen`, `trangthai`) VALUES
-(1, 'admin@gmail.com', '123456', 'Admin', NULL, '155 PNT q8', '2147483647', 'Admin', 1),
-(17, 'tam@gmail.com', '$2b$10$b1Drfz6VH0Ot2Y4hYXs4ge7YvrEgNhS3YqF/Ig3F/UGa5GmQi8YE2', 'Bad Boy', 'undefined', '180 Cao Lỗ, P4, Quận 8', '0906060606', 'NVGH', 1),
-(18, 'phuong@gmail.com', '$2b$10$KUcP56TrcoWnf6nW.o6nY.H8oj7agrZLUwbzTYZcFZSkKF020MXCO', 'Hoàng Phương', 'https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/User_Img%2FuserICON.png?alt=media&token=b64576ab-18b6-4d7a-9864-c15f59d5717c&fbclid=IwAR2HhoURE-FDaY0FUpVkWgZS0Hc7-obK_B3rwSepgPe8cdyZFf94bBdWZ8c', '233 Vĩnh Viễn, Phường 04, Quận 10 ', '0909666555', 'Admin', 1),
-(19, 'letrinhan1509@gmail.com', '$2b$10$7jWUVsiSTkpiLV9mcI9pi.agZVONyg.U.mDAK401txS16bMmG2olu', 'Trí Nhân', 'undefined', 'Đường Lê Văn Duyệt, Phường 01, Quận Bình Thạnh, TP Hồ Chí Minh', '0969362915', 'Admin', 0);
+INSERT INTO `admin` (`manv`, `admin`, `matkhau`, `tennv`, `tenhinh`, `hinh`, `diachi`, `sodienthoai`, `quyen`, `trangthai`) VALUES
+(1, 'admin@gmail.com', '$2b$10$OwmFKU3vyNyOcr89.pDcF.92OpnfHqcoBTMIo8tNKJP8DDJ/a116y', 'Admin', 'sale_off_1.jpg', 'https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/User_Img%2Fsale_off_1.jpg?alt=media&token=4a9e0ab4-e79f-493f-a8d8-8a4e33c44365', '170 Cao Lỗ, P4, Quận 8, Tp.HCM', '0909686868', 'Admin', 1),
+(17, 'tam@gmail.com', '$2b$10$b1Drfz6VH0Ot2Y4hYXs4ge7YvrEgNhS3YqF/Ig3F/UGa5GmQi8YE2', 'Bad Boy', '', 'undefined', '180 Cao Lỗ, P4, Quận 8', '0906060606', 'NVGH', 1),
+(18, 'phuong@gmail.com', '$2b$10$KUcP56TrcoWnf6nW.o6nY.H8oj7agrZLUwbzTYZcFZSkKF020MXCO', 'Hoàng Phương', 'user.png', 'https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/User_Img%2FuserICON.png?alt=media&token=b64576ab-18b6-4d7a-9864-c15f59d5717c&fbclid=IwAR2HhoURE-FDaY0FUpVkWgZS0Hc7-obK_B3rwSepgPe8cdyZFf94bBdWZ8c', '233 Vĩnh Viễn, Phường 04, Quận 10 ', '0909666555', 'Admin', 1),
+(19, 'letrinhan1509@gmail.com', '$2b$10$7jWUVsiSTkpiLV9mcI9pi.agZVONyg.U.mDAK401txS16bMmG2olu', 'Trí Nhân', '', 'undefined', 'Đường Lê Văn Duyệt, Phường 01, Quận Bình Thạnh, TP Hồ Chí Minh', '0969362915', 'Admin', 0),
+(20, 'boylanhlung@gmail.com', '$2b$10$2//.NynC70K/ugtZsJlAVumz1V0f9XvrsK8UW7DTxCA/NOwcvFfBS', 'Bad Boy', 'user.png', 'https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/User_Img%2Fuser.png?alt=media&token=6ec247df-90ab-4cc9-b671-7261ef37215f&fbclid=IwAR2WTfoELEQhDxDpM3qKj0XcNtFNZyR1_5AYxYWNWpzzoIsuOWOIOqH9K9k', '180 Cao Lỗ', '0909686868', 'NVBH', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `bang_size`
+--
+
+CREATE TABLE `bang_size` (
+  `masize` varchar(10) NOT NULL,
+  `size` varchar(10) NOT NULL,
+  `gioitinh` varchar(10) NOT NULL,
+  `cannangtu` int(10) NOT NULL COMMENT 'Đơn vị: Kg',
+  `cannangden` int(10) NOT NULL COMMENT 'Đơn vị: Kg',
+  `chieucaotu` int(10) NOT NULL COMMENT 'Đơn vị: Cm',
+  `chieucaoden` int(10) NOT NULL COMMENT 'Đơn vị: Cm'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `bang_size`
+--
+
+INSERT INTO `bang_size` (`masize`, `size`, `gioitinh`, `cannangtu`, `cannangden`, `chieucaotu`, `chieucaoden`) VALUES
+('maL', 'L', 'Nam', 66, 70, 170, 174),
+('maM', 'M', 'Nam', 60, 65, 165, 169),
+('mamm', 'M', 'Nữ', 43, 46, 153, 155),
+('maS', 'S', 'Nam', 55, 60, 160, 164),
+('mass', 'S', 'Nữ', 38, 43, 148, 153);
 
 -- --------------------------------------------------------
 
@@ -100,29 +129,14 @@ CREATE TABLE `chitietbl` (
 CREATE TABLE `chitietdh` (
   `mact` int(10) NOT NULL,
   `masp` int(10) NOT NULL,
+  `size` varchar(10) DEFAULT NULL,
+  `mau` varchar(10) DEFAULT NULL,
   `gia` int(10) NOT NULL,
   `giagiam` int(10) DEFAULT 0,
   `soluong` int(11) NOT NULL,
   `thanhtien` int(10) NOT NULL DEFAULT 0,
   `madonhang` int(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `chitietdh`
---
-
-INSERT INTO `chitietdh` (`mact`, `masp`, `gia`, `giagiam`, `soluong`, `thanhtien`, `madonhang`) VALUES
-(56, 112, 30000, 0, 1, 30000, 89),
-(57, 111, 20000, 0, 1, 20000, 90),
-(58, 112, 30000, 0, 2, 60000, 90),
-(59, 110, 10000, 0, 1, 10000, 90),
-(60, 113, 40000, 0, 1, 40000, 92),
-(61, 111, 20000, 0, 1, 20000, 92),
-(62, 111, 20000, 0, 1, 20000, 93),
-(63, 110, 10000, 0, 1, 10000, 94),
-(64, 112, 30000, 0, 1, 30000, 95),
-(65, 110, 10000, 0, 1, 10000, 96),
-(66, 111, 20000, 0, 1, 20000, 97);
 
 -- --------------------------------------------------------
 
@@ -143,8 +157,7 @@ CREATE TABLE `chitietdm` (
 INSERT INTO `chitietdm` (`mactdm`, `madm`, `masp`) VALUES
 (11, 'DMA', 110),
 (13, 'DMA', 112),
-(14, 'DMA', 113),
-(17, 'DMA', 120);
+(14, 'DMA', 113);
 
 -- --------------------------------------------------------
 
@@ -168,7 +181,6 @@ INSERT INTO `chitietkm` (`mact`, `masp`, `chietkhau`, `giakm`, `makm`) VALUES
 (2, 110, 20, 8000, 7),
 (3, 111, 20, 16000, 7),
 (4, 112, 30, 21000, 7),
-(5, 114, 40, 6000, 7),
 (6, 112, 30, 21000, 8);
 
 -- --------------------------------------------------------
@@ -180,6 +192,7 @@ INSERT INTO `chitietkm` (`mact`, `masp`, `chietkhau`, `giakm`, `makm`) VALUES
 CREATE TABLE `danhmuc` (
   `madm` varchar(50) NOT NULL,
   `tendm` varchar(100) NOT NULL,
+  `tenhinh` varchar(100) NOT NULL,
   `hinh` varchar(500) NOT NULL,
   `trangthai` int(10) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -188,14 +201,15 @@ CREATE TABLE `danhmuc` (
 -- Dumping data for table `danhmuc`
 --
 
-INSERT INTO `danhmuc` (`madm`, `tendm`, `hinh`, `trangthai`) VALUES
-('DMA', 'Áo', '', 1),
-('DMB', 'Balo-Túi', '', 1),
-('DMD', 'Dép', '', 1),
-('DMG', 'Giày', '', 1),
-('DMPK', 'Phụ kiện', '', 1),
-('DMQ', 'Quần', '', 1),
-('GT', 'Giới thiệu', '', 1);
+INSERT INTO `danhmuc` (`madm`, `tendm`, `tenhinh`, `hinh`, `trangthai`) VALUES
+('DMA', 'Áo', 'bg-attact.png', 'https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/Catalog_Img%2Fbg-attact.png?alt=media&token=df676eae-8fcc-4e1c-b7cc-20d1622df324', 1),
+('DMB', 'Balo-Túi', '', '', 1),
+('DMD', 'Dép', '', '', 1),
+('DMG', 'Giày', '', '', 1),
+('DMPK', 'Phụ kiện', '', '', 1),
+('DMQ', 'Quần', '', '', 1),
+('GT', 'Giới thiệu', '', '', 1),
+('H', 'HOME', 'bg-attact.png', 'https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/Catalog_Img%2Fbg-attact.png?alt=media&token=58d7cf0e-dce1-455f-866e-24ad8c4bd588', 1);
 
 -- --------------------------------------------------------
 
@@ -220,20 +234,6 @@ CREATE TABLE `donhang` (
   `ngaygiao` date DEFAULT NULL,
   `trangthai` int(11) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Dumping data for table `donhang`
---
-
-INSERT INTO `donhang` (`madonhang`, `makh`, `tenkh`, `email`, `sodienthoai`, `diachi`, `tienship`, `tongtien`, `ghichu`, `makm`, `hinhthuc`, `vanchuyen`, `ngaydat`, `ngaygiao`, `trangthai`) VALUES
-(89, 7, 'Trí Nhân', 'letrinhan1509@gmail.com', 966366955, '180 Cao Lỗ, Phường 04, Quận 8, TP Hồ Chí Minh', 20000, 50000, '', NULL, 'Thanh toán khi nhận hàng', 'Hệ thống cửa hàng', '2021-06-30', '2021-07-23', 2),
-(90, 7, 'Trí Nhân', 'letrinhan1509@gmail.com', 966366955, 'Lê Văn Duyệt, Phường 01, Quận Bình Thạnh, TP Hồ Chí Minh', 20000, 110000, 'Gói hàng cẩn thận giúp em. Cảm ơn shop!', 1, 'Thanh toán khi nhận hàng', 'Hệ thống cửa hàng', '2021-07-02', '2021-07-12', 2),
-(92, NULL, 'Lê Trí Nhân', 'letrinhan54321@gmail.com', 969362915, '180 Cao Lỗ', 20000, 80000, 'Oke chú em, ship gấp nhé!', NULL, 'Thanh toán khi nhận hàng', 'Hệ thống cửa hàng', '2021-07-13', NULL, 0),
-(93, NULL, 'Lê Trí Nhân', 'letrinhan54321@gmail.com', 186522716, '180 Cao Lỗ, Phường 04, Quận 8, TP Hồ Chí Minh', 20000, 40000, '', NULL, 'Thanh toán khi nhận hàng', 'Hệ thống cửa hàng', '2021-07-13', NULL, 0),
-(94, NULL, 'Hoàng Phương', 'boylanhlung@gmail.com', 186522716, '233 Vĩnh Viễn, Phường 04, Quận 10, TP Hồ Chí Minh', 20000, 27000, 'Gói hàng kỹ giúp em ạ!', 2, 'Thanh toán khi nhận hàng', 'Hệ thống cửa hàng', '2021-07-13', NULL, 0),
-(95, 8, 'Nhân', 'letrinhan54321@gmail.com', 909686868, '180 Cao Lỗ, Phường 04, Quận 8, TP Hồ Chí Minh', 20000, 50000, '', NULL, 'Thanh toán khi nhận hàng', 'Hệ thống cửa hàng', '2021-07-13', NULL, 0),
-(96, 10, 'Nhật Hào', 'letrinhan15099@gmail.com', 969362915, '180 Cao Lỗ, Phường 04, Quận 8, TP Hồ Chí Minh', 20000, 30000, '', NULL, 'Thanh toán khi nhận hàng', 'Hệ thống cửa hàng', '2021-07-18', NULL, 0),
-(97, NULL, 'Bùi Thanh Nguyên', 'boylanhlung@gmail.com', 909666333, 'Lâm Văn Bền, Phường Bình Thuận, Quận 7, TP Hồ Chí Minh', 20000, 40000, '', NULL, 'Thanh toán khi nhận hàng', 'Hệ thống cửa hàng', '2021-07-18', NULL, 0);
 
 -- --------------------------------------------------------
 
@@ -262,6 +262,7 @@ CREATE TABLE `khachhang` (
   `tenkh` varchar(200) NOT NULL,
   `email` varchar(200) NOT NULL,
   `matkhau` varchar(100) NOT NULL,
+  `tenhinh` varchar(100) NOT NULL,
   `hinh` varchar(250) DEFAULT NULL,
   `sodienthoai` int(10) NOT NULL,
   `diachi` varchar(200) NOT NULL,
@@ -272,17 +273,17 @@ CREATE TABLE `khachhang` (
 -- Dumping data for table `khachhang`
 --
 
-INSERT INTO `khachhang` (`makh`, `tenkh`, `email`, `matkhau`, `hinh`, `sodienthoai`, `diachi`, `trangthai`) VALUES
-(1, 'Nguyễn Văn Nhất', 'nvn@gmail.com', '123456', NULL, 69741120, '15 HTK p5 q8', 1),
-(2, 'Đông Văn Hưng', 'dvh@gmail.com', '123456', NULL, 69743365, '15 afg q6 q8', 0),
-(3, 'Phan Thiện Nghĩa', 'ptn@gmail.com', '123456', NULL, 9575333, '156 acf p5 q8', 0),
-(4, 'Lê Trí Nhân', 'nhan@gmail.com', '123456789', NULL, 69741120, '180 Cao Lỗ', 1),
-(5, 'Nhật Hào', 'hao@gmail.com', '123456@^!^@', NULL, 909666555, '182 Cao Lỗ', 1),
-(6, 'Bad Boy', 'phuong@gmail.com', '123456789', NULL, 906060606, '180 Cao Lỗ, P4', 1),
-(7, 'Trí Nhân', 'letrinhan1509@gmail.com', '$2b$10$bmoZ2SnYw.Bf34Tgt2/Md./j2XSNpBPE.nwkspWMvl8ofkITCY6a.', 'https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/User_Img%2Fuser.png?alt=media&token=6ec247df-90ab-4cc9-b671-7261ef37215f&fbclid=IwAR2Xkjho5Cq5BUR40AYdPAqSj50dW5jIdYzf2-3rbmlq6Ij31iT64AMAQsw', 969362915, '178 Cao Lỗ, Phường 04', 1),
-(8, 'Nhân', 'letrinhan54321@gmail.com', '$2b$10$KvhroYwNu2J4wpn3ytLREOZ/1cdzx65UZA3bbeEhPGnpAJc0BU9hO', 'https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/User_Img%2Fuser.png?alt=media&token=6ec247df-90ab-4cc9-b671-7261ef37215f&fbclid=IwAR2Xkjho5Cq5BUR40AYdPAqSj50dW5jIdYzf2-3rbmlq6Ij31iT64AMAQsw', 909686868, '180 Cao Lỗ', 1),
-(9, 'Nemo', 'thhphuong2607@gmail.com', '$2b$10$AP/zgTS7AJzD7KUGUiI6WedQ2rFOyj2hWK/zsWB.cj/SPoT0sfXne', 'https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/User_Img%2FuserICON.png?alt=media&token=b64576ab-18b6-4d7a-9864-c15f59d5717c&fbclid=IwAR2HhoURE-FDaY0FUpVkWgZS0Hc7-obK_B3rwSepgPe8cdyZFf94bBdWZ8c', 932550587, '233/15 Vĩnh Viễn', 1),
-(10, 'Nhật Hào', 'letrinhan15099@gmail.com', '$2b$10$fq4JuU8B7Mb0h0l9vnMBze1aBXBwMjnfISYZnAj6662PQvBE5a2re', 'https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/User_Img%2Fuser.png?alt=media&token=6ec247df-90ab-4cc9-b671-7261ef37215f&fbclid=IwAR2Xkjho5Cq5BUR40AYdPAqSj50dW5jIdYzf2-3rbmlq6Ij31iT64AMAQsw', 969362915, '178 Cao Lỗ, Phường 4, Quận 08, Tp.HCM', 1);
+INSERT INTO `khachhang` (`makh`, `tenkh`, `email`, `matkhau`, `tenhinh`, `hinh`, `sodienthoai`, `diachi`, `trangthai`) VALUES
+(1, 'Nguyễn Văn Nhất', 'nvn@gmail.com', '123456', '', NULL, 69741120, '15 HTK p5 q8', 1),
+(2, 'Đông Văn Hưng', 'dvh@gmail.com', '123456', '', NULL, 69743365, '15 afg q6 q8', 0),
+(3, 'Phan Thiện Nghĩa', 'ptn@gmail.com', '123456', '', NULL, 9575333, '156 acf p5 q8', 0),
+(4, 'Lê Trí Nhân', 'nhan@gmail.com', '123456789', '', NULL, 69741120, '180 Cao Lỗ', 1),
+(5, 'Nhật Hào', 'hao@gmail.com', '123456@^!^@', '', NULL, 909666555, '182 Cao Lỗ', 1),
+(6, 'Bad Boy', 'phuong@gmail.com', '123456789', '', NULL, 906060606, '180 Cao Lỗ, P4', 1),
+(7, 'Trí Nhân', 'letrinhan1509@gmail.com', '$2b$10$bmoZ2SnYw.Bf34Tgt2/Md./j2XSNpBPE.nwkspWMvl8ofkITCY6a.', 'user.png', 'https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/User_Img%2Fuser.png?alt=media&token=6ec247df-90ab-4cc9-b671-7261ef37215f&fbclid=IwAR2Xkjho5Cq5BUR40AYdPAqSj50dW5jIdYzf2-3rbmlq6Ij31iT64AMAQsw', 969362915, '178 Cao Lỗ, Phường 04', 1),
+(8, 'Nhân', 'letrinhan54321@gmail.com', '$2b$10$KvhroYwNu2J4wpn3ytLREOZ/1cdzx65UZA3bbeEhPGnpAJc0BU9hO', 'user.png', 'https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/User_Img%2Fuser.png?alt=media&token=6ec247df-90ab-4cc9-b671-7261ef37215f&fbclid=IwAR2Xkjho5Cq5BUR40AYdPAqSj50dW5jIdYzf2-3rbmlq6Ij31iT64AMAQsw', 909686868, '180 Cao Lỗ', 1),
+(9, 'Nemo', 'thhphuong2607@gmail.com', '$2b$10$AP/zgTS7AJzD7KUGUiI6WedQ2rFOyj2hWK/zsWB.cj/SPoT0sfXne', 'user.png', 'https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/User_Img%2FuserICON.png?alt=media&token=b64576ab-18b6-4d7a-9864-c15f59d5717c&fbclid=IwAR2HhoURE-FDaY0FUpVkWgZS0Hc7-obK_B3rwSepgPe8cdyZFf94bBdWZ8c', 932550587, '233/15 Vĩnh Viễn', 1),
+(10, 'Nhật Hào', 'letrinhan15099@gmail.com', '$2b$10$fq4JuU8B7Mb0h0l9vnMBze1aBXBwMjnfISYZnAj6662PQvBE5a2re', 'user.png', 'https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/User_Img%2Fuser.png?alt=media&token=6ec247df-90ab-4cc9-b671-7261ef37215f&fbclid=IwAR2Xkjho5Cq5BUR40AYdPAqSj50dW5jIdYzf2-3rbmlq6Ij31iT64AMAQsw', 969362915, '178 Cao Lỗ, Phường 4, Quận 08, Tp.HCM', 1);
 
 -- --------------------------------------------------------
 
@@ -295,6 +296,7 @@ CREATE TABLE `khuyenmai` (
   `tenkm` varchar(250) NOT NULL,
   `voucher` varchar(100) DEFAULT NULL,
   `ghichu` varchar(1000) NOT NULL,
+  `tenhinh` varchar(100) NOT NULL,
   `hinh` varchar(500) NOT NULL,
   `dieukien` int(20) DEFAULT NULL,
   `giagiam` int(15) DEFAULT NULL,
@@ -307,14 +309,15 @@ CREATE TABLE `khuyenmai` (
 -- Dumping data for table `khuyenmai`
 --
 
-INSERT INTO `khuyenmai` (`makm`, `tenkm`, `voucher`, `ghichu`, `hinh`, `dieukien`, `giagiam`, `ngaybd`, `ngaykt`, `trangthai`) VALUES
-(1, 'Miễn phí vận chuyển', 'FREESHIP', 'Shop đang có chương trình khuyến khích khách hàng mua hàng online nên shop sẽ hỗ trợ miễn phí vận chuyển cho đơn hàng trên 80.000đ. Cùng chung tay chống dịch. Cảm ơn khách hàng đã xem', '', 80000, 20000, '2021-07-03', '2021-07-09', 1),
-(2, 'Hỗ trợ khách hàng mùa dịch', 'AUTUMN30', 'Giảm giá cho tất cả đơn hàng mua hàng online với tổng đơn hàng trên 150.000đ. Cảm ơn khách hàng đã ủng hộ shop <3 !!!', '', 10000, 3000, '2021-07-03', '2021-07-05', 1),
-(3, 'Cùng autumn shop chung tay chống dịch!', 'COVID19', 'Mỗi đơn hàng mua online với tổng đơn hàng trên 200.000đ quý vị sẽ được giảm 30.000đ trên mỗi đơn hàng.', '', 200000, 30000, '2021-07-23', '2021-07-24', 1),
-(4, 'Giảm giá sốc khi mua hàng online trong mùa dịch', 'GIASOC', 'Khi quý vị mua hàng với đơn hàng trên 150.000đ thì quý vị sẽ được giảm 50.000đ trên tổng đơn hàng.', 'undefined', 150000, 60000, '2021-07-23', '2021-07-24', 1),
-(7, 'Giảm giá bộ sưu tập hè', NULL, 'Giảm giá toàn bộ các sản phẩm có trong bộ sưu tập hè.', '', NULL, NULL, '2021-05-07', '2021-08-07', 1),
-(8, 'Mua online giá sốc', NULL, 'Khuyến mãi giá sốc chỉ có trong hôm nay', '', NULL, NULL, '2021-06-07', '2021-07-07', 1),
-(9, 'Giảm giá bộ sưu tập hè', NULL, 'Giá cực tốt khi mua online', '', NULL, NULL, '2021-07-23', '2021-07-25', 0);
+INSERT INTO `khuyenmai` (`makm`, `tenkm`, `voucher`, `ghichu`, `tenhinh`, `hinh`, `dieukien`, `giagiam`, `ngaybd`, `ngaykt`, `trangthai`) VALUES
+(1, 'Miễn phí vận chuyển', 'FREESHIP', 'Shop đang có chương trình khuyến khích khách hàng mua hàng online nên shop sẽ hỗ trợ miễn phí vận chuyển cho đơn hàng trên 80.000đ. Cùng chung tay chống dịch. Cảm ơn khách hàng đã xem', '', '', 80000, 20000, '2021-07-03', '2021-07-09', 1),
+(2, 'Hỗ trợ khách hàng mùa dịch', 'AUTUMN30', 'Giảm giá cho tất cả đơn hàng mua hàng online với tổng đơn hàng trên 150.000đ. Cảm ơn khách hàng đã ủng hộ shop <3 !!!', '', '', 10000, 3000, '2021-07-03', '2021-07-05', 1),
+(3, 'Cùng autumn shop chung tay chống dịch!', 'COVID19', 'Mỗi đơn hàng mua online với tổng đơn hàng trên 200.000đ quý vị sẽ được giảm 30.000đ trên mỗi đơn hàng.', '', '', 200000, 30000, '2021-07-23', '2021-07-24', 1),
+(4, 'Giảm giá sốc khi mua hàng online trong mùa dịch', 'GIASOC', 'Khi quý vị mua hàng với đơn hàng trên 150.000đ thì quý vị sẽ được giảm 50.000đ trên tổng đơn hàng.', '', 'undefined', 150000, 60000, '2021-07-23', '2021-07-24', 1),
+(7, 'Giảm giá bộ sưu tập hè', NULL, 'Giảm giá toàn bộ các sản phẩm có trong bộ sưu tập hè.', '', '', NULL, NULL, '2021-05-07', '2021-08-07', 1),
+(8, 'Mua online giá sốc', NULL, 'Khuyến mãi giá sốc chỉ có trong hôm nay', '', '', NULL, NULL, '2021-06-07', '2021-07-07', 1),
+(9, 'Giảm giá bộ sưu tập hè', NULL, 'Giá cực tốt khi mua online', '', '', NULL, NULL, '2021-07-23', '2021-07-25', 0),
+(12, 'Giảm giá bộ sưu tập hè', 'giaso', 'ádsdsa', 'Free_Shipping.png', 'https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/Voucher_img%2FFree_Shipping.png?alt=media&token=5c6f9ab5-6c34-49c7-ae7b-42fc1a16df81', 50000, 10000, '0000-00-00', '0000-00-00', 1);
 
 -- --------------------------------------------------------
 
@@ -325,6 +328,8 @@ INSERT INTO `khuyenmai` (`makm`, `tenkm`, `voucher`, `ghichu`, `hinh`, `dieukien
 CREATE TABLE `loaisp` (
   `maloai` varchar(10) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `tenloai` varchar(100) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `tenhinh` varchar(100) NOT NULL,
+  `hinh` varchar(500) NOT NULL,
   `madm` varchar(50) DEFAULT NULL,
   `trangthai` int(10) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -333,21 +338,22 @@ CREATE TABLE `loaisp` (
 -- Dumping data for table `loaisp`
 --
 
-INSERT INTO `loaisp` (`maloai`, `tenloai`, `madm`, `trangthai`) VALUES
-('ak', 'ÁO KHOÁC', 'DMA', 1),
-('asm', 'ÁO SƠ MI', 'DMA', 1),
-('at', 'ÁO THUN', 'DMA', 1),
-('bl', 'BALO - TÚI SÁCH', 'DMB', 1),
-('dep', 'DÉP', 'DMD', 1),
-('giay', 'GIÀY', 'DMG', 1),
-('no', 'NÓN', 'DMPK', 1),
-('qj', 'QUẦN JEAN', 'DMQ', 1),
-('qk', 'QUẦN KAKI', 'DMQ', 1),
-('qs', 'QUẦN SHORT', 'DMQ', 1),
-('qt', 'QUẦN TÂY', 'DMQ', 1),
-('tl', 'THẮT LƯNG', 'DMPK', 1),
-('tui', 'Túii', 'DMB', 1),
-('vo', 'VỚ', 'DMPK', 1);
+INSERT INTO `loaisp` (`maloai`, `tenloai`, `tenhinh`, `hinh`, `madm`, `trangthai`) VALUES
+('aaaa', 'Ok', 'slider_aothun.jpg', 'https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/ProductType_Img%2Fslider_aothun.jpg?alt=media&token=941cc401-c063-4b0b-b31c-afa8af809c53', 'DMB', 1),
+('ak', 'ÁO KHOÁC', '', '', 'DMA', 1),
+('asm', 'ÁO SƠ MI', '', '', 'DMA', 1),
+('at', 'ÁO THUN', 'slider_aothun.jpg', 'https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/ProductType_Img%2Fslider_aothun.jpg?alt=media&token=79f66a44-fdf1-45ea-bccd-d663e96f208b', 'DMA', 1),
+('bl', 'BALO - TÚI SÁCH', '', '', 'DMB', 1),
+('dep', 'DÉP', '', '', 'DMD', 1),
+('giay', 'GIÀY', '', '', 'DMG', 1),
+('no', 'NÓN', '', '', 'DMPK', 1),
+('qj', 'QUẦN JEAN', '', '', 'DMQ', 1),
+('qk', 'QUẦN KAKI', '', '', 'DMQ', 1),
+('qs', 'QUẦN SHORT', '', '', 'DMQ', 1),
+('qt', 'QUẦN TÂY', '', '', 'DMQ', 1),
+('tl', 'THẮT LƯNG', '', '', 'DMPK', 1),
+('tui', 'Túii', '', '', 'DMB', 1),
+('vo', 'VỚ', '', '', 'DMPK', 1);
 
 -- --------------------------------------------------------
 
@@ -381,7 +387,8 @@ INSERT INTO `nhasx` (`mansx`, `tennsx`, `xuatxu`, `trangthai`) VALUES
 ('pm', 'PUMA', 'Đức', 1),
 ('sp', 'SUPREME', 'Mỹ', 1),
 ('tm', 'T.MAN', 'Việt Nam', 1),
-('ym', 'Yamee', 'Việt Nam', 1);
+('ym', 'Yamee', 'Việt Nam', 1),
+('zzz', 'OKK', 'Việt Namm', 1);
 
 -- --------------------------------------------------------
 
@@ -391,35 +398,33 @@ INSERT INTO `nhasx` (`mansx`, `tennsx`, `xuatxu`, `trangthai`) VALUES
 
 CREATE TABLE `sanpham` (
   `masp` int(10) NOT NULL,
-  `code` varchar(50) NOT NULL,
+  `code` varchar(50) DEFAULT NULL,
   `tensp` varchar(100) NOT NULL,
   `soluong` int(10) NOT NULL DEFAULT 1,
   `size` varchar(10) NOT NULL,
   `mau` varchar(30) NOT NULL,
   `gia` int(10) NOT NULL,
+  `tenhinh` varchar(100) NOT NULL,
   `hinh` varchar(1000) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `hinhchitiet` varchar(2000) DEFAULT NULL,
   `mota` varchar(4000) DEFAULT NULL,
+  `ngaytao` datetime NOT NULL DEFAULT current_timestamp(),
   `trangthai` int(10) NOT NULL DEFAULT 1,
   `mansx` varchar(10) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
   `maloai` varchar(10) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
-  `madm` varchar(50) NOT NULL
+  `madm` varchar(50) NOT NULL,
+  `chitiet` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `sanpham`
 --
 
-INSERT INTO `sanpham` (`masp`, `code`, `tensp`, `soluong`, `size`, `mau`, `gia`, `hinh`, `hinhchitiet`, `mota`, `trangthai`, `mansx`, `maloai`, `madm`) VALUES
-(110, 'SPAT01', 'Áo thun ADIDAS', 9, 'S', 'Trắng', 10000, 'https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/Product_Img%2FadsTrong.jpg?alt=media&token=6cb18364-d371-4a66-b842-d19fa4567877', NULL, 'Áo được thiết kế trẻ trung.', 1, 'ad', 'at', 'DMA'),
-(111, 'SPAT02B', 'Áo thun ITACHI', 4, 'M', 'Đen', 20000, 'https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/Product_Img%2FnomousItachi.jpg?alt=media&token=ca780496-c03d-4b58-ac23-c24a64f6a1df', NULL, 'Áo được thiết kế trẻ trung.', 1, 'nm', 'at', 'DMA'),
-(112, 'SPAT03G', 'Áo thun GOKU', 8, 'M', 'Trắng', 30000, 'https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/Product_Img%2FbskGOKU.jpg?alt=media&token=28c752c6-fe0e-488b-9c2e-78a6070622b3', NULL, 'đang làm mưa làm gió trong thời gian vừa qua, số lượng có hạn, các bạn nhanh tay đăng kí để sở hữu ngay cho mình chiếc áo cực chất nhé', 1, 'bsk', 'at', 'DMA'),
-(113, 'SPAT01', 'Áo thun PEANUTS', 9, 'M', 'Đỏ', 40000, 'https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/Product_Img%2FnomousPNuts.jpg?alt=media&token=495b36b4-dbbd-4ca1-a538-a099719153d3', 'undefined', 'Bạn làm gì để tìm kiếm sự cân bằng? Ngắt mạch và xả hơi? Hay tùy cơ ứng biến? Chiếc áo thun adidas này sẵn sàng cho cả hai phương án. Trên thực tế, chiếc áo này sẵn sàng cho tất cả nhờ chất vải thấm hút ẩm và chất liệu cotton mềm mại đảm bảo sự thoải mái dài lâu. Còn về độ co giãn? Cũng có một chút, để áo càng thêm phần thoải mái.', 0, 'nm', 'at', 'DMA'),
-(114, 'SPAT02', 'Áo thun ADIDAS', 9, 'S', 'Đen', 10000, 'https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/Product_Img%2FadsTrong.jpg?alt=media&token=6cb18364-d371-4a66-b842-d19fa4567877', NULL, 'Áo được thiết kế trẻ trung.', 1, 'ad', 'at', 'DMA'),
-(115, 'SPAT03', 'Áo thun ADIDAS', 9, 'M', 'Trắng', 10000, 'https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/Product_Img%2FadsTrong.jpg?alt=media&token=6cb18364-d371-4a66-b842-d19fa4567877', NULL, 'Áo được thiết kế trẻ trung.', 1, 'ad', 'at', 'DMA'),
-(116, 'SPAT04', 'Áo thun ADIDAS', 9, 'M', 'Đen', 10000, 'https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/Product_Img%2FadsTrong.jpg?alt=media&token=6cb18364-d371-4a66-b842-d19fa4567877', NULL, 'Áo được thiết kế trẻ trung.', 1, 'ad', 'at', 'DMA'),
-(117, 'SPAT02', 'Áo thun PEANUTS', 9, 'M', 'Xanh', 40000, 'https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/Product_Img%2FnomousPNuts.jpg?alt=media&token=495b36b4-dbbd-4ca1-a538-a099719153d3', 'undefined', 'Bạn làm gì để tìm kiếm sự cân bằng? Ngắt mạch và xả hơi? Hay tùy cơ ứng biến? Chiếc áo thun adidas này sẵn sàng cho cả hai phương án. Trên thực tế, chiếc áo này sẵn sàng cho tất cả nhờ chất vải thấm hút ẩm và chất liệu cotton mềm mại đảm bảo sự thoải mái dài lâu. Còn về độ co giãn? Cũng có một chút, để áo càng thêm phần thoải mái.', 0, 'nm', 'at', 'DMA'),
-(120, 'SPAT03P', 'Áo thun PEANUTS', 10, 'S', 'Trắng', 40000, 'https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/Product_Img%2FDog.png?alt=media&token=19d54075-6280-415d-9363-b24f151cf48f', NULL, 'Bạn làm gì để tìm kiếm sự cân bằng? Ngắt mạch và xả hơi? Hay tùy cơ ứng biến? Chiếc áo thun adidas này sẵn sàng cho cả hai phương án. Trên thực tế, chiếc áo này sẵn sàng cho tất cả nhờ chất vải thấm hút ẩm và chất liệu cotton mềm mại đảm bảo sự thoải mái dài lâu. Còn về độ co giãn? Cũng có một chút, để áo càng thêm phần thoải mái.', 1, 'nm', 'at', 'DMA');
+INSERT INTO `sanpham` (`masp`, `code`, `tensp`, `soluong`, `size`, `mau`, `gia`, `tenhinh`, `hinh`, `hinhchitiet`, `mota`, `ngaytao`, `trangthai`, `mansx`, `maloai`, `madm`, `chitiet`) VALUES
+(110, 'SPAT01', 'Áo thun ADIDAS', 9, 'S', 'Trắng', 10000, 'user.png', 'https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/Product_Img%2FadsTrong.jpg?alt=media&token=6cb18364-d371-4a66-b842-d19fa4567877', NULL, 'Áo được thiết kế trẻ trung.', '2021-07-23 00:00:00', 1, 'ad', 'at', 'DMA', ''),
+(111, 'SPAT02B', 'Áo thun ITACHI', 4, 'M', 'Đen', 20000, '', 'https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/Product_Img%2FnomousItachi.jpg?alt=media&token=ca780496-c03d-4b58-ac23-c24a64f6a1df', NULL, 'Áo được thiết kế trẻ trung.', '2021-07-23 00:00:00', 1, 'nm', 'at', 'DMA', ''),
+(112, 'SPAT03G', 'Áo thun GOKU', 8, 'M', 'Trắng', 30000, '', 'https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/Product_Img%2FbskGOKU.jpg?alt=media&token=28c752c6-fe0e-488b-9c2e-78a6070622b3', NULL, 'đang làm mưa làm gió trong thời gian vừa qua, số lượng có hạn, các bạn nhanh tay đăng kí để sở hữu ngay cho mình chiếc áo cực chất nhé', '2021-07-23 00:00:00', 1, 'bsk', 'at', 'DMA', ''),
+(113, 'SPAT01', 'Áo Thun PEANUTS', 10, 'S', 'Xanh', 90000, 'nomousPNuts.jpg', 'https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/Product_Img%2FnomousPNuts.jpg?alt=media&token=495b36b4-dbbd-4ca1-a538-a099719153d3', 'undefined', 'Bạn làm gì để tìm kiếm sự cân bằng? Ngắt mạch và xả hơi? Hay tùy cơ ứng biến? Chiếc áo thun adidas này sẵn sàng cho cả hai phương án. Trên thực tế, chiếc áo này sẵn sàng cho tất cả nhờ chất vải thấm hút ẩm và chất liệu cotton mềm mại đảm bảo sự thoải mái dài lâu. Còn về độ co giãn? Cũng có một chút, để áo càng thêm phần thoải mái.', '2021-07-23 17:00:00', 1, 'nm', 'at', 'DMA', '');
 
 -- --------------------------------------------------------
 
@@ -452,6 +457,12 @@ INSERT INTO `trangthai` (`tentt`, `trangthai`) VALUES
 --
 ALTER TABLE `admin`
   ADD PRIMARY KEY (`manv`);
+
+--
+-- Indexes for table `bang_size`
+--
+ALTER TABLE `bang_size`
+  ADD PRIMARY KEY (`masize`);
 
 --
 -- Indexes for table `binhluan`
@@ -562,7 +573,7 @@ ALTER TABLE `trangthai`
 -- AUTO_INCREMENT for table `admin`
 --
 ALTER TABLE `admin`
-  MODIFY `manv` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `manv` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT for table `binhluan`
@@ -616,7 +627,7 @@ ALTER TABLE `khachhang`
 -- AUTO_INCREMENT for table `khuyenmai`
 --
 ALTER TABLE `khuyenmai`
-  MODIFY `makm` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `makm` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `sanpham`

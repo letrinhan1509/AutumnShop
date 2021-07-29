@@ -122,7 +122,7 @@ exports.putEditProducer = catchAsync(async (req, res, next) => {
             });
         } else {
             const nameExist = await modelProducer.get_By_Name(name);
-            if(nameExist == -1) {
+            if(nameExist == -1 || producerId == nameExist.mansx) {
                 let query = await modelProducer.update(producerId, name, origin);
                 return res.status(200).json({ 
                     status: "Success", 
