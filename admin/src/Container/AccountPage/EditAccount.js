@@ -80,7 +80,6 @@ const EditAccount = (props) => {
     //xóa ảnh đã có để tải ảnh mới lên firebase
     const deleteImg = () => {
         setImgEdit("");
-
     }
     const update = (values) => {
         values['manv'] = user.manv;

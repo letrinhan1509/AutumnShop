@@ -206,13 +206,7 @@ const EditProductType = (props) => {
                 <Form.Item
                     name="tenloai"
                     label="Tên loại"
-                    rules={[
-                        {
-                            required: true,
-                            message: "Vui lòng nhập tên loại !!!",
-                            whitespace: true,
-                        },
-                    ]}
+                    
                 >
                     <Input />
                 </Form.Item>

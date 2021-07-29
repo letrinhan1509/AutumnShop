@@ -14,11 +14,13 @@ const EditUser = (props) => {
 
     const [user, setUser] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [ImgEdit, setImgEdit] = useState("");
     useEffect(() => {
         setTimeout(() => {
             setUser(JSON.parse(localStorage.getItem("user")));
             if (user !== null) {
                 setLoading(true);
+                setImgEdit(user.hinh);
             }
         }, 1000);
     }, [])
@@ -78,11 +80,15 @@ const EditUser = (props) => {
         });
     };
 
+    const deleteImg = () => {
+        setImgEdit("");
+    }
+
     const update = (values) => {
         if (imageName !== "") {
             values['imgName'] = imageName.name;
         } else {
-            values['imgName'] = user.imgName;
+            values['imgName'] = user.tenhinh;
         }
         if (link !== "") {
             values['img'] = link;
@@ -90,9 +96,17 @@ const EditUser = (props) => {
             values['img'] = user.hinh;
         }
         console.log(values)
-        /* users.updateInfo(values).then((res) => {
+        users.updateInfo(values).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message)
+                if (link !== "") {
+                    const del = storage.ref(`User_Img/${user.tenhinh}`);
+                    del.delete().then((res) => {
+                        message.success("Đã xóa ảnh!");
+                    }).catch((error) => {
+                        console.log(error);
+                    });
+                }
                 localStorage.removeItem("user");
                 localStorage.setItem('user', JSON.stringify(res.data.data));
                 setTimeout(() => {
@@ -107,7 +121,7 @@ const EditUser = (props) => {
             .catch(err => {
                 console.log(err.response);
                 message.error(`ERROR !\n ${err.response.data.message}`)
-            }) */
+            })
     };
 
     return (
@@ -138,20 +152,15 @@ const EditUser = (props) => {
 
                                 >
                                     <h1 className="user-title">Chỉnh sửa thông tin</h1>
-                                    {link !== "" ? (
-                                        <Col className="img-box">
-                                            <Image
-                                                src={link}
-                                            />
+                                    <Col className="img-box">
+                                            {link !== "" ? (
+                                                <Image
+                                                    src={link}
+                                                />
+                                            ) : (ImgEdit === "" ? (<span>Tài khoản chưa có ảnh !</span>) : (<Image src={user.hinh} />)
+                                            )}
                                         </Col>
-
-                                    ) : (
-                                        <Col className="img-box">
-                                            <Image
-                                                src={user.hinh}
-                                            />
-                                        </Col>
-                                    )}
+                                        {link !== "" ? ("") : (ImgEdit === "" ? ("") : (<Button type="danger" onClick={deleteImg}>Xóa ảnh</Button>))}
                                     <Form.Item
                                         name="hinh"
                                         label="Ảnh sản phẩm"
@@ -201,7 +210,11 @@ const EditUser = (props) => {
                                     >
                                         <Input placeholder="Địa chỉ" />
                                     </Form.Item>
-                                    <Button value="submit" type="primary" htmlType="submit">Cập nhật</Button>
+                                    { link === "" && ImgEdit === "" ? (
+                                            <Button value="submit" type="primary" htmlType="submit" disabled>Cập nhật</Button>
+                                        ) : (
+                                            <Button value="submit" type="primary" htmlType="submit">Cập nhật</Button>
+                                        )}
                                 </Form>
                             )}
                         </Col>

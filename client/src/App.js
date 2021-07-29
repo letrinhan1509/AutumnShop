@@ -160,35 +160,6 @@ useEffect(() => {
 
   //Firebase get image
   const [link, setLink] = useState([]);
-/*   useEffect(() => {
-    const fetchImages = async () => {
-      let i = 0;
-      let storageRef = storage.ref();
-      let starsRef = await storageRef.child('img_product/').listAll();
-      let urlPromises = starsRef.items.map(imageRef => imageRef.getDownloadURL());
-      starsRef.listAll().then(function (result) {
-        result.items.forEach(function (imageRef) {
-          i++;
-          displayImage(i, imageRef)
-        })
-      })
-      let result = await storageRef.child('images').listAll();
-      let urlPromises = result.items.map(imageRef => imageRef.getDownloadURL());
-
-      return Promise.all(urlPromises);
-
-    }
-    function displayImage(row, images) {
-      images.getDownloadURL().then(function (url) {
-
-      })
-    }
-    const loadImages = async () => {
-      const urls = await fetchImages();
-      setLink(urls);
-    }
-    loadImages();
-  }, []); */
 
   
 
@@ -205,7 +176,7 @@ useEffect(() => {
         <Switch>
           <Route path='/'>
             <Layout>
-              <HeaderPage ListProductHome={ListProductHome} CountCart={cart.length} PriceCart={sumPrice} receiveData={receiveData} />
+              <HeaderPage ListProductHome={ListProductHome}  cart={cart} PriceCart={sumPrice} receiveData={receiveData} />
               <Content className="content-wrapper">
                 <Route exact path="/">
                   <Home ListProductHome={ListProductHome} link={link} cart={cart} addCart={addCart} Thongbao_Them={Thongbao_Them} />
@@ -226,20 +197,11 @@ useEffect(() => {
                 <Route exact path="/dang-nhap">
                   <Login />
                 </Route>
-                <Route path="/san-pham/DMA">
-                  <Shirt ListProductHome={ListProductHome} link={link} Thongbao_Them={Thongbao_Them} />
+                <Route exact path="/san-pham/:id">
+                  <Shirt link={link} Thongbao_Them={Thongbao_Them} />
                 </Route>
-                <Route path="/san-pham/DMB">
-                  <Backpack ListProductHome={ListProductHome} link={link} Thongbao_Them={Thongbao_Them} />
-                </Route>
-                <Route path="/san-pham/DMG">
-                  <Shoes ListProductHome={ListProductHome} link={link}  Thongbao_Them={Thongbao_Them} />
-                </Route>
-                <Route path="/san-pham/DMPK">
-                  <Accessories ListProductHome={ListProductHome} link={link}  Thongbao_Them={Thongbao_Them} />
-                </Route>
-                <Route path="/san-pham/theo-loai">
-                  <Type Thongbao_Them={Thongbao_Them} />
+                <Route exact path="/san-pham/theo-loai/:id">
+                  <Type link={link} Thongbao_Them={Thongbao_Them} />
                 </Route>
                 <Route path="/Timkiem">
                   <SearchResult kqSearch={kqSearch} countkqSearch={kqSearch.length} Thongbao_Them={Thongbao_Them} />
@@ -253,7 +215,6 @@ useEffect(() => {
                 <Route exact path="/thong-tin-tai-khoan/doi-mat-khau">
                   <ChangePass />
                 </Route>
-                
                 <Route exact path="/dang-nhap/quen-mat-khau">
                   <ForgotPass />
                 </Route>
@@ -281,7 +242,7 @@ useEffect(() => {
                 <Route path="/lien-he">
                   <Contact />
                 </Route>
-                <Route path="/san-pham/khuyen-mai">
+                <Route exact path="/khuyen-mai">
                   <SaleInf />
                 </Route>
               </Content>

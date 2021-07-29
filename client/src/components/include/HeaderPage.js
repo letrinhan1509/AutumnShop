@@ -23,18 +23,12 @@ const HeaderPage = (props) => {
         }
     }
     const handClick2 = (e) => {
-        localStorage.setItem('keyDM', e.key);
         history.push(`/san-pham/${e.key}`);
         window.location.reload();
     }
     const handClick3 = (e) => {   
-        localStorage.setItem('keyType', e.maloai);
-        setTimeout(() => { 
-            history.push(`/san-pham/theo-loai`);
-            window.location.reload();
-        }, 1);
-          
-        
+        history.push(`/san-pham/theo-loai/${e.key}`);       
+        window.location.reload();
     }
     const logout = () => {
         localStorage.removeItem("token")
@@ -85,6 +79,8 @@ const HeaderPage = (props) => {
             })
         }
     };
+    let sum = 0;
+    props.cart.map((item) => (<>{sum = sum + item.qty}</>))
 
     return (
         <>
@@ -102,7 +98,7 @@ const HeaderPage = (props) => {
                         </div>
                         <SearchBar ListProductHome={props.ListProductHome} receiveDataa={props.receiveData} />
                         <Menu.Item key="gio-hang">
-                            <Badge size="small" count={props.CountCart}>
+                            <Badge size="small" count={sum}>
                                 <div className="box-cart">
                                     <ShoppingCartOutlined style={{ fontSize: '26px' }}>
                                     </ShoppingCartOutlined>
@@ -137,20 +133,19 @@ const HeaderPage = (props) => {
                 <Col className="menu2-box" >
                     <Menu mode="horizontal"
                         className="menu2"
-                        onClick={handClick2}
                         onOpenChange={onOpenChange}
                     >
                         {listCategory.map((item) => (
                             <SubMenu key={`${item.madm}`} title={item.tendm} onTitleClick={handClick2} subMenuOpenDelay={0.5} >
                                 {listTypes.length === 1 ? ("") : (
                                     listTypes.map((type) => (
-                                        <Menu.Item onClick={() => handClick3(type)} key={`${type.maloai}`}>{type.tenloai}</Menu.Item>
+                                        <Menu.Item onClick={handClick3} key={`${type.maloai}`}>{type.tenloai}</Menu.Item>
                                     ))
                                 )}
 
                             </SubMenu>
                         ))}
-                        <Menu.Item className="sale" key="khuyen-mai" style={menu}>
+                        <Menu.Item onClick={handClick1} className="sale" key="khuyen-mai" style={menu}>
                             Khuyến mãi
                         </Menu.Item>
                     </Menu>

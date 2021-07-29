@@ -66,10 +66,12 @@ const ListComment = (props) => {
     if (a != '') {
       let url = "http://127.0.0.1:5000/api/v1/binh-luan/" + a /* +"/chi-tiet-bluan" */;
       axios.get(url).then((res) => {
-        setComment(res.data.dataCmt);
+        console.log(res.data);
+        
       })
     }
   }, [a]);
+console.log(comment);
   if (comment != '') {
     localStorage.setItem('detailComment', JSON.stringify(comment));
   }

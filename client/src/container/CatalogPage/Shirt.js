@@ -1,24 +1,29 @@
 import React, { useState, useEffect } from "react";
-import { Row, Col, Card, Image, Button, Carousel, Select } from "antd";
-import { Link } from "react-router-dom";
+import { Row, Col, Card, Image, Button, Carousel, Select, Spin } from "antd";
+import { Link, useParams } from "react-router-dom";
 import { ShoppingCartOutlined, EyeOutlined } from "@ant-design/icons";
 import "container/components-css/ProductType.scss";
 import PRODUCT from 'API_Call/Api_product/product';
 
 const { Option } = Select;
-const keyDM = (localStorage.getItem("keyDM"));
-
 const Shirt = (props) => {
   const [ListProduct, setListProduct] = useState([]);
   const [ListFilter, setListFilter] = useState([]);
-  
+  const [loading, setLoading] = useState(false);
+  const { id } = useParams();
+
   useEffect(() => {
     //Lấy sản phẩm theo danh mục
     try {
-      PRODUCT.getDM(keyDM).then((res) => {
+      PRODUCT.getDM(id).then((res) => {
         if (res.data.status === "Success") {
           setListProduct(res.data.data);
           setListFilter(res.data.data);
+          setTimeout(() => {
+            if (res.data.data !== "") {
+              setLoading(true);
+            }
+          }, 1000);
           console.log(res.data.data);
         }
       });
@@ -165,68 +170,76 @@ const Shirt = (props) => {
                 </Select>
               </Col>
             </Row>
-            <Row justify="space-around">
-              {ListFilter.slice(0, visible).map((productItem) => {
-                return (
-                  <Col key={productItem.masp} style={{ width: 340 }}>
-                    <Card
-                      width={'100%'}
-                      key={productItem.masp}
-                      className="card-pro card_product_home"
-                      bordered={false}
-                      hoverable
-                    >
-                      <div className="img-box">
-                        <Image
+            {loading === false ? (
+              <Row className="spin-wrapper">
+                <Spin className="spin" size="large" />
+              </Row>
+            ) : (
+              <>
+                <Row justify="space-around">
+                  {ListFilter.slice(0, visible).map((productItem) => {
+                    return (
+                      <Col key={productItem.masp} style={{ width: 340 }}>
+                        <Card
                           width={'100%'}
-                          src={productItem.hinh}
-                          preview={{
-                            visible: false,
-                            /* onVisibleChange: () => { onClick() }, */
-                            mask: <div className="icon_product">
-                              <span onClick={() => props.Thongbao_Them(productItem)}>
-                                <ShoppingCartOutlined
-                                  style={{ fontSize: '36px' }} />
-                              </span>
-                              <span>
-                                <Link onClick={() => handleClick(productItem)} to={`/san-pham/chi-tiet-san-pham/${productItem.masp}`}>
-                                  <EyeOutlined
-                                    style={{ fontSize: '36px' }}
-                                  />
-                                </Link>
-                              </span>
-                            </div>
-                          }}
-                        />
-                      </div>
-                      <Row className="product-price">
-                        <Col>{`${productItem.gia} VNĐ`}</Col>
-                      </Row>
-                      <Row className="product-name">
-                        <Col>{productItem.tensp}</Col>
-                      </Row>
-                    </Card>
-                  </Col>
-                );
-              })}
-            </Row>
-            {/* <Pagination defaultCurrent={1} total={50} /> */}
-            <Row className="btn-box">
-              {
-                visible < ListProduct.length ? (
-                  <Col>
-                    <Button
-                      id="load"
-                      type="primary"
-                      onClick={showMoreProduct}
-                      className="btn-load"
-                    >
-                      Xem thêm
-                    </Button>
-                  </Col>
-                ) : (<p>Đã hiển thị hết sản phẩm !</p>)
-              }
-            </Row>
+                          key={productItem.masp}
+                          className="card-pro card_product_home"
+                          bordered={false}
+                          hoverable
+                        >
+                          <div className="img-box">
+                            <Image
+                              width={'100%'}
+                              src={productItem.hinh}
+                              preview={{
+                                visible: false,
+                                /* onVisibleChange: () => { onClick() }, */
+                                mask: <div className="icon_product">
+                                  <span onClick={() => props.Thongbao_Them(productItem)}>
+                                    <ShoppingCartOutlined
+                                      style={{ fontSize: '36px' }} />
+                                  </span>
+                                  <span>
+                                    <Link onClick={() => handleClick(productItem)} to={`/san-pham/chi-tiet-san-pham/${productItem.masp}`}>
+                                      <EyeOutlined
+                                        style={{ fontSize: '36px' }}
+                                      />
+                                    </Link>
+                                  </span>
+                                </div>
+                              }}
+                            />
+                          </div>
+                          <Row className="product-price">
+                            <Col>{`${productItem.gia} VNĐ`}</Col>
+                          </Row>
+                          <Row className="product-name">
+                            <Col>{productItem.tensp}</Col>
+                          </Row>
+                        </Card>
+                      </Col>
+                    );
+                  })}
+                </Row>
+                <Row className="btn-box">
+                  {
+                    visible < ListProduct.length ? (
+                      <Col>
+                        <Button
+                          id="load"
+                          type="primary"
+                          onClick={showMoreProduct}
+                          className="btn-load"
+                        >
+                          Xem thêm
+                        </Button>
+                      </Col>
+                    ) : (<p>Đã hiển thị hết sản phẩm !</p>)
+                  }
+                </Row>
+              </>
+            )}
+
           </div>
         </Col>
       </Row>

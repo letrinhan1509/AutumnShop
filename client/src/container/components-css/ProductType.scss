@@ -41,6 +41,17 @@
                     }
                 }
             }
+            .spin-wrapper{
+                height: 400px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                .ant-spin-dot{
+                    .ant-spin-dot-item{
+                        background-color: #b76e22;
+                    }
+                }
+            }
             .card_product_home {
                 box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
                 width: 100%;

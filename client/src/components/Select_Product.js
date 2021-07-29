@@ -29,7 +29,11 @@ const Select_Product = (props) => {
 
 
     useEffect(() => {
-        //const detail = JSON.parse(localStorage.getItem('detail'));
+        PRODUCT.getid(id).then((res) => {
+            if (res.data.status === "Success"){
+                console.log(res.data.dataSpham);
+            }
+        })
         console.log(detail);
         let idBL = detail.masp;
         comment.getProductID(idBL).then((res) => {
