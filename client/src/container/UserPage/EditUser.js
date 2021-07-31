@@ -142,10 +142,10 @@ const EditUser = (props) => {
                                     name="update"
                                     onFinish={update}
                                     initialValues={{
-                                        username: `${user.username}`,
+                                        username: `${user.tenkh}`,
                                         matkhau: `${user.matkhau}`,
                                         email: `${user.email}`,
-                                        sdt: `${user.sdt}`,
+                                        sdt: `${user.sodienthoai}`,
                                         diachi: `${user.diachi}`,
                                     }}
                                     scrollToFirstError

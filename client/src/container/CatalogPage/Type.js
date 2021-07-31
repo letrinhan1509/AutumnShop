@@ -4,17 +4,24 @@ import { Link, useParams } from "react-router-dom";
 import { ShoppingCartOutlined, EyeOutlined } from "@ant-design/icons";
 import "container/components-css/ProductType.scss";
 import PRODUCT from 'API_Call/Api_product/product';
+import catalog from 'API_Call/Api_catalog/catalog';
 
 const { Option } = Select;
 const Shirt = (props) => {
   const [ListProduct, setListProduct] = useState([]);
   const [ListFilter, setListFilter] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [type, setType] = useState([]);
   const { id } = useParams();
 
 
 
   useEffect(() => {
+    catalog.getTypeID(id).then((res) => {
+      if (res.data.status === "Success"){
+        setType(res.data.data);
+      }
+    });
     //Lấy sản phẩm theo loại
     try {
       PRODUCT.getLoai(id).then((res) => {
@@ -66,33 +73,44 @@ const Shirt = (props) => {
   const price = [
     {
       key: 1,
-      value: 'Mặc định'
+      value: 'Mặc định',
+      name: 'Mặc định'
     },
     {
       key: 2,
-      value: 10000
+      value: '10000',
+      name: '< 10000đ'
     },
     {
       key: 3,
-      value: 20000
+      value: '20000',
+      name: '< 20000đ'
     },
     {
       key: 4,
-      value: 30000
+      value: '30000',
+      name: '< 30000đ'
     },
     {
       key: 5,
-      value: 40000
+      value: '40000',
+      name: '< 40000đ'
     }
   ];
   const [tempSize, setTempSize] = useState("");
-  const [tempPrice, setTempPrice] = useState(0);
+  const [tempPrice, setTempPrice] = useState("");
   function findSize(value) {
     if (value === "Mặc định") {
-      setListFilter(ListProduct);
-      setTempSize("");
-    } else if (tempPrice !== 0) {
-      const filSize = ListProduct.filter(ListProduct => (ListProduct.size === value && Number(ListProduct.gia) <= tempPrice));
+      if (tempPrice !== "") {
+        const filPrice = ListProduct.filter(ListProduct => ListProduct.gia <= tempPrice);
+        setListFilter(filPrice);
+        setTempSize("");
+      } else {
+        setListFilter(ListProduct);
+        setTempSize("");
+      }
+    } else if (tempPrice !== "") {
+      const filSize = ListProduct.filter(ListProduct => (ListProduct.size === value && ListProduct.gia <= tempPrice));
       setListFilter(filSize);
     } else {
       setTempSize(value);
@@ -102,14 +120,20 @@ const Shirt = (props) => {
   }
   function findPrice(value) {
     if (value === "Mặc định") {
-      setListFilter(ListProduct);
-      setTempPrice(0);
+      if (tempSize !== "") {
+        const filPrice = ListProduct.filter(ListProduct => ListProduct.size === tempSize);
+        setListFilter(filPrice);
+        setTempPrice("");
+      } else {
+        setListFilter(ListProduct);
+        setTempPrice("");
+      }
     } else if (tempSize !== "") {
-      const filPrice = ListProduct.filter(ListProduct => (Number(ListProduct.gia) <= value && ListProduct.size === tempSize));
+      const filPrice = ListProduct.filter(ListProduct => (ListProduct.gia <= value && ListProduct.size === tempSize));
       setListFilter(filPrice);
     } else {
       setTempPrice(value);
-      const filPrice = ListProduct.filter(ListProduct => Number(ListProduct.gia) <= value);
+      const filPrice = ListProduct.filter(ListProduct => ListProduct.gia <= value);
       setListFilter(filPrice);
     }
   }
@@ -120,13 +144,7 @@ const Shirt = (props) => {
         <Col className="right">
           <Carousel dots="" autoplay className="carousel">
             <div>
-              <img src="../images/slider/slider_aokhoac.png" alt="slider" />
-            </div>
-            <div>
-              <img src="../images/slider/slider_aothun.jpg" alt="slider" />
-            </div>
-            <div>
-              <img src="../images/slider/slider_somi.jpg" alt="slider" />
+              <img src={type.hinh} alt="slider" />
             </div>
           </Carousel>
           <div className="site-card-wrapper product_home">
@@ -149,7 +167,7 @@ const Shirt = (props) => {
                   {price.map((item) => {
                     return (
                       <>
-                        <Option value={item.value}>{item.value}</Option>
+                        <Option value={item.value}>{item.name}</Option>
                       </>
                     )
                   })}

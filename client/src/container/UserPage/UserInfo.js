@@ -47,7 +47,7 @@ const UserInfo = (props) => {
                                     </Row>
                                     <Row className="box-inf">
                                         <Col className="label-inf">Tên khách hàng: </Col>
-                                        <Col className="inf">{user.username}</Col>
+                                        <Col className="inf">{user.tenkh}</Col>
                                     </Row>
                                     <Row className="box-inf">
                                         <Col className="label-inf">Email: </Col>
@@ -55,7 +55,7 @@ const UserInfo = (props) => {
                                     </Row>
                                     <Row className="box-inf">
                                         <Col className="label-inf">Số điện thoại: </Col>
-                                        <Col className="inf">{user.sdt}</Col>
+                                        <Col className="inf">{user.sodienthoai}</Col>
                                     </Row>
                                     <Row className="box-inf">
                                         <Col className="label-inf">Địa chỉ: </Col>

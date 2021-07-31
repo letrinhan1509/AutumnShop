@@ -122,7 +122,7 @@ const HeaderPage = (props) => {
                         ) : (
                             <>
                                 <Dropdown overlay={drops} placement="bottomLeft">
-                                    <Link to="/thong-tin-tai-khoan"><UserOutlined />{User.username}</Link>
+                                    <Link to="/thong-tin-tai-khoan"><UserOutlined />{User.tenkh}</Link>
                                 </Dropdown>
                             </>
                         )}

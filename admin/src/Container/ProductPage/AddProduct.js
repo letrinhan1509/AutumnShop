@@ -116,7 +116,7 @@ const AddProduct = (props) => {
 
     const addProduct = (values) => {
         values['img'] = link;
-        values['imageName'] = imageName.name;
+        values['imgName'] = imageName.name;
         console.log(values);
         product.addproduct(values).then((res) => {
             if (res.data.status === "Success") {

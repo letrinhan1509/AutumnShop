@@ -4,15 +4,22 @@ import { Link, useParams } from "react-router-dom";
 import { ShoppingCartOutlined, EyeOutlined } from "@ant-design/icons";
 import "container/components-css/ProductType.scss";
 import PRODUCT from 'API_Call/Api_product/product';
+import catalog from 'API_Call/Api_catalog/catalog';
 
 const { Option } = Select;
 const Shirt = (props) => {
   const [ListProduct, setListProduct] = useState([]);
   const [ListFilter, setListFilter] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [cata, setCata] = useState([]);
   const { id } = useParams();
 
   useEffect(() => {
+    catalog.getDanhmucID(id).then((res) => {
+      if (res.data.status === "Success"){
+        setCata(res.data.data);
+      }
+    });
     //Lấy sản phẩm theo danh mục
     try {
       PRODUCT.getDM(id).then((res) => {
@@ -94,9 +101,14 @@ const Shirt = (props) => {
   function findSize(value) {
     console.log(value);
     if (value === "Mặc định") {
-      setListFilter(ListProduct);
-      setTempSize("");
-      console.log(1);
+      if (tempPrice !== "") {
+        const filPrice = ListProduct.filter(ListProduct => ListProduct.gia <= tempPrice);
+        setListFilter(filPrice);
+        setTempSize("");
+      } else {
+        setListFilter(ListProduct);
+        setTempSize("");
+      }
     } else if (tempPrice !== "") {
       setTempSize(value);
       const filSize = ListProduct.filter(ListProduct => (ListProduct.size === value && ListProduct.gia <= tempPrice));
@@ -112,8 +124,14 @@ const Shirt = (props) => {
   function findPrice(value) {
     console.log(value);
     if (value === "Mặc định") {
-      setListFilter(ListProduct);
-      setTempPrice("");
+      if (tempSize !== "") {
+        const filPrice = ListProduct.filter(ListProduct => ListProduct.size === tempSize);
+        setListFilter(filPrice);
+        setTempPrice("");
+      } else {
+        setListFilter(ListProduct);
+        setTempPrice("");
+      }
       console.log(4);
     } else if (tempSize !== "") {
       setTempPrice(value);
@@ -134,13 +152,7 @@ const Shirt = (props) => {
         <Col className="right">
           <Carousel dots="" autoplay className="carousel">
             <div>
-              <img src="../images/slider/slider_aokhoac.png" alt="slider" />
-            </div>
-            <div>
-              <img src="../images/slider/slider_aothun.jpg" alt="slider" />
-            </div>
-            <div>
-              <img src="../images/slider/slider_somi.jpg" alt="slider" />
+              <img src={cata.hinh} alt="slider" />
             </div>
           </Carousel>
           <div className="site-card-wrapper product_home">

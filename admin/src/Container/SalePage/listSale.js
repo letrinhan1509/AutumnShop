@@ -41,7 +41,7 @@ const ListSale = (props) => {
             if (res.data.status === "Success") {
                 localStorage.setItem('saleID', JSON.stringify(res.data.detailPromotion));
                 setTimeout(() => {
-                    history.push('/danh-sach-khuyen-mai/chi-tiet-khuyen-mai');
+                    history.push('/danh-sach-khuyen-mai/chi-tiet');
                 }, 100)
             }
         });
@@ -192,16 +192,15 @@ const ListSale = (props) => {
                     </>
                 )
             }) : (<> </>),
-        user.permission === 'Admin' ? ({
+        user.permission !== 'NVBH' ? ({
             dataIndex: "makm",
             key: "makm",
-            render: makm => (<div className="btn-box fix"><Button data-id={makm} onClick={loadEdit} type="primary">Sửa</Button></div>)
-        }) : (<> </>),
-        user.permission === 'Admin' ? ({
+            render: makm => (<div className="btn-box fix"><Button data-id={makm} onClick={loadDetail} type="primary">Sửa</Button></div>)
+        }) : {
             dataIndex: "makm",
             key: "makm",
             render: makm => (<div className="btn-box"><Button data-id={makm} onClick={loadDetail} type="primary">Chi tiết</Button></div>)
-        }) : (<> </>),
+        },
     ];
 
 
@@ -213,7 +212,7 @@ const ListSale = (props) => {
     }
     function filterItems(arr, query) {
         return arr.filter(function (el) {
-            if (removeAccents(el.tenkh.toLowerCase()).indexOf(removeAccents(query.toLowerCase())) !== -1) {
+            if (removeAccents(el.tenkm.toLowerCase()).indexOf(removeAccents(query.toLowerCase())) !== -1) {
                 return el;
             } else {
                 return "";
@@ -221,24 +220,24 @@ const ListSale = (props) => {
 
         });
     }
-    let demo = listVoucher;
 
-    /* function onChange(e) {
-      if (e.target.value !== "") {
-        let filter = filterItems(ListUser, e.target.value);
-        if (filter !== "") {
-          demo = filter;
-          setWordSearch(demo);
+    let demo = listVoucher;
+    function onChange(e) {
+        if (e.target.value !== "") {
+            let filter = filterItems(listVoucher, e.target.value);
+            if (filter !== "") {
+                demo = filter;
+                setWordSearch(demo);
+            } else {
+                demo = listVoucher;
+                setWordSearch(demo);
+            }
         } else {
-          demo = ListUser;
-          setWordSearch(demo);
+            demo = listVoucher;
+            setWordSearch(demo);
         }
-      } else {
-        demo = ListUser;
-        setWordSearch(demo);
-      }
-      console.log(demo);
-    } */
+        console.log(demo);
+    }
     const [pageSize, setPageSize] = useState(6);
     const size = [
         {
@@ -293,7 +292,7 @@ const ListSale = (props) => {
                     </div>
                     <div className="search-box">
                         <span>Tìm kiếm: </span>
-                        <input placeholder='Nhập tên voucher' style={{ width: 300 }} /*onChange={e => onChange(e)}*/ />
+                        <input placeholder='Nhập tên voucher' style={{ width: 300 }} onChange={e => onChange(e)} />
                     </div>
                 </div>
                 <Table className="proItem" dataSource={wordSearch} columns={columns} pagination={{ pageSize: `${pageSize}` }} size="middle" />

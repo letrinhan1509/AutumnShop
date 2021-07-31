@@ -13,6 +13,7 @@ const ListOrder = (props) => {
     const link = useHistory();
     const [ListOrder, setListOrder] = useState([]);
     const [a, setA] = useState([]);
+    const [wordSearch, setWordSearch] = useState([]);
     //API List Order:
     useEffect(() => {
         order.getAll().then((res) => {
@@ -54,7 +55,7 @@ const ListOrder = (props) => {
     }
     function filterItems(arr, query) {
         return arr.filter(function (el) {
-            if (removeAccents(el.tennv.toLowerCase()).indexOf(removeAccents(query.toLowerCase())) !== -1) {
+            if (removeAccents(el.tenkh.toLowerCase()).indexOf(removeAccents(query.toLowerCase())) !== -1) {
                 return el;
             } else {
                 return "";
@@ -62,25 +63,23 @@ const ListOrder = (props) => {
 
         });
     }
-    //let demo = ListAdmin;
-    const [wordSearch, setWordSearch] = useState([]);
-
-    /* function onChange(e) {
+    let demo = ListOrder;
+    function onChange(e) {
         if (e.target.value !== "") {
-            let filter = filterItems(ListAdmin, e.target.value);
+            let filter = filterItems(ListOrder, e.target.value);
             if (filter !== "") {
                 demo = filter;
                 setWordSearch(demo);
             } else {
-                demo = ListAdmin;
+                demo = ListOrder;
                 setWordSearch(demo);
             }
         } else {
-            demo = ListAdmin;
+            demo = ListOrder;
             setWordSearch(demo);
         }
         console.log(demo);
-    } */
+    }
     const [pageSize, setPageSize] = useState(4);
     const size = [
         {
@@ -139,7 +138,7 @@ const ListOrder = (props) => {
             key: 'ngaydat',
             render: ngaydat => {
                 var date = new Date(ngaydat);
-                return(
+                return (
                     date.toLocaleDateString()
                 );
             }
@@ -149,17 +148,16 @@ const ListOrder = (props) => {
             dataIndex: 'tentt',
             key: 'tentt',
         },
-        user.permission === "Admin" || user.permission === "NVBH" ? (
-        {
-            dataIndex: "madonhang",
-            key: "madonhang",
-            render: madonhang => (<div className="btn-box fix"><Button data-id={madonhang} onClick={loadEdit} type="primary">Sửa</Button></div>)
-        }) : (<></>),
-        {
+        user.permission !== "NVGH" ? (
+            {
+                dataIndex: "madonhang",
+                key: "madonhang",
+                render: madonhang => (<div className="btn-box fix"><Button data-id={madonhang} onClick={loadEdit} type="primary">Sửa</Button></div>)
+            }) : {
             dataIndex: "madonhang",
             key: "madonhang",
             render: madonhang => (<div className="btn-box"><Button data-id={madonhang} onClick={loadDetail} type="primary">Chi tiết</Button></div>)
-        }
+        },
     ];
 
     return (
@@ -183,6 +181,10 @@ const ListOrder = (props) => {
                         Đơn hàng GHTK
                     </Button>
                 </div> */}
+                <div className="search-box">
+                    <span>Tìm kiếm: </span>
+                    <input placeholder='Nhập tên voucher' style={{ width: 300 }} onChange={e => onChange(e)} />
+                </div>
             </div>
             <Table className="proItem" dataSource={wordSearch} columns={columns} pagination={{ pageSize: `${pageSize}` }} size="middle" />
             {/* <Link to={'/Themnhanvien'}><p className="ant-btn ant-btn-primary" type="primary">Thêm nhân viên</p></Link> */}

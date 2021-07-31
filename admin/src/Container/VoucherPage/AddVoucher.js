@@ -137,14 +137,14 @@ const AddVoucher = (props) => {
     };
 
     const addProduct = (values) => {
-        console.log(datestart.toLocaleDateString());
-        values["ngaybd"] = moment(datestart.toLocaleDateString()).format('YYYY-DD-MM');
-        values["ngaykt"] = moment(dateEnd.toLocaleDateString()).format('YYYY-DD-MM');
+        //console.log(datestart.toLocaleDateString());
+        values["ngaybd"] = moment(datestart).format('YYYY-MM-DD');
+        values["ngaykt"] = moment(dateEnd).format('YYYY-MM-DD');
         values["trangthai"] = title;
         values['img'] = link;
         values['imgName'] = imageName.name;
         console.log(values);
-        discount.addVoucher(values).then((res) => {
+        /* discount.addVoucher(values).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message)
                 setTimeout(() => {
@@ -156,7 +156,7 @@ const AddVoucher = (props) => {
             .catch(err => {
                 console.log(err.response);
                 message.error(`Tạo voucher thất bại !\n ${err.response.data.message}`)
-            });
+            }); */
     };
     const [listProduct, setlistProduct] = useState([]);
 

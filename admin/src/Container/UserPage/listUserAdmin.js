@@ -166,10 +166,11 @@ const ListUserAdmin = () => {
         title: '',
         dataIndex: 'trangthai',
         key: 'trangthai',
-        render: (trangthai) =>
+        render: (trangthai, admin) =>
         (
-          <>
-            {trangthai.stt.map(tragth => {
+          <>{console.log(admin.manv)}
+          {admin.manv === result.manv ? ("") : (
+            trangthai.stt.map(tragth => {
               if (tragth === 'Khoá') {
                 return (
                   <div className="btn-box lock"><Button data-id={trangthai.id} type="primary" icon={<UnlockOutlined />} onClick={unlock}></Button></div>
@@ -179,16 +180,17 @@ const ListUserAdmin = () => {
                   <div className="btn-box lock"><Button data-id={trangthai.id} type="danger" icon={<LockOutlined />} onClick={lock}></Button></div>
                 )
               }
-            })}
+            })
+          )}
+            
           </>
         )
       } : (<> </>),
     result.permission === 'Admin' ?
       {
-        title: 'Hành động',
         dataIndex: 'manv',
         key: 'manv',
-        render: manv => (<div className="btn-box fix"><Button data-id={manv} key={manv} type="primary" onClick={linkto}>Sửa</Button></div>)
+        render: manv => (<div className="btn-box fix">{result.manv === manv ? ("") : (<Button data-id={manv} key={manv} type="primary" onClick={linkto}>Sửa</Button>)}</div>)
       } : (<> </>)
 
   ];

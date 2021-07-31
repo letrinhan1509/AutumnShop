@@ -16,6 +16,7 @@ import EditAdmin from "./Container/UserPage/editAdmin";
 import AddNVien from "./Container/UserPage/addNVien";
 import AddProduct from "./Container/ProductPage/AddProduct";
 import AllProduct from "./Container/ProductPage/AllProduct";
+import DetailProduct from "./Container/ProductPage/DetailProduct";
 import AddProductType from "./Container/ProtypePage/AddProductType";
 import AddProducer from "./Container/ProducerPage/AddProducer";
 import AddCategory from "./Container/CatalogPage/AddCategory";
@@ -33,9 +34,11 @@ import OrderDetail from "./Container/OrderPage/OrderDetail";
 import EditOrder from "./Container/OrderPage/editOrder";
 import ListVoucher from "./Container/VoucherPage/listVoucher";
 import EditVoucher from "./Container/VoucherPage/EditVoucher";
+import DetailVoucher from "./Container/VoucherPage/DetailVoucher";
 import ListSale from "./Container/SalePage/listSale";
 import AddSale from "./Container/SalePage/AddSale";
 import EditSale from "./Container/SalePage/EditSale";
+import DetailSale from "./Container/SalePage/DetailSale";
 import AccountInfo from "./Container/AccountPage/AccountInfo";
 import EditAccount from "./Container/AccountPage/EditAccount";
 import ChangePass from "./Container/AccountPage/ChangePass";
@@ -127,6 +130,9 @@ function App() {
                   <Route exact path="/tat-ca-san-pham/sua-san-pham">
                     <EditProduct />
                   </Route>
+                  <Route exact path="/tat-ca-san-pham/chi-tiet">
+                    <DetailProduct />
+                  </Route>
                   <Route exact path="/danh-sach-loai">
                     <ListProductType />
                   </Route>
@@ -163,6 +169,9 @@ function App() {
                   <Route exact path="/danh-sach-khuyen-mai/sua-khuyen-mai">
                     <EditSale />
                   </Route>
+                  <Route exact path="/danh-sach-khuyen-mai/chi-tiet">
+                    <DetailSale />
+                  </Route>
                   <Route exact path="/them-voucher">
                     <AddVoucher />
                   </Route>
@@ -183,6 +192,9 @@ function App() {
                   </Route>
                   <Route exact path="/danh-sach-voucher/sua-voucher">
                     <EditVoucher />
+                  </Route>
+                  <Route exact path="/danh-sach-voucher/chi-tiet">
+                    <DetailVoucher />
                   </Route>
                   <Route exact path="/tai-khoan">
                     <AccountInfo />

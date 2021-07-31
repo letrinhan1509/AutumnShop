@@ -5,6 +5,7 @@ import { useHistory, Link } from 'react-router-dom';
 import axios from 'axios';
 import "Container/scss/addpro.scss";
 import catalog from 'API_Call/Api_catalog/catalog';
+import { storage } from 'Container/Firebase/firebase';
 
 const ListCata = () => {
   const link = useHistory();
@@ -35,6 +36,12 @@ const ListCata = () => {
   // Xoá danh mục
   const deleteCategory = (e) => {
     let id = e.currentTarget.dataset.id;
+    let cata = [];
+    catalog.getDanhmucID(id).then((res) => {
+      if (res.data.status === "Success") {
+        cata = res.data.data;
+      }
+    });
     confirm({
       title: 'Bạn muốn xóa danh mục này?',
       okText: 'Xóa',
@@ -44,9 +51,15 @@ const ListCata = () => {
         catalog.deleteCatalog(id).then((res) => {
           if (res.data.status === "Success") {
             message.success(res.data.message)
+            const del = storage.ref(`Catalog_Img/${cata.tenhinh}`);
+            del.delete().then((res) => {
+              message.success("Đã xóa ảnh!");
+            }).catch((error) => {
+              console.log(error);
+            });
             setTimeout(() => {
-              link.go({ pathname: '/danh-muc-san-pham' });
-            }, 800)
+              window.location.reload()
+            }, 1000);
           }
           else {
             message.error(res.data.message)

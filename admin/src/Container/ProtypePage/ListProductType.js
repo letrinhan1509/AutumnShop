@@ -4,6 +4,7 @@ import { Link, useHistory } from 'react-router-dom';
 import { LockOutlined, UnlockOutlined } from '@ant-design/icons';
 import "Container/scss/addpro.scss";
 import catalog from 'API_Call/Api_catalog/catalog';
+import { storage } from 'Container/Firebase/firebase';
 
 const ListProductType = () => {
   const { confirm } = Modal;
@@ -75,6 +76,12 @@ const ListProductType = () => {
   //xóa loại SP
   const deleteType = (e) => {
     let id = e.currentTarget.dataset.id;
+    let type = [];
+    catalog.getTypeID(id).then((res) => {
+      if (res.data.status === "Success") {
+        type = res.data.data;
+      }
+    });
     confirm({
       title: 'Bạn muốn xóa loại sản phẩm này?',
       okText: 'Xóa',
@@ -84,9 +91,15 @@ const ListProductType = () => {
         catalog.deleteProtype(id).then((res) => {
           if (res.data.status === "Success") {
             message.success(res.data.message)
+            const del = storage.ref(`ProductType_Img/${type.tenhinh}`);
+            del.delete().then((res) => {
+              message.success("Đã xóa ảnh!");
+            }).catch((error) => {
+              console.log(error);
+            });
             setTimeout(() => {
-              link.go({ pathname: '/danh-sach-loai' });
-            }, 800)
+              window.location.reload()
+            }, 1000);
           }
           else {
             message.error(res.data.message)

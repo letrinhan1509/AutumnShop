@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router';
 import { Link } from 'react-router-dom';
 import "Container/scss/addpro.scss";
+import { storage } from 'Container/Firebase/firebase';
 
 const { Option } = Select;
 const AllProduct = () => {
@@ -33,13 +34,27 @@ const AllProduct = () => {
       }
     })
   }
-
-
-
+  //chi tiết sản phẩm
+  const detail = (e) => {
+    let i = e.currentTarget.dataset.id;
+    product.getid(i).then((res) => {
+      if (res.data.status === "Success") {
+        localStorage.setItem('product', JSON.stringify(res.data.dataSpham));
+        setTimeout(() => {
+          link.push('/tat-ca-san-pham/chi-tiet');
+        }, 100)
+      }
+    })
+  }
   ///Xoá SP
   const deletePro = (e) => {
-    let id = e.currentTarget.dataset.id
-    console.log(id);
+    let id = e.currentTarget.dataset.id;
+    let pro = [];
+    product.getid(id).then((res) => {
+      if (res.data.status === "Success") {
+        pro = res.data.dataSpham;
+      }
+    })
     confirm({
       title: 'Bạn muốn xóa sản phẩm này?',
       okText: 'Xóa',
@@ -49,7 +64,15 @@ const AllProduct = () => {
         product.deletePro(id).then((res) => {
           if (res.data.status === "Success") {
             message.success(res.data.message);
-            window.location.reload()
+            const del = storage.ref(`Product_Img/${pro.tenhinh}`);
+            del.delete().then((res) => {
+              message.success("Đã xóa ảnh!");
+            }).catch((error) => {
+              console.log(error);
+            });
+            setTimeout(() => {
+              window.location.reload()
+            }, 1000);
           } if (res.data.status === "Fail") {
             message.error(res.data.message);
           }
@@ -195,12 +218,17 @@ const AllProduct = () => {
       ],
       onFilter: (value, record) => record.tendm.includes(value),
     },
-    {
-      dataIndex: "masp",
-      key: "masp",
-      render: masp => (<div className="btn-box fix"><Button data-id={masp} onClick={loadEdit} type="primary">Sửa</Button></div>)
-    },
-    result.permission === 'Admin' || result.permission === 'QL' ?
+    result.permission !== 'NVBH' ?
+      {
+        dataIndex: "masp",
+        key: "masp",
+        render: masp => (<div className="btn-box fix"><Button data-id={masp} onClick={loadEdit} type="primary">Sửa</Button></div>)
+      } : {
+        dataIndex: "masp",
+        key: "masp",
+        render: masp => (<div className="btn-box fix"><Button data-id={masp} onClick={detail} type="primary">Chi tiết</Button></div>)
+      },
+    result.permission !== 'NVBH' ?
       {
         dataIndex: "masp",
         key: "masp",
@@ -285,13 +313,16 @@ const AllProduct = () => {
                 })}
               </Select>
             </div>
-            <div className="btn-wrapper">
-              <Link to={'/them-san-pham'}>
-                <Button type="primary">
-                  Thêm sản phẩm
-                </Button>
-              </Link>
-            </div>
+            {result.permission !== 'NVBH' ? (
+              <div className="btn-wrapper">
+                <Link to={'/them-san-pham'}>
+                  <Button type="primary">
+                    Thêm sản phẩm
+                  </Button>
+                </Link>
+              </div>
+            ) : (<></>)}
+
           </div>
           <div className="search-box">
             <span>Tìm kiếm: </span>
