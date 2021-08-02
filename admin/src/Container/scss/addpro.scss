@@ -46,6 +46,22 @@
                 width: 100%;
             }
         }
+        .detail{
+            display: flex;
+            justify-content: space-evenly;
+            padding: 5px;
+            .ant-form-item-label{
+                width: 110px;
+            }
+            .btn-detail{
+                margin-left: 15px;
+            }
+        }
+        .proItem{
+            .ant-table-cell{
+                text-align: center;
+            }
+        }
     }
     .product-wrapper{
         margin-top: 50px;

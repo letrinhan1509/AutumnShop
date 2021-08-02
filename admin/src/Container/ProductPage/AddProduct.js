@@ -1,10 +1,10 @@
 import { UploadOutlined } from '@ant-design/icons';
-import { Button, Form, Input, InputNumber, message, Select, Upload, Modal, Image } from 'antd';
+import { Button, Form, Input, InputNumber, message, Select, Upload, Modal, Image, Divider, Table } from 'antd';
 import product from 'API_Call/Api_product/product';
 import catalog from 'API_Call/Api_catalog/catalog';
 import producer from 'API_Call/Api_producer/producer';
 import { storage } from 'Container/Firebase/firebase';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Link, useHistory } from "react-router-dom";
 import "Container/scss/addpro.scss";
 
@@ -42,6 +42,9 @@ const normFile = (e: any) => {
 };
 
 const AddProduct = (props) => {
+    const SIZE = useRef(null);
+    const MAU = useRef(null);
+    const SOLUONG = useRef(null);
     const [imageName, setImageName] = useState("");
     const [form] = Form.useForm();
     const history = useHistory();
@@ -104,7 +107,7 @@ const AddProduct = (props) => {
                     }).catch((error) => {
                         console.log(error);
                     });
-                }else{
+                } else {
                     history.push('/tat-ca-san-pham');
                 }
             },
@@ -112,24 +115,6 @@ const AddProduct = (props) => {
                 console.log('Cancel');
             },
         });
-    };
-
-    const addProduct = (values) => {
-        values['img'] = link;
-        values['imgName'] = imageName.name;
-        console.log(values);
-        product.addproduct(values).then((res) => {
-            if (res.data.status === "Success") {
-                message.success(res.data.message)
-                setTimeout(() => {
-                    history.push('/tat-ca-san-pham');
-                }, 2000)
-            };
-        })
-            .catch(err => {
-                console.log(err.response);
-                message.error(`Thêm thất bại!\n ${err.response.data.message}`)
-            })
     };
 
     const size = [
@@ -171,6 +156,84 @@ const AddProduct = (props) => {
             tenmau: 'Trắng',
         }
     ];
+    const columns = [
+        {
+            title: 'Stt',
+            dataIndex: 'id',
+            key: 'id',
+        },
+        {
+            title: 'Size',
+            dataIndex: 'masize',
+            key: 'masize',
+        },
+        {
+            title: 'Màu',
+            dataIndex: 'mamau',
+            key: 'mamau',
+        },
+        {
+            title: 'Số lượng',
+            dataIndex: 'soluong',
+            key: 'soluong',
+        },
+        {
+            dataIndex: 'id',
+            key: 'id',
+            render: id => (<div className="btn-box delete"><Button data-id={id} key={id} type="danger" onClick={showDeleteDetail}>Xóa</Button></div>)
+        }
+    ];
+
+    const addProduct = (values) => {
+        values['img'] = link;
+        values['imgName'] = imageName.name;
+        values['chitiet'] = add;
+        console.log(values);
+        /* product.addproduct(values).then((res) => {
+            if (res.data.status === "Success") {
+                message.success(res.data.message)
+                setTimeout(() => {
+                    history.push('/tat-ca-san-pham');
+                }, 2000)
+            };
+        })
+            .catch(err => {
+                console.log(err.response);
+                message.error(`Thêm thất bại!\n ${err.response.data.message}`)
+            }) */
+    };
+    const [add, setAdd] = useState([]);
+    const [id, setID] = useState(0);
+    const addDetail = () => {
+        let tam = id + 1;
+        let detail = [];
+        detail['id'] = tam;
+        detail['masize'] = SIZE.current.props.value;
+        detail['mamau'] = MAU.current.props.value;
+        detail['soluong'] = SOLUONG.current.ariaValueNow;
+        setAdd([...add, { ...detail }]);
+        setID(tam);
+        console.log(detail);
+    };
+    function showDeleteDetail(item) {
+        let IDdel = item.currentTarget.dataset.id;
+        console.log(IDdel);
+        confirm({
+            title: 'Bạn thật sự muốn xóa chi tiết này?',
+            okText: 'Xóa',
+            okType: 'danger',
+            cancelText: 'Không',
+            onOk() {
+                //add.filter((x) => console.log(x.id));
+                setAdd(
+                    add.filter((x) => x.id !== Number(IDdel))
+                );
+            },
+            onCancel() {
+                console.log('Cancel');
+            },
+        });
+    }
 
     //API NSX - DM - Loại
     const [listProducer, setlistProducer] = useState([]);
@@ -204,6 +267,8 @@ const AddProduct = (props) => {
         })
     };
 
+
+
     return (
         <>
             <div className="form-wrapper">
@@ -216,7 +281,6 @@ const AddProduct = (props) => {
                     onFinish={addProduct}
                     scrollToFirstError
                 //initialValues={{img: link}}
-
                 >
                     <Form.Item
                         name="code"
@@ -241,42 +305,6 @@ const AddProduct = (props) => {
                         ]}
                     >
                         <Input />
-                    </Form.Item>
-                    <Form.Item
-                        name="soluong"
-                        label="Số lượng"
-                    >
-                        <InputNumber min={1} max={20} defaultValue={1} />
-                    </Form.Item>
-                    <Form.Item
-                        name="size"
-                        label="Size"
-                    //rules={[{ required: false }]}
-                    >
-                        <Select style={{ width: 150 }}>
-                            {size.map((item) => {
-                                return (
-                                    <>
-                                        <Option value={item.masize}>{item.tensize}</Option>
-                                    </>
-                                )
-                            })}
-                        </Select>
-                    </Form.Item>
-                    <Form.Item
-                        name="mau"
-                        label="Màu"
-                    //rules={[{ required: false }]}
-                    >
-                        <Select style={{ width: 150 }}>
-                            {mau.map((item) => {
-                                return (
-                                    <>
-                                        <Option value={item.tenmau}>{item.tenmau}</Option>
-                                    </>
-                                )
-                            })}
-                        </Select>
                     </Form.Item>
                     <Form.Item
                         name="gia"
@@ -385,6 +413,55 @@ const AddProduct = (props) => {
                             })}
                         </Select>
                     </Form.Item>
+                    <Divider >Chi tiết sản phẩm</Divider>
+                    <div>
+                        <Form
+                            name="addDetail"
+                            className="detail"
+                            initialValues={{
+                                soluong: 1,
+                            }}
+                        >
+                            <Form.Item
+                                name="soluong"
+                                label="Số lượng"
+                            >
+                                <InputNumber ref={SOLUONG} min={1} max={20} defaultValue={1} />
+                            </Form.Item>
+                            <Form.Item
+                                name="size"
+                                label="Size"
+                            //rules={[{ required: false }]}
+                            >
+                                <Select ref={SIZE} style={{ width: 100 }}>
+                                    {size.map((item) => {
+                                        return (
+                                            <>
+                                                <Option value={item.masize}>{item.tensize}</Option>
+                                            </>
+                                        )
+                                    })}
+                                </Select>
+                            </Form.Item>
+                            <Form.Item
+                                name="mau"
+                                label="Màu"
+                            //rules={[{ required: false }]}
+                            >
+                                <Select ref={MAU} style={{ width: 100 }}>
+                                    {mau.map((item) => {
+                                        return (
+                                            <>
+                                                <Option value={item.mamau}>{item.tenmau}</Option>
+                                            </>
+                                        )
+                                    })}
+                                </Select>
+                            </Form.Item>
+                            <Button className="btn-detail" type="primary" onClick={addDetail}>Thêm chi tiết</Button>
+                        </Form>
+                        <Table className="proItem" style={{ padding: 10 }} dataSource={add} columns={columns} pagination={{ pageSize: 5 }} size="small" />
+                    </div>
                     <Form.Item {...tailFormItemLayout}>
                         <Button className="ant-btn ant-btn-dashed" onClick={back} style={{ marginLeft: -30 }}>
                             Trở về
@@ -396,7 +473,6 @@ const AddProduct = (props) => {
                                 <Button type="primary" htmlType="submit" style={{ marginLeft: 30 }}>Thêm sản phẩm</Button>
                             )
                         }
-
                     </Form.Item>
                 </Form>
             </div>
