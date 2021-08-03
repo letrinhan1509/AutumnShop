@@ -22,6 +22,58 @@ const AllProduct = () => {
     });
   }, []);
 
+  ListProductHome.forEach(element => {
+    if (element.trangthai === 1) {
+      element.trangthai = [];
+      element.trangthai.stt = ["Hiển thị"];
+      element.trangthai.id = element.masp;
+    }
+    if (element.trangthai === 0) {
+      element.trangthai = [];
+      element.trangthai.stt = ["Ẩn"];
+      element.trangthai.id = element.masp;
+    }
+  })
+
+  //Cập nhật trạng thái sản phẩm
+  const unlock = (e) => {
+    let id = e.currentTarget.dataset.id;
+    console.log("Id:", id);
+    let values = { masp: id, trangthai: 1 };
+    product.updateStatus(values).then((res) => {
+      if (res.data.status === "Success") {
+        message.success(res.data.message)
+        setTimeout(() => {
+          link.go({ pathname: '/tat-ca-san-pham' });
+        }, 800)
+      } else {
+        message.error("Cập nhật trạng thái thất bại!")
+      }
+    })
+      .catch(err => {
+        console.log(err.response);
+        message.error(`${err.response.data.message}`);
+      })
+  }
+  const lock = (e) => {
+    let id = e.currentTarget.dataset.id;
+    console.log("Id:", id);
+    let values = { masp: id, trangthai: 0 };
+    product.updateStatus(values).then((res) => {
+      if (res.data.status === "Success") {
+        message.success(res.data.message)
+        setTimeout(() => {
+          link.go('/tat-ca-san-pham')
+        }, 800)
+      } else {
+        message.error("Cập nhật trạng thái thất bại")
+      }
+    })
+      .catch(err => {
+        message.error(`${err.response.data.message}`)
+      })
+  };
+
   //Redirect sua-san-pham 
   const loadEdit = (e) => {
     let i = e.currentTarget.dataset.id;
@@ -96,11 +148,6 @@ const AllProduct = () => {
 
     },
     {
-      title: 'Code',
-      dataIndex: 'code',
-      key: 'code',
-    },
-    {
       title: 'Tên sản phẩm',
       dataIndex: 'tensp',
       key: 'tensp',
@@ -112,39 +159,11 @@ const AllProduct = () => {
       render: text => <img src={text} width={70} />,
     },
     {
-      title: 'Số lượng',
-      dataIndex: 'soluong',
-      key: 'soluong',
-    },
-    {
-      title: 'Size',
-      dataIndex: 'size',
-      key: 'size',
-      filters: [
-        { text: 'S', value: 'S' },
-        { text: 'M', value: 'M' },
-        { text: 'L', value: 'L' },
-      ],
-      onFilter: (value, record) => record.size.includes(value),
-    },
-    {
-      title: 'Màu',
-      dataIndex: 'mau',
-      key: 'mau',
-      filters: [
-        { text: 'Xanh', value: 'Xanh' },
-        { text: 'Đỏ', value: 'Đỏ' },
-        { text: 'Đen', value: 'Đen' },
-        { text: 'Trắng', value: 'Trắng' },
-      ],
-      onFilter: (value, record) => record.mau.includes(value),
-    },
-    {
       title: 'Giá',
       dataIndex: 'gia',
       key: 'gia',
     },
-    {
+    /* {
       title: 'Trạng thái',
       dataIndex: 'trangthai',
       key: 'trangthai',
@@ -157,7 +176,30 @@ const AllProduct = () => {
           {trangthai}
         </Tag>
       )
-    },
+    }, */
+    result.permission === 'QLCH' ? (
+      {
+        title: 'Trạng thái',
+        dataIndex: 'trangthai',
+        data: 'masp',
+        key: 'trangthai',
+        render: (trangthai) =>
+        (
+          <>
+            {trangthai.stt.map(tragth => {
+              if (tragth === 'Ẩn') {
+                return (
+                  <div className="btn-box lock"><Button data-id={trangthai.id} type="primary" onClick={unlock}> Hiển thị </Button></div>
+                );
+              } else {
+                return (
+                  <div className="btn-box lock"><Button data-id={trangthai.id} type="danger" onClick={lock}> Ẩn </Button></div>
+                )
+              }
+            })}
+          </>
+        )
+      }) : (<> </>),
     {
       title: 'Nhà sản xuất',
       dataIndex: 'tennsx',

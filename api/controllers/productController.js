@@ -3,7 +3,9 @@ const modelProduct = require('../models/model_product'); //nhúng model products
 const modelComment = require('../models/model_comment');
 const modelCatalog = require('../models/model_catalog');
 const modelProducer = require('../models/model_producer');
+const modelSize = require('../models/model_size');
 const e = require('express');
+const { json } = require('body-parser');
 
 
                     // PRODUCT CONTROLLER
@@ -51,7 +53,24 @@ exports.getProduct = catchAsync(async (req, res, next) => {
                 message: "Thiếu mã sản phẩm, vui lòng kiểm tra lại !"
             });
         };
+        var today = new Date();
         const productExist = await modelProduct.get_By_Id(masp);
+        var ngaytao = today.getDate()+'-'+(today.getMonth()+1)+'-'+today.getFullYear();
+        /* console.log(ngaytao);
+        console.log(productExist.ngaytao);
+        if(productExist.ngaytao === '23-7-2021') {
+            console.log("ok");
+        } */
+        /* console.log(productExist.chitiet);
+        var chitiet = JSON.parse(productExist.chitiet);
+        chitiet.forEach(element => {
+            //console.log(element);
+            if(element.size == 'S' && element.mau == "Đỏ") {
+                console.log(element);
+                element['giagiam'] = "100000";
+                console.log(element);
+            }
+        }); */
         if(productExist == -1) {
             return res.status(400).json({ 
                 status: "Fail", 
@@ -99,7 +118,8 @@ exports.getProductType = catchAsync(async (req, res, next) => {
         } else {
             return res.status(200).json({ 
                 status: "Success", 
-                message: "Không có sản phẩm nào thuộc loại này !"
+                message: "Không có sản phẩm nào thuộc loại này !",
+                data: []
             });
         };
     } catch (error) {
@@ -226,33 +246,30 @@ exports.postProduct = catchAsync(async (req, res, next) => {
     try {
         var today = new Date();
         var ngaytao = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate()+' '+today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-        let trangthai = req.body.trangthai;
         const data = {
-            //code: (req.body.maloai + req.body.size + req.body.mau),
-            code: req.body.code,
             tensp: req.body.ten,
-            soluong: req.body.soluong,
-            size: req.body.size,
-            mau: req.body.mau,
             gia: req.body.gia,
+            chitiet: req.body.chitiet,
             tenhinh: req.body.imgName,
             hinh: req.body.img,
-            hinhchitiet: req.body.hinhchitiet,
+            tenhinhct: req.body.imgNameDetail,
+            hinhchitiet: req.body.imgDetail,
             mota: req.body.mota,
             ngaytao: ngaytao,
+            trangthai: req.body.trangthai,
             mansx: req.body.mansx,
             maloai: req.body.maloai,
-            madm: req.body.madm,
+            madm: req.body.madm
         };
-        if(!data.tensp || !data.soluong || !data.size || !data.mau || !data.gia || !data.hinh || !data.maloai || !data.madm) {
+        if(!data.tensp || !data.gia || !data.chitiet || !data.tenhinh || !data.hinh || !data.mansx || !data.maloai || !data.madm ) {
             return res.status(400).json({ 
                 status: "Fail", 
                 message: "Thiếu thông tin sản phẩm, vui lòng kiểm tra lại !"
             });
         };
-        const codeExist = await modelProduct.check_Code(data.code);
-        if(codeExist == -1) {
-            // Mã code không bị trùng:
+        const nameExist = await modelProduct.get_By_productName(data.tensp);
+        if(nameExist == -1) {
+            // Tên sản phẩm không bị trùng:
             const query = await modelProduct.create_product(data);
             if(query == 1) {
                 return res.status(200).json({ 
@@ -266,13 +283,14 @@ exports.postProduct = catchAsync(async (req, res, next) => {
                 });
             }
         } else {
-            // Trùng mã code:
+            // Trùng tên sản phẩm:
             return res.status(400).json({ 
                 status: "Fail", 
-                message: "Mã CODE của sản phẩm này đã tồn tại, vui lòng nhập mã CODE khác !"
+                message: "Tên của sản phẩm này đã tồn tại, vui lòng nhập tên khác !"
             });
         }
     } catch (error) {
+        console.log(error);
         return res.status(400).json({ 
             status: "Fail", 
             message: "Something went wrong!", 
@@ -404,7 +422,6 @@ exports.putEditProduct = catchAsync(async (req, res, next) => {
             });
         }
     } catch (error) {
-        console.log(error);
         return res.status(400).json({ 
             status: "Fail", 
             message: "Something went wrong!", 
@@ -417,7 +434,8 @@ exports.putEditStatus = catchAsync(async (req, res, next) => {
     try {
         let masp = req.body.masp;
         let trangthai = req.body.trangthai;
-        if(!masp || !trangthai) {
+        console.log(req.body);
+        if(!masp || trangthai == undefined) {
             return res.status(400).json({ 
                 status: "Fail", 
                 message: "Thiếu thông tin, vui lòng kiểm tra lại !"
@@ -556,6 +574,298 @@ exports.deleteSize = catchAsync(async (req, res, next) => {
                 message: size
             });
         }
+    } catch (error) {
+        return res.status(400).json({ 
+            status: "Fail", 
+            message: "Something went wrong!", 
+            error: error 
+        });
+    }
+});
+
+
+                    // SIZE CONTROLLER
+
+// GET: Danh sách size của sản phẩm
+exports.getListSizeProduct = catchAsync(async (req, res, next) => {
+    try {
+        let listSize = await modelSize.list_size();
+        return res.status(200).json({ 
+            status: "Success", 
+            listSize: listSize
+        });
+    } catch (error) {
+        return res.status(400).json({ 
+            status: "Fail", 
+            message: "Something went wrong!", 
+            error: error 
+        });
+    }
+});
+// GET: Chi tiết 1 size của sản phẩm
+exports.getSizeProduct = catchAsync(async (req, res, next) => {
+    try {
+        let masize = req.params.id;
+        const size = await modelSize.get_Size_Id(masize);
+        return res.status(200).json({ 
+            status: "Success", 
+            size: size
+        });
+    } catch (error) {
+        return res.status(400).json({ 
+            status: "Fail", 
+            message: "Something went wrong!", 
+            error: error 
+        });
+    }
+});
+// POST: Thêm mới 1 size của sản phẩm
+exports.postCreateSizeProduct = catchAsync(async (req, res, next) => {
+    try {
+        let data = { tensize: req.body.tensize };
+        if(!data.tensize) {
+            return res.status(400).json({ 
+                status: "Fail", 
+                message: "Thiếu thông tin, vui lòng kiểm tra lại !"
+            });
+        };
+        const sizeExist = await modelSize.get_Size_Name(data.tensize);
+        if(sizeExist == -1) {
+            const size = await modelSize.insert_size(data);
+            return res.status(200).json({ 
+                status: "Success", 
+                message: size
+            });
+        } else {
+            return res.status(400).json({ 
+                status: "Fail", 
+                message: "Tên size của sản phẩm này đã tồn tại, vui lòng nhập tên khác !"
+            });
+        };
+    } catch (error) {
+        return res.status(400).json({ 
+            status: "Fail", 
+            message: "Something went wrong!", 
+            error: error 
+        });
+    }
+});
+// PUT: Cập nhật tên size sản phẩm
+exports.putEditSizeProduct = catchAsync(async (req, res, next) => {
+    try {
+        let masize = req.body.masize;
+        let tensize = req.body.tensize;
+        if(!masize || !tensize) {
+            return res.status(400).json({ 
+                status: "Fail", 
+                message: "Thiếu thông tin, vui lòng kiểm tra lại !"
+            });
+        };
+        const sizeExist = await modelSize.get_Size_Id(masize);
+        if(sizeExist == -1) {
+            return res.status(400).json({ 
+                status: "Fail", 
+                message: "Không tìm thấy size sản phẩm này, vui lòng kiểm tra lại !"
+            });
+        } else {
+            const nameExist = await modelSize.get_Size_Name(tensize);
+            if(nameExist == -1 || masize == nameExist.masize) {
+                let query = await modelSize.update_size(masize, tensize);
+                return res.status(200).json({ 
+                    status: "Success", 
+                    message: query
+                });
+            } else {
+                return res.status(400).json({ 
+                    status: "Fail", 
+                    message: "Trùng tên size sản phẩm, vui lòng nhập tên khác !"
+                });
+            };
+        };
+    } catch (error) {
+        return res.status(400).json({ 
+            status: "Fail", 
+            message: "Something went wrong!", 
+            error: error 
+        });
+    }
+});
+// DELETE: Xoá size sản phẩm
+exports.deleteSizeProduct = catchAsync(async (req, res, next) => {
+    try {
+        let masize = req.body.masize;
+        if(!masize) {
+            return res.status(400).json({ 
+                status: "Fail", 
+                message: "Thiếu mã size sản phẩm, vui lòng kiểm tra lại !"
+            });
+        };
+        const sizeExist = await modelSize.get_Size_Id(masize);
+        if(sizeExist == -1) {
+            return res.status(400).json({ 
+                status: "Fail", 
+                message: "Không tìm thấy size sản phẩm này, vui lòng kiểm tra lại !"
+            });
+        } else {
+            let queryDelete = await modelSize.delete_size(masize);
+            if(queryDelete == -1) {
+                return res.status(400).json({ 
+                    status: "Fail", 
+                    message: "Có ràng buộc khoá ngoại. Không thể xoá size sản phẩm này !"
+                });
+            } else {
+                return res.status(200).json({ 
+                    status: "Success", 
+                    message: queryDelete
+                });
+            };
+        };
+    } catch (error) {
+        return res.status(400).json({ 
+            status: "Fail", 
+            message: "Something went wrong!", 
+            error: error 
+        });
+    }
+});
+
+
+                    // COLOR CONTROLLER
+
+// GET: Danh sách màu của sản phẩm
+exports.getListColor = catchAsync(async (req, res, next) => {
+    try {
+        let listColor = await modelSize.list_color();
+        return res.status(200).json({ 
+            status: "Success", 
+            listColor: listColor
+        });
+    } catch (error) {
+        return res.status(400).json({ 
+            status: "Fail", 
+            message: "Something went wrong!", 
+            error: error 
+        });
+    }
+});
+// GET: Chi tiết 1 màu của sản phẩm
+exports.getColor = catchAsync(async (req, res, next) => {
+    try {
+        let mamau = req.params.id;
+        const color = await modelSize.get_Color_Id(mamau);
+        return res.status(200).json({ 
+            status: "Success", 
+            color: color
+        });
+    } catch (error) {
+        return res.status(400).json({ 
+            status: "Fail", 
+            message: "Something went wrong!", 
+            error: error 
+        });
+    }
+});
+// POST: Thêm màu của sản phẩm
+exports.postColor = catchAsync(async (req, res, next) => {
+    try {
+        let data = { tenmau: req.body.tenmau };
+        if(!data.tenmau) {
+            return res.status(400).json({ 
+                status: "Fail", 
+                message: "Thiếu thông tin màu sản phẩm, vui lòng kiểm tra lại !"
+            });
+        };
+        const colorExist = await modelSize.get_Color_Name(data.tenmau);
+        if(colorExist == -1) {
+            let query = await modelSize.insert_color(data);
+                return res.status(200).json({ 
+                    status: "Success", 
+                    message: query
+                });
+        } else {
+            return res.status(400).json({ 
+                status: "Fail", 
+                message: "Trùng tên màu sản phẩm, vui lòng nhập tên khác !"
+            });
+        }
+    } catch (error) {
+        return res.status(400).json({ 
+            status: "Fail", 
+            message: "Something went wrong!", 
+            error: error 
+        });
+    }
+});
+// PUT: Cập nhật tên màu sản phẩm
+exports.putColor = catchAsync(async (req, res, next) => {
+    try {
+        let mamau = req.body.mamau;
+        let tenmau = req.body.tenmau;
+        if(!mamau || !tenmau) {
+            return res.status(400).json({ 
+                status: "Fail", 
+                message: "Thiếu tên hoặc mã màu sản phẩm, vui lòng kiểm tra lại !"
+            });
+        };
+        const colorExist = await modelSize.get_Color_Id(mamau);
+        if(colorExist == -1) {
+            return res.status(400).json({ 
+                status: "Fail", 
+                message: "Không tìm thấy màu sản phẩm này, vui lòng kiểm tra lại !"
+            });
+        } else {
+            const nameExist = await modelSize.get_Color_Name(tenmau);
+            if(nameExist == -1 || mamau == nameExist.mamau) {
+                let query = await modelSize.update_color(mamau, tenmau);
+                return res.status(200).json({ 
+                    status: "Success", 
+                    message: query
+                });
+            } else {
+                return res.status(400).json({ 
+                    status: "Fail", 
+                    message: "Trùng tên màu sản phẩm, vui lòng nhập tên khác !"
+                });
+            };
+        };
+    } catch (error) {
+        return res.status(400).json({ 
+            status: "Fail", 
+            message: "Something went wrong!", 
+            error: error 
+        });
+    }
+});
+// DELETE: Xoá màu sản phẩm
+exports.deleteColor = catchAsync(async (req, res, next) => {
+    try {
+        let mamau = req.params.id;
+        if(!mamau) {
+            return res.status(400).json({ 
+                status: "Fail", 
+                message: "Thiếu mã màu của sản phẩm, vui lòng kiểm tra lại !"
+            });
+        };
+        const colorExist = await modelSize.get_Color_Id(mamau);
+        if(colorExist == -1) {
+            return res.status(400).json({ 
+                status: "Fail", 
+                message: "Không tìm thấy màu sản phẩm này, vui lòng kiểm tra lại !"
+            });
+        } else {
+            let queryDelete = await modelSize.delete_color(mamau);
+            if(queryDelete == -1) {
+                return res.status(400).json({ 
+                    status: "Fail", 
+                    message: "Có ràng buộc khoá ngoại. Không thể xoá màu sản phẩm này !"
+                });
+            } else {
+                return res.status(200).json({ 
+                    status: "Success", 
+                    message: queryDelete
+                });
+            }
+        };
     } catch (error) {
         return res.status(400).json({ 
             status: "Fail", 

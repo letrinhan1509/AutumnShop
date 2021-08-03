@@ -1,5 +1,5 @@
 import { UploadOutlined } from '@ant-design/icons';
-import { Button, Form, Input, InputNumber, message, Select, Upload, Modal, Image, Divider, Table } from 'antd';
+import { Button, Form, Input, InputNumber, message, Select, Upload, Modal, Image, Divider, Table, Radio } from 'antd';
 import product from 'API_Call/Api_product/product';
 import catalog from 'API_Call/Api_catalog/catalog';
 import producer from 'API_Call/Api_producer/producer';
@@ -7,6 +7,7 @@ import { storage } from 'Container/Firebase/firebase';
 import React, { useEffect, useState, useRef } from 'react';
 import { Link, useHistory } from "react-router-dom";
 import "Container/scss/addpro.scss";
+import Title from 'antd/lib/skeleton/Title';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -51,6 +52,11 @@ const AddProduct = (props) => {
     const [fileList, setFileList] = useState([]);
     const [link, setLink] = useState("");
     const { confirm } = Modal;
+
+    const [title, setTitle] = useState("1");
+    const selectTitle = (e) => {
+        setTitle(e.target.value);
+    };
 
     //upload ảnh lên firebase
     const beforeUpload = file => {
@@ -142,26 +148,26 @@ const AddProduct = (props) => {
         },
         {
             key: 2,
-            mamau: 'do',
+            mamau: 'đỏ',
             tenmau: 'Đỏ',
         },
         {
             key: 3,
-            mamau: 'den',
+            mamau: 'đen',
             tenmau: 'Đen',
         },
         {
             key: 4,
-            mamau: 'trang',
+            mamau: 'trắng',
             tenmau: 'Trắng',
         }
     ];
     const columns = [
-        {
+        /* {
             title: 'Stt',
             dataIndex: 'id',
             key: 'id',
-        },
+        }, */
         {
             title: 'Size',
             dataIndex: 'masize',
@@ -185,11 +191,12 @@ const AddProduct = (props) => {
     ];
 
     const addProduct = (values) => {
+        values["trangthai"] = title;
         values['img'] = link;
         values['imgName'] = imageName.name;
-        values['chitiet'] = add;
+        values['chitiet'] = JSON.stringify(add);
         console.log(values);
-        /* product.addproduct(values).then((res) => {
+        product.addproduct(values).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message)
                 setTimeout(() => {
@@ -200,7 +207,7 @@ const AddProduct = (props) => {
             .catch(err => {
                 console.log(err.response);
                 message.error(`Thêm thất bại!\n ${err.response.data.message}`)
-            }) */
+            })
     };
     const [add, setAdd] = useState([]);
     const [id, setID] = useState(0);
@@ -211,6 +218,7 @@ const AddProduct = (props) => {
         detail['masize'] = SIZE.current.props.value;
         detail['mamau'] = MAU.current.props.value;
         detail['soluong'] = SOLUONG.current.ariaValueNow;
+        detail['giagiam']='0';
         setAdd([...add, { ...detail }]);
         setID(tam);
         console.log(detail);
@@ -282,7 +290,7 @@ const AddProduct = (props) => {
                     scrollToFirstError
                 //initialValues={{img: link}}
                 >
-                    <Form.Item
+                    {/* <Form.Item
                         name="code"
                         label="Code"
                         rules={[
@@ -293,7 +301,7 @@ const AddProduct = (props) => {
                         ]}
                     >
                         <Input />
-                    </Form.Item>
+                    </Form.Item> */}
                     <Form.Item
                         name="ten"
                         label="Tên sản phẩm"
@@ -364,10 +372,10 @@ const AddProduct = (props) => {
                     //rules={[{ required: true, message: 'Chọn trạng thái!' }]}
                     >
                         {/* <Checkbox.Group options={options} onChange={onChange} /> */}
-                        <Select style={{ width: 150 }}>
-                            <Option value="1" >Hiện</Option>
-                            <Option value="0" >Ẩn</Option>
-                        </Select>
+                        <Radio.Group onChange={selectTitle} value={title}>
+                            <Radio value={1}>Hiện</Radio>
+                            <Radio value={0}>Ẩn</Radio>
+                        </Radio.Group>
                     </Form.Item>
                     <Form.Item name="mansx"
                         label="Nhà sản xuất"

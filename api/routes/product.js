@@ -17,6 +17,18 @@ router
   .post(productController.postProduct)  // Thêm sản phẩm
 
 router
+  .route("/color")
+  .get(productController.getListColor)  // Danh sách các màu của sản phẩm
+  .post(productController.postColor)  // Thêm màu sản phẩm
+  .put(productController.putColor);   // Cập nhật tên màu sản phẩm
+
+router
+  .route("/size")
+  .get(productController.getListSizeProduct)  // Danh sách các size của sản phẩm
+  .post(productController.postCreateSizeProduct)  // Thêm size sản phẩm
+  .put(productController.putEditSizeProduct); // Cập nhật tên size sản phẩm
+
+router
   .route("/new-product").get(productController.getNewProduct);
 
 router
@@ -31,6 +43,16 @@ router
   .route("/:id")
   .get(productController.getProduct)// Lọc sản phẩm theo id
   .delete(productController.deleteProduct);  // Xoá sản phẩm
+
+router
+  .route("/color/:id")
+  .get(productController.getColor)
+  .delete(productController.deleteColor);
+
+router
+  .route("/size/:id")
+  .get(productController.getSizeProduct)
+  .delete(productController.deleteSizeProduct);
 
 router
   .route("/bang-size/:id")

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 29, 2021 at 06:01 PM
+-- Generation Time: Jul 29, 2021 at 07:03 PM
 -- Server version: 10.4.19-MariaDB
 -- PHP Version: 8.0.7
 
@@ -157,7 +157,12 @@ CREATE TABLE `chitietdm` (
 INSERT INTO `chitietdm` (`mactdm`, `madm`, `masp`) VALUES
 (11, 'DMA', 110),
 (13, 'DMA', 112),
-(14, 'DMA', 113);
+(14, 'DMA', 113),
+(22, 'DMA', 121),
+(23, 'DMA', 122),
+(24, 'DMQ', 123),
+(25, 'DMQ', 124),
+(26, 'DMQ', 125);
 
 -- --------------------------------------------------------
 
@@ -388,6 +393,7 @@ INSERT INTO `nhasx` (`mansx`, `tennsx`, `xuatxu`, `trangthai`) VALUES
 ('sp', 'SUPREME', 'Mỹ', 1),
 ('tm', 'T.MAN', 'Việt Nam', 1),
 ('ym', 'Yamee', 'Việt Nam', 1),
+('zz', 'OK', 'Việt Nam', 1),
 ('zzz', 'OKK', 'Việt Namm', 1);
 
 -- --------------------------------------------------------
@@ -407,7 +413,7 @@ CREATE TABLE `sanpham` (
   `tenhinh` varchar(100) NOT NULL,
   `hinh` varchar(1000) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `hinhchitiet` varchar(2000) DEFAULT NULL,
-  `mota` varchar(4000) DEFAULT NULL,
+  `mota` text DEFAULT NULL,
   `ngaytao` datetime NOT NULL DEFAULT current_timestamp(),
   `trangthai` int(10) NOT NULL DEFAULT 1,
   `mansx` varchar(10) CHARACTER SET utf8 COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -424,7 +430,12 @@ INSERT INTO `sanpham` (`masp`, `code`, `tensp`, `soluong`, `size`, `mau`, `gia`,
 (110, 'SPAT01', 'Áo thun ADIDAS', 9, 'S', 'Trắng', 10000, 'user.png', 'https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/Product_Img%2FadsTrong.jpg?alt=media&token=6cb18364-d371-4a66-b842-d19fa4567877', NULL, 'Áo được thiết kế trẻ trung.', '2021-07-23 00:00:00', 1, 'ad', 'at', 'DMA', ''),
 (111, 'SPAT02B', 'Áo thun ITACHI', 4, 'M', 'Đen', 20000, '', 'https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/Product_Img%2FnomousItachi.jpg?alt=media&token=ca780496-c03d-4b58-ac23-c24a64f6a1df', NULL, 'Áo được thiết kế trẻ trung.', '2021-07-23 00:00:00', 1, 'nm', 'at', 'DMA', ''),
 (112, 'SPAT03G', 'Áo thun GOKU', 8, 'M', 'Trắng', 30000, '', 'https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/Product_Img%2FbskGOKU.jpg?alt=media&token=28c752c6-fe0e-488b-9c2e-78a6070622b3', NULL, 'đang làm mưa làm gió trong thời gian vừa qua, số lượng có hạn, các bạn nhanh tay đăng kí để sở hữu ngay cho mình chiếc áo cực chất nhé', '2021-07-23 00:00:00', 1, 'bsk', 'at', 'DMA', ''),
-(113, 'SPAT01', 'Áo Thun PEANUTS', 10, 'S', 'Xanh', 90000, 'nomousPNuts.jpg', 'https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/Product_Img%2FnomousPNuts.jpg?alt=media&token=495b36b4-dbbd-4ca1-a538-a099719153d3', 'undefined', 'Bạn làm gì để tìm kiếm sự cân bằng? Ngắt mạch và xả hơi? Hay tùy cơ ứng biến? Chiếc áo thun adidas này sẵn sàng cho cả hai phương án. Trên thực tế, chiếc áo này sẵn sàng cho tất cả nhờ chất vải thấm hút ẩm và chất liệu cotton mềm mại đảm bảo sự thoải mái dài lâu. Còn về độ co giãn? Cũng có một chút, để áo càng thêm phần thoải mái.', '2021-07-23 17:00:00', 1, 'nm', 'at', 'DMA', '');
+(113, 'SPAT01', 'Áo Thun PEANUTS', 10, 'S', 'Xanh', 90000, 'nomousPNuts.jpg', 'https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/Product_Img%2FnomousPNuts.jpg?alt=media&token=495b36b4-dbbd-4ca1-a538-a099719153d3', 'undefined', 'Bạn làm gì để tìm kiếm sự cân bằng? Ngắt mạch và xả hơi? Hay tùy cơ ứng biến? Chiếc áo thun adidas này sẵn sàng cho cả hai phương án. Trên thực tế, chiếc áo này sẵn sàng cho tất cả nhờ chất vải thấm hút ẩm và chất liệu cotton mềm mại đảm bảo sự thoải mái dài lâu. Còn về độ co giãn? Cũng có một chút, để áo càng thêm phần thoải mái.', '2021-07-23 17:00:00', 1, 'nm', 'at', 'DMA', ''),
+(121, 'SPAK001', 'Áo Khoác Bouton Panda', 10, 'S', 'Đen', 500000, 'boutonPanda.jpg', 'https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/Product_Img%2FboutonPanda.jpg?alt=media&token=9d7c4c50-8ee0-466c-9d41-498b961858a9', NULL, 'Denim Jacket BOUTON Embroidery, dòng khoác jean BOUTON panda thêu túi độc đáo.\nMẫu mới 2021, full tem, tag.\nSize S(53-60kg)/ M(60-68kg)/ L(68-78kg)/ XL(78-85kg).', '2021-07-29 23:25:15', 1, 'bt', 'ak', 'DMA', NULL),
+(122, 'SPAK002', 'Áo khoác BOUTON varsity jacket', 5, 'M', 'Đen', 500000, 'boutonVarsity.jpg', 'https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/Product_Img%2FboutonVarsity.jpg?alt=media&token=b40331e2-de32-4abc-ada9-665a5e6e4043', NULL, 'Varsity Jacket ss21 của BOUTON chắc chắn là must have item cho outfit của mọi người. Chất liệu nỉ dạ phối da lộn xịn xò, khoác mùa hè vô tư do áo có độ dày vừa phải. Các chi tiết thêu dạng xù khá sắc nét & nổi bật. Hàng chính hãng, full tem, tag...', '2021-07-29 23:29:31', 1, 'bt', 'ak', 'DMA', NULL),
+(123, 'SPQJ001', 'Quần Jeans BOUTON Black Skinny', 10, 'M', 'Đen', 400000, 'boutonBlack.jpg', 'https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/Product_Img%2FboutonBlack.jpg?alt=media&token=db501644-fdf3-48a2-a73c-eeb41645eb72', NULL, NULL, '2021-07-29 23:46:01', 1, 'bt', 'qj', 'DMQ', NULL),
+(124, 'SPQK001', 'Quần Kaki NOMOUS ESSENTIALS Slim', 10, 'M', 'Đen', 380000, 'nomousESSENTIALS.jpg', 'https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/Product_Img%2FnomousESSENTIALS.jpg?alt=media&token=817c59d5-4b1a-4cf4-9102-c6b5ce37ff61', NULL, 'CHINO PANTS NOMOUS ESSENTIALS dòng quần kaki chino vừa lên kệ với chất vải kaki co giãn, độ dày vừa phải, lên form khá đứng. Hàng full tem, tag, date 2021.', '2021-07-29 23:49:40', 1, 'nm', 'qk', 'DMQ', NULL),
+(125, 'SPQJ002', 'Quần jeans BOUTON dark grey slim rách', 10, 'M', 'Xanh', 400000, 'tmanSlim.jpg', 'https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/Product_Img%2FtmanSlim.jpg?alt=media&token=1fd3b152-6604-4cc3-b434-300217de8a6c', NULL, NULL, '2021-07-30 00:01:23', 1, 'bt', 'qj', 'DMQ', NULL);
 
 -- --------------------------------------------------------
 
@@ -597,7 +608,7 @@ ALTER TABLE `chitietdh`
 -- AUTO_INCREMENT for table `chitietdm`
 --
 ALTER TABLE `chitietdm`
-  MODIFY `mactdm` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `mactdm` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- AUTO_INCREMENT for table `chitietkm`
@@ -633,7 +644,7 @@ ALTER TABLE `khuyenmai`
 -- AUTO_INCREMENT for table `sanpham`
 --
 ALTER TABLE `sanpham`
-  MODIFY `masp` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=121;
+  MODIFY `masp` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=126;
 
 --
 -- Constraints for dumped tables

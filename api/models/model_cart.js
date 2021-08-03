@@ -15,8 +15,7 @@ exports.list_Carts = async () => {
             } else if(result.length <= 0){
                 hamOK(0);
             } else{
-                dataList = result;
-                hamOK(dataList);
+                hamOK(result);
             }
         });
     });
@@ -95,7 +94,7 @@ exports.put = async (data) => {
         });
     });
 };
-
+// Xoá 1 sản phẩm trong giỏ hàng theo mã giỏ hàng:
 exports.delete = async (id) => {
     return new Promise( (resolve, reject) => {
         let sql = `DELETE FROM giohang WHERE magiohang = '${id}'`;
@@ -104,6 +103,21 @@ exports.delete = async (id) => {
                 reject(err);
             } else{
                 resolve("Xoá sản phẩm trong giỏ hàng thành công !!!");
+            }
+        });
+    });
+};
+// Xoá 1 sản phẩm trong giỏ hàng theo mã sản phẩm:
+
+// Xoá giỏ hàng theo mã khách hàng:
+exports.delete_Customer = async (makh) => {
+    return new Promise( (resolve, reject) => {
+        let sql = `DELETE FROM giohang WHERE makh = '${makh}'`;
+        db.query(sql, (err, result) => {
+            if(err) {
+                reject(err);
+            } else{
+                resolve("Xoá giỏ hàng thành công !!!");
             }
         });
     });

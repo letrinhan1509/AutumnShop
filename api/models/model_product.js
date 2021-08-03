@@ -7,8 +7,8 @@ var dataName = [];
     // Danh sách tất cả sản phẩm:
 exports.list_products = async () => {
     return new Promise( (hamOK, hamLoi) => {
-        let sql = `SELECT SP.masp, SP.code, SP.tensp, SP.soluong, SP.size, SP.mau, SP.gia, SP.tenhinh, SP.hinh, 
-        SP.hinhchitiet, SP.mota, SP.trangthai, SP.mansx, nhasx.tennsx, SP.maloai, loaisp.tenloai, SP.madm, danhmuc.tendm
+        let sql = `SELECT SP.masp, SP.tensp, SP.gia, SP.chitiet, SP.tenhinh, SP.hinh, DATE_FORMAT(SP.ngaytao, '%e-%c-%Y') as ngaytao, 
+        SP.trangthai, SP.mansx, nhasx.tennsx, SP.maloai, loaisp.tenloai, SP.madm, danhmuc.tendm
         FROM (((sanpham AS SP JOIN danhmuc ON SP.madm = danhmuc.madm) JOIN loaisp ON SP.maloai = loaisp.maloai)
         JOIN nhasx ON SP.mansx = nhasx.mansx)`;
         db.query(sql, (err, result) => {
@@ -41,8 +41,8 @@ exports.check_Code = async (code) => {
     // Chi tiết 1 sản phẩm theo ID:
 exports.get_By_Id = async (productId) => {
     return new Promise( (hamOK, hamLoi) => {
-        let sql = `SELECT SP.masp, SP.code, SP.tensp, SP.soluong, SP.size, SP.mau, SP.gia, SP.tenhinh, SP.hinh, 
-        SP.hinhchitiet, SP.mota, SP.trangthai, SP.mansx, nhasx.tennsx, SP.maloai, loaisp.tenloai, SP.madm, danhmuc.tendm
+        let sql = `SELECT SP.masp, SP.tensp, SP.gia, SP.chitiet, SP.tenhinh, SP.hinh, SP.tenhinhct, SP.hinhchitiet, SP.mota, 
+        DATE_FORMAT(SP.ngaytao, '%e-%c-%Y') as ngaytao, SP.trangthai, SP.mansx, nhasx.tennsx, SP.maloai, loaisp.tenloai, SP.madm, danhmuc.tendm
         FROM (((sanpham AS SP JOIN danhmuc ON SP.madm = danhmuc.madm) JOIN loaisp ON SP.maloai = loaisp.maloai)
         JOIN nhasx ON SP.mansx = nhasx.mansx) WHERE SP.masp='${productId}'`;
         db.query(sql, (err, result) => {
@@ -61,8 +61,8 @@ exports.get_By_Id = async (productId) => {
     // Sản phẩm mới nhất
 exports.newProduct = async () => {
     return new Promise( (hamOK, hamLoi) => {
-        let sql = `SELECT SP.masp, SP.code, SP.tensp, SP.soluong, SP.size, SP.mau, SP.gia, SP.tenhinh, SP.hinh, 
-        SP.hinhchitiet, SP.mota, SP.trangthai, SP.mansx, nhasx.tennsx, SP.maloai, loaisp.tenloai, SP.madm, danhmuc.tendm
+        let sql = `SELECT SP.masp, SP.tensp, SP.gia, SP.chitiet, SP.tenhinh, SP.hinh, DATE_FORMAT(SP.ngaytao, '%e-%c-%Y') as ngaytao, 
+        SP.trangthai, SP.mansx, nhasx.tennsx, SP.maloai, loaisp.tenloai, SP.madm, danhmuc.tendm
         FROM (((sanpham AS SP JOIN danhmuc ON SP.madm = danhmuc.madm) JOIN loaisp ON SP.maloai = loaisp.maloai)
         JOIN nhasx ON SP.mansx = nhasx.mansx) ORDER BY ngaytao DESC LIMIT 4`;
         db.query(sql, (err, result) => {
@@ -77,8 +77,8 @@ exports.newProduct = async () => {
     // Lọc danh sách sản phẩm theo danh mục:
 exports.get_by_category = async (madm) => {
     return new Promise( (hamOK, hamLoi) => {
-        let sql = `SELECT SP.masp, SP.code, SP.tensp, SP.soluong, SP.size, SP.mau, SP.gia, SP.hinh, 
-        SP.hinhchitiet, SP.mota, SP.trangthai, nhasx.tennsx, loaisp.tenloai, danhmuc.tendm
+        let sql = `SELECT SP.masp, SP.tensp, SP.gia, SP.chitiet, SP.tenhinh, SP.hinh, DATE_FORMAT(SP.ngaytao, '%e-%c-%Y') as ngaytao, 
+        SP.trangthai, SP.mansx, nhasx.tennsx, SP.maloai, loaisp.tenloai, SP.madm, danhmuc.tendm
         FROM (((sanpham AS SP JOIN danhmuc ON SP.madm = danhmuc.madm) JOIN loaisp ON SP.maloai = loaisp.maloai)
         JOIN nhasx ON SP.mansx = nhasx.mansx) WHERE SP.madm='${madm}' AND SP.trangthai = 1`;
         db.query(sql, (err, result) => {
@@ -94,8 +94,8 @@ exports.get_by_category = async (madm) => {
     // Lọc danh sách sản phẩm theo loại:
 exports.get_by_type = async (maloai) => {
     return new Promise( (hamOK, hamLoi) => {
-        let sql = `SELECT SP.masp, SP.code, SP.tensp, SP.soluong, SP.size, SP.mau, SP.gia, SP.hinh, 
-        SP.hinhchitiet, SP.mota, SP.trangthai, nhasx.tennsx, loaisp.tenloai, danhmuc.tendm
+        let sql = `SELECT SP.masp, SP.tensp, SP.gia, SP.chitiet, SP.tenhinh, SP.hinh, DATE_FORMAT(SP.ngaytao, '%e-%c-%Y') as ngaytao, 
+        SP.trangthai, SP.mansx, nhasx.tennsx, SP.maloai, loaisp.tenloai, SP.madm, danhmuc.tendm
         FROM (((sanpham AS SP JOIN danhmuc ON SP.madm = danhmuc.madm) JOIN loaisp ON SP.maloai = loaisp.maloai)
         JOIN nhasx ON SP.mansx = nhasx.mansx) WHERE SP.maloai='${maloai}' AND SP.trangthai = 1`;
         db.query(sql, (err, result) => {
@@ -111,8 +111,8 @@ exports.get_by_type = async (maloai) => {
     // Lọc danh sách sản phẩm theo nhà sản xuất:
 exports.get_by_producer = async (mansx) => {
     return new Promise( (hamOK, hamLoi) => {
-        let sql = `SELECT SP.masp, SP.code, SP.tensp, SP.soluong, SP.size, SP.mau, SP.gia, SP.hinh, 
-        SP.hinhchitiet, SP.mota, SP.trangthai, nhasx.tennsx, loaisp.tenloai, danhmuc.tendm
+        let sql = `SELECT SP.masp, SP.tensp, SP.gia, SP.chitiet, SP.tenhinh, SP.hinh, DATE_FORMAT(SP.ngaytao, '%e-%c-%Y') as ngaytao, 
+        SP.trangthai, SP.mansx, nhasx.tennsx, SP.maloai, loaisp.tenloai, SP.madm, danhmuc.tendm
         FROM (((sanpham AS SP JOIN danhmuc ON SP.madm = danhmuc.madm) JOIN loaisp ON SP.maloai = loaisp.maloai)
         JOIN nhasx ON SP.mansx = nhasx.mansx) WHERE SP.mansx='${mansx}' AND SP.trangthai = 1`;
         db.query(sql, (err, result) => {
@@ -125,6 +125,24 @@ exports.get_by_producer = async (mansx) => {
         })
     })
 }
+    // Lọc sản phẩm theo tên:
+exports.get_By_productName = async (name) => {
+    return new Promise( (hamOK, hamLoi) => {
+        let sql = `SELECT * FROM sanpham WHERE tensp='${name}'`;
+        db.query(sql, (err, result) => {
+            if(err){
+                hamLoi(err);
+            }else{
+                if(result.length <= 0){
+                    // Không tồn tại
+                    hamOK(-1);
+                } else{
+                    hamOK(result);
+                }
+            }
+        })
+    })
+};
     // Chi tiết sản phẩm theo tên:
 exports.detailByName = async (name) => {
     return new Promise( (hamOK, hamLoi) => {
@@ -314,8 +332,7 @@ exports.check_Size_Exist = async (size, gioitinh) => {
         })
     })
 }
-// 
-// Lấy chi tiết 1 size theo size:
+    // Lấy chi tiết 1 size theo size:
 exports.check_Size = async (gioitinh) => {
     return new Promise( (hamOK, hamLoi) => {
         let sql = `SELECT * FROM bang_size WHERE gioitinh='${gioitinh}' ORDER BY chieucaoden ASC`;
