@@ -188,7 +188,7 @@ const ListCata = () => {
       key: 'madm',
       render: madm => (<div className="btn-box fix"><Button data-id={madm} key={madm} type="primary" onClick={linkto}> Sửa </Button></div>)
     },
-    result.permission === 'Admin' || result.permission === 'QL' ?
+    result.permission === 'Admin' || result.permission === 'QLCH' ?
       {
         dataIndex: 'madm',
         key: 'madm',
@@ -201,7 +201,7 @@ const ListCata = () => {
     <>
       <div className="form-wrapper">
         <h2 style={{ textAlign: 'center', marginTop: "30px" }}>DANH SÁCH CÁC DANH MỤC</h2>
-        {result.permission === 'Admin' ? (
+        {result.permission === 'Admin' || result.permission === 'QLCH' ? (
           <div className="btn-wrapper">
             <Link to={'/them-danh-muc'}>
               <Button type="primary">

@@ -78,9 +78,10 @@ const AddProductType = (props) => {
     };
 
     const onRemove = file => {
-        setLink("");
+        
         const del = storage.ref(`ProductType_Img/${imageName.name}`);
         del.delete().then((res) => {
+            setLink("");
             message.success("Đã xóa ảnh!");
         }).catch((error) => {
             console.log(error);

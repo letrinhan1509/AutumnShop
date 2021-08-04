@@ -1,10 +1,10 @@
-import { Col, Layout, Row, Rate, Statistic, Select, Button, Card, Carousel, Tabs, Comment, Tooltip, List, Form, Input, Avatar, message, Radio } from "antd";
+import { Col, Layout, Row, Rate, Statistic, Select, Button, Card, Carousel, Tabs, Comment, List, Form, Input, Avatar, message, Radio } from "antd";
 import moment from 'moment';
 import { ShoppingCartOutlined, HeartOutlined, FacebookOutlined, TwitterOutlined } from '@ant-design/icons';
 import React, { createContext, useState, useEffect } from 'react';
 import "../components/components-css/SelectProduct.scss";
 import { useParams } from "react-router";
-import { Link, useHistory } from "react-router-dom";
+import { Link } from "react-router-dom";
 import comment from 'API_Call/Api_comment/comment';
 import PRODUCT from 'API_Call/Api_product/product';
 //import moment from 'moment';
@@ -12,25 +12,47 @@ import PRODUCT from 'API_Call/Api_product/product';
 
 const { Content } = Layout;
 const { Option } = Select;
+const { TextArea } = Input;
 export const DataContext = createContext()
 const Select_Product = (props) => {
     const User = JSON.parse(localStorage.getItem('user'));
     const detail = JSON.parse(localStorage.getItem('detail'));
-    const history = useHistory();
-    const { TextArea } = Input;
-    const { id } = useParams();
-    function Changecolor(value) {
-        console.log(`selected ${value}`);
-    }
+    const chitiet = JSON.parse(detail.chitiet);
 
+    const { id } = useParams();
+    const [sizeID, setSizeID] = useState("");
+    const [colorID, setColorID] = useState("");
+    const [hide, setHide] = useState(true);
+    const [proTemp, setProTemp] = useState("");
+    const [Proadd, setProadd] = useState({});
+    function Changesize(value) {
+        setSizeID(value);
+        let a = chitiet.find((x) => x.masize === value);
+        if (a === undefined) {
+            setHide(false);
+            setColorID("");
+        } else {
+            setHide(true);
+        }
+    }
+    function Changecolor(value) {
+        setColorID(value);
+        let a = chitiet.find((x) => x.mamau === value && x.masize === sizeID);
+        setProTemp(a);
+        let add = {};
+        add['info'] = detail;
+        add['size'] = sizeID;
+        add['mau'] = value;
+        console.log(add);
+        setProadd(add);
+    }
     let visible = 4;
-    const [listpro, setListpro] = useState([]);
     const [ListComment, setListComment] = useState([]);
 
 
     useEffect(() => {
         PRODUCT.getid(id).then((res) => {
-            if (res.data.status === "Success"){
+            if (res.data.status === "Success") {
                 console.log(res.data.dataSpham);
             }
         })
@@ -45,26 +67,6 @@ const Select_Product = (props) => {
     const [size] = useState('large');
     const { TabPane } = Tabs;
 
-    const data = [
-        {
-            actions: [<span key="comment-list-reply-to-0">Reply to</span>],
-            author: 'Han Solo',
-            avatar: 'https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png',
-            content: (
-                <p>
-                    We supply a series of design principles, practical patterns and high quality design
-                    resources (Sketch and Axure), to help people create their product prototypes beautifully and
-                    efficiently.
-                </p>
-            ),
-            datetime: (
-                <Tooltip title={moment().subtract(1, 'days').format('YYYY-MM-DD HH:mm:ss')}>
-                    <span>{moment().subtract(1, 'days').fromNow()}</span>
-                </Tooltip>
-            ),
-        }
-    ];
-
     let values = '';
     const [submitting, setSubmitting] = useState(false);
     const handleSubmit = (value) => {
@@ -72,14 +74,14 @@ const Select_Product = (props) => {
         value['ngay'] = moment(date2).format('YYYY-MM-DD');
         console.log(value);
         //setSubmitting(true);
-        
+
         comment.addComment(value).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message);
                 document.getElementById("cmt").reset();
                 /* setTimeout(() => {
                     window.location.reload();
-                }, 100);  */   
+                }, 100);  */
             } else {
                 message.error(res.data.message)
             }
@@ -91,24 +93,27 @@ const Select_Product = (props) => {
     };
 
     const handleChange = (e) => {
-        console.log(e.target.value);
         values = e.target.value;
-
     };
 
-    const product = [
+    const SIZE = [
         {
             key: "1",
-            name: "Product Name",
-            color: [
-                "red",
-                "black",
-                "white",
-                "blue"
-            ],
+            value: "S"
+        },
+        {
+            key: "2",
+            value: "M"
+        },
+        {
+            key: "3",
+            value: "L"
+        },
+        {
+            key: "4",
+            value: "XL"
         }
     ];
-
     const Editor = () => (
         <>
             <Form
@@ -237,7 +242,6 @@ const Select_Product = (props) => {
     const [check, setCheck] = useState("");
     const selectTitle = (e) => {
         setTitle(e.target.value);
-        console.log(title);
     };
 
     const findSize = (values) => {
@@ -258,7 +262,26 @@ const Select_Product = (props) => {
             })
     };
 
-
+    const Usercart = () => {
+        let add = {};
+        add['makh'] = User.makh;
+        add['masp'] = detail.masp;
+        add['gia'] = detail.gia;
+        if (proTemp.giagiam !== 0) {
+            add['giagiam'] = proTemp.giagiam;
+        } else {
+            add['giagiam'] = 0;
+        }
+        add['size'] = sizeID;
+        add['mau'] = colorID;
+        add['soluong'] = proTemp.soluong;
+        console.log(add);
+        /* PRODUCT.addCart(add).then((res) => {
+            if (res.data.status === "Success") {
+                console.log(res.data.data);
+            }
+        }) */
+    };
 
     return (
         <>
@@ -284,19 +307,19 @@ const Select_Product = (props) => {
                             </ul>
                             <div className="sale-imfo">
                                 <Row>
-                                    <Col><p>Price:</p></Col>
-                                    <Col offset={5}><p>{detail.gia} VNĐ</p></Col>
+                                    <Col><p>Giá:</p></Col>
+                                    <Col offset={7}><p>{detail.gia}VNĐ</p></Col>
                                 </Row>
                                 <Row>
-                                    <Col><p>Sale:</p></Col>
-                                    <Col offset={6}><p>{detail.giamgia}% OFF</p></Col>
+                                    <Col><p>Giảm giá:</p></Col>
+                                    <Col offset={5}><p>{detail.giamgia}% OFF</p></Col>
                                 </Row>
                                 <Row>
                                     <Col>
-                                        <p>Origin:</p>
-                                        <p>Type:</p>
+                                        <p>Thương hiệu:</p>
+                                        <p>Loại sản phẩm:</p>
                                     </Col>
-                                    <Col offset={5}>
+                                    <Col offset={3}>
                                         <p>{detail.tennsx}</p>
                                         <p>{detail.tenloai}</p>
                                     </Col>
@@ -306,81 +329,100 @@ const Select_Product = (props) => {
                                 <Col className="size-color-wrapper">
                                     <Row className="one">
                                         <Col>
-                                            <span>Select Color</span>
+                                            <span>Chọn size:</span>
                                         </Col>
                                         <Col>
-                                            {
-                                                product.map((items) => {
+                                            <Select style={{ width: 120 }} onChange={Changesize}>
+                                                {SIZE.map((item) => {
                                                     return (
-                                                        <div >
-                                                            {items.color.map((item) => {
-                                                                return (
-                                                                    <button className="select-color" style={{ background: item }}></button>
-                                                                );
-                                                            })}
-                                                        </div>
+                                                        <Option key={item.key} value={item.value}>{item.value}</Option>
                                                     );
-                                                })
-                                            }
-                                        </Col>
-                                    </Row>
-                                    <Row className="two">
-                                        <Col>
-                                            <span>Size</span>
-                                        </Col>
-                                        <Col>
-                                            <Select defaultValue="S" style={{ width: 120 }} onChange={Changecolor}>
-                                                <Option value="S">S</Option>
-                                                <Option value="M">M</Option>
-                                                <Option value="L">L</Option>
-                                                <Option value="XL">XL</Option>
+                                                })}
                                             </Select>
                                         </Col>
                                     </Row>
-                                    <Row className="three">
+                                    {hide ? (
+                                        <>
+                                            <Row className="two">
+                                                <Col>
+                                                    <span>Chọn màu</span>
+                                                </Col>
+                                                <Col>
+                                                    <Select style={{ width: 120 }} onChange={Changecolor}>
+                                                        {chitiet.map((item) => {
+                                                            return (
+                                                                item.masize === sizeID ? (<Option key={item.mamau} value={item.mamau}>{item.mamau}</Option>) : ("")
+                                                            );
+                                                        })}
+                                                    </Select>
+                                                </Col>
+                                            </Row>
+                                            {
+                                                colorID !== "" ? (
+                                                    <Row className="three">
+                                                        <Col>
+                                                            <span>Số lượng tồn kho: {proTemp.soluong}</span>
+                                                        </Col>
+                                                    </Row>
+                                                ) : ("")
+                                            }
+                                        </>
+                                    ) : (<p>Sản phẩm đang tạm hết hàng !</p>)}
+                                    <Row className="fourr">
                                         <p>{check}</p>
                                     </Row>
                                 </Col>
                                 <Col className="check-size">
-                                     <Form
+                                    <Form
                                         name="basic"
                                         initialValues={{ remember: true }}
                                         onFinish={findSize}
+                                    >
+                                        <Form.Item
+                                            label="Chiều cao"
+                                            name="chieucao"
+                                            rules={[{ required: true, message: 'Vui lòng nhập chiều cao!' }]}
                                         >
-                                            <Form.Item
-                                                label="Chiều cao"
-                                                name="chieucao"
-                                                rules={[{ required: true, message: 'Vui lòng nhập chiều cao!' }]}
-                                            >
-                                                <Input style={{ width: 100 }}/>
-                                            </Form.Item>
-                                            <Form.Item
-                                                label="Cân nặng"
-                                                name="cannang"
-                                                rules={[{ required: true, message: 'Vui lòng nhập cân nặng!' }]}
-                                            >
-                                                <Input style={{ width: 100 }}/>
-                                            </Form.Item>
-                                            <Form.Item
-                                                label="Giới tính"
-                                            >
-                                                <Radio.Group onChange={selectTitle} value={title}>
-                                                    <Radio value="Nam">Nam</Radio>
-                                                    <Radio value="Nữ">Nữ</Radio>
-                                                </Radio.Group>
-                                            </Form.Item>
-                                            <Form.Item >
-                                                <Button type="primary" htmlType="submit">Tìm size</Button>
-                                            </Form.Item>
-                                        </Form>
+                                            <Input style={{ width: 100 }} />
+                                        </Form.Item>
+                                        <Form.Item
+                                            label="Cân nặng"
+                                            name="cannang"
+                                            rules={[{ required: true, message: 'Vui lòng nhập cân nặng!' }]}
+                                        >
+                                            <Input style={{ width: 100 }} />
+                                        </Form.Item>
+                                        <Form.Item
+                                            label="Giới tính"
+                                        >
+                                            <Radio.Group onChange={selectTitle} value={title}>
+                                                <Radio value="Nam">Nam</Radio>
+                                                <Radio value="Nữ">Nữ</Radio>
+                                            </Radio.Group>
+                                        </Form.Item>
+                                        <Form.Item >
+                                            <Button type="primary" htmlType="submit">Tìm size</Button>
+                                        </Form.Item>
+                                    </Form>
                                 </Col>
                             </div>
                             <div className="add-cart">
                                 <Row>
                                     <Col offset={13} span={4}>
-                                        <Button onClick={() => props.Thongbao_Them(detail)} className="btn-add" type="primary" icon={<ShoppingCartOutlined />} size={size}>
+                                        {sizeID !== "" && colorID !== "" ? (
+                                            User === null ? (
+                                                <Button onClick={() => props.Thongbao_Them(Proadd)} className="btn-add" type="primary" icon={<ShoppingCartOutlined />} size={size}>
+                                                    Add To Cart
+                                                </Button>
+                                            ) : (
+                                                <Button onClick={Usercart} htmlType="submit" className="btn-add" type="primary" icon={<ShoppingCartOutlined />} size={size}>
+                                                    Add To Cart
+                                                </Button>
+                                            )
+                                        ) : (<Button onClick={() => props.Thongbao_Them(Proadd)} className="btn-add" type="primary" icon={<ShoppingCartOutlined />} size={size} disabled>
                                             Add To Cart
-                                        </Button>
+                                        </Button>)}
+
                                     </Col>
                                     <Col offset={4} span={2}>
                                         <Button className="btn-add" type="primary" icon={<HeartOutlined />} size={size} />
@@ -445,7 +487,6 @@ const Select_Product = (props) => {
                                         </div>
                                     );
                                 })}
-
                             </Carousel>
                         </Col>
                     </Row>

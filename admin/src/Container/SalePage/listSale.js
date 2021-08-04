@@ -170,7 +170,7 @@ const ListSale = (props) => {
             ],
             onFilter: (value, record) => record.trangthai.stt.includes(value),
         },
-        user.permission === 'Admin' ? (
+        user.permission === 'Admin'|| user.permission === 'QLCH' ? (
             {
                 dataIndex: 'trangthai',
                 data: 'makh',
@@ -280,7 +280,7 @@ const ListSale = (props) => {
                                 })}
                             </Select>
                         </div>
-                        {user.permission === "Admin" ? (
+                        {user.permission === "Admin" || user.permission === 'QLCH' ? (
                             <div className="btn-wrapper">
                                 <Link to={'/them-khuyen-mai'}>
                                     <Button type="primary">

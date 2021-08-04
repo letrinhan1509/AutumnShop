@@ -161,7 +161,7 @@ const ListUserAdmin = () => {
       ],
       onFilter: (value, record) => record.trangthai.stt.includes(value),
     },
-    result.permission === 'Admin' ?
+    result.permission === 'Admin' || result.permission === 'QLNS' ?
       {
         title: '',
         dataIndex: 'trangthai',
@@ -186,7 +186,7 @@ const ListUserAdmin = () => {
           </>
         )
       } : (<> </>),
-    result.permission === 'Admin' ?
+    result.permission === 'Admin' || result.permission === 'QLNS' ?
       {
         dataIndex: 'manv',
         key: 'manv',
@@ -272,7 +272,7 @@ const ListUserAdmin = () => {
                 })}
               </Select>
             </div>
-            {result.permission === 'Admin' ? (
+            {result.permission === 'Admin' || result.permission === 'QLNS' ? (
               <div className="btn-wrapper" >
                 <Link to={'/them-nhan-vien'}>
                   <Button type="primary">

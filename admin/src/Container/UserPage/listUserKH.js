@@ -141,7 +141,7 @@ const ListUserKH = (props) => {
       onFilter: (value, record) => record.trangthai.stt.includes(value),
     },
 
-    result.permission === 'Admin' ? (
+    result.permission === 'Admin' || result.permission === 'QLNS' ? (
       {
         title: 'Hành động',
         dataIndex: 'trangthai',

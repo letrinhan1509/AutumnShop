@@ -5,7 +5,7 @@ import producer from 'API_Call/Api_producer/producer';
 import admins from 'API_Call/Api_admin/admin';
 import user from 'API_Call/Api_user/user';
 import order from 'API_Call/Api_order/order';
-import { Row, Col } from 'antd';
+import { Row, Col, Image } from 'antd';
 import "Container/scss/dashboard.scss";
 import { Link } from 'react-router-dom';
 import { Line, Bar } from 'react-chartjs-2';
@@ -63,7 +63,7 @@ const Dashboard = () => {
                                     label: 'Tổng đơn hàng',
                                     data: statistical.map((item) => {
                                         return (
-                                            item.tongdonhang 
+                                            item.tongdonhang
                                         );
                                     }),
                                     backgroundColor: [
@@ -140,13 +140,13 @@ const Dashboard = () => {
                         options={{
                             maintainAspectRatio: false,
                             scales: {
-                                x:{
-                                        labelString: 'Ngày',
-                                            display:true,
-                                        scaleLabel:{
-                                            
-                                        }
-                                 }
+                                x: {
+                                    labelString: 'Ngày',
+                                    display: true,
+                                    scaleLabel: {
+
+                                    }
+                                }
                                 ,
                                 y: {
                                     beginAtZero: true,
@@ -159,16 +159,78 @@ const Dashboard = () => {
             <div className="data-wrapper">
                 <h1>Thống kê dữ liệu</h1>
                 <Row className="box1">
-                    <Link to={'/danh-sach-admin'}><Col className="ADMIN">ADMIN: {ListAdmin.length}</Col></Link>
-                    <Link to={'/danh-sach-khach-hang'}><Col className="USER">USER: {ListUser.length}</Col></Link>
-                    <Link to={'/tat-ca-san-pham'}><Col className="PRODUCT">PRODUCT: {ListProduct.length}</Col></Link>
-                    <Link to={'/danh-sach-loai'}><Col className="PRODUCTTYPE">PRODUCTTYPE: {ListProType.length}</Col></Link>
-                </Row>
-                <Row className="box2">
-                    <Link to={'/danh-sach-nha-sx'}><Col className="PRODUCER">PRODUCER: {ListProducer.length}</Col></Link>
-                    <Link to={'/danh-muc-san-pham'}><Col className="CATALOG">CATALOG: {ListCatalog.length}</Col></Link>
-                    {/* <Link to={'/danh-muc-san-pham'}><Col className="CATALOG2">CATAKIG: {ListCatalog.length}</Col></Link>
-                    <Link to={'/danh-muc-san-pham'}><Col className="CATALOG3">CATAKIG: {ListCatalog.length}</Col></Link> */}
+                    <Link to={'/danh-sach-admin'}>
+                        <div className="img-box">
+                            <Image
+                                className="sale_img"
+                                src="https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/Dashbroad%2FAdmin.jpg?alt=media&token=3ba6f182-2191-4c7a-b763-b15d676fef69"
+                                preview={{
+                                    visible: false,
+                                    /* onVisibleChange: () => { onClick() }, */
+                                    mask: <div className="link_product">
+
+                                        <span>
+                                            ADMIN: {ListAdmin.length}
+                                        </span>
+                                    </div>
+                                }}
+                            />
+                        </div>
+                    </Link>
+                    <Link to={'/danh-sach-khach-hang'}>
+                        <div className="img-box">
+                            <Image
+                                className="sale_img"
+                                src="https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/Voucher_img%2Fng%C4%83%CC%81m%20tr%C6%A1%CC%80i.jpg?alt=media&token=ebc41b47-37e0-4843-9555-a0d790644281"
+                                preview={{
+                                    visible: false,
+                                    /* onVisibleChange: () => { onClick() }, */
+                                    mask: <div className="link_product">
+
+                                        <span>
+                                            USER: {ListUser.length}
+                                        </span>
+                                    </div>
+                                }}
+                            />
+                        </div>
+                    </Link>
+                    <Link to={'/tat-ca-san-pham'}>
+                        <div className="img-box">
+                            <Image
+                                className="sale_img"
+                                src="https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/Voucher_img%2Fng%C4%83%CC%81m%20tr%C6%A1%CC%80i.jpg?alt=media&token=ebc41b47-37e0-4843-9555-a0d790644281"
+                                preview={{
+                                    visible: false,
+                                    /* onVisibleChange: () => { onClick() }, */
+                                    mask: <div className="link_product">
+
+                                        <span>
+                                            PRODUCT: {ListProduct.length}
+                                        </span>
+                                    </div>
+                                }}
+                            />
+                        </div>
+                    </Link>
+                    <Link to={'/danh-sach-loai'}>
+                        <div className="img-box">
+                            <Image
+                                className="sale_img"
+                                src="https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/Voucher_img%2Fng%C4%83%CC%81m%20tr%C6%A1%CC%80i.jpg?alt=media&token=ebc41b47-37e0-4843-9555-a0d790644281"
+                                preview={{
+                                    visible: false,
+                                    /* onVisibleChange: () => { onClick() }, */
+                                    mask: <div className="link_product">
+
+                                        <span>
+                                            PRODUCTTYPE: {ListProType.length}
+                                        </span>
+                                    </div>
+                                }}
+                            />
+                        </div>
+                    </Link>
                 </Row>
             </div>
         </>

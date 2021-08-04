@@ -92,9 +92,9 @@ const EditProduct = (props) => {
 
     //Xóa ảnh trên firebase
     const onRemove = file => {
-        setLink("");
         const del = storage.ref(`Product_Img/${imageName.name}`);
         del.delete().then((res) => {
+            setLink("");
             setImageName("");
             message.success("Đã xóa ảnh!");
         }).catch((error) => {

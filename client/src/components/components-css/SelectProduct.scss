@@ -37,36 +37,6 @@
                 }
                 .sale-imfo {
                     margin-top: 20px;
-                    .price {
-                        display: flex;
-
-                        li {
-                            margin-right: 30px;
-                        }
-                        .new {
-                            color: #40bfff;
-                            font-size: 1.6em;
-                            font-weight: bold;
-                        }
-                        .old {
-                            color: #9098b1;
-                            margin-top: 5px;
-                            position: relative;
-                            &::before {
-                                position: absolute;
-                                content: "";
-                                height: 1px;
-                                width: 100%;
-                                margin-top: 11px;
-                                background-color: #9098b1;
-                            }
-                        }
-                        .percent {
-                            color: #fb7181;
-                            font-weight: bold;
-                            margin-top: 5px;
-                        }
-                    }
                     p {
                         font-weight: 600;
                     }
@@ -86,6 +56,8 @@
                     justify-content: space-between;
                     .size-color-wrapper{
                         .one {
+                            display: flex;
+                            justify-content: space-between;
                             margin-bottom: 20px;
                             .select-color {
                                 width: 30px;
@@ -101,6 +73,8 @@
                             }
                         }
                         .two {
+                            display: flex;
+                            justify-content: space-between;
                             span {
                                 margin-right: 20px;
                                 font-weight: 600;
@@ -109,6 +83,18 @@
                         .three{
                             margin-top: 20px;
                             width: 280px;
+                            span{
+                                font-weight: 600;
+                            }
+                        }
+                        .fourr{
+                            margin-top: 20px;
+                            width: 280px;
+                            p{
+                                font-style: italic;
+                                color: red;
+                                font-weight: 600;
+                            }
                         }
                     }
                     .check-size{

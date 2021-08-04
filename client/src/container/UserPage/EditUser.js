@@ -69,11 +69,11 @@ const EditUser = (props) => {
             );
         }
     };
-    const onRemove = file => {
-        setLink("");
+    const onRemove = file => {  
         const del = storage.ref(`User_Img/${imageName.name}`);
-        setImageName("");
         del.delete().then((res) => {
+            setLink("");
+            setImageName("");
             message.success("Đã xóa ảnh!");
         }).catch((error) => {
             console.log(error);

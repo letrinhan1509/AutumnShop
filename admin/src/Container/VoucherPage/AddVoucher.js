@@ -50,7 +50,7 @@ const AddVoucher = (props) => {
 
     const [datestart, setDatestart] = useState("");
     const [dateEnd, setDateEnd] = useState("");
-    //let a = "";
+    var now = new Date();
     function startChange(date) {
         if (date !== null) {
             setDatestart(date._d);
@@ -101,10 +101,10 @@ const AddVoucher = (props) => {
             );
         }
     };
-    const onRemove = file => {
-        setLink("");
+    const onRemove = file => {        
         const del = storage.ref(`Voucher_img/${imageName.name}`);
         del.delete().then((res) => {
+            setLink("");
             message.success("Đã xóa ảnh!");
         }).catch((error) => {
             console.log(error);

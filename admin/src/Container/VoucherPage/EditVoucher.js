@@ -102,10 +102,10 @@ const EditVoucher = (props) => {
             );
         }
     };
-    const onRemove = file => {
-        setLink("");
+    const onRemove = file => {       
         const del = storage.ref(`Voucher_img/${imageName.name}`);
         del.delete().then((res) => {
+            setLink("");
             setImageName("");
             message.success("Đã xóa ảnh!");
         }).catch((error) => {

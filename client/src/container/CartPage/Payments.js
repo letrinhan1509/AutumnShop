@@ -22,7 +22,14 @@ const Payments = (props) => {
   console.log(cart);
   useEffect(() => {
     setTimeout(() => {
-      if (cart !== "") {
+      if (user !== null) {
+        /* PRODUCT.getCart().then((res) => {
+            if (res.data.status === "Success") {
+                console.log(res.data.data);
+                setListCart(res.data.data);
+            }
+        }) */
+      } else {
         setListCart(cart);
       }
       if (VOUCHER !== null) {
@@ -254,8 +261,8 @@ const Payments = (props) => {
                   </Row>
                   {cart.map(item => (
                     <Row className="product-count">
-                      <Col className="title"><p>{item.qty}x {item.tensp}</p></Col>
-                      <Col><p>{item.qty * item.gia}Đ</p></Col>
+                      <Col className="title"><p>{item.qty}x {item.info.tensp}</p></Col>
+                      <Col><p>{item.qty * item.info.gia}Đ</p></Col>
                     </Row>
                   ))}
                   <Row className="product-code">
