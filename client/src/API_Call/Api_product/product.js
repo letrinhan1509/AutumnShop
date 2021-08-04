@@ -34,7 +34,7 @@ const product = {
     getChecksize: (values) => {
         const url = `/check-size`;
         return AxiosProduct.post(url, values);
-    },
+    }
 };
 
 export default product;

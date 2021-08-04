@@ -204,7 +204,6 @@ exports.putEditPromotionCODE = catchAsync(async (req, res, next) => {
             ngaykt: req.body.ngaykt,
             trangthai: req.body.trangthai
         };
-        console.log(data.voucher);
         if(!data.makm || !data.tenkm || !data.voucher || !data.ghichu || !data.tenhinh || !data.hinh || !data.giagiam || !data.ngaybd) {
             return res.status(400).json({
                 status: "Fail",

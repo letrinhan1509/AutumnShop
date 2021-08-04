@@ -7,6 +7,8 @@ import { useParams } from "react-router";
 import { Link } from "react-router-dom";
 import comment from 'API_Call/Api_comment/comment';
 import PRODUCT from 'API_Call/Api_product/product';
+import CART from 'API_Call/API_cart/cart';
+import axios from "axios";
 //import moment from 'moment';
 
 
@@ -276,11 +278,17 @@ const Select_Product = (props) => {
         add['mau'] = colorID;
         add['soluong'] = proTemp.soluong;
         console.log(add);
-        /* PRODUCT.addCart(add).then((res) => {
+        let url = "http://127.0.0.1:5000/api/v1/gio-hang";
+        axios.post(url, add).then((res) => {
             if (res.data.status === "Success") {
-                console.log(res.data.data);
+                //console.log(res.data.data);
+                message.success(res.data.message);
             }
-        }) */
+        })
+        .catch(err => {
+            message.error(`Thêm sản phẩm vào giỏ hàng thất bại`);
+            //message.error(`${err.response.data.message}`);
+        })
     };
 
     return (

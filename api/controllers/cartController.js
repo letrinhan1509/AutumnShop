@@ -62,6 +62,7 @@ exports.getUserCarts = catchAsync(async (req, res, next) => {
             return res.status(200).json({ status: "Success", cart: cart });
         }
     } catch (error) {
+        console.log(error);
         return res.status(400).json({ 
             status: "Fail", 
             message: "Something went wrong!", 
@@ -98,16 +99,36 @@ exports.postAddCart = catchAsync(async (req, res, next) => {
         const data = {
             makh: req.body.makh,
             masp: req.body.masp,
+            size: req.body.size,
+            mau: req.body.mau,
             gia: req.body.gia,
             giagiam: req.body.giagiam,
-            soluong: req.body.soluong,
-            thanhtien: req.body.thanhtien
+            //soluong: req.body.soluong
         };
-        if(!data.makh || !data.masp || !data.gia || !data.soluong || !data.thanhtien) {
-            return res.status(400).json({ status: "Fail", message: "Thiếu thông tin, thêm sản phẩm vào giỏ hàng thất bại !" });
-        } else {
+        if(!data.makh || !data.masp || !data.size || !data.mau || !data.gia) {
+            return res.status(400).json({ 
+                status: "Fail", 
+                message: "Thiếu thông tin, thêm sản phẩm vào giỏ hàng thất bại !" 
+            });
+        };
+        const cartExist = await modelCart.get_By_userId(data.makh);
+        if(cartExist == 0) {
+            // Khách hàng chưa có sản phẩm trong giỏ hàng:
             let query = await modelCart.create(data);
             return res.status(200).json({ status: "Success", message: query });
+        } else {
+            // Khách hàng đã có sản phẩm trong giỏ hàng:
+            const productExist = await modelCart.check_productId(data.makh, data.masp, data.size, data.mau);
+            if(productExist == 0) {
+                // Sản phẩm chưa có trong giỏ hàng => thêm mới vào giỏ hàng:
+                let query = await modelCart.create(data);
+                return res.status(200).json({ status: "Success", message: query });
+            } else {
+                // Sản phẩm đã có trong giỏ hàng => tăng số lượng:
+                let soluong = productExist.soluong + 1;
+                let queryAmount = await modelCart.put_Amount(productExist.magiohang, soluong);
+                return res.status(200).json({ status: "Success", message: queryAmount });
+            };
         }
     } catch (error) {
         return res.status(400).json({ 

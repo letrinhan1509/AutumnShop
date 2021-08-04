@@ -3,6 +3,8 @@ import React, { useState, useEffect } from 'react';
 import "container/components-css/cart.scss"
 import { CloseOutlined, RollbackOutlined, WarningOutlined } from '@ant-design/icons';
 import { Link } from "react-router-dom";
+import CART from 'API_Call/API_cart/cart';
+import axios from "axios";
 
 
 const { Content } = Layout;
@@ -16,12 +18,13 @@ const Cart = (props) => {
     const [loading, setLoading] = useState(false);
     useEffect(() => {
         if (User !== null) {
-            /* PRODUCT.getCart().then((res) => {
-            if (res.data.status === "Success") {
-                console.log(res.data.data);
-                setCartView(res.data.data);
-            }
-        }) */
+            let url = `http://127.0.0.1:5000/api/v1/gio-hang/khach-hang/${User.makh}`;
+            axios.get(url).then((res) => {
+                if (res.data.status === "Success") {
+                    console.log(res.data.cart);
+                    setCartView(res.data.cart);
+                }
+            });
         } else {
             setCartView(props.cart);
         }
@@ -39,7 +42,7 @@ const Cart = (props) => {
     props.cart.map((item) => (<>{sum = sum + item.qty}</>))
     return (
         <Layout className="container">
-            {props.cart.length === 0 ? (
+            {props.cart.length === 0 && cartView.length === 0 ? (
                 <div className="cart-empty">
                     <div>
                         <p>Giỏ hàng của bạn chưa có sản phẩm nào !</p>

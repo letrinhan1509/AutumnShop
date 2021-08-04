@@ -102,7 +102,6 @@ exports.postComment = catchAsync(async (req, res, next) => {
             //ngaybl: ngay,
             ngaybl: req.body.ngay
         };
-        console.log(req.body);
         if(!data.masp || !data.makh || !data.noidung || !data.giobl || !data.ngaybl) {
             return res.status(400).json({ 
                 status: "Fail", 

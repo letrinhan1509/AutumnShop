@@ -38,15 +38,16 @@ exports.get_Cart = async (id) => {
 
 exports.get_By_userId = async (userId) => {
     return new Promise( (resolve, reject) => {
-        let sql = `SELECT * FROM giohang WHERE makh = '${userId}'`;
+        let sql = `SELECT SP.hinh, SP.tensp, GH.magiohang, GH.makh, GH.masp, GH.size, GH.mau, GH.gia, GH.soluong 
+        FROM giohang as GH JOIN sanpham as SP ON GH.masp = SP.masp 
+        WHERE makh = '${userId}'`;
         db.query(sql, (err, result) => {
             if(err) {
                 reject(err);
             } else if(result.length <= 0){
                 resolve(0);
             } else{
-                dataList = result;
-                resolve(dataList);
+                resolve(result);
             }
         });
     });
@@ -61,8 +62,22 @@ exports.get_By_productId = async (id) => {
             } else if(result.length <= 0){
                 resolve(0);
             } else{
-                dataList = result;
-                resolve(dataList);
+                resolve(result);
+            }
+        });
+    });
+};
+
+exports.check_productId = async (makh, masp, size, mau) => {
+    return new Promise( (resolve, reject) => {
+        let sql = `SELECT * FROM giohang WHERE makh ='${makh}' AND  masp = '${masp}' AND  size = '${size}' AND  mau = '${mau}'`;
+        db.query(sql, (err, result) => {
+            if(err) {
+                reject(err);
+            } else if(result.length <= 0){
+                resolve(0);
+            } else{
+                resolve(result[0]);
             }
         });
     });
@@ -94,6 +109,20 @@ exports.put = async (data) => {
         });
     });
 };
+// Cập nhật số lượng sản phẩm trong giỏ hàng:
+exports.put_Amount = async (magiohang, soluong) => {
+    return new Promise( (resolve, reject) => {
+        let sql = `UPDATE giohang SET soluong='${soluong}'
+        WHERE magiohang = '${magiohang}'`;
+        db.query(sql, (err, result) => {
+            if(err) {
+                reject(err);
+            } else{
+                resolve("Cập nhật số lượng sản phẩm trong giỏ hàng thành công !!!");
+            }
+        });
+    });
+};
 // Xoá 1 sản phẩm trong giỏ hàng theo mã giỏ hàng:
 exports.delete = async (id) => {
     return new Promise( (resolve, reject) => {
@@ -108,7 +137,18 @@ exports.delete = async (id) => {
     });
 };
 // Xoá 1 sản phẩm trong giỏ hàng theo mã sản phẩm:
-
+exports.delete_Product = async (masp) => {
+    return new Promise( (resolve, reject) => {
+        let sql = `DELETE FROM giohang WHERE masp = '${masp}'`;
+        db.query(sql, (err, result) => {
+            if(err) {
+                reject(err);
+            } else{
+                resolve("Xoá sản phẩm trong giỏ hàng thành công !!!");
+            }
+        });
+    });
+};
 // Xoá giỏ hàng theo mã khách hàng:
 exports.delete_Customer = async (makh) => {
     return new Promise( (resolve, reject) => {
