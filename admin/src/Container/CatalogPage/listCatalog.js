@@ -137,7 +137,7 @@ const ListCata = () => {
       dataIndex: 'tendm',
       key: 'tendm',
     },
-    {
+    /* {
       title: 'Trạng thái',
       dataIndex: 'trangthai',
       key: 'trangthai',
@@ -162,8 +162,10 @@ const ListCata = () => {
         { text: "Hiện", value: "Hiện" },
       ],
       onFilter: (value, record) => record.trangthai.stt.includes(value),
-    },
+    }, */
+    result.permission === 'Admin' || result.permission === 'QLCH' ?
     {
+      title: 'Trạng thái',
       dataIndex: 'trangthai',
       key: 'trangthai',
       render: (trangthai) =>
@@ -182,13 +184,14 @@ const ListCata = () => {
           })}
         </>
       )
-    },
+    } : (<> </>),
+    result.permission === 'Admin' || result.permission === 'QLCH' ?
     {
       dataIndex: 'madm',
       key: 'madm',
       render: madm => (<div className="btn-box fix"><Button data-id={madm} key={madm} type="primary" onClick={linkto}> Sửa </Button></div>)
-    },
-    result.permission === 'Admin' || result.permission === 'QL' ?
+    } : (<> </>),
+    result.permission === 'Admin' || result.permission === 'QLCH' ?
       {
         dataIndex: 'madm',
         key: 'madm',

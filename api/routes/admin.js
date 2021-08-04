@@ -31,6 +31,8 @@ router
     .post(adminController.postStatusOrder)      // Thêm 1 trạng thái của đơn hàng
     .put(adminController.postStatusOrder);  // Cập nhật trạng thái đơn hàng
 
+router.get('/danh-sach', authController.isLoggedIn, authController.restrictTo, adminController.getListAdmins);
+
 router
     .route("/:id")
     .get(adminController.getAdmin)  // Chi tiết 1 nhân viên theo mã
@@ -40,6 +42,7 @@ router
     .route("/trang-thai-don-hang/:id")
     .get(adminController.getOrderStatus)    // Chi tiết 1 trạng thái đơn hàng
     .delete(adminController.deleteStatusOrder); // Xoá trạng thái đơn hàng
+
 
 router.get("/dang-xuat", adminController.logout);
 router.post("/dev-dang-nhap", adminController.login);// Đăng nhập

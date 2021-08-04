@@ -154,7 +154,7 @@ const ListProductType = () => {
       ],
       onFilter: (value, record) => record.madm.includes(value),
     },
-    {
+    /* {
       title: 'Trạng thái',
       dataIndex: 'trangthai',
       key: 'trangthai',
@@ -179,8 +179,10 @@ const ListProductType = () => {
         { text: "Hoạt động", value: "Hoạt động" },
       ],
       onFilter: (value, record) => record.trangthai.stt.includes(value),
-    },
+    }, */
+    result.permission === 'Admin' || result.permission === 'QLCH' ?
     {
+      title: 'Trạng thái',
       dataIndex: 'trangthai',
       data: 'maloai',
       key: 'trangthai',
@@ -190,23 +192,24 @@ const ListProductType = () => {
           {trangthai.stt.map(tragth => {
             if (tragth === 'Ẩn') {
               return (
-                <div className="btn-box lock"><Button data-id={trangthai.id} type="primary" icon={<UnlockOutlined />} onClick={unlock}></Button></div>
+                <div className="btn-box lock"><Button data-id={trangthai.id} type="primary" icon={<UnlockOutlined />} onClick={unlock}> Hiện </Button></div>
               );
             } else {
               return (
-                <div className="btn-box lock"><Button data-id={trangthai.id} type="danger" icon={<LockOutlined />} onClick={lock}></Button></div>
+                <div className="btn-box lock"><Button data-id={trangthai.id} type="danger" icon={<LockOutlined />} onClick={lock}> Ẩn </Button></div>
               )
             }
           })}
         </>
       )
-    },
+    } : (<> </>),
+    result.permission === 'Admin' || result.permission === 'QLCH' ?
     {
       dataIndex: 'maloai',
       key: 'maloai',
       render: maloai => (<div className="btn-box fix"><Button data-id={maloai} key={maloai} type="primary" onClick={linkto}> Sửa </Button></div>)
-    },
-    result.permission === 'Admin' || result.permission === 'QL' ?
+    } : (<> </>),
+    result.permission === 'Admin' || result.permission === 'QLCH' ?
       {
 
         dataIndex: 'maloai',

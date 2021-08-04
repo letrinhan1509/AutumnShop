@@ -58,7 +58,11 @@ const Login = () => {
         }
       })
       .catch((err) => {
-        message.error(`Sai tài khoản hoặc mật khẩu !!! ${err.response.data.message}`)
+        if(err.response == undefined) {
+          message.error("Sai tài khoản hoặc mật khẩu. Đăng nhập thất bại !!!");
+        } else {
+          message.error(`Sai tài khoản hoặc mật khẩu !!!`);
+        }
       })
   };
   

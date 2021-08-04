@@ -1,5 +1,5 @@
 import { LockOutlined, UnlockOutlined } from '@ant-design/icons';
-import { Button, message, Table, Tag, Select } from 'antd';
+import { Button, message, Table, Tag, Select, notification } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import "Container/scss/addpro.scss";
@@ -16,6 +16,13 @@ const ListUserAdmin = () => {
       setWordSearch(res.data.data);
     })
   }, []);
+
+  const openNotification = (mess) => {
+    notification.open({
+      message: 'Notification Title',
+      description: 'mess',
+    });
+  };
 
   //Redirect sua thong tin tai khoan
   const linkto = (e) => {
@@ -55,7 +62,7 @@ const ListUserAdmin = () => {
     })
       .catch(err => {
         console.log(err.response);
-        message.error(`Lỗi...! Mở khoá tài khoản thất bại!\n ${err.response.data.message}`)
+        message.error(`${err.response.data.message}`)
       })
   }
   const lock = (e) => {
@@ -134,7 +141,7 @@ const ListUserAdmin = () => {
       ],
       onFilter: (value, record) => record.quyen.includes(value),
     },
-    {
+    /* {
       title: 'Trạng thái',
       dataIndex: 'trangthai',
       key: 'trangthai',
@@ -160,10 +167,10 @@ const ListUserAdmin = () => {
         { text: "Hoạt động", value: "Hoạt động" },
       ],
       onFilter: (value, record) => record.trangthai.stt.includes(value),
-    },
-    result.permission === 'Admin' ?
+    }, */
+    result.permission === 'Admin' || result.permission === 'QLNS' ?
       {
-        title: '',
+        title: 'Trạng thái',
         dataIndex: 'trangthai',
         key: 'trangthai',
         render: (trangthai, admin) =>
@@ -173,21 +180,27 @@ const ListUserAdmin = () => {
             trangthai.stt.map(tragth => {
               if (tragth === 'Khoá') {
                 return (
-                  <div className="btn-box lock"><Button data-id={trangthai.id} type="primary" icon={<UnlockOutlined />} onClick={unlock}></Button></div>
+                  <div className="btn-box lock"><Button data-id={trangthai.id} type="primary" icon={<UnlockOutlined />} onClick={unlock}> Mở khoá </Button></div>
                 );
               } else {
                 return (
-                  <div className="btn-box lock"><Button data-id={trangthai.id} type="danger" icon={<LockOutlined />} onClick={lock}></Button></div>
+                  <div className="btn-box lock"><Button data-id={trangthai.id} type="danger" icon={<LockOutlined />} onClick={lock}> Khoá </Button></div>
                 )
               }
             })
           )}
             
           </>
-        )
+        ),
+        filters: [
+          { text: "Khoá", value: "Khoá" },
+          { text: "Hoạt động", value: "Hoạt động" },
+        ],
+        onFilter: (value, record) => record.trangthai.stt.includes(value),
       } : (<> </>),
-    result.permission === 'Admin' ?
+    result.permission === 'Admin' || result.permission === 'QLNS' ?
       {
+        title: 'Hành động',
         dataIndex: 'manv',
         key: 'manv',
         render: manv => (<div className="btn-box fix">{result.manv === manv ? ("") : (<Button data-id={manv} key={manv} type="primary" onClick={linkto}>Sửa</Button>)}</div>)

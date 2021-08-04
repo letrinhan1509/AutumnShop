@@ -200,17 +200,11 @@ exports.postUserLogin = catchAsync(async (req, res, next) => {
             res.cookie("jwt", token, cookieOptions);
             if(kq) {
                 // Đăng nhập thành công
+                userExist.matkhau = undefined;
                 return res.status(200).json({
                     status: "LoginSuccess",
                     message: "Đăng nhập thành công.",
-                    data: {
-                        makh: userExist.makh, 
-                        username: userExist.tenkh,
-                        email: userExist.email,
-                        hinh: userExist.hinh,
-                        sdt: userExist.sodienthoai,
-                        diachi: userExist.diachi
-                    },
+                    data: userExist,
                     token
                 });
             } else {
@@ -339,7 +333,6 @@ exports.putForgotPassword = catchAsync(async (req, res, next) => {
             });
         };
         const userExist = await modelUser.checkEmail(email);
-        console.log(userExist);
         if(userExist == -1) {
             return res.status(400).json({
                 status: "Fail",
@@ -347,14 +340,43 @@ exports.putForgotPassword = catchAsync(async (req, res, next) => {
             });
         } else {
             let newPassword = Math.random().toString(36).substring(7);
-            var salt = bcrypt.genSaltSync(10);
-            var pass_mahoa = bcrypt.hashSync(newPassword, salt);
-            const pass = await modelUser.updatePasswordUser(email, pass_mahoa);
-            return res.status(200).json({
-                status: "Success",
-                message: "Mật khẩu mới đã được gửi qua email của bạn. Vui lòng kiểm tra lại email để nhận mật khẩu !",
-                pass: newPassword
+
+            var nodemailer = require('nodemailer');
+
+            const smtpTransport = nodemailer.createTransport({
+                service: "Gmail",
+                auth: {
+                    user: "autumnshop180@gmail.com",
+                    pass: "autumn@180CaoLo"
+                }
             });
+
+            var mailOptions = {
+                from: "Autumn shop <autumnshop180@gmail.com>", //Email người gửi
+                to: `${email}`, // Email người nhận
+                subject: 'Lấy lại mật khẩu',
+                text: 'Lấy lại mật khẩu',
+                html: `Cửa hàng thời trang AutumnShop xin gửi lại mật khẩu của bạn. <br>
+            Mật khẩu mới: <b style="padding: 5px 7px; background: #eee; color: red"> '${newPassword}' </b>`, // Nội dung thư, có thể có code html
+            };
+
+            smtpTransport.sendMail(mailOptions, async(error, info) => {
+                if (error){
+                    console.log(error);
+                    return res.status(400).json({status: "Fail", message: "Lỗi. Không thể gửi mail!"});
+                } else {
+                    console.log('Đã gửi mail: ' + info.response);
+                    var salt = bcrypt.genSaltSync(10);
+                    var pass_mahoa = bcrypt.hashSync(newPassword, salt);
+                    const pass = await modelUser.updatePasswordUser(email, pass_mahoa);
+                    smtpTransport.close();
+                    return res.status(200).json({
+                        status: "Success",
+                        message: "Mật khẩu mới đã được gửi qua email của bạn. Vui lòng kiểm tra lại email để nhận mật khẩu !",
+                        pass: newPassword
+                    });
+                }
+            })
         };
     } catch (error) {
         return res.status(400).json({
@@ -364,6 +386,7 @@ exports.putForgotPassword = catchAsync(async (req, res, next) => {
         });
     }
 });
+
 // PUT: Update customer account status
 exports.putEditUserStatus = catchAsync(async (req, res, next) => {
     try {

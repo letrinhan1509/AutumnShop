@@ -141,7 +141,7 @@ const ListUserKH = (props) => {
       onFilter: (value, record) => record.trangthai.stt.includes(value),
     },
 
-    result.permission === 'Admin' ? (
+    result.permission === 'Admin' || result.permission === 'QLNS' ? (
       {
         title: 'Hành động',
         dataIndex: 'trangthai',
@@ -153,11 +153,11 @@ const ListUserKH = (props) => {
             {trangthai.stt.map(tragth => {
               if (tragth === 'Khoá') {
                 return (
-                  <div className="btn-box lock"><Button data-id={trangthai.id} type="primary" icon={<UnlockOutlined />} onClick={unlock}></Button></div>
+                  <div className="btn-box lock"><Button data-id={trangthai.id} type="primary" icon={<UnlockOutlined />} onClick={unlock}> Mở khoá </Button></div>
                 );
               } else {
                 return (
-                  <div className="btn-box lock"><Button data-id={trangthai.id} type="danger" icon={<LockOutlined />} onClick={lock}></Button></div>
+                  <div className="btn-box lock"><Button data-id={trangthai.id} type="danger" icon={<LockOutlined />} onClick={lock}> Khoá </Button></div>
                 )
               }
             })}

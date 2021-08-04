@@ -1,13 +1,15 @@
 import { LockOutlined, UnlockOutlined } from '@ant-design/icons';
-import { Button, message, Table, Tag, Select } from 'antd';
+import { Button, message, Table, Tag, Select, Modal } from 'antd';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useHistory, Link } from "react-router-dom";
 import "Container/scss/addpro.scss";
+import { storage } from 'Container/Firebase/firebase';
 import voucher from 'API_Call/Api_discount/discount';
 
 const { Option } = Select;
 const ListVoucher = (props) => {
+    const { confirm } = Modal;
     const [listVoucher, setListVoucher] = useState([]);
     const history = useHistory();
     let user = JSON.parse(localStorage.getItem('user'));
@@ -43,62 +45,49 @@ const ListVoucher = (props) => {
             }
         });
     }
-    //Cập nhật trạng thái Voucher:
-    const unlock = (e) => {
+
+    //xóa loại SP
+    const deleteVoucher = (e) => {
         let id = e.currentTarget.dataset.id;
-        //console.log("Id:", id);
-        let values = { makm: id, trangthai: 1 };
-        voucher.updateStatus(values).then((res) => {
+        let vouchers = [];
+        voucher.getVoucherID(id).then((res) => {
+        if (res.data.status === "Success") {
+            vouchers = res.data.voucher;
+        }
+        });
+        confirm({
+        title: 'Bạn có thật sự muốn xóa khuyến mãi này?',
+        okText: 'Xóa',
+        okType: 'danger',
+        cancelText: 'Không',
+        onOk() {
+            voucher.deleteSale(id).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message)
+                const del = storage.ref(`ProductType_Img/${voucher.tenhinh}`);
+                del.delete().then((res) => {
+                message.success("Đã xóa ảnh!");
+                }).catch((error) => {
+                console.log(error);
+                });
                 setTimeout(() => {
-                    history.go({ pathname: '/danh-sach-voucher' });
+                window.location.reload()
                 }, 1000);
             }
             else {
-                message.error(res.data.message);
+                message.error(res.data.message)
             }
-        })
+            })
             .catch(err => {
                 console.log(err.response);
-                message.error(`${err.response.data.message}`);
-            });
+                message.error(`${err.response.data.message}`)
+            })
+        },
+        onCancel() {
+            console.log('Cancel');
+        },
+        });
     }
-    const lock = (e) => {
-        let id = e.currentTarget.dataset.id;
-        //console.log("Id:", id);
-        let values = { makm: id, trangthai: 0 };
-        voucher.updateStatus(values).then((res) => {
-            if (res.data.status === "Success") {
-                message.success(res.data.message);
-                setTimeout(() => {
-                    history.go('/danh-sach-voucher');
-                }, 1000);
-            }
-            else {
-                message.error(res.data.message);
-            }
-        })
-            .catch(err => {
-                message.error(`${err.response.data.message}`);
-            });
-    };
-
-
-
-    //Setup trạng thái cho datatable
-    listVoucher.forEach(element => {
-        if (element.trangthai === 1) {
-            element.trangthai = [];
-            element.trangthai.stt = ["Hoạt động"];
-            element.trangthai.id = element.makm;
-        }
-        if (element.trangthai === 0) {
-            element.trangthai = [];
-            element.trangthai.stt = ["Khoá"];
-            element.trangthai.id = element.makm;
-        }
-    })
 
     const columns = [
         {
@@ -149,54 +138,6 @@ const ListVoucher = (props) => {
                 );
             }
         },
-        {
-            title: 'Trạng thái',
-            dataIndex: 'trangthai',
-            key: 'trangthai',
-            render: (trangthai) => (
-                <>
-                    {trangthai.stt.map(tragth => {
-                        let color = 'green';
-                        if (tragth === 'Khoá') {
-                            color = 'red';
-                        }
-                        return (
-                            <Tag color={color} key={tragth}>
-                                {tragth.toUpperCase()}
-                            </Tag>
-                        );
-                    })}
-
-                </>
-            ),
-            filters: [
-                { text: "Khoá", value: "Khoá" },
-                { text: "Hoạt động", value: "Hoạt động" },
-            ],
-            onFilter: (value, record) => record.trangthai.stt.includes(value),
-        },
-        user.permission === 'Admin' ? (
-            {
-                dataIndex: 'trangthai',
-                data: 'makh',
-                key: 'trangthai',
-                render: (trangthai) => //(<Button data-id={text} type="primary" icon={<LockOutlined />} /* onClick={linkto} */></Button>)
-                (
-                    <>
-                        {trangthai.stt.map(tragth => {
-                            if (tragth === 'Khoá') {
-                                return (
-                                    <div className="btn-box lock"><Button data-id={trangthai.id} type="primary" icon={<UnlockOutlined />} onClick={unlock}></Button></div>
-                                );
-                            } else {
-                                return (
-                                    <div className="btn-box lock"><Button data-id={trangthai.id} type="danger" icon={<LockOutlined />} onClick={lock}></Button></div>
-                                )
-                            }
-                        })}
-                    </>
-                )
-            }) : (<> </>),
         user.permission !== 'NVBH' ? {
             dataIndex: "voucher",
             key: "voucher",
@@ -205,7 +146,13 @@ const ListVoucher = (props) => {
             dataIndex: "voucher",
             key: "voucher",
             render: voucher => (<div className="btn-box fix"><Button data-id={voucher} onClick={detail} type="primary">Chi tiết</Button></div>)
-        }
+        },
+        user.permission === "Admin" || user.permission === "QLCH" ? 
+        {
+            dataIndex: "makm",
+            key: "makm",
+            render: makm => (<div className="btn-box delete"><Button data-id={makm} onClick={deleteVoucher} type="danger"> Xoá </Button></div>)
+        } : (<></>)
     ];
 
 

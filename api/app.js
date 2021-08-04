@@ -28,16 +28,20 @@ app.set('view engine', 'ejs');
 
 app.use(logger('dev'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(cors({
+  origin: ['http://localhost:3000','http://localhost:3001'],
+  methods: ['POST', 'PUT', 'GET', 'OPTIONS', 'HEAD', 'DELETE'],
+  credentials: true
+}));
 app.use(session({
   secret: 'abcdefg',
   resave: true,
   saveUninitialized: true,
-  cookie: { maxAge: 1200000 }
+  cookie: { secure: false, maxAge: 1200000 }
 }));
-app.use(cors());
 // Limit requests from same API
 const limiter = rateLimit({
   max: 100,

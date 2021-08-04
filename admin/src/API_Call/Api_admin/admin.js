@@ -52,6 +52,10 @@ const admin = {
     deleteAdmin: (id) => {
         const url = `/${id}`;
         return AxiosAdmin.delete(url);
+    },
+    deleteStatusOrder: (id) => {
+        const url = `/trang-thai-don-hang/${id}`;
+        return AxiosAdmin.get(url);
     }
 };
 

@@ -8,12 +8,8 @@ const e = require("express");
 
 
 const signToken = (user) => {
-    const userData = {
-            _id: user.manv,
-            email: user.admin
-    };
-    return jwt.sign( { userData }, process.env.JWT_SECRET_ADMIN, {
-        expiresIn: process.env.JWT_EXPIRES_IN
+    return jwt.sign( { _id: user.manv, email: user.admin }, process.env.JWT_SECRET_ADMIN, {
+        expiresIn: process.env.EXPIRES_IN
     });
 };
 //Create and send token
@@ -70,14 +66,18 @@ exports.getAdmin = catchAsync(async (req, res, next) => {
         else
             res.status(200).json({ "status": "Success", "data": admin });
     } catch (error) {
-        res.status(400).json({ status: "Fail", error: error });
+        res.status(400).json({ status: "Fail", message: "Something went wrong !", error: error });
     }
 });
 // GET List Order Status
 exports.getListOrderStatus = catchAsync(async (req, res, next) => {
     try {
         let list = await modelAdmin.list_Status_Order();
-        res.status(200).json({ status: "Success", message: "Lấy danh sách trạng thái đơn hàng thành công !", data: list });
+        res.status(200).json({ 
+            status: "Success", 
+            message: "Lấy danh sách trạng thái đơn hàng thành công !", 
+            data: list 
+        });
     } catch (error) {
         res.status(400).json({ status: "Fail", message: "Lấy danh sách trạng thái đơn hàng thất bại !", error: error });
     };
@@ -160,27 +160,32 @@ exports.signup = catchAsync(async (req, res, next) => {
 });
 // Đăng nhập
 exports.login = catchAsync(async (req, res, next) => {
-    const { email, password } =  req.body;
-    console.log(req.body);
-    // 1) Check if email & password exists
-    if (!email || !password) {
+    try {
+        const { email, password } =  req.body;
+        // 1) Check if email & password exists
+        if (!email || !password) {
+            return res.status(400).json({ 
+                status: "Fail", 
+                message: "Đăng nhập thất bại. Vui lòng cung cấp email and password !" 
+            });
+        };
+        // 2) Check if user exist and passowrd is correct
+        const admin = await modelAdmin.check_Admin(email);
+        console.log(bcrypt.compareSync(password, admin.matkhau));
+        if(admin == -1 || admin.trangthai == 0 || (bcrypt.compareSync(password, admin.matkhau)) == false) {
+            return res.status(400).json({ 
+                status: "Fail", 
+                message: "Không đúng email, password hay tài khoản bị khóa, vui lòng kiểm tra lại thông tin !" 
+            });
+        };
+        // 3) If everything Ok
+        createSendToken(admin, 200, res);
+    } catch (error) {
         return res.status(400).json({ 
             status: "Fail", 
-            message: "Đăng nhập thất bại. Vui lòng cung cấp email and password !" 
+            message: "Something went wrong !" 
         });
-    };
-    // 2) Check if user exist and passowrd is correct
-    const admin = await modelAdmin.check_Admin(email);
-    console.log(admin);
-    console.log(bcrypt.compareSync(password, admin.matkhau));
-    if(admin == -1 || admin.trangthai == 0 || (bcrypt.compareSync(password, admin.matkhau)) == false) {
-        return res.status(400).json({ 
-            status: "Fail", 
-            message: "Không đúng email, password hay tài khoản bị khóa, vui lòng kiểm tra lại thông tin !" 
-        });
-    };
-    // 3) If everything Ok
-    createSendToken(admin, 200, res);
+    }
 });
 // Đăng xuất
 exports.logout = (req, res) => {

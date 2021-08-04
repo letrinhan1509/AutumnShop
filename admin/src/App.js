@@ -45,6 +45,7 @@ import ChangePass from "./Container/AccountPage/ChangePass";
 import ListSize from "./Container/SizePage/ListSize";
 import AddSize from "./Container/SizePage/AddSize";
 import EditSize from "./Container/SizePage/EditSize";
+import ListStatusOrder from "./Container/StatusOrderPage/listStatusOrder";
 
 function App() {
   const PrivateRoute = ({ component: Component, ...rest }) => (
@@ -213,6 +214,9 @@ function App() {
                   </Route>
                   <Route exact path="/bang-size/sua-size">
                     <EditSize />
+                  </Route>
+                  <Route exact path="/danh-sach-trang-thai">
+                    <ListStatusOrder />
                   </Route>
                 </Content>
               </Col>

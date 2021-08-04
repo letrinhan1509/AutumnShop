@@ -54,7 +54,7 @@ const Login = () => {
             .then(async (res) => {
                 console.log(res.data);
                 if (res.data.status === "LoginSuccess") {
-                    message.success(`Xin chào, ${res.data.data.username}`)
+                    message.success(`Xin chào, ${res.data.data.tenkh}`)
                     console.log(res.data.data.username)
                     localStorage.setItem('token', res.data.token)
                     localStorage.setItem('user', JSON.stringify(res.data.data))

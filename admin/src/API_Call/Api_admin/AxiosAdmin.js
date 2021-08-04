@@ -5,6 +5,7 @@ const AxiosAdmin = axios.create({
     baseURL: process.env.REACT_APP_API_URL_ADMIN,
     headers: {
         "content-type": "application/json"
-    }
+    },
+    withCredentials: true
 });
 export default AxiosAdmin;

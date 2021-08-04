@@ -19,64 +19,9 @@ const signToken = (user) => {
             (error, token) => {
             if (error) {
                 return reject(error);
-            }
-            resolve(token);
-        });
-    });
-};
-// Xác thực token cho admin
-const verifyToken = (token) => {
-    return new Promise((resolve, reject) => {
-        jwt.verify(token, process.env.JWT_SECRET_ADMIN, (error, decoded) => {
-            if (error) {
-                reject(error);
-            } else
-                resolve(decoded);
-        });
-    });
-};
-
-exports.isLoggedIn = async (req, res, next) => {
-    console.log(req.cookies.jwtAdmin);
-    if(req.cookies.jwtAdmin) {
-        try {
-            // 1) verify token
-            const decoded = await promisify(jwt.verify)(
-                req.cookies.jwtAdmin,
-                process.env.JWT_SECRET_ADMIN
-            );
-            // 2) Check if user still exists
-            const adminExist = await modelAdmin.get_Admin_Id(decoded.id);
-            if (adminExist == -1) {
-                return res.status(403).json({ 
-                    status: "Fail", 
-                    message: "This token does not exist !"
-                });
             } else {
-                return next();
+                resolve(token);
             }
-            //return next();
-        } catch (error) {
-            return res.status(400).json({ 
-                status: "Fail", 
-                message: "Something went wrong!", 
-                error: error 
-            });
-        };
-    };
-    return res.status(401).json({ 
-        status: "Fail", 
-        message: "No login !"
-    });
-};
-
-exports.verifyTokenUser = (token) => {
-    return new Promise((resolve, reject) => {
-        jwt.verify(token, process.env.JWT_SECRET, (error, decoded) => {
-            if (error) {
-                reject(error);
-            } else
-                resolve(decoded);
         });
     });
 };
@@ -125,34 +70,76 @@ exports.protectUser = Model => catchAsync(async (req, res, next) => {
     }
   
     if (!token) {
-      return next(
-        new AppError('You are not logged in! Please log in to get access.', 401)
-      );
+        return res.status(401).json({
+            status: 'Fail',
+            message: 'You are not logged in! Please log in to get access.'
+        });
     }
   
     // 2) Verification token
-    const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+    const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET_ADMIN);
   
     // 3) Check if user still exists
-    const currentUser = await Model.findById(decoded.id);
-    if (!currentUser) {
-      return next(
-        new AppError(
-          'The user belonging to this token does no longer exist.',
-          401
-        )
-      );
+    const currentUser = await modelAdmin.get_Admin_Id(decoded._id);
+    if (currentUser == -1) {
+        return res.status(401).json({
+            status: 'Fail',
+            message: 'You are not logged in! Please log in to get access.'
+        });
+    } else {
+        // GRANT ACCESS TO PROTECTED ROUTE
+        req.user = currentUser;
+        res.locals.user = currentUser;
+        next();
     }
-  
-    // GRANT ACCESS TO PROTECTED ROUTE
-    req.user = currentUser;
-    res.locals.user = currentUser;
-    next();
 });
 
+exports.isLoggedIn = async (req, res, next) => {
+    console.log("token:", req.cookies.jwtAdmin);
+    //console.log("token:", req.headers.jwtadmin);
+    if(req.cookies.jwtAdmin) {
+        try {
+            // 1) verify token
+            const decoded = await promisify(jwt.verify)(
+                req.cookies.jwtAdmin,
+                process.env.JWT_SECRET_ADMIN
+            );
+            if(decoded._id == undefined) {
+                return res.status(403).json({ 
+                    status: "Fail", 
+                    message: "This token does not exist !"
+                });
+            };
+            // 2) Check if user still exists
+            const adminExist = await modelAdmin.get_Admin_Id(decoded._id);
+            if (adminExist == -1) {
+                return res.status(403).json({ 
+                    status: "Fail", 
+                    message: "This token does not exist !"
+                });
+            } else {
+                req.user = adminExist;
+                res.locals.user = adminExist;
+                return next();
+            }
+            //return next();
+        } catch (error) {
+            return res.status(400).json({ 
+                status: "Fail", 
+                message: "Something went wrong!", 
+                error: error.message
+            });
+        };
+    };
+    return res.status(401).json({ 
+        status: "Fail", 
+        message: "No login !"
+    });
+};
+
 exports.restrictTo = catchAsync(async (req, res, next) => {
-    const admin = await this.isLoggedInUser(req.cookies.jwtAdmin);
-    if(admin.quyen == 'Admin' || admin.quyen == 'QLCH') {
+    const role = req.user.quyen;
+    if(role == 'Admin' || role == 'QLCH') {
         return next();
     } else {
         return res.status(403).json({
@@ -161,8 +148,3 @@ exports.restrictTo = catchAsync(async (req, res, next) => {
         })
     }
 });
-
-module.exports = {
-    signToken: signToken,
-    verifyToken: verifyToken
-};

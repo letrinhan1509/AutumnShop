@@ -144,54 +144,6 @@ const ListSale = (props) => {
                 );
             }
         },
-        {
-            title: 'Trạng thái',
-            dataIndex: 'trangthai',
-            key: 'trangthai',
-            render: (trangthai) => (
-                <>
-                    {trangthai.stt.map(tragth => {
-                        let color = 'green';
-                        if (tragth === 'Khoá') {
-                            color = 'red';
-                        }
-                        return (
-                            <Tag color={color} key={tragth}>
-                                {tragth.toUpperCase()}
-                            </Tag>
-                        );
-                    })}
-
-                </>
-            ),
-            filters: [
-                { text: "Khoá", value: "Khoá" },
-                { text: "Hoạt động", value: "Hoạt động" },
-            ],
-            onFilter: (value, record) => record.trangthai.stt.includes(value),
-        },
-        user.permission === 'Admin' ? (
-            {
-                dataIndex: 'trangthai',
-                data: 'makh',
-                key: 'trangthai',
-                render: (trangthai) => //(<Button data-id={text} type="primary" icon={<LockOutlined />} /* onClick={linkto} */></Button>)
-                (
-                    <>
-                        {trangthai.stt.map(tragth => {
-                            if (tragth === 'Khoá') {
-                                return (
-                                    <div className="btn-box lock"><Button data-id={trangthai.id} type="primary" icon={<UnlockOutlined />} onClick={unlock}></Button></div>
-                                );
-                            } else {
-                                return (
-                                    <div className="btn-box lock"><Button data-id={trangthai.id} type="danger" icon={<LockOutlined />} onClick={lock}></Button></div>
-                                )
-                            }
-                        })}
-                    </>
-                )
-            }) : (<> </>),
         user.permission !== 'NVBH' ? ({
             dataIndex: "makm",
             key: "makm",

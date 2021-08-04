@@ -17,12 +17,6 @@ router
   .post(productController.postProduct)  // Thêm sản phẩm
 
 router
-  .route("/color")
-  .get(productController.getListColor)  // Danh sách các màu của sản phẩm
-  .post(productController.postColor)  // Thêm màu sản phẩm
-  .put(productController.putColor);   // Cập nhật tên màu sản phẩm
-
-router
   .route("/size")
   .get(productController.getListSizeProduct)  // Danh sách các size của sản phẩm
   .post(productController.postCreateSizeProduct)  // Thêm size sản phẩm
@@ -43,11 +37,6 @@ router
   .route("/:id")
   .get(productController.getProduct)// Lọc sản phẩm theo id
   .delete(productController.deleteProduct);  // Xoá sản phẩm
-
-router
-  .route("/color/:id")
-  .get(productController.getColor)
-  .delete(productController.deleteColor);
 
 router
   .route("/size/:id")
