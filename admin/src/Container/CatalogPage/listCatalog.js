@@ -204,7 +204,7 @@ const ListCata = () => {
     <>
       <div className="form-wrapper">
         <h2 style={{ textAlign: 'center', marginTop: "30px" }}>DANH SÁCH CÁC DANH MỤC</h2>
-        {result.permission === 'Admin' ? (
+        {result.permission === 'Admin' || result.permission === 'QLCH' ? (
           <div className="btn-wrapper">
             <Link to={'/them-danh-muc'}>
               <Button type="primary">

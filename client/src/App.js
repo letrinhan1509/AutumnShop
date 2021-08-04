@@ -89,10 +89,10 @@ useEffect(() => {
   const [cart, setCart] = useState(storageItem);
 
   const addCart = (productItem) => {
-    const exist = cart.find((x) => x.masp === productItem.masp);
+    const exist = cart.find((x) => x.info.masp === productItem.info.masp && x.mau === productItem.mau && x.size === productItem.size);
     if (exist) {
       setCart(
-        cart.map((x) => x.masp === productItem.masp ? { ...exist, qty: exist.qty + 1 } : x)
+        cart.map((x) => x.info.masp === productItem.info.masp && x.mau === productItem.mau && x.size === productItem.size ? { ...exist, qty: exist.qty + 1 } : x)
       );
     } else {
       setCart([...cart, { ...productItem, qty: 1 }]);
@@ -100,12 +100,12 @@ useEffect(() => {
   };
 
   const removeCart = (productItem) => {
-    const exist = cart.find((x) => x.masp === productItem.masp);
+    const exist = cart.find((x) => x.info.masp === productItem.info.masp && x.mau === productItem.mau && x.size === productItem.size);
     if (exist.qty === 1) {
       showDeleteProduct(productItem);
     } else {
       setCart(
-        cart.map((x) => x.masp === productItem.masp ? { ...exist, qty: exist.qty - 1 } : x)
+        cart.map((x) => x.info.masp === productItem.info.masp && x.mau === productItem.mau && x.size === productItem.size ? { ...exist, qty: exist.qty - 1 } : x)
       );
     }
   };
@@ -118,9 +118,8 @@ useEffect(() => {
       cancelText: 'Không',
       onOk() {
         setCart(
-          cart.filter((x) => x.masp !== productItem.masp)
+          cart.filter((x) => x.info.masp !== productItem.info.masp || x.mau !== productItem.mau || x.size !== productItem.size)
         );
-
       },
       onCancel() {
         console.log('Cancel');
@@ -130,11 +129,10 @@ useEffect(() => {
 
 
   function Thongbao_Them(productItem) {
-
-    const exist = cart.find((x) => x.masp === productItem.masp);
+    const exist = cart.find((x) => x.info.masp === productItem.info.masp && x.mau === productItem.mau && x.size === productItem.size);
     if (exist) {
       setCart(
-        cart.map((x) => x.masp === productItem.masp ? { ...exist, qty: exist.qty + 1 } : x)
+        cart.map((x) => x.info.masp === productItem.info.masp && x.mau === productItem.mau && x.size === productItem.size ? { ...exist, qty: exist.qty + 1 } : x)
       );
       Modal.success({
         content: 'Bạn đã thêm 1 sản phẩm vào giỏ hàng !',
@@ -154,7 +152,7 @@ useEffect(() => {
   };
 
   //Thành tiền
-  const sumPrice = cart.reduce((a, c) => a + c.gia * c.qty, 0);
+  const sumPrice = cart.reduce((a, c) => a + c.info.gia * c.qty, 0);
 
 
 

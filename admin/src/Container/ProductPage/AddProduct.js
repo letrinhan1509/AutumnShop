@@ -53,7 +53,7 @@ const AddProduct = (props) => {
     const [link, setLink] = useState("");
     const { confirm } = Modal;
 
-    const [title, setTitle] = useState("1");
+    const [title, setTitle] = useState(1);
     const selectTitle = (e) => {
         setTitle(e.target.value);
     };
@@ -90,9 +90,9 @@ const AddProduct = (props) => {
     };
     //xóa ảnh trên firebase
     const onRemove = file => {
-        setLink("");
         const del = storage.ref(`Product_Img/${imageName.name}`);
         del.delete().then((res) => {
+            setLink("");
             message.success("Đã xóa ảnh!");
         }).catch((error) => {
             console.log(error);
@@ -218,7 +218,7 @@ const AddProduct = (props) => {
         detail['masize'] = SIZE.current.props.value;
         detail['mamau'] = MAU.current.props.value;
         detail['soluong'] = SOLUONG.current.ariaValueNow;
-        detail['giagiam']='0';
+        detail['giagiam'] = '0';
         setAdd([...add, { ...detail }]);
         setID(tam);
         console.log(detail);
@@ -367,16 +367,6 @@ const AddProduct = (props) => {
                     >
                         <TextArea rows={3} />
                     </Form.Item>
-                    <Form.Item name="trangthai"
-                        label="Trạng thái"
-                    //rules={[{ required: true, message: 'Chọn trạng thái!' }]}
-                    >
-                        {/* <Checkbox.Group options={options} onChange={onChange} /> */}
-                        <Radio.Group onChange={selectTitle} value={title}>
-                            <Radio value={1}>Hiện</Radio>
-                            <Radio value={0}>Ẩn</Radio>
-                        </Radio.Group>
-                    </Form.Item>
                     <Form.Item name="mansx"
                         label="Nhà sản xuất"
                     //rules={[{ required: true, message: 'Chọn nhà sản xuất!' }]}
@@ -420,6 +410,14 @@ const AddProduct = (props) => {
                                 )
                             })}
                         </Select>
+                    </Form.Item>
+                    <Form.Item
+                        label="Trạng thái"
+                    >
+                        <Radio.Group onChange={selectTitle} value={title}>
+                            <Radio value={1}>Hiện</Radio>
+                            <Radio value={0}>Ẩn</Radio>
+                        </Radio.Group>
                     </Form.Item>
                     <Divider >Chi tiết sản phẩm</Divider>
                     <div>

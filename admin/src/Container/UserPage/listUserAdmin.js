@@ -285,7 +285,7 @@ const ListUserAdmin = () => {
                 })}
               </Select>
             </div>
-            {result.permission === 'Admin' ? (
+            {result.permission === 'Admin' || result.permission === 'QLNS' ? (
               <div className="btn-wrapper" >
                 <Link to={'/them-nhan-vien'}>
                   <Button type="primary">

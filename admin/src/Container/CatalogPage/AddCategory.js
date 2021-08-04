@@ -76,10 +76,10 @@ const AddCategory = (props) => {
         }
     };
     //xóa ảnh trên firebase
-    const onRemove = file => {
-        setLink("");
+    const onRemove = file => {     
         const del = storage.ref(`Catalog_Img/${imageName.name}`);
         del.delete().then((res) => {
+            setLink("");
             message.success("Đã xóa ảnh!");
         }).catch((error) => {
             console.log(error);

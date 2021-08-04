@@ -232,7 +232,7 @@ const ListSale = (props) => {
                                 })}
                             </Select>
                         </div>
-                        {user.permission === "Admin" ? (
+                        {user.permission === "Admin" || user.permission === 'QLCH' ? (
                             <div className="btn-wrapper">
                                 <Link to={'/them-khuyen-mai'}>
                                     <Button type="primary">

@@ -177,7 +177,7 @@ const AllProduct = () => {
         </Tag>
       )
     }, */
-    result.permission === 'QLCH' ? (
+    result.permission === 'QLCH' || result.permission === 'Admin' ? (
       {
         title: 'Trạng thái',
         dataIndex: 'trangthai',

@@ -193,8 +193,8 @@ const Payments2 = (props) => {
                   </Row>
                   {order.cart.map(item => (
                     <Row className="product-count">
-                      <Col className="title"><p>{item.qty}x {item.tensp}</p></Col>
-                      <Col><p>{item.qty * item.gia}Đ</p></Col>
+                      <Col className="title"><p>{item.qty}x {item.info.tensp}</p></Col>
+                      <Col><p>{item.qty * item.info.gia}Đ</p></Col>
                     </Row>
                   ))}
                   <Row className="product-code">

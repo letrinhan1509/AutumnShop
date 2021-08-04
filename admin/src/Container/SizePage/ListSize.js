@@ -92,17 +92,18 @@ const ListSize = () => {
             dataIndex: 'chieucaoden',
             key: 'chieucaoden',
         },
+        result.permission === 'Admin' || result.permission === 'QLCH' ?
         {
             dataIndex: 'masize',
             key: 'masize',
             render: masize => (<div className="btn-box fix"><Button data-id={masize} type="primary" key={masize} onClick={edit}> Sửa </Button></div>)
-        },
-        result.permission === 'Admin' || result.permission === 'QL' ?
+        } : (<></>),
+        result.permission === 'Admin' || result.permission === 'QLCH' ?
         {
             dataIndex: 'masize',
             key: 'masize',
             render: masize => (<div className="btn-box delete"><Button data-id={masize} key={masize} type="danger" onClick={deleteType}> Xoá </Button></div>)
-        } : (<> </>)
+        } : (<></>)
 
     ];
 
@@ -111,7 +112,7 @@ const ListSize = () => {
         <>
         <div className="form-wrapper">
             <h2 style={{ textAlign: 'center', marginTop: "30px" }}>BẢNG SIZE QUẦN ÁO THEO CHIỀU CAO - CÂN NẶNG</h2>
-            {result.permission === 'Admin' ? (
+            {result.permission === 'Admin' || result.permission === 'QLCH' ? (
             <div className="btn-wrapper">
                 <Link to={'/them-size'}>
                 <Button type="primary">

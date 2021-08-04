@@ -225,7 +225,7 @@ const ListProductType = () => {
       <div className="form-wrapper">
         <h2 style={{ textAlign: 'center', marginTop: "30px", marginBottom: "5px" }}>DANH SÁCH LOẠI SẢN PHẨM</h2>
         {
-          result.permission === 'Admin' ? (
+          result.permission === 'Admin' || result.permission === 'QLCH' ? (
             <div className="btn-wrapper">
               <Link to={'/them-loai-san-pham'}>
                 <Button type="primary">

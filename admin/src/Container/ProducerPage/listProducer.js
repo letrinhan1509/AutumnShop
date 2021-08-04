@@ -203,7 +203,7 @@ const ListProducer = () => {
     <>
       <div className="form-wrapper">
         <h2 style={{ textAlign: 'center', marginTop: "30px" }}>DANH SÁCH NHÀ SẢN XUẤT</h2>
-        {result.permission === 'Admin' ? (
+        {result.permission === 'Admin' || result.permission === 'QLCH' ? (
           <div className="btn-wrapper">
             <Link to={'/them-nha-san-xuat'}>
               <Button type="primary">
