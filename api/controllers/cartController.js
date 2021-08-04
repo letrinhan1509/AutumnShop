@@ -62,7 +62,6 @@ exports.getUserCarts = catchAsync(async (req, res, next) => {
             return res.status(200).json({ status: "Success", cart: cart });
         }
     } catch (error) {
-        console.log(error);
         return res.status(400).json({ 
             status: "Fail", 
             message: "Something went wrong!", 
@@ -105,11 +104,16 @@ exports.postAddCart = catchAsync(async (req, res, next) => {
             giagiam: req.body.giagiam,
             //soluong: req.body.soluong
         };
-        if(!data.makh || !data.masp || !data.size || !data.mau || !data.gia) {
+        if(!data.makh || !data.masp || !data.size || !data.mau || data.gia == undefined) {
             return res.status(400).json({ 
                 status: "Fail", 
                 message: "Thiếu thông tin, thêm sản phẩm vào giỏ hàng thất bại !" 
             });
+        };
+        if(data.giagiam == undefined) {
+            data.thanhtien = data.soluong * data.gia;
+        } else {
+            data.thanhtien = data.soluong * data.giagiam;
         };
         const cartExist = await modelCart.get_By_userId(data.makh);
         if(cartExist == 0) {
