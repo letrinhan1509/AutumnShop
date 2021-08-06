@@ -2,6 +2,7 @@
 import "./App.css";
 import "antd/dist/antd.css";
 import React, { useState, useEffect } from "react";
+import CART from 'API_Call/API_cart/cart';
 import { Layout, Modal } from "antd";
 import HeaderPage from "./components/include/HeaderPage";
 import { Content } from "antd/lib/layout/layout";
@@ -15,7 +16,6 @@ import Payments from "container/CartPage/Payments";
 import Payments2 from "container/CartPage/Payments2";
 import Payments3 from "container/CartPage/Payments3";
 import Contact from "container/MainPage/Contact";
-import axios from "axios";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import Shirt from "container/CatalogPage/Shirt";
 import Type from "container/CatalogPage/Type";
@@ -23,10 +23,7 @@ import firebase from 'container/Config/firebase';
 //import { storage } from "./container/firebase";
 //import AllProduct from './container/All-Product';
 import UserInfo from "container/UserPage/UserInfo";
-import Backpack from "container/CatalogPage/Backpack";
-import Shoes from "container/CatalogPage/Shoes";
 import SearchResult from "container/MainPage/SearchResult";
-import Accessories from "container/CatalogPage/Acessories";
 import Error404 from "container/MainPage/Error404";
 import Order from "container/MainPage/Order";
 import OrderDetail from "container/MainPage/OrderDetail";
@@ -42,29 +39,29 @@ import SaleInf from "container/MainPage/SaleInf";
 
 
 function App() {
+  const User = JSON.parse(localStorage.getItem('user'));
+  const [userEmail, setUserEmail] = useState([]);
+  // Listen to the Firebase Auth state and set the local state.
+  useEffect(() => {
 
-const [userEmail, setUserEmail] = useState([]);
-// Listen to the Firebase Auth state and set the local state.
-useEffect(() => {
-  
-  const unregisterAuthObserver = firebase.auth().onAuthStateChanged(async (user) => {
-    if(!user){
-      //user logs out, handle somthing here
-      console.log('user is not logged in!');
-      return;
-    }
+    const unregisterAuthObserver = firebase.auth().onAuthStateChanged(async (user) => {
+      if (!user) {
+        //user logs out, handle somthing here
+        console.log('user is not logged in!');
+        return;
+      }
 
-    console.log('Logged in user: ', user);
-    const token = await user.getIdToken;
-    console.log('logged in user token: ', token);
-    userEmail["name"] = user.displayName;
-    userEmail["gmail"] = user.email;
-    userEmail["uid"] = user.uid;
-    userEmail["img"] = user.photoURL;
-    
-  });
-  return () => unregisterAuthObserver(); // Make sure we un-register Firebase observers when the component unmounts.
-}, []);
+      console.log('Logged in user: ', user);
+      const token = await user.getIdToken;
+      console.log('logged in user token: ', token);
+      userEmail["name"] = user.displayName;
+      userEmail["gmail"] = user.email;
+      userEmail["uid"] = user.uid;
+      userEmail["img"] = user.photoURL;
+
+    });
+    return () => unregisterAuthObserver(); // Make sure we un-register Firebase observers when the component unmounts.
+  }, []);
 
 
 
@@ -75,7 +72,7 @@ useEffect(() => {
   useEffect(() => {
     product.getAll().then((res) => {
       setListProductHome(res.data.data);
-      
+
     });
   }, []);
 
@@ -85,41 +82,114 @@ useEffect(() => {
   const randomItem = shuffled.slice(0, 4);
 
 
-  const storageItem = JSON.parse(localStorage.getItem("cart") || "[]");
-  const [cart, setCart] = useState(storageItem);
-
-  const addCart = (productItem) => {
-    const exist = cart.find((x) => x.info.masp === productItem.info.masp && x.mau === productItem.mau && x.size === productItem.size);
+  //callback child to parent
+  const [kqSearch, setKqSearch] = useState([]);
+  const receiveData = function (data) {
+    setKqSearch(data);
+  }
+  const [count, setCount] = useState([]);
+  const CountUsercart = function (data) {
+    setCount(data);
+  }
+  let storageItem = (localStorage.getItem("cart") || "[]");
+  console.log("storageItem", storageItem);
+  const [cart, setCart] = useState(JSON.parse(storageItem));
+  useEffect(() => {
+    localStorage.setItem(...['cart', JSON.stringify(cart)]);
+  }, [cart])
+  console.log("cart", cart);
+  function Thongbao_Them(productItem) {
+    const exist = cart.find((x) => x.masp === productItem.masp && x.mau === productItem.mau && x.size === productItem.size);
     if (exist) {
       setCart(
-        cart.map((x) => x.info.masp === productItem.info.masp && x.mau === productItem.mau && x.size === productItem.size ? { ...exist, qty: exist.qty + 1 } : x)
+        cart.map((x) => x.masp === productItem.masp && x.mau === productItem.mau && x.size === productItem.size ? { ...exist, soluong: exist.soluong + 1 } : x)
       );
+      Modal.success({
+        content: 'Bạn đã thêm 1 sản phẩm vào giỏ hàng !',
+      });
     } else {
-      setCart([...cart, { ...productItem, qty: 1 }]);
+      setCart([...cart, { ...productItem, soluong: 1 }]);
+      Modal.success({
+        content: 'Bạn đã thêm 1 sản phẩm vào giỏ hàng !',
+      });
+    }
+  }
+
+  const addCart = (productItem) => {
+    const exist = cart.find((x) => x.masp === productItem.masp && x.mau === productItem.mau && x.size === productItem.size);
+    if (exist) {
+      if (User !== null) {
+        let value = {};
+        value["magiohang"] = productItem.magiohang;
+        value["phuongthuc"] = 1;
+        console.log(value);
+        /* CART.updateCart(value).then((res) => {
+          if (res.data.status === "Success") {
+            console.log(res.data);
+            setCart(
+              cart.map((x) => x.masp === productItem.masp && x.mau === productItem.mau && x.size === productItem.size ? { ...exist, soluong: exist.soluong + 1 } : x)
+            );
+          }
+        }); */
+      } else {
+        setCart(
+          cart.map((x) => x.masp === productItem.masp && x.mau === productItem.mau && x.size === productItem.size ? { ...exist, soluong: exist.soluong + 1 } : x)
+        );
+      }
+    } else {
+      setCart([...cart, { ...productItem, soluong: 1 }]);
     }
   };
-
   const removeCart = (productItem) => {
-    const exist = cart.find((x) => x.info.masp === productItem.info.masp && x.mau === productItem.mau && x.size === productItem.size);
-    if (exist.qty === 1) {
-      showDeleteProduct(productItem);
+    const exist = cart.find((x) => x.masp === productItem.masp && x.mau === productItem.mau && x.size === productItem.size);
+    if (exist.soluong === 1) {
+      showDeleteCart(exist);
     } else {
-      setCart(
-        cart.map((x) => x.info.masp === productItem.info.masp && x.mau === productItem.mau && x.size === productItem.size ? { ...exist, qty: exist.qty - 1 } : x)
-      );
+      if (User !== null) {
+        let value = [];
+        value["magiohang"] = productItem.magiohang;
+        value["phuongthuc"] = 0;
+        console.log(value);
+        /* CART.updateCart(value).then((res) => {
+        if (res.data.status === "Success") {
+          console.log(res.data);
+          setCart(
+            cart.map((x) => x.masp === productItem.masp && x.mau === productItem.mau && x.size === productItem.size ? { ...exist, soluong: exist.soluong - 1 } : x)
+          );
+        }
+      }); */
+      } else {
+        setCart(
+          cart.map((x) => x.masp === productItem.masp && x.mau === productItem.mau && x.size === productItem.size ? { ...exist, soluong: exist.soluong - 1 } : x)
+        );
+      }
     }
   };
-
-  function showDeleteProduct(productItem) {
+  function showDeleteCart(productItem) {
     confirm({
       title: 'Bạn muốn xóa sản phẩm khỏi giỏ hàng?',
       okText: 'Xóa',
       okType: 'danger',
       cancelText: 'Không',
       onOk() {
-        setCart(
-          cart.filter((x) => x.info.masp !== productItem.info.masp || x.mau !== productItem.mau || x.size !== productItem.size)
-        );
+        if (User !== null) {
+          let value = [];
+          value["magiohang"] = productItem.magiohang;
+          value["phuongthuc"] = 0;
+          console.log(value);
+          /* CART.updateCart(value).then((res) => {
+          if (res.data.status === "Success") {
+            console.log(res.data);
+            setCart(
+              cart.filter((x) => x.masp !== productItem.masp || x.mau !== productItem.mau || x.size !== productItem.size)
+            );
+          }
+        }); */
+        } else {
+          setCart(
+            cart.filter((x) => x.masp !== productItem.masp || x.mau !== productItem.mau || x.size !== productItem.size)
+          );
+        }
       },
       onCancel() {
         console.log('Cancel');
@@ -127,46 +197,8 @@ useEffect(() => {
     });
   }
 
-
-  function Thongbao_Them(productItem) {
-    const exist = cart.find((x) => x.info.masp === productItem.info.masp && x.mau === productItem.mau && x.size === productItem.size);
-    if (exist) {
-      setCart(
-        cart.map((x) => x.info.masp === productItem.info.masp && x.mau === productItem.mau && x.size === productItem.size ? { ...exist, qty: exist.qty + 1 } : x)
-      );
-      Modal.success({
-        content: 'Bạn đã thêm 1 sản phẩm vào giỏ hàng !',
-      });
-    } else {
-      setCart([...cart, { ...productItem, qty: 1 }]);
-      Modal.success({
-        content: 'Bạn đã thêm 1 sản phẩm vào giỏ hàng !',
-      });
-    }
-  }
-
-  const removeProduct = (productItem) => {
-    setCart(
-      cart.filter((x) => x.masp !== productItem.masp)
-    );
-  };
-
-  //Thành tiền
-  const sumPrice = cart.reduce((a, c) => a + c.info.gia * c.qty, 0);
-
-
-
   //Firebase get image
   const [link, setLink] = useState([]);
-
-  
-
-  //callback child to parent
-  const [kqSearch, setKqSearch] = useState([]);
-  const receiveData = function (data) {
-    setKqSearch(data);
-    console.log('bbbb', kqSearch);
-  }
 
   return (
     <Router>
@@ -174,19 +206,19 @@ useEffect(() => {
         <Switch>
           <Route path='/'>
             <Layout>
-              <HeaderPage ListProductHome={ListProductHome}  cart={cart} PriceCart={sumPrice} receiveData={receiveData} />
+              <HeaderPage ListProductHome={ListProductHome} cart={cart} receiveData={receiveData} count={count} />
               <Content className="content-wrapper">
                 <Route exact path="/">
-                  <Home ListProductHome={ListProductHome} link={link} cart={cart} addCart={addCart} Thongbao_Them={Thongbao_Them} />
+                  <Home ListProductHome={ListProductHome} link={link} Thongbao_Them={Thongbao_Them} />
                 </Route>
                 <Route exact path="/san-pham/chi-tiet-san-pham/:id">
                   <ProductDetail
                     initRelatedItems={randomItem}
                     ListProductHome={ListProductHome}
-                    addCart={addCart}
                     link={link}
                     cart={cart}
                     Thongbao_Them={Thongbao_Them}
+                    setCart={setCart}
                   />
                 </Route>
                 <Route path="/dang-ky">
@@ -217,16 +249,16 @@ useEffect(() => {
                   <ForgotPass />
                 </Route>
                 <Route path="/gio-hang">
-                  <Cart cart={cart} CountCart={cart.length} addCart={addCart} removeCart={removeCart} showDeleteProduct={showDeleteProduct} PriceCart={sumPrice} />
+                  <Cart cart={cart} CountUsercart={CountUsercart} addCart={addCart} removeCart={removeCart} showDeleteCart={showDeleteCart} />
                 </Route>
                 <Route path="/nhap-thong-tin-giao-hang">
-                  <Payments cart={cart} CountCart={cart.length} PriceCart={sumPrice} />
+                  <Payments cart={cart} />
                 </Route>
                 <Route path="/xac-nhan-don-hang">
-                  <Payments2 cart={cart} CountCart={cart.length} PriceCart={sumPrice} />
+                  <Payments2 cart={cart} />
                 </Route>
                 <Route path="/hoan-tat-don-hang">
-                  <Payments3 cart={cart} CountCart={cart.length} PriceCart={sumPrice} />
+                  <Payments3 cart={cart} />
                 </Route>
                 <Route exact path="/don-hang">
                   <Order />

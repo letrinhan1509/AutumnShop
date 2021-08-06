@@ -23,9 +23,6 @@ const Home = (props) => {
         }
     })
 
-    useEffect(() => {
-        localStorage.setItem(...['cart', JSON.stringify(props.cart)]);
-    }, [props.cart]);
 
     return (
         <>
@@ -56,7 +53,6 @@ const Home = (props) => {
                             <p>THE WINTER</p>
                         </div> */}
                         <h1>THE WINTER</h1>
-
                         <p>COLLECTION-2021</p>
                         <div className="button-wrapper"><button className="btn10">Xem</button></div>
                     </div>

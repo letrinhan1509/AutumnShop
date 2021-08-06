@@ -1,4 +1,4 @@
-import { Col, Layout, Row, Rate, Statistic, Select, Button, Card, Carousel, Tabs, Comment, List, Form, Input, Avatar, message, Radio } from "antd";
+import { Col, Layout, Row, Rate, Statistic, Select, Button, Card, Carousel, Tabs, Comment, List, Form, Input, Avatar, message, Radio, Modal } from "antd";
 import moment from 'moment';
 import { ShoppingCartOutlined, HeartOutlined, FacebookOutlined, TwitterOutlined } from '@ant-design/icons';
 import React, { createContext, useState, useEffect } from 'react';
@@ -20,7 +20,6 @@ const Select_Product = (props) => {
     const User = JSON.parse(localStorage.getItem('user'));
     const detail = JSON.parse(localStorage.getItem('detail'));
     const chitiet = JSON.parse(detail.chitiet);
-
     const { id } = useParams();
     const [sizeID, setSizeID] = useState("");
     const [colorID, setColorID] = useState("");
@@ -42,9 +41,13 @@ const Select_Product = (props) => {
         let a = chitiet.find((x) => x.mamau === value && x.masize === sizeID);
         setProTemp(a);
         let add = {};
-        add['info'] = detail;
+        add['gia'] = detail.gia;
+        add['hinh'] = detail.hinh;
+        add['masp'] = detail.masp;
+        add['tensp'] = detail.tensp;
         add['size'] = sizeID;
         add['mau'] = value;
+        //add['soluong'] = value;
         console.log(add);
         setProadd(add);
     }
@@ -269,6 +272,7 @@ const Select_Product = (props) => {
         add['makh'] = User.makh;
         add['masp'] = detail.masp;
         add['gia'] = detail.gia;
+        add['hinh'] = detail.hinh;
         if (proTemp.giagiam !== 0) {
             add['giagiam'] = proTemp.giagiam;
         } else {
@@ -283,13 +287,24 @@ const Select_Product = (props) => {
             if (res.data.status === "Success") {
                 //console.log(res.data.data);
                 message.success(res.data.message);
+                const exist = props.cart.find((x) => x.masp === add.masp && x.mau === add.mau && x.size === add.size);
+                if (exist) {
+                    props.setCart(
+                        props.cart.map((x) => x.masp === add.masp && x.mau === add.mau && x.size === add.size ? { ...exist, soluong: exist.soluong + 1 } : x)
+                    );
+                } else {
+                    props.setCart([...props.cart, { ...add, soluong: 1 }]);
+                }
+                //localStorage.setItem(...['cart', JSON.stringify(res.data.cart)]);
             }
         })
-        .catch(err => {
-            message.error(`Thêm sản phẩm vào giỏ hàng thất bại`);
-            //message.error(`${err.response.data.message}`);
-        })
+            .catch(err => {
+                message.error(`Thêm sản phẩm vào giỏ hàng thất bại`);
+                //message.error(`${err.response.data.message}`);
+            })
     };
+
+
 
     return (
         <>

@@ -110,11 +110,11 @@ exports.postAddCart = catchAsync(async (req, res, next) => {
                 message: "Thiếu thông tin, thêm sản phẩm vào giỏ hàng thất bại !" 
             });
         };
-        if(data.giagiam == undefined) {
+        /* if(data.giagiam == undefined) {
             data.thanhtien = data.soluong * data.gia;
         } else {
             data.thanhtien = data.soluong * data.giagiam;
-        };
+        }; */
         const cartExist = await modelCart.get_By_userId(data.makh);
         if(cartExist == 0) {
             // Khách hàng chưa có sản phẩm trong giỏ hàng:

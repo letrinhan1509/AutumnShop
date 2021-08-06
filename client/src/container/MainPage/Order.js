@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Image, Row, Col, Input, Button, message, Select, Table } from 'antd';
+import { Image, Row, Col, Input, Button, message, Select, Table, Modal } from 'antd';
 import Meta from "antd/lib/card/Meta";
 import { useHistory, Link } from "react-router-dom";
+import OrderDetail from "./OrderDetail";
 import "container/components-css/order.scss";
 import order from 'API_Call/Api_order/order';
 
@@ -12,6 +13,7 @@ console.log(user);
 const Order = (props) => {
     const link = useHistory();
     const [ListOrder, setListOrder] = useState([]);
+    const [visible, setVisible] = useState(false);
     //API Customer order list :
     useEffect(() => {
         order.getUserID(user.makh).then((res) => {
@@ -87,11 +89,12 @@ const Order = (props) => {
 
         order.getOrderID(i).then((res) => {
             if (res.data.status === "Success") {
-                console.log(res.data.data[0]);
-                localStorage.setItem('orderList', JSON.stringify(res.data.data[0]));
-                setTimeout(() => {
+                console.log(res.data.data);
+                localStorage.setItem('orderList', JSON.stringify(res.data.data));
+                setVisible(true)
+                /* setTimeout(() => {
                     link.push('/don-hang/chi-tiet');
-                }, 100)
+                }, 100) */
             }
         })
 
@@ -166,35 +169,46 @@ const Order = (props) => {
     ];
 
     return (
-        <div className="order">
-            <div className="order-wrapper" >
-                <h2 style={{ textAlign: 'center', marginTop: "20px", marginBottom: "20px" }}>DANH SÁCH ĐƠN HÀNG</h2>
-                <div className="View-layout">
-                    <div>
-                        <span>Đơn hàng hiển thị: </span>
-                        <Select defaultValue="6" Option style={{ width: 70 }} onChange={e => ChangeSize(e)}>
-                            {size.map((item) => {
-                                return (
-                                    <>
-                                        <Option value={item.PSize}>{item.PSize}</Option>
-                                    </>
-                                )
-                            })}
-                        </Select>
+        <>
+            <div className="order">
+                <div className="order-wrapper" >
+                    <h2 style={{ textAlign: 'center', marginTop: "20px", marginBottom: "20px" }}>DANH SÁCH ĐƠN HÀNG</h2>
+                    <div className="View-layout">
+                        <div>
+                            <span>Đơn hàng hiển thị: </span>
+                            <Select defaultValue="6" Option style={{ width: 70 }} onChange={e => ChangeSize(e)}>
+                                {size.map((item) => {
+                                    return (
+                                        <>
+                                            <Option value={item.PSize}>{item.PSize}</Option>
+                                        </>
+                                    )
+                                })}
+                            </Select>
+                        </div>
+                        <div className="btn-wrapper" >
+                            <Button type="primary">
+                                Đơn hàng COD
+                            </Button>
+                            <Button type="primary">
+                                Đơn hàng GHTK
+                            </Button>
+                        </div>
                     </div>
-                    <div className="btn-wrapper" >
-                        <Button type="primary">
-                            Đơn hàng COD
-                        </Button>
-                        <Button type="primary">
-                            Đơn hàng GHTK
-                        </Button>
-                    </div>
+                    <Table className="proItem" dataSource={wordSearch} columns={columns} pagination={{ pageSize: `${pageSize}` }} size="middle" />
+                    {/* <Link to={'/Themnhanvien'}><p className="ant-btn ant-btn-primary" type="primary">Thêm nhân viên</p></Link> */}
                 </div>
-                <Table className="proItem" dataSource={wordSearch} columns={columns} pagination={{ pageSize: `${pageSize}` }} size="middle" />
-                {/* <Link to={'/Themnhanvien'}><p className="ant-btn ant-btn-primary" type="primary">Thêm nhân viên</p></Link> */}
             </div>
-        </div>
+            <Modal
+                centered
+                visible={visible}
+                //onOk={() => setVisible(false)}
+                onCancel={() => setVisible(false)}
+                width={1024}
+            >
+                <OrderDetail />
+            </Modal>
+        </>
     );
 }
 

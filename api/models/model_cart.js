@@ -38,7 +38,7 @@ exports.get_Cart = async (id) => {
 
 exports.get_By_userId = async (userId) => {
     return new Promise( (resolve, reject) => {
-        let sql = `SELECT SP.hinh, SP.tensp, GH.magiohang, GH.makh, GH.masp, GH.size, GH.mau, GH.gia, GH.soluong 
+        let sql = `SELECT SP.hinh, SP.tensp, GH.magiohang, GH.makh, GH.masp, GH.size, GH.mau, GH.gia, GH.soluong, GH.thanhtien 
         FROM giohang as GH JOIN sanpham as SP ON GH.masp = SP.masp 
         WHERE makh = '${userId}'`;
         db.query(sql, (err, result) => {

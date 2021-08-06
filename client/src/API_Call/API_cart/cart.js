@@ -28,7 +28,6 @@ const cart = {
         const url = `/${id}`;
         return AxiosCart.delete(url);
     },
-
 };
 
 export default cart;

@@ -63,17 +63,11 @@ const Payments2 = (props) => {
     values['note'] = notes;
     values['pay'] = payValue;
     values['delivery'] = deliveryValue;
-    values['ship'] = ship;
-    if (voucher !== null) {
-      values['sumpay'] = ship + Number(props.PriceCart) - Number(voucher.giagiam);
-      values['makm'] = voucher.makm;
-    } else {
-      values['sumpay'] = ship + Number(props.PriceCart);
-    }
+
     console.log(values);
     //Oder.addOrder(values)
     //const url = "http://localhost:5000/api/v1/don-hang/";
-    Oder
+    /* Oder
       .addOrder(values)
       .then(async (res) => {
         if (res.data.status === "Success") {
@@ -93,18 +87,13 @@ const Payments2 = (props) => {
         message.error(
           `Đặt hàng thất bại ! \n ${err.response.data.message}`
         );
-      });
+      }); */
   };
-
-  /* useEffect(() => {
-    localStorage.setItem(...["cart", JSON.stringify(props.cart)]);
-  }, [props.cart]); */
 
   const back = () => {
     localStorage.removeItem("order");
     localStorage.removeItem("voucher");
   }
-
 
   const [kq, setKq] = useState("");
   const receiveData = function (data) {
@@ -116,16 +105,11 @@ const Payments2 = (props) => {
   pays['order'] = order;
   pays['note'] = notes;
   pays['pay'] = payValue;
-  pays['ship'] = ship;
   pays['delivery'] = deliveryValue;
-  if (voucher !== null) {
-    pays['sumpay'] = ship + Number(props.PriceCart) - Number(voucher.giagiam);
-    pays['makm'] = voucher.makm;
-  } else {
-    pays['sumpay'] = ship + Number(props.PriceCart);
-  }
   const demo = pays;
   localStorage.setItem('payment', JSON.stringify(demo));
+
+  
   return (
     <>
       <Layout className="container">
@@ -193,15 +177,15 @@ const Payments2 = (props) => {
                   </Row>
                   {order.cart.map(item => (
                     <Row className="product-count">
-                      <Col className="title"><p>{item.qty}x {item.info.tensp}</p></Col>
-                      <Col><p>{item.qty * item.info.gia}Đ</p></Col>
+                      <Col className="title"><p>{item.soluong}x {item.tensp}</p></Col>
+                      <Col><p>{item.soluong * item.gia}Đ</p></Col>
                     </Row>
                   ))}
                   <Row className="product-code">
                     <Col className="abc">
                       <Row className="sum-cart">
                         <Col className="title"><p>Tổng đơn hàng</p></Col>
-                        <Col className="price"><p>{props.PriceCart}Đ</p></Col>
+                        <Col className="price"><p>{order.sumpay}Đ</p></Col>
                       </Row>
                       <Row className="ship">
                         <Col className="title"><p>Phí vận chuyển</p></Col>
@@ -220,10 +204,7 @@ const Payments2 = (props) => {
                   </Row>
                   <Row className="product-sum">
                     <Col className="title"><p>Tổng Thanh toán</p></Col>
-                    {voucher === null ? (<Col className="price"><p>{ship + Number(props.PriceCart)}Đ</p></Col>) : (
-                      <Col className="price"><p>{ship + Number(props.PriceCart) - Number(voucher.giagiam)}Đ</p></Col>
-                    )}
-
+                    <Col className="price"><p>{order.sumpay}Đ</p></Col>                    
                   </Row>
                   <Row><textarea placeholder="Ghi chú" onChange={note} /></Row>
                   <Row className="button-group">
