@@ -38,15 +38,6 @@ const HomeBestseller = (props) => {
             //window.location.reload()
         }
     })
-
-
-
-
-    useEffect(() => {
-        localStorage.setItem(...['cart', JSON.stringify(props.cart)]);
-
-    }, [props.cart]);
-
     return (
         <>
             <div className="menu_filter">

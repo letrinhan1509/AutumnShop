@@ -2,10 +2,6 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background-image: url("./bg/wall.jpg");
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    background-size: cover;
     .orderDetail-wrapper {
         margin: 30px 0;
         background: white;
@@ -94,3 +90,4 @@
         }
     }
 }
+

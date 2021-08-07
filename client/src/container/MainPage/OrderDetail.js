@@ -7,8 +7,9 @@ import order from 'API_Call/Api_order/order';
 
 const { TextArea } = Input;
 const { Option } = Select;
-const orderList = JSON.parse(localStorage.getItem("orderList"));
+
 const OrderDetail = () => {
+    const orderList = JSON.parse(localStorage.getItem("orderList"));
     const link = useHistory();
     const back = () => {
         localStorage.removeItem("orderList");
@@ -55,11 +56,11 @@ const OrderDetail = () => {
                         </ul>
                     </Col>
                 </Row>
-                <Row className="btn-box">
+                {/* <Row className="btn-box">
                     <Button onClick={back} className="pay" type="primary" size="large">
                         <Link to="/don-hang">Trở về</Link>
                     </Button>
-                </Row>
+                </Row> */}
             </div>
         </div>
     );

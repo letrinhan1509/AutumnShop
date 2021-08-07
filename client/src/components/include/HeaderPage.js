@@ -14,6 +14,7 @@ const { SubMenu } = Menu;
 const HeaderPage = (props) => {
     const history = useHistory();
 
+    
     const handClick1 = (e) => {
         if (e.key === '/') {
             history.push('/')
@@ -26,16 +27,16 @@ const HeaderPage = (props) => {
         history.push(`/san-pham/${e.key}`);
         window.location.reload();
     }
-    const handClick3 = (e) => {   
-        history.push(`/san-pham/theo-loai/${e.key}`);       
+    const handClick3 = (e) => {
+        history.push(`/san-pham/theo-loai/${e.key}`);
         window.location.reload();
     }
     const logout = () => {
         localStorage.removeItem("token")
         localStorage.removeItem("user")
         const cart = JSON.parse(localStorage.getItem("cart"));
-        if(cart !== null){
-            localStorage.removeItem("cart")
+        if (cart !== null) {
+            localStorage.setItem('cart', [])
         }
         history.push('/dang-nhap');
         window.location.reload()
@@ -52,11 +53,12 @@ const HeaderPage = (props) => {
             </Menu.Item>
             <Menu.Item key="logout" onClick={logout} icon={<LogoutOutlined />}>
                 <a target="_blank" rel="logout">
-                    Log out
+                    Đăng xuất
                 </a>
             </Menu.Item>
         </Menu>
     );
+
 
     //API Danh mục - loại sản phẩm
     const [listCategory, setlistCategory] = useState([]);
@@ -79,9 +81,11 @@ const HeaderPage = (props) => {
             })
         }
     };
+    //Đếm cart chưa có user
     let sum = 0;
-    props.cart.map((item) => (<>{sum = sum + item.qty}</>))
-
+    //let count = JSON.parse(localStorage.getItem("cart"));
+    props.cart.map((item) => (<>{sum = sum + item.soluong}</>))
+    
     return (
         <>
             <Row className="menu1-wrapper">
@@ -89,7 +93,7 @@ const HeaderPage = (props) => {
                     <Menu mode="horizontal"
                         className="menu1"
                         onClick={handClick1}
-                        >
+                    >
                         <div className="logo-box">
                             <Link className="logo" to={'/'}>
                                 <img width="50px" alt='logo' src="/images/icon/images.png" />

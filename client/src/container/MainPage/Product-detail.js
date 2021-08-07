@@ -1,6 +1,6 @@
 import { Col, Layout, Row, Image, Card } from "antd";
 import { ShoppingCartOutlined, EyeOutlined } from '@ant-design/icons';
-import React from 'react';
+import React, {useEffect} from 'react';
 import "container/components-css/ProductDetail.scss"
 import "components/Select_Product"
 import SelectProduct from "components/Select_Product";
@@ -22,7 +22,7 @@ const ProductDetail = (props) => {
             <LinkPage />
             <Row>
                 <Col style={{ width: '100%' }}>
-                    <SelectProduct ListPro={props.ListProductHome} Thongbao_Them={props.Thongbao_Them} />
+                    <SelectProduct cart={props.cart} ListPro={props.ListProductHome} Thongbao_Them={props.Thongbao_Them} setCart={props.setCart}/>
                 </Col>
             </Row>
             <Row className="related">

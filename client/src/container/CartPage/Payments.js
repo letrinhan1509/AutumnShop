@@ -12,34 +12,45 @@ const { Option } = Select;
 const Payments = (props) => {
   const history = useHistory();
   const cart = JSON.parse(localStorage.getItem("cart"));
-  const user = JSON.parse(localStorage.getItem("user"));
-  const VOUCHER = JSON.parse(localStorage.getItem("voucher"));
-  const [listCart, setListCart] = useState([]);
-  const [order, setOrder] = useState([]);
+  const User = JSON.parse(localStorage.getItem("user"));
+  let VOUCHER = JSON.parse(localStorage.getItem("voucher"));
   const [khuyenmai, setKhuyenmai] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [cartView, setCartView] = useState([]);
 
   console.log(cart);
   useEffect(() => {
-    setTimeout(() => {
-      if (user !== null) {
-        /* PRODUCT.getCart().then((res) => {
-            if (res.data.status === "Success") {
-                console.log(res.data.data);
-                setListCart(res.data.data);
+    /* if (User !== null) {
+      let url = `http://127.0.0.1:5000/api/v1/gio-hang/khach-hang/${User.makh}`;
+      axios.get(url).then((res) => {
+        if (res.data.status === "Success") {
+          console.log(res.data.cart);
+          setCartView(res.data.cart);
+          setTimeout(() => {
+            if (VOUCHER !== null) {
+              localStorage.removeItem("voucher");
             }
-        }) */
-      } else {
-        setListCart(cart);
-      }
+            localStorage.removeItem("order");
+            if (res.data.cart.length !== 0) {
+              setLoading(true);
+            }
+          }, 1000);
+        }
+      });
+    } else {
+      
+    } */
+    setCartView(props.cart);
+    setTimeout(() => {
       if (VOUCHER !== null) {
         localStorage.removeItem("voucher");
       }
       localStorage.removeItem("order");
-      setLoading(true);
-    }, 1000)
+      if (props.cart.length !== 0) {
+        setLoading(true);
+      }
+    }, 1000);
   }, [])
-  console.log(listCart);
 
 
   //API Thành Phố
@@ -63,16 +74,28 @@ const Payments = (props) => {
   //API Phường - Xã
   const [listWard, setlistWard] = useState([]);
   let idDistrict = "";
+  const [ship, setShip] = useState(0);
   const onChangeDistrict = (e) => {
     idDistrict = e;
     city.getDistrictWard(idDistrict).then((res) => {
       setlistWard(res.data.ward);
     })
+    //lấy phí ship
+    /* city.getShip(idDistrict).then((res) => {
+      setShip(res.data.ship);
+    }) */
   };
   
 
   const pay = (values) => {
-    values['cart'] = listCart;
+    values['cart'] = cartView;
+    values['ship'] = ship;
+    if (khuyenmai.length !== 0) {
+      values['sumpay'] = ship + Number(sumUser) - Number(khuyenmai.giagiam);
+      values['makm'] = khuyenmai.makm;
+    } else {
+      values['sumpay'] = ship + Number(sumUser);
+    }
     localStorage.setItem('order', JSON.stringify(values));
     console.log(values);
     setTimeout(() => {
@@ -92,11 +115,10 @@ const Payments = (props) => {
     console.log(id);
     voucher.getVoucherID(id).then((res) => {
       if (res.data.status === "Success") {
-        if (props.PriceCart >= res.data.voucher.dieukien) {
+        if (sumUser >= res.data.voucher.dieukien) {
           message.success("Áp dụng VOUCHER thành công !")
           localStorage.setItem('voucher', JSON.stringify(res.data.voucher));
           setKhuyenmai(JSON.parse(localStorage.getItem("voucher")));
-          console.log(khuyenmai);
         } else {
           message.error(`Áp dụng mã thất bại!\n Tổng đơn hàng phải lớn hơn hoặc bằng ${res.data.voucher.dieukien}Đ`);
         }
@@ -108,14 +130,13 @@ const Payments = (props) => {
       })
   };
 
-  let ship = 20000;
+  
 
   const deleteVoucher = () => {
-    /* ma = khuyenmai.voucher;
-    console.log(ma); */
     localStorage.removeItem("voucher");
     setKhuyenmai([]);
   };
+  const sumUser = cartView.reduce((a, c) => a + c.gia * c.soluong, 0);
 
   return (
     <>
@@ -138,12 +159,12 @@ const Payments = (props) => {
               <Form
                 name="pay"
                 onFinish={pay}
-                initialValues={user === null ? ("") : (
+                initialValues={User === null ? ("") : (
                   {
-                    makh: `${user.makh}`,
-                    tenkh: `${user.username}`,
-                    email: `${user.email}`,
-                    sodienthoai: `${user.sdt}`,
+                    makh: `${User.makh}`,
+                    tenkh: `${User.tenkh}`,
+                    email: `${User.email}`,
+                    sodienthoai: `${User.sodienthoai}`,
                   }
                 )}
               >
@@ -260,17 +281,17 @@ const Payments = (props) => {
                   <Row>
                     <Col><h3>Tóm tắt đơn hàng</h3></Col>
                   </Row>
-                  {cart.map(item => (
+                  {cartView.map(item => (
                     <Row className="product-count">
-                      <Col className="title"><p>{item.qty}x {item.info.tensp}</p></Col>
-                      <Col><p>{item.qty * item.info.gia}Đ</p></Col>
+                      <Col className="title"><p>{item.soluong}x {item.tensp}</p></Col>
+                      <Col><p>{item.soluong * item.gia}Đ</p></Col>
                     </Row>
                   ))}
                   <Row className="product-code">
                     <Col className="abc">
                       <Row className="sum-cart">
                         <Col className="title"><p>Tổng đơn hàng</p></Col>
-                        <Col className="price"><p>{props.PriceCart}Đ</p></Col>
+                        <Col className="price"><p>{sumUser}Đ</p></Col>
                       </Row>
                       {khuyenmai.length === 0 ? (
                         <>
@@ -302,8 +323,10 @@ const Payments = (props) => {
                   </Row>
                   <Row className="product-sum">
                     <Col className="title"><p>Tổng Thanh toán</p></Col>
-                    {khuyenmai.length === 0 ? (<Col className="price"><p>{ship + Number(props.PriceCart)}Đ</p></Col>) : (
-                      <Col className="price"><p>{ship + Number(props.PriceCart) - Number(khuyenmai.giagiam)}Đ</p></Col>
+                    {khuyenmai.length === 0 ? (
+                      <Col className="price"><p>{ship + Number(sumUser)}Đ</p></Col>
+                    ) : (
+                      <Col className="price"><p>{ship + Number(sumUser) - Number(khuyenmai.giagiam)}Đ</p></Col>
                     )}
                   </Row>
                   <Row className="button-group">
