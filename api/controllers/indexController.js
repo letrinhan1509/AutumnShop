@@ -3,6 +3,30 @@ const catchAsync = require('../utils/catchAsync');
 const modelIndex = require('../models/model_index');
 
 
+function xoa_dau(str) {
+    str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
+    str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e");
+    str = str.replace(/ì|í|ị|ỉ|ĩ/g, "i");
+    str = str.replace(/ò|ó|ọ|ỏ|õ|ô|ồ|ố|ộ|ổ|ỗ|ơ|ờ|ớ|ợ|ở|ỡ/g, "o");
+    str = str.replace(/ù|ú|ụ|ủ|ũ|ư|ừ|ứ|ự|ử|ữ/g, "u");
+    str = str.replace(/ỳ|ý|ỵ|ỷ|ỹ/g, "y");
+    str = str.replace(/đ/g, "d");
+    str = str.replace(/À|Á|Ạ|Ả|Ã|Â|Ầ|Ấ|Ậ|Ẩ|Ẫ|Ă|Ằ|Ắ|Ặ|Ẳ|Ẵ/g, "A");
+    str = str.replace(/È|É|Ẹ|Ẻ|Ẽ|Ê|Ề|Ế|Ệ|Ể|Ễ/g, "E");
+    str = str.replace(/Ì|Í|Ị|Ỉ|Ĩ/g, "I");
+    str = str.replace(/Ò|Ó|Ọ|Ỏ|Õ|Ô|Ồ|Ố|Ộ|Ổ|Ỗ|Ơ|Ờ|Ớ|Ợ|Ở|Ỡ/g, "O");
+    str = str.replace(/Ù|Ú|Ụ|Ủ|Ũ|Ư|Ừ|Ứ|Ự|Ử|Ữ/g, "U");
+    str = str.replace(/Ỳ|Ý|Ỵ|Ỷ|Ỹ/g, "Y");
+    str = str.replace(/Đ/g, "D");
+    str = str.split(' ').join('-');
+    return str;
+};
+function replaceNameProduct(nameProduct) {
+    var newNameProduct = xoa_dau(nameProduct);
+    return newNameProduct;
+};
+
+
                     // INDEX CONTROLLER
 
         // GET
@@ -225,4 +249,42 @@ exports.getListCurrency = catchAsync(async (req, res, next) => {
             error: error
         });
     }
+});
+// Tiền vận chuyển:
+exports.postTransportFee = catchAsync(async (req, res, next) => {
+    try {
+        let pick_province = "TP.Ho Chi Minh";     // Tên tỉnh/thành phố nơi lấy hàng hóa
+        let pick_district = "Quan Binh Thanh";     // Tên quận/huyện nơi lấy hàng hóa
+        //let province = req.body.province;
+        let quan = req.body.district;
+        //let address = replaceNameProduct(req.body.diachi);      // Địa chỉ chi tiết của người nhận hàng
+        let amount = req.body.amount;       // Cân nặng của gói hàng, đơn vị sử dụng Gram
+        let deliver_option = "none";        // Sử dụng phương thức vận chuyển xfast. Nhận 1 trong 2 giá trị xteam/none
+        let weight = 200 * amount;
+
+        var url = "https://thongtindoanhnghiep.co/api/district/" + quan;
+        const districtDetails= await axios.get(url);
+        let district = replaceNameProduct(districtDetails.data.Title);           // ( Tên quận/huyện của người nhận hàng hóa )
+        let province = replaceNameProduct(districtDetails.data.TinhThanhTitle);  // ( Tên tỉnh/thành phố của người nhận hàng hóa )
+        var urlFee = `https://services.giaohangtietkiem.vn/services/shipment/fee?province=${province}&district=${district}&pick_province=${pick_province}&pick_district=${pick_district}&weight=${weight}&deliver_option=${deliver_option}`;
+        const shippingFee = await axios.get(urlFee, {
+            headers: {
+                Token: "c86FbBF0d29fD8fE2b58F3bE5e6571711CcF180a",
+            },
+        });
+        if(shippingFee.data.success === true) {
+            return res.status(200).json({ 
+                status: "Success", 
+                message: "Tính phí vận chuyển thành công !",
+                ship: shippingFee.data.fee.fee,
+                //fee: shippingFee.data.fee 
+            });
+        };
+    } catch (error) {
+        return res.status(400).json({
+            status: "Fail", 
+            message: "Something went wrong",
+            error: error.message
+        });
+    };
 });

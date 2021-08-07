@@ -69,6 +69,7 @@ const Payments = (props) => {
       setlistWard(res.data.ward);
     })
   };
+  
 
   const pay = (values) => {
     values['cart'] = listCart;

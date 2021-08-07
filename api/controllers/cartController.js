@@ -102,7 +102,8 @@ exports.postAddCart = catchAsync(async (req, res, next) => {
             mau: req.body.mau,
             gia: req.body.gia,
             giagiam: req.body.giagiam,
-            //soluong: req.body.soluong
+            //soluong: req.body.soluong,
+            thanhtien: req.body.thanhtien
         };
         if(!data.makh || !data.masp || !data.size || !data.mau || data.gia == undefined) {
             return res.status(400).json({ 
@@ -110,11 +111,11 @@ exports.postAddCart = catchAsync(async (req, res, next) => {
                 message: "Thiếu thông tin, thêm sản phẩm vào giỏ hàng thất bại !" 
             });
         };
-        if(data.giagiam == undefined) {
+        /* if(data.giagiam == undefined) {
             data.thanhtien = data.soluong * data.gia;
         } else {
             data.thanhtien = data.soluong * data.giagiam;
-        };
+        }; */
         const cartExist = await modelCart.get_By_userId(data.makh);
         if(cartExist == 0) {
             // Khách hàng chưa có sản phẩm trong giỏ hàng:
@@ -147,32 +148,56 @@ exports.postAddCart = catchAsync(async (req, res, next) => {
         // PUT:
 // Cập nhật số lượng sản phẩm trong giỏ hàng
 exports.putEditCart = catchAsync(async (req, res, next) => {
-    let data = {
-        makh: req.body.makh,
-        masp: req.body.masp,
-        magiohang: req.body.magiohang,
-        giagiam: req.body.giagiam,
-        soluong: req.body.soluong,
-        thanhtien: req.body.thanhtien
-    };
-    if(!data.magiohang || !data.soluong || !data.thanhtien) {
-        return res.status(400).json({ status: "Fail", message: "Thiếu thông tin, cập nhật giỏ hàng thất bại !" });
-    };
     try {
-        const cartExist = await modelCart.get_Cart(data.magiohang);
+        let makh = req.body.makh;
+        let magiohang = req.body.magiohang;
+        let phuongthuc = req.body.phuongthuc;
+        if(magiohang == undefined || phuongthuc == undefined) {
+            return res.status(400).json({ status: "Fail", message: "Thiếu thông tin, cập nhật giỏ hàng thất bại !" });
+        };
+        const cartExist = await modelCart.get_Cart(magiohang);
         if(cartExist == 0) {
             return res.status(400).json({ 
                 status: "Fail", 
                 message: "Không tìm thấy sản phẩm này trong giỏ hàng"
             });
         } else {
-            const query = await modelCart.put(data);
-            const cart = await modelCart.get_By_userId(data.makh);
-            return res.status(200).json({ 
-                status: "Success", 
-                message: query, 
-                cart: cart
-            });
+            if(phuongthuc == 1) {
+                // Tăng số lượng lên 1:
+                let soluong = cartExist.soluong + 1;
+                if(cartExist.giagiam == 0) {
+                    let thanhtien = cartExist.gia * soluong;
+                } else {
+                    let thanhtien = cartExist.giagiam * soluong;
+                };
+                const query = await modelCart.put(magiohang, soluong, thanhtien);
+                const listCart = await modelCart.get_By_userId(makh);
+                return res.status(200).json({ 
+                    status: "Success", 
+                    message: query, 
+                    cart: listCart
+                });
+            } else if(phuongthuc == 0) {
+                // Giảm số lượng đi 1:
+                let soluong = cartExist.soluong - 1;
+                if(cartExist.giagiam == 0) {
+                    let thanhtien = cartExist.gia * soluong;
+                } else {
+                    let thanhtien = cartExist.giagiam * soluong;
+                };
+                const query = await modelCart.put(magiohang, soluong, thanhtien);
+                const listCart = await modelCart.get_By_userId(makh);
+                return res.status(200).json({ 
+                    status: "Success", 
+                    message: query, 
+                    cart: listCart
+                });
+            } else {
+                return res.status(400).json({ 
+                    status: "Fail", 
+                    message: "Sai phương thức cập nhật số lượng sản phẩm trong giỏ hàng thất bại !"
+                });
+            }
         }
     } catch (error) {
         return res.status(400).json({ 
@@ -187,13 +212,13 @@ exports.putEditCart = catchAsync(async (req, res, next) => {
         // DELETE
 // Delete: Xoá 1 sản phẩm khỏi giỏ hàng
 exports.deleteCart = catchAsync(async (req, res, next) => {
-    let id = req.params.id;
-    if(!id) {
-        return res.status(400).json({ status: "Fail", message: "Vui lòng cung cấp mã giỏ hàng !" });
-    }
     try {
+        let id = req.params.id;
+        if(id == undefined) {
+            return res.status(400).json({ status: "Fail", message: "Vui lòng cung cấp mã giỏ hàng !" });
+        };
         let query = await modelCart.delete(id);
-        return res.status(200).json({ status: "Success", "message": query });
+        return res.status(200).json({ status: "Success", message: query });
     } catch (error) {
         return res.status(400).json({ 
             status: "Fail", 
