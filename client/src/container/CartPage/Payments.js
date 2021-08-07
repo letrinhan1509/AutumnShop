@@ -81,9 +81,15 @@ const Payments = (props) => {
       setlistWard(res.data.ward);
     })
     //lấy phí ship
-    /* city.getShip(idDistrict).then((res) => {
+    let sum = 0;
+    props.cart.map((item) => (<>{sum = sum + item.soluong}</>))
+    let value = {
+      district: idDistrict,
+      amount: sum   // Số lượng sản phẩm trong giỏ hàng.
+    };
+    city.getShip(value).then((res) => {
       setShip(res.data.ship);
-    }) */
+    })
   };
   
 

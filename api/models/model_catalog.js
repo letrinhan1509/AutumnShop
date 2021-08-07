@@ -106,7 +106,7 @@ exports.unlock_category = async (categoryId) => {
     // Delete danh mục:
 exports.delete_Category = async (madm) => {
     return new Promise( (hamOK, hamLoi) => {
-        let sql_type = `SELECT sanpham.code, sanpham.tensp 
+        let sql_type = `SELECT sanpham.masp, sanpham.tensp 
         FROM sanpham JOIN danhmuc 
         ON sanpham.madm = danhmuc.madm 
         WHERE sanpham.madm = '${madm}'`;
@@ -268,7 +268,7 @@ exports.unlock_Type = async (maloai) => {
     // Xoá loại sản phẩm:
 exports.delete_Type = (typeId) => {
     return new Promise( (hamOK, hamLoi) => {
-        let sql_type = `SELECT sanpham.code, sanpham.tensp 
+        let sql_type = `SELECT sanpham.masp, sanpham.tensp 
         FROM sanpham JOIN loaisp 
         ON sanpham.maloai = loaisp.maloai 
         WHERE sanpham.maloai = '${typeId}'`;

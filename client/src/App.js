@@ -3,7 +3,7 @@ import "./App.css";
 import "antd/dist/antd.css";
 import React, { useState, useEffect } from "react";
 import CART from 'API_Call/API_cart/cart';
-import { Layout, Modal } from "antd";
+import { Layout, message, Modal } from "antd";
 import HeaderPage from "./components/include/HeaderPage";
 import { Content } from "antd/lib/layout/layout";
 import ProductDetail from "container/MainPage/Product-detail";
@@ -121,16 +121,17 @@ function App() {
       if (User !== null) {
         let value = {};
         value["magiohang"] = productItem.magiohang;
+        value["makh"] = User.makh;
         value["phuongthuc"] = 1;
-        console.log(value);
-        /* CART.updateCart(value).then((res) => {
+        CART.updateCart(value).then((res) => {
           if (res.data.status === "Success") {
-            console.log(res.data);
             setCart(
               cart.map((x) => x.masp === productItem.masp && x.mau === productItem.mau && x.size === productItem.size ? { ...exist, soluong: exist.soluong + 1 } : x)
             );
           }
-        }); */
+        }).catch(err => {
+          message.error(`${err.response.data.message}`);
+        });
       } else {
         setCart(
           cart.map((x) => x.masp === productItem.masp && x.mau === productItem.mau && x.size === productItem.size ? { ...exist, soluong: exist.soluong + 1 } : x)
@@ -146,18 +147,19 @@ function App() {
       showDeleteCart(exist);
     } else {
       if (User !== null) {
-        let value = [];
+        let value = {};
         value["magiohang"] = productItem.magiohang;
+        value["makh"] = User.makh;
         value["phuongthuc"] = 0;
-        console.log(value);
-        /* CART.updateCart(value).then((res) => {
-        if (res.data.status === "Success") {
-          console.log(res.data);
-          setCart(
-            cart.map((x) => x.masp === productItem.masp && x.mau === productItem.mau && x.size === productItem.size ? { ...exist, soluong: exist.soluong - 1 } : x)
-          );
-        }
-      }); */
+        CART.updateCart(value).then((res) => {
+          if (res.data.status === "Success") {
+            setCart(
+              cart.map((x) => x.masp === productItem.masp && x.mau === productItem.mau && x.size === productItem.size ? { ...exist, soluong: exist.soluong - 1 } : x)
+            );
+          }
+        }).catch(err => {
+          message.error(`${err.response.data.message}`);
+        });
       } else {
         setCart(
           cart.map((x) => x.masp === productItem.masp && x.mau === productItem.mau && x.size === productItem.size ? { ...exist, soluong: exist.soluong - 1 } : x)
@@ -173,18 +175,17 @@ function App() {
       cancelText: 'Không',
       onOk() {
         if (User !== null) {
-          let value = [];
-          value["magiohang"] = productItem.magiohang;
-          value["phuongthuc"] = 0;
-          console.log(value);
-          /* CART.updateCart(value).then((res) => {
-          if (res.data.status === "Success") {
-            console.log(res.data);
-            setCart(
-              cart.filter((x) => x.masp !== productItem.masp || x.mau !== productItem.mau || x.size !== productItem.size)
-            );
-          }
-        }); */
+          let magiohang = productItem.magiohang;
+          CART.deleteCart(magiohang).then((res) => {
+            if (res.data.status === "Success") {
+              message.success(res.data.message)
+              setCart(
+                cart.filter((x) => x.masp !== productItem.masp || x.mau !== productItem.mau || x.size !== productItem.size)
+              );
+            }
+          }).catch(err => {
+            message.error(`${err.response.data.message}`);
+          });
         } else {
           setCart(
             cart.filter((x) => x.masp !== productItem.masp || x.mau !== productItem.mau || x.size !== productItem.size)

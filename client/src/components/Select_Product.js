@@ -28,7 +28,7 @@ const Select_Product = (props) => {
     const [Proadd, setProadd] = useState({});
     function Changesize(value) {
         setSizeID(value);
-        let a = chitiet.find((x) => x.masize === value);
+        let a = chitiet.find((x) => x.size === value);
         if (a === undefined) {
             setHide(false);
             setColorID("");
@@ -38,7 +38,7 @@ const Select_Product = (props) => {
     }
     function Changecolor(value) {
         setColorID(value);
-        let a = chitiet.find((x) => x.mamau === value && x.masize === sizeID);
+        let a = chitiet.find((x) => x.mau === value && x.size === sizeID);
         setProTemp(a);
         let add = {};
         add['gia'] = detail.gia;
@@ -283,9 +283,8 @@ const Select_Product = (props) => {
         add['soluong'] = proTemp.soluong;
         console.log(add);
         let url = "http://127.0.0.1:5000/api/v1/gio-hang";
-        axios.post(url, add).then((res) => {
+        CART.addCart(add).then((res) => {
             if (res.data.status === "Success") {
-                //console.log(res.data.data);
                 message.success(res.data.message);
                 const exist = props.cart.find((x) => x.masp === add.masp && x.mau === add.mau && x.size === add.size);
                 if (exist) {
@@ -293,7 +292,7 @@ const Select_Product = (props) => {
                         props.cart.map((x) => x.masp === add.masp && x.mau === add.mau && x.size === add.size ? { ...exist, soluong: exist.soluong + 1 } : x)
                     );
                 } else {
-                    props.setCart([...props.cart, { ...add, soluong: 1 }]);
+                    props.setCart([...props.cart, { ...add, soluong: 1, magiohang: res.data.cart }]);
                 }
                 //localStorage.setItem(...['cart', JSON.stringify(res.data.cart)]);
             }
@@ -374,7 +373,7 @@ const Select_Product = (props) => {
                                                     <Select style={{ width: 120 }} onChange={Changecolor}>
                                                         {chitiet.map((item) => {
                                                             return (
-                                                                item.masize === sizeID ? (<Option key={item.mamau} value={item.mamau}>{item.mamau}</Option>) : ("")
+                                                                item.size === sizeID ? (<Option key={item.mau} value={item.mau}>{item.mau}</Option>) : ("")
                                                             );
                                                         })}
                                                     </Select>

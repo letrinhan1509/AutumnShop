@@ -258,9 +258,9 @@ exports.postTransportFee = catchAsync(async (req, res, next) => {
         //let province = req.body.province;
         let quan = req.body.district;
         //let address = replaceNameProduct(req.body.diachi);      // Địa chỉ chi tiết của người nhận hàng
-        let amount = req.body.amount;       // Cân nặng của gói hàng, đơn vị sử dụng Gram
-        let deliver_option = "none";        // Sử dụng phương thức vận chuyển xfast. Nhận 1 trong 2 giá trị xteam/none
-        let weight = 200 * amount;
+        let amount = req.body.amount;   // Số lượng sản phẩm trong giỏ hàng      
+        let deliver_option = "none";    // Sử dụng phương thức vận chuyển xfast. Nhận 1 trong 2 giá trị xteam/none
+        let weight = 200 * amount;      // Cân nặng của gói hàng, đơn vị sử dụng Gram
 
         var url = "https://thongtindoanhnghiep.co/api/district/" + quan;
         const districtDetails= await axios.get(url);

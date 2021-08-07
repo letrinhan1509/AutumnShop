@@ -189,6 +189,8 @@ exports.insert_Order = (name, email, phone, address, ship, total, note, promoCod
                         let thanhtien = element.gia * element.qty;
                         let data = {
                             masp: element.masp,
+                            size: element.size,
+                            mau: element.mau,
                             gia: element.gia,
                             //giagiam: element.giagiam,
                             soluong: element.qty,
@@ -227,6 +229,8 @@ exports.insert_Order = (name, email, phone, address, ship, total, note, promoCod
                         let thanhtien = element.gia * element.qty;
                         let data = {
                             masp: element.masp,
+                            size: element.size,
+                            mau: element.mau,
                             gia: element.gia,
                             soluong: element.qty,
                             thanhtien: thanhtien,
@@ -270,6 +274,8 @@ exports.insert_Order_User = (userId, name, email, phone, address, ship, total, n
                         let thanhtien = element.gia * element.qty;
                         let data = {
                             masp: element.masp,
+                            size: element.size,
+                            mau: element.mau,
                             gia: element.gia,
                             soluong: element.qty,
                             thanhtien: thanhtien,
@@ -306,6 +312,8 @@ exports.insert_Order_User = (userId, name, email, phone, address, ship, total, n
                         let thanhtien = element.gia * element.qty;
                         let data = {
                             masp: element.masp,
+                            size: element.size,
+                            mau: element.mau,
                             gia: element.gia,
                             soluong: element.qty,
                             thanhtien: thanhtien,

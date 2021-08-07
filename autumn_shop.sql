@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 03, 2021 at 09:58 AM
+-- Generation Time: Aug 07, 2021 at 05:37 PM
 -- Server version: 10.4.19-MariaDB
 -- PHP Version: 8.0.7
 
@@ -93,6 +93,13 @@ CREATE TABLE `binhluan` (
   `ngaybl` date NOT NULL,
   `trangthai` int(10) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `binhluan`
+--
+
+INSERT INTO `binhluan` (`mabl`, `masp`, `makh`, `noidung`, `giobl`, `ngaybl`, `trangthai`) VALUES
+(11, 126, 7, 'Sản phẩm rất tốt !!!', '19:28:04', '2021-08-04', 1);
 
 -- --------------------------------------------------------
 
@@ -196,9 +203,6 @@ CREATE TABLE `danhmuc` (
 
 INSERT INTO `danhmuc` (`madm`, `tendm`, `tenhinh`, `hinh`, `trangthai`) VALUES
 ('DMA', 'Áo', 'bg-attact.png', 'https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/Catalog_Img%2Fbg-attact.png?alt=media&token=df676eae-8fcc-4e1c-b7cc-20d1622df324', 1),
-('DMB', 'Balo-Túi', '', '', 1),
-('DMD', 'Dép', '', '', 1),
-('DMG', 'Giày', '', '', 1),
 ('DMPK', 'Phụ kiện', '', '', 1),
 ('DMQ', 'Quần', '', '', 1),
 ('GT', 'Giới thiệu', '', '', 1),
@@ -238,11 +242,20 @@ CREATE TABLE `giohang` (
   `magiohang` int(10) NOT NULL,
   `makh` int(10) NOT NULL,
   `masp` int(10) NOT NULL,
+  `size` varchar(10) NOT NULL,
+  `mau` varchar(10) NOT NULL,
   `gia` int(10) NOT NULL,
   `giagiam` int(10) DEFAULT 0,
-  `soluong` int(11) NOT NULL,
-  `thanhtien` int(10) NOT NULL DEFAULT 0
+  `soluong` int(10) NOT NULL DEFAULT 1,
+  `thanhtien` int(10) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `giohang`
+--
+
+INSERT INTO `giohang` (`magiohang`, `makh`, `masp`, `size`, `mau`, `gia`, `giagiam`, `soluong`, `thanhtien`) VALUES
+(27, 7, 126, 'S', 'đen', 200000, 0, 3, 600000);
 
 -- --------------------------------------------------------
 
@@ -272,7 +285,7 @@ INSERT INTO `khachhang` (`makh`, `tenkh`, `email`, `matkhau`, `tenhinh`, `hinh`,
 (3, 'Phan Thiện Nghĩa', 'ptn@gmail.com', '123456', '', NULL, 9575333, '156 acf p5 q8', 0),
 (4, 'Lê Trí Nhân', 'nhan@gmail.com', '123456789', '', NULL, 69741120, '180 Cao Lỗ', 1),
 (5, 'Nhật Hào', 'hao@gmail.com', '123456@^!^@', '', NULL, 909666555, '182 Cao Lỗ', 1),
-(6, 'Bad Boy', 'trinhan.dh51703846@gmail.com', '$2b$10$nv46Vb.2wOAPYRErzq7v.ecUZ5vYedRHthnpfxOcCi1FeNY8hr.92', '', NULL, 906060606, '180 Cao Lỗ, P4', 1),
+(6, 'Bad Boy', 'trinhan.dh51703846@gmail.com', '$2b$10$cUnPrNVLjaqYlnJdsZ.ajOsUCRD5au5xEF7POFo8Ip0qadqyKEjVq', '', NULL, 906060606, '180 Cao Lỗ, P4', 1),
 (7, 'Trí Nhân', 'letrinhan1509@gmail.com', '$2b$10$bmoZ2SnYw.Bf34Tgt2/Md./j2XSNpBPE.nwkspWMvl8ofkITCY6a.', 'user.png', 'https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/User_Img%2Fuser.png?alt=media&token=6ec247df-90ab-4cc9-b671-7261ef37215f&fbclid=IwAR2Xkjho5Cq5BUR40AYdPAqSj50dW5jIdYzf2-3rbmlq6Ij31iT64AMAQsw', 969362915, '178 Cao Lỗ, Phường 04', 1),
 (8, 'Nhân', 'letrinhan54321@gmail.com', '$2b$10$KvhroYwNu2J4wpn3ytLREOZ/1cdzx65UZA3bbeEhPGnpAJc0BU9hO', 'user.png', 'https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/User_Img%2Fuser.png?alt=media&token=6ec247df-90ab-4cc9-b671-7261ef37215f&fbclid=IwAR2Xkjho5Cq5BUR40AYdPAqSj50dW5jIdYzf2-3rbmlq6Ij31iT64AMAQsw', 909686868, '180 Cao Lỗ', 1),
 (9, 'Nemo', 'thhphuong2607@gmail.com', '$2b$10$AP/zgTS7AJzD7KUGUiI6WedQ2rFOyj2hWK/zsWB.cj/SPoT0sfXne', 'user.png', 'https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/User_Img%2FuserICON.png?alt=media&token=b64576ab-18b6-4d7a-9864-c15f59d5717c&fbclid=IwAR2HhoURE-FDaY0FUpVkWgZS0Hc7-obK_B3rwSepgPe8cdyZFf94bBdWZ8c', 932550587, '233/15 Vĩnh Viễn', 1),
@@ -329,14 +342,9 @@ CREATE TABLE `loaisp` (
 --
 
 INSERT INTO `loaisp` (`maloai`, `tenloai`, `tenhinh`, `hinh`, `madm`, `trangthai`) VALUES
-('aaaa', 'Ok', 'slider_aothun.jpg', 'https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/ProductType_Img%2Fslider_aothun.jpg?alt=media&token=941cc401-c063-4b0b-b31c-afa8af809c53', 'DMB', 1),
 ('ak', 'ÁO KHOÁC', '', '', 'DMA', 1),
 ('asm', 'ÁO SƠ MI', '', '', 'DMA', 1),
 ('at', 'ÁO THUN', 'slider_aothun.jpg', 'https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/ProductType_Img%2Fslider_aothun.jpg?alt=media&token=79f66a44-fdf1-45ea-bccd-d663e96f208b', 'DMA', 1),
-('bl', 'BALO - TÚI SÁCH', '', '', 'DMB', 1),
-('dep', 'DÉP', '', '', 'DMD', 1),
-('giay', 'GIÀY', '', '', 'DMG', 1),
-('no', 'NÓN', '', '', 'DMPK', 1),
 ('qj', 'QUẦN JEAN', '', '', 'DMQ', 1),
 ('qk', 'QUẦN KAKI', '', '', 'DMQ', 1),
 ('qs', 'QUẦN SHORT', '', '', 'DMQ', 1),
@@ -409,8 +417,8 @@ CREATE TABLE `sanpham` (
 --
 
 INSERT INTO `sanpham` (`masp`, `tensp`, `gia`, `chitiet`, `tenhinh`, `hinh`, `tenhinhct`, `hinhchitiet`, `mota`, `ngaytao`, `trangthai`, `mansx`, `maloai`, `madm`) VALUES
-(126, 'Áo thun ADIDAS', 200000, '[{\"id\":1,\"masize\":\"S\",\"mamau\":\"trắng\",\"soluong\":\"20\",\"giagiam\":\"0\"},{\"id\":3,\"masize\":\"S\",\"mamau\":\"đen\",\"soluong\":\"10\",\"giagiam\":\"0\"},{\"id\":4,\"masize\":\"M\",\"mamau\":\"trắng\",\"soluong\":\"20\",\"giagiam\":\"0\"},{\"id\":5,\"masize\":\"L\",\"mamau\":\"trắng\",\"soluong\":\"20\",\"giagiam\":\"0\"}]', 'adidasTrang.jpg', 'https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/Product_Img%2FadidasTrang.jpg?alt=media&token=ca8cab95-0f4b-435d-99db-448a853299a3', NULL, NULL, NULL, '2021-08-03 13:49:35', 1, 'ad', 'at', 'DMA'),
-(127, 'Áo thun PEANUTS', 200000, '[{\"id\":1,\"masize\":\"S\",\"mamau\":\"trắng\",\"soluong\":\"20\",\"giagiam\":\"0\"},{\"id\":2,\"masize\":\"M\",\"mamau\":\"trắng\",\"soluong\":\"20\",\"giagiam\":\"0\"},{\"id\":3,\"masize\":\"L\",\"mamau\":\"trắng\",\"soluong\":\"20\",\"giagiam\":\"0\"}]', 'nomousPNuts.jpg', 'https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/Product_Img%2FnomousPNuts.jpg?alt=media&token=f23808f9-3f63-4957-8306-d41cc8a9fc98', NULL, NULL, NULL, '2021-08-03 13:51:41', 1, 'nm', 'at', 'DMA');
+(126, 'Áo thun ADIDAS', 200000, '[{\"id\":1,\"size\":\"S\",\"mau\":\"trắng\",\"soluong\":\"20\",\"giagiam\":\"0\"},{\"id\":3,\"size\":\"S\",\"mau\":\"đen\",\"soluong\":\"10\",\"giagiam\":\"0\"},{\"id\":4,\"size\":\"M\",\"mau\":\"trắng\",\"soluong\":\"20\",\"giagiam\":\"0\"},{\"id\":5,\"size\":\"L\",\"mau\":\"trắng\",\"soluong\":\"20\",\"giagiam\":\"0\"}]', 'adidasTrang.jpg', 'https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/Product_Img%2FadidasTrang.jpg?alt=media&token=ca8cab95-0f4b-435d-99db-448a853299a3', NULL, NULL, NULL, '2021-08-03 13:49:35', 1, 'ad', 'at', 'DMA'),
+(127, 'Áo thun PEANUTS', 200000, '[{\"id\":1,\"size\":\"S\",\"mau\":\"trắng\",\"soluong\":\"20\",\"giagiam\":\"0\"},{\"id\":2,\"size\":\"M\",\"mau\":\"trắng\",\"soluong\":\"20\",\"giagiam\":\"0\"},{\"id\":3,\"size\":\"L\",\"mau\":\"trắng\",\"soluong\":\"20\",\"giagiam\":\"0\"}]', 'nomousPNuts.jpg', 'https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/Product_Img%2FnomousPNuts.jpg?alt=media&token=f23808f9-3f63-4957-8306-d41cc8a9fc98', NULL, NULL, NULL, '2021-08-03 13:51:41', 1, 'nm', 'at', 'DMA');
 
 -- --------------------------------------------------------
 
@@ -589,7 +597,7 @@ ALTER TABLE `admin`
 -- AUTO_INCREMENT for table `binhluan`
 --
 ALTER TABLE `binhluan`
-  MODIFY `mabl` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `mabl` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `chitietbl`
@@ -625,7 +633,7 @@ ALTER TABLE `donhang`
 -- AUTO_INCREMENT for table `giohang`
 --
 ALTER TABLE `giohang`
-  MODIFY `magiohang` int(10) NOT NULL AUTO_INCREMENT;
+  MODIFY `magiohang` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 
 --
 -- AUTO_INCREMENT for table `khachhang`

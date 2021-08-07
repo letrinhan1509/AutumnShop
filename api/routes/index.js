@@ -20,6 +20,8 @@ router.get('/district/:id', indexController.getDetailDistrict); // Chi tiết 1 
 router.get('/district/:id/ward', indexController.getListWards); // Danh sách toàn bộ Phường/Xã thuộc Quận/Huyện
 router.get('/ward/:id', indexController.getDetailWard); // Chi tiết 1 phường, xã, thị trấn
 
+
+
 router.post('/fee', indexController.postTransportFee);
 
 

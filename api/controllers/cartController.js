@@ -111,23 +111,18 @@ exports.postAddCart = catchAsync(async (req, res, next) => {
                 message: "Thiếu thông tin, thêm sản phẩm vào giỏ hàng thất bại !" 
             });
         };
-        /* if(data.giagiam == undefined) {
-            data.thanhtien = data.soluong * data.gia;
-        } else {
-            data.thanhtien = data.soluong * data.giagiam;
-        }; */
         const cartExist = await modelCart.get_By_userId(data.makh);
         if(cartExist == 0) {
             // Khách hàng chưa có sản phẩm trong giỏ hàng:
             let query = await modelCart.create(data);
-            return res.status(200).json({ status: "Success", message: query });
+            return res.status(200).json({ status: "Success", message: "Thêm sản phẩm vào giỏ hàng thành công !!!", cart: query });
         } else {
             // Khách hàng đã có sản phẩm trong giỏ hàng:
             const productExist = await modelCart.check_productId(data.makh, data.masp, data.size, data.mau);
             if(productExist == 0) {
                 // Sản phẩm chưa có trong giỏ hàng => thêm mới vào giỏ hàng:
                 let query = await modelCart.create(data);
-                return res.status(200).json({ status: "Success", message: query });
+                return res.status(200).json({ status: "Success", message: "Thêm sản phẩm vào giỏ hàng thành công !!!", cart: query });
             } else {
                 // Sản phẩm đã có trong giỏ hàng => tăng số lượng:
                 let soluong = productExist.soluong + 1;
@@ -152,7 +147,7 @@ exports.putEditCart = catchAsync(async (req, res, next) => {
         let makh = req.body.makh;
         let magiohang = req.body.magiohang;
         let phuongthuc = req.body.phuongthuc;
-        if(magiohang == undefined || phuongthuc == undefined) {
+        if(magiohang == undefined || phuongthuc == undefined || makh == undefined) {
             return res.status(400).json({ status: "Fail", message: "Thiếu thông tin, cập nhật giỏ hàng thất bại !" });
         };
         const cartExist = await modelCart.get_Cart(magiohang);
@@ -166,9 +161,9 @@ exports.putEditCart = catchAsync(async (req, res, next) => {
                 // Tăng số lượng lên 1:
                 let soluong = cartExist.soluong + 1;
                 if(cartExist.giagiam == 0) {
-                    let thanhtien = cartExist.gia * soluong;
+                    var thanhtien = cartExist.gia * soluong;
                 } else {
-                    let thanhtien = cartExist.giagiam * soluong;
+                    var thanhtien = cartExist.giagiam * soluong;
                 };
                 const query = await modelCart.put(magiohang, soluong, thanhtien);
                 const listCart = await modelCart.get_By_userId(makh);
@@ -181,9 +176,9 @@ exports.putEditCart = catchAsync(async (req, res, next) => {
                 // Giảm số lượng đi 1:
                 let soluong = cartExist.soluong - 1;
                 if(cartExist.giagiam == 0) {
-                    let thanhtien = cartExist.gia * soluong;
+                    var thanhtien = cartExist.gia * soluong;
                 } else {
-                    let thanhtien = cartExist.giagiam * soluong;
+                    var thanhtien = cartExist.giagiam * soluong;
                 };
                 const query = await modelCart.put(magiohang, soluong, thanhtien);
                 const listCart = await modelCart.get_By_userId(makh);
@@ -216,9 +211,10 @@ exports.deleteCart = catchAsync(async (req, res, next) => {
         let id = req.params.id;
         if(id == undefined) {
             return res.status(400).json({ status: "Fail", message: "Vui lòng cung cấp mã giỏ hàng !" });
-        };
-        let query = await modelCart.delete(id);
-        return res.status(200).json({ status: "Success", message: query });
+        } else {
+            let query = await modelCart.delete(id);
+            return res.status(200).json({ status: "Success", message: query });
+        }
     } catch (error) {
         return res.status(400).json({ 
             status: "Fail", 

@@ -223,14 +223,28 @@ exports.update_product = (masp, tensp, soluong, size, mau, gia, tenhinh, hinh, m
         });
     });
 };
+// Cập nhật số lượng sản phẩm:
+exports.update_amount = (masp, chitiet) => {
+    return new Promise( (hamOK, hamLoi) => {
+        let sql = `UPDATE sanpham SET chitiet = '${chitiet}' WHERE masp = '${masp}'`;
+        db.query(sql, (err, result) => {
+            if(err){
+                hamLoi(err);
+            } else {
+                console.log('Update amount product success !');
+                hamOK(result);
+            }
+        })
+    })
+}
     // Khoá sản phẩm: (Ẩn sản phẩm )
 exports.lock_product = (masp) => {
     return new Promise( (hamOK, hamLoi) => {
         let sql = `UPDATE sanpham SET trangthai = 0 WHERE masp = '${masp}'`;
         db.query(sql, (err, result) => {
-            if(err){
+            if(err) {
                 hamLoi(err);
-            }else{
+            } else {
                 console.log('Lock product success');
                 hamOK(result);
             }
@@ -242,9 +256,9 @@ exports.unlock_product = (masp) => {
     return new Promise( (hamOK, hamLoi) => {
         let sql = `UPDATE sanpham SET trangthai = 1 WHERE masp = '${masp}'`;
         db.query(sql, (err, result) => {
-            if(err){
+            if(err) {
                 hamLoi(err);
-            }else{
+            } else {
                 console.log('Unlock product success');
                 hamOK(result);
             }
@@ -258,8 +272,8 @@ exports.delete = (idProduct) => {
         let query = db.query(sql_donhang, (err, result) => {
             if(err)
                 hamLoi(err);
-            else{
-                if(result.length > 0){
+            else {
+                if(result.length > 0) {
                     hamOK(-1);  // Có sản phẩm trong chi tiết đơn hàng nên ko thể xoá;
                 }
             }

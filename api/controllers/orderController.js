@@ -247,6 +247,8 @@ exports.postCreateOrder = catchAsync(async (req, res, next) => {
         if(makh == undefined){
             // Tạo đơn hàng cho khách không có tài khoản
             let queryNotUserDiscount = await modelOrder.insert_Order(tenkh, email, sodienthoai, diachi, ship, tongtien, ghichu, makm, hinhthuc, vanchuyen, ngaydat, cart);
+            // Cập nhật lại số lượng sản phẩm:
+
             return res.status(200).json({
                 status: "Success",
                 message: queryNotUserDiscount

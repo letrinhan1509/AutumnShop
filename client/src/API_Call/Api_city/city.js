@@ -31,10 +31,10 @@ const city = {
         const url = `/ward/${id}`;
         return AxiosCity.get(url);
     },
-    /* getShip: (id) => {
-        const url = `/fee/${id}`;
-        return AxiosCity.get(url);
-    }, */
+    getShip: (values) => {
+        const url = `/fee`;
+        return AxiosCity.post(url, values);
+    },
 };
 
 export default city;

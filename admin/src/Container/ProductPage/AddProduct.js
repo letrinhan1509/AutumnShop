@@ -170,13 +170,13 @@ const AddProduct = (props) => {
         }, */
         {
             title: 'Size',
-            dataIndex: 'masize',
-            key: 'masize',
+            dataIndex: 'size',
+            key: 'size',
         },
         {
             title: 'Màu',
-            dataIndex: 'mamau',
-            key: 'mamau',
+            dataIndex: 'mau',
+            key: 'mau',
         },
         {
             title: 'Số lượng',
@@ -215,8 +215,8 @@ const AddProduct = (props) => {
         let tam = id + 1;
         let detail = [];
         detail['id'] = tam;
-        detail['masize'] = SIZE.current.props.value;
-        detail['mamau'] = MAU.current.props.value;
+        detail['size'] = SIZE.current.props.value;
+        detail['mau'] = MAU.current.props.value;
         detail['soluong'] = SOLUONG.current.ariaValueNow;
         detail['giagiam'] = '0';
         setAdd([...add, { ...detail }]);

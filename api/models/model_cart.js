@@ -86,21 +86,29 @@ exports.check_productId = async (makh, masp, size, mau) => {
 exports.create = async (data) => {
     return new Promise( (resolve, reject) => {
         let sql = `INSERT INTO giohang SET ?`;
-        db.query(sql, data, (err, result) => {
-            if(err) {
-                reject(err);
+        db.query(sql, data, (error, result) => {
+            if(error) {
+                reject(error);
             } else{
-                resolve("Thêm sản phẩm vào giỏ hàng thành công !!!");
+                let sql_Magiohang = `SELECT LAST_INSERT_ID() as LastID;`;
+                db.query(sql_Magiohang, (err, result1) => {
+                    if(err) {
+                        reject(err);
+                    } else {
+                        resolve(result1[0].LastID);
+                    }
+                });
             }
         });
     });
 };
 
 exports.put = async (magiohang, soluong, thanhtien) => {
+    console.log(magiohang, soluong, thanhtien);
     return new Promise( (resolve, reject) => {
         let sql = `UPDATE giohang SET soluong='${soluong}', thanhtien='${thanhtien}'
         WHERE magiohang = '${magiohang}'`;
-        db.query(sql, data, (err, result) => {
+        db.query(sql, (err, result) => {
             if(err) {
                 reject(err);
             } else{
