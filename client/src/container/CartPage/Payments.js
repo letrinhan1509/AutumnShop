@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Row, Col, Button, Input, Steps, message, Form, Layout, Select, Divider, Spin } from "antd";
+import { Row, Col, Button, Input, Steps, message, Form, Layout, Select, Divider, Spin, Radio, Space } from "antd";
 import { CloseOutlined, RollbackOutlined, LoadingOutlined, CheckCircleOutlined, FileDoneOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { useHistory, Link } from "react-router-dom";
@@ -60,7 +60,6 @@ const Payments = (props) => {
       setlistCity(res.data.city);
     })
   }, []);
-  console.log(listCity);
   //API Quận - Huyện
   const [listDistrict, setlistDistrict] = useState([]);
   let idCity = "";
@@ -91,19 +90,20 @@ const Payments = (props) => {
       setShip(res.data.ship);
     })
   };
-  
+
 
   const pay = (values) => {
     values['cart'] = cartView;
     values['ship'] = ship;
     if (khuyenmai.length !== 0) {
-      values['sumpay'] = ship + Number(sumUser) - Number(khuyenmai.giagiam);
+      values['sumpay'] = ship + Number(sumCart) - Number(khuyenmai.giagiam);
       values['makm'] = khuyenmai.makm;
     } else {
-      values['sumpay'] = ship + Number(sumUser);
+      values['sumpay'] = ship + Number(sumCart);
     }
-    localStorage.setItem('order', JSON.stringify(values));
+    values['delivery'] = deliveryValue;
     console.log(values);
+    localStorage.setItem('order', JSON.stringify(values));
     setTimeout(() => {
       history.push('/xac-nhan-don-hang');
     }, 2000)
@@ -114,14 +114,12 @@ const Payments = (props) => {
   var ma = "";
   const code = (e) => {
     ma = e.target.value;
-    console.log(ma);
   };
   const useCode = () => {
     let id = ma;
-    console.log(id);
     voucher.getVoucherID(id).then((res) => {
       if (res.data.status === "Success") {
-        if (sumUser >= res.data.voucher.dieukien) {
+        if (sumCart >= res.data.voucher.dieukien) {
           message.success("Áp dụng VOUCHER thành công !")
           localStorage.setItem('voucher', JSON.stringify(res.data.voucher));
           setKhuyenmai(JSON.parse(localStorage.getItem("voucher")));
@@ -136,14 +134,52 @@ const Payments = (props) => {
       })
   };
 
-  
+
 
   const deleteVoucher = () => {
     localStorage.removeItem("voucher");
     setKhuyenmai([]);
   };
-  const sumUser = cartView.reduce((a, c) => a + c.gia * c.soluong, 0);
+  const sumCart = cartView.reduce((a, c) => a + c.gia * c.soluong, 0);
 
+  const [deliveryValue, setDeliveryValue] = useState("Hệ thống cửa hàng");
+  const [cityGHN, setCityGHN] = useState([]);
+  const selectDelivery = (e) => {
+    setDeliveryValue(e.target.value);
+    if (e.target.value === "Giao hàng nhanh") {
+      //API city GHN
+      /* city.getAll().then((res) => {
+        setCityGHN(res.data.city);
+      }) */
+    }
+  };
+  //API Quận - Huyện GHN
+  const [districtGHN, setDistrictGHN] = useState([]);
+  const ChangeCityGHN = (e) => {
+    let idCity = e;
+    city.getCityDistrict(idCity).then((res) => {
+      setDistrictGHN(res.data.district);
+    })
+  };
+
+  //API Phường - Xã GHN
+  const [wardGHN, setWardGHN] = useState([]);
+  const ChangeDistrictGHN = (e) => {
+    let idDistrict = e;
+    city.getDistrictWard(idDistrict).then((res) => {
+      setWardGHN(res.data.ward);
+    })
+    //lấy phí ship
+    let sum = 0;
+    props.cart.map((item) => (<>{sum = sum + item.soluong}</>))
+    let value = {
+      district: idDistrict,
+      amount: sum   // Số lượng sản phẩm trong giỏ hàng.
+    };
+    city.getShip(value).then((res) => {
+      setShip(res.data.ship);
+    })
+  };
   return (
     <>
       <Layout className="container">
@@ -225,50 +261,100 @@ const Payments = (props) => {
                     >
                       <Input />
                     </Form.Item>
+                    <Divider orientation="left" plain><h3>Phương thức vận chuyển</h3></Divider>
+                    <Col>
+                      <Row className="select-pay">
+                        <Radio.Group onChange={selectDelivery} value={deliveryValue}>
+                          <Space >
+                            <Radio value="Hệ thống cửa hàng"><img width="30" src="https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/icon-pay%2FGHCH.png?alt=media&token=dbff4bfa-eb58-40f4-95dd-e7d5988a3dc5" />Hệ thống cửa hàng</Radio>
+                            <Radio value="Giao hàng nhanh"><img width="30" src="https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/icon-pay%2FGHN.png?alt=media&token=4787d3ba-5811-4666-a561-c513889baa5d" />Giao hàng nhanh</Radio>
+                            {/* <Radio value="Giao hàng tiết kiệm"><img width="30" src="https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/icon-pay%2FGHTK.png?alt=media&token=ac61547a-5896-49b3-a0da-49cf94db70b6" />Giao hàng tiết kiệm</Radio> */}
+                          </Space>
+                        </Radio.Group>
+                      </Row>
+                    </Col>
+                    <Divider orientation="left" plain><h3>Thông tin giao hàng</h3></Divider>
                     <Form.Item
                       name="city"
                       id="city"
                       label="Thành phố"
                     >
-                      <Select onChange={onChangeCity}>
-                        {listCity.map((item) => {
-                          return (
-                            <>
-                              <Option value={item.ID}>{item.Title}</Option>
-                            </>
-                          )
-                        })}
-                      </Select>
+                      {deliveryValue === "Giao hàng nhanh" ? (
+                        <Select onChange={ChangeCityGHN}>
+                          {cityGHN.map((item) => {
+                            return (
+                              <>
+                                <Option value={item.ID}>{item.Title}</Option>
+                              </>
+                            )
+                          })}
+                        </Select>
+                      ) : (
+                        <Select onChange={onChangeCity}>
+                          {listCity.map((item) => {
+                            return (
+                              <>
+                                <Option value={item.ID}>{item.Title}</Option>
+                              </>
+                            )
+                          })}
+                        </Select>
+                      )}
                     </Form.Item>
                     <Form.Item
                       name="district"
                       id="district"
                       label="Quận - Huyện"
                     >
-                      <Select onChange={onChangeDistrict}>
-                        {listDistrict.map((item) => {
-                          return (
-                            <>
-                              <Option value={item.ID}>{item.Title}</Option>
-                            </>
-                          )
-                        })}
-                      </Select>
+                      {deliveryValue === "Giao hàng nhanh" ? (
+                        <Select onChange={ChangeDistrictGHN}>
+                          {districtGHN.map((item) => {
+                            return (
+                              <>
+                                <Option value={item.ID}>{item.Title}</Option>
+                              </>
+                            )
+                          })}
+                        </Select>
+                      ) : (
+                        <Select onChange={onChangeDistrict}>
+                          {listDistrict.map((item) => {
+                            return (
+                              <>
+                                <Option value={item.ID}>{item.Title}</Option>
+                              </>
+                            )
+                          })}
+                        </Select>
+                      )}
                     </Form.Item>
                     <Form.Item
                       name="ward"
                       id="ward"
                       label="Phường - Xã"
                     >
-                      <Select>
-                        {listWard.map((item) => {
-                          return (
-                            <>
-                              <Option value={item.ID}>{item.Title}</Option>
-                            </>
-                          )
-                        })}
-                      </Select>
+                      {deliveryValue === "Giao hàng nhanh" ? (
+                        <Select>
+                          {wardGHN.map((item) => {
+                            return (
+                              <>
+                                <Option value={item.ID}>{item.Title}</Option>
+                              </>
+                            )
+                          })}
+                        </Select>
+                      ) : (
+                        <Select>
+                          {listWard.map((item) => {
+                            return (
+                              <>
+                                <Option value={item.ID}>{item.Title}</Option>
+                              </>
+                            )
+                          })}
+                        </Select>
+                      )}
+
                     </Form.Item>
                     <Form.Item
                       name="address"
@@ -297,7 +383,7 @@ const Payments = (props) => {
                     <Col className="abc">
                       <Row className="sum-cart">
                         <Col className="title"><p>Tổng đơn hàng</p></Col>
-                        <Col className="price"><p>{sumUser}Đ</p></Col>
+                        <Col className="price"><p>{sumCart}Đ</p></Col>
                       </Row>
                       {khuyenmai.length === 0 ? (
                         <>
@@ -330,9 +416,9 @@ const Payments = (props) => {
                   <Row className="product-sum">
                     <Col className="title"><p>Tổng Thanh toán</p></Col>
                     {khuyenmai.length === 0 ? (
-                      <Col className="price"><p>{ship + Number(sumUser)}Đ</p></Col>
+                      <Col className="price"><p>{ship + Number(sumCart)}Đ</p></Col>
                     ) : (
-                      <Col className="price"><p>{ship + Number(sumUser) - Number(khuyenmai.giagiam)}Đ</p></Col>
+                      <Col className="price"><p>{ship + Number(sumCart) - Number(khuyenmai.giagiam)}Đ</p></Col>
                     )}
                   </Row>
                   <Row className="button-group">

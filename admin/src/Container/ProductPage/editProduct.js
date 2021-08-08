@@ -1,10 +1,10 @@
 import { DeleteOutlined, UploadOutlined } from '@ant-design/icons';
-import { Button, Form, Input, InputNumber, message, Select, Upload, Image, Col, Row, Modal } from "antd";
+import { Button, Form, Input, InputNumber, message, Select, Upload, Image, Col, Row, Modal, Table } from "antd";
 import product from 'API_Call/Api_product/product';
 import catalog from 'API_Call/Api_catalog/catalog';
 import producer from 'API_Call/Api_producer/producer';
 import { storage } from 'Container/Firebase/firebase';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Link, useHistory } from "react-router-dom";
 import "Container/scss/addpro.scss";
 
@@ -52,7 +52,12 @@ const normFile = (e: any) => {
 const EditProduct = (props) => {
     const [form] = Form.useForm();
     const history = useHistory();
+    const SIZE = useRef(null);
+    const MAU = useRef(null);
+    const SOLUONG = useRef(null);
+    const { TextArea } = Input;
     const ProductEdit = JSON.parse(localStorage.getItem("product"))
+    const chitiet = JSON.parse(ProductEdit.chitiet);
     const [ImgEdit, setImgEdit] = useState(ProductEdit.hinh);
     const [imageName, setImageName] = useState("");
     const [fileList, setFileList] = useState([]);
@@ -131,6 +136,7 @@ const EditProduct = (props) => {
 
     const update = (values) => {
         values['masp'] = ProductEdit.masp;
+        values['chitiet'] = add;
         if (imageName !== "") {
             values['imgName'] = imageName.name;
         } else {
@@ -142,7 +148,7 @@ const EditProduct = (props) => {
             values['img'] = ProductEdit.hinh;
         }
         console.log(values);
-        product.updatePro(values).then((res) => {
+        /* product.updatePro(values).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message)
                 if (link !== "") {
@@ -161,7 +167,7 @@ const EditProduct = (props) => {
         })
             .catch(err => {
                 message.error(`Sửa sản phẩm thất bại!\n ${err.response.data.message}`);
-            })
+            }) */
     };
 
 
@@ -237,6 +243,66 @@ const EditProduct = (props) => {
             tenmau: 'Trắng',
         }
     ];
+    const columns = [
+        /* {
+            title: 'Stt',
+            dataIndex: 'id',
+            key: 'id',
+        }, */
+        {
+            title: 'Size',
+            dataIndex: 'size',
+            key: 'size',
+        },
+        {
+            title: 'Màu',
+            dataIndex: 'mau',
+            key: 'mau',
+        },
+        {
+            title: 'Số lượng',
+            dataIndex: 'soluong',
+            key: 'soluong',
+        },
+        {
+            dataIndex: 'id',
+            key: 'id',
+            render: id => (<div className="btn-box delete"><Button data-id={id} key={id} type="danger" onClick={showDeleteDetail}>Xóa</Button></div>)
+        }
+    ];
+
+    const [add, setAdd] = useState(chitiet);
+    const [id, setID] = useState(0);
+    const addDetail = () => {
+        let tam = id + 1;
+        let detail = [];
+        detail['id'] = tam;
+        detail['size'] = SIZE.current.props.value;
+        detail['mau'] = MAU.current.props.value.toLowerCase();
+        detail['soluong'] = SOLUONG.current.ariaValueNow;
+        detail['giagiam'] = '0';
+        setAdd([...add, { ...detail }]);
+        setID(tam);
+        console.log(detail);
+    };
+    function showDeleteDetail(item) {
+        let IDdel = item.currentTarget.dataset.id;
+        confirm({
+            title: 'Bạn thật sự muốn xóa chi tiết này?',
+            okText: 'Xóa',
+            okType: 'danger',
+            cancelText: 'Không',
+            onOk() {
+                //add.filter((x) => console.log(x.id));
+                setAdd(
+                    add.filter((x) => x.id !== Number(IDdel))
+                );
+            },
+            onCancel() {
+                console.log('Cancel');
+            },
+        });
+    }
 
     return (
         <div className="form-wrapper">
@@ -247,13 +313,12 @@ const EditProduct = (props) => {
                 name="register"
                 onFinish={update}
                 initialValues={{
-                    code: `${ProductEdit.code}`,
                     tensp: `${ProductEdit.tensp}`,
                     soluong: `${ProductEdit.soluong}`,
                     size: `${ProductEdit.size}`,
                     mau: `${ProductEdit.mau}`,
                     gia: `${ProductEdit.gia}`,
-                    mota: `${ProductEdit.mota}`,
+                    mota: ProductEdit.mota === null ? ("Chưa có mô tả") : (`${ProductEdit.mota}`),
                     trangthai: `${ProductEdit.trangthai}`,
                     mansx: `${ProductEdit.mansx}`,
                     madm: `${ProductEdit.madm}`,
@@ -262,18 +327,6 @@ const EditProduct = (props) => {
                 scrollToFirstError
                 className="register-form"
             >
-                {/* <Form.Item
-                    name="code"
-                    label="Code"
-                    rules={[
-                        {
-                            //required: true,
-                            message: 'Nhập Code!',
-                        },
-                    ]}
-                >
-                    <Input />
-                </Form.Item> */}
                 <Form.Item
                     name="tensp"
                     label="Tên sản phẩm"
@@ -285,42 +338,6 @@ const EditProduct = (props) => {
                     ]}
                 >
                     <Input />
-                </Form.Item>
-                <Form.Item
-                    name="soluong"
-                    label="Số lượng"
-                >
-                    <InputNumber min={1} max={20} defaultValue={1} />
-                </Form.Item>
-                <Form.Item
-                    name="size"
-                    label="Size"
-                //rules={[{ required: false }]}
-                >
-                    <Select style={{ width: 150 }}>
-                        {size.map((item) => {
-                            return (
-                                <>
-                                    <Option value={item.masize}>{item.tensize}</Option>
-                                </>
-                            )
-                        })}
-                    </Select>
-                </Form.Item>
-                <Form.Item
-                    name="mau"
-                    label="Màu"
-                //rules={[{ required: false }]}
-                >
-                    <Select style={{ width: 150 }}>
-                        {mau.map((item) => {
-                            return (
-                                <>
-                                    <Option value={item.tenmau}>{item.tenmau}</Option>
-                                </>
-                            )
-                        })}
-                    </Select>
                 </Form.Item>
                 <Form.Item
                     name="gia"
@@ -378,7 +395,7 @@ const EditProduct = (props) => {
                         }
                     ]}
                 >
-                    <Input />
+                    <TextArea rows={3} />
                 </Form.Item>
                 <Form.Item name="trangthai"
                     label="Trạng thái"
@@ -434,6 +451,55 @@ const EditProduct = (props) => {
                         })}
                     </Select>
                 </Form.Item>
+                <div>
+                    <Form
+                        name="addDetail"
+                        className="detail"
+                        initialValues={{
+                            soluong: 1,
+                        }}
+                    >
+                        <Form.Item
+                            name="soluong"
+                            label="Số lượng"
+                        >
+                            <InputNumber ref={SOLUONG} min={1} max={20} defaultValue={1} />
+                        </Form.Item>
+                        <Form.Item
+                            name="size"
+                            label="Size"
+                        //rules={[{ required: false }]}
+                        >
+                            <Select ref={SIZE} style={{ width: 100 }}>
+                                {size.map((item) => {
+                                    return (
+                                        <>
+                                            <Option value={item.masize}>{item.tensize}</Option>
+                                        </>
+                                    )
+                                })}
+                            </Select>
+                        </Form.Item>
+                        <Form.Item
+                            name="mau"
+                            label="Màu"
+                        //rules={[{ required: false }]}
+                        >
+                            {/* <Select ref={MAU} style={{ width: 100 }}>
+                                {mau.map((item) => {
+                                    return (
+                                        <>
+                                            <Option value={item.mamau}>{item.tenmau}</Option>
+                                        </>
+                                    )
+                                })}
+                            </Select> */}
+                            <Input ref={MAU} style={{width: 100}}/>
+                        </Form.Item>
+                        <Button className="btn-detail" type="primary" onClick={addDetail}>Thêm chi tiết</Button>
+                    </Form>
+                    <Table className="proItem" style={{ padding: 10 }} dataSource={add} columns={columns} pagination={{ pageSize: 5 }} size="small" />
+                </div>
                 <Form.Item {...tailFormItemLayout}>
                     <Button className="ant-btn ant-btn-dashed" onClick={back} style={{ marginLeft: -30 }}>
                         Trở về

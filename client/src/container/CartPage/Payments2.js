@@ -46,48 +46,46 @@ const Payments2 = (props) => {
     setNotes(e.target.value);
   };
   const [ship, setShip] = useState(20000);
-
+  const sumCart = order.cart.reduce((a, c) => a + c.gia * c.soluong, 0);
   const [payValue, setPayValue] = useState("Thanh toán khi nhận hàng");
   const selectPay = (e) => {
     setPayValue(e.target.value);
     console.log(payValue);
-  };
-  const [deliveryValue, setDeliveryValue] = useState("Hệ thống cửa hàng");
-  const selectDelivery = (e) => {
-    setDeliveryValue(e.target.value);
-    console.log(deliveryValue);
   };
 
   const pay = (values) => {
     values['order'] = order;
     values['note'] = notes;
     values['pay'] = payValue;
-    values['delivery'] = deliveryValue;
+
 
     console.log(values);
-    //Oder.addOrder(values)
-    //const url = "http://localhost:5000/api/v1/don-hang/";
-    /* Oder
-      .addOrder(values)
-      .then(async (res) => {
-        if (res.data.status === "Success") {
-          console.log(values);
-          message.success(res.data.message);
-          localStorage.removeItem("cart");
-          localStorage.removeItem("order");
-          setTimeout(() => {
-            history.push("/hoan-tat-don-hang");
-            window.location.reload();
-          }, 1000);
-        } else {
-          message.error("Đặt hàng thất bại !");
-        }
-      })
-      .catch((err) => {
-        message.error(
-          `Đặt hàng thất bại ! \n ${err.response.data.message}`
-        );
-      }); */
+    /* if (payValue === "Thanh toán MOMO") {
+      //API MoMo
+    } else {
+      //const url = "http://localhost:5000/api/v1/don-hang/";
+      Oder
+        .addOrder(values)
+        .then(async (res) => {
+          if (res.data.status === "Success") {
+            console.log(values);
+            message.success(res.data.message);
+            localStorage.removeItem("cart");
+            localStorage.removeItem("order");
+            setTimeout(() => {
+              history.push("/hoan-tat-don-hang");
+              window.location.reload();
+            }, 1000);
+          } else {
+            message.error("Đặt hàng thất bại !");
+          }
+        })
+        .catch((err) => {
+          message.error(
+            `Đặt hàng thất bại ! \n ${err.response.data.message}`
+          );
+        });
+    } */
   };
 
   const back = () => {
@@ -105,11 +103,11 @@ const Payments2 = (props) => {
   pays['order'] = order;
   pays['note'] = notes;
   pays['pay'] = payValue;
-  pays['delivery'] = deliveryValue;
+  //pays['delivery'] = deliveryValue;
   const demo = pays;
   localStorage.setItem('payment', JSON.stringify(demo));
 
-  
+
   return (
     <>
       <Layout className="container">
@@ -159,14 +157,14 @@ const Payments2 = (props) => {
                       </Row>
                     </Col>
                     <Col>
-                      <Row><h3>Hệ thống vận chuyển</h3></Row>
+                      <Row><h3>Phương thức vận chuyển</h3></Row>
                       <Row className="select-pay">
-                        <Radio.Group onChange={selectDelivery} value={deliveryValue}>
-                          <Space direction="vertical">
-                            <Radio value="Hệ thống cửa hàng"><img width="30" src="https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/icon-pay%2FGHCH.png?alt=media&token=dbff4bfa-eb58-40f4-95dd-e7d5988a3dc5" />Hệ thống cửa hàng</Radio>
-                            <Radio value="Giao hàng tiết kiệm"><img width="30" src="https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/icon-pay%2FGHTK.png?alt=media&token=ac61547a-5896-49b3-a0da-49cf94db70b6" />Giao hàng tiết kiệm</Radio>
-                          </Space>
-                        </Radio.Group>
+                        {order.delivery === "Hệ thống cửa hàng" ? (
+                          <Col><img width="30" src="https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/icon-pay%2FGHCH.png?alt=media&token=dbff4bfa-eb58-40f4-95dd-e7d5988a3dc5" />Hệ thống cửa hàng</Col>
+                        ) : ("")}
+                        {order.delivery === "Giao hàng nhanh" ? (
+                          <Col><img width="30" src="https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/icon-pay%2FGHN.png?alt=media&token=4787d3ba-5811-4666-a561-c513889baa5d" />Giao hàng nhanh</Col>
+                        ) : ("")}
                       </Row>
                     </Col>
                   </div>
@@ -185,11 +183,11 @@ const Payments2 = (props) => {
                     <Col className="abc">
                       <Row className="sum-cart">
                         <Col className="title"><p>Tổng đơn hàng</p></Col>
-                        <Col className="price"><p>{order.sumpay}Đ</p></Col>
+                        <Col className="price"><p>{sumCart}Đ</p></Col>
                       </Row>
                       <Row className="ship">
                         <Col className="title"><p>Phí vận chuyển</p></Col>
-                        <Col className="price"><p>{ship}Đ</p></Col>
+                        <Col className="price"><p>{order.ship}Đ</p></Col>
                       </Row>
                       {voucher === null ? ("") : (
                         <>
@@ -204,18 +202,24 @@ const Payments2 = (props) => {
                   </Row>
                   <Row className="product-sum">
                     <Col className="title"><p>Tổng Thanh toán</p></Col>
-                    <Col className="price"><p>{order.sumpay}Đ</p></Col>                    
+                    <Col className="price"><p>{order.sumpay}Đ</p></Col>
                   </Row>
                   <Row><textarea placeholder="Ghi chú" onChange={note} /></Row>
                   <Row className="button-group">
                     {payValue === "Thanh toán Paypal" ? (
                       <>
-                        <Col className="paypal"><Paypal/></Col>
+                        <Col className="paypal"><Paypal /></Col>
                       </>
                     ) : (
-                      <Button className="pay" value="submit" type="primary" htmlType="submit" >
-                        Thanh toán
-                      </Button>
+                      payValue === "Thanh toán MOMO" ? (
+                        <Button className="momo" value="submit" type="primary" htmlType="submit" >
+                          Thanh toán MoMo
+                        </Button>
+                      ) : (
+                        <Button className="pay" value="submit" type="primary" htmlType="submit">
+                          Thanh toán
+                        </Button>
+                      )
                     )}
 
                     <Button className="continue" onClick={back} >

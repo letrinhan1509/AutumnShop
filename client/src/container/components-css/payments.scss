@@ -65,6 +65,15 @@
                             .ant-select-selector {
                                 height: 38px;
                             }
+                            .select-pay{
+                                width: 100%;
+                                .ant-radio-group{                                    
+                                    .ant-space{
+                                        display: flex;
+                                    }
+                                }
+                                
+                            }
                         }
                     }
                     .col-two {
