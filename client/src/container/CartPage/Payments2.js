@@ -57,7 +57,11 @@ const Payments2 = (props) => {
     values['order'] = order;
     values['note'] = notes;
     values['pay'] = payValue;
-
+    if (order.delivery === "GHTK") {
+      values['is_freeship'] = 1;
+    } else {
+      values['is_freeship'] = 0;
+    }
 
     console.log(values);
     /* if (payValue === "Thanh toán MOMO") {
@@ -159,12 +163,15 @@ const Payments2 = (props) => {
                     <Col>
                       <Row><h3>Phương thức vận chuyển</h3></Row>
                       <Row className="select-pay">
-                        {order.delivery === "Hệ thống cửa hàng" ? (
+                        {order.delivery === "SHOP" ? (
                           <Col><img width="30" src="https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/icon-pay%2FGHCH.png?alt=media&token=dbff4bfa-eb58-40f4-95dd-e7d5988a3dc5" />Hệ thống cửa hàng</Col>
-                        ) : ("")}
-                        {order.delivery === "Giao hàng nhanh" ? (
-                          <Col><img width="30" src="https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/icon-pay%2FGHN.png?alt=media&token=4787d3ba-5811-4666-a561-c513889baa5d" />Giao hàng nhanh</Col>
-                        ) : ("")}
+                        ) : (
+                          order.delivery === "GHN" ? (
+                            <Col><img width="30" src="https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/icon-pay%2FGHN.png?alt=media&token=4787d3ba-5811-4666-a561-c513889baa5d" />Giao hàng nhanh</Col>
+                          ) : (
+                            <Col><img width="30" src="https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/icon-pay%2FGHTK.png?alt=media&token=ac61547a-5896-49b3-a0da-49cf94db70b6" />Giao hàng tiết kiệm</Col>
+                          )
+                        )}
                       </Row>
                     </Col>
                   </div>
@@ -185,17 +192,21 @@ const Payments2 = (props) => {
                         <Col className="title"><p>Tổng đơn hàng</p></Col>
                         <Col className="price"><p>{sumCart}Đ</p></Col>
                       </Row>
-                      <Row className="ship">
-                        <Col className="title"><p>Phí vận chuyển</p></Col>
-                        <Col className="price"><p>{order.ship}Đ</p></Col>
-                      </Row>
-                      {voucher === null ? ("") : (
+                      {order.delivery === "GHN" || order.delivery === "GHTK" ? ("") : (
                         <>
-                          <h3>Áp dụng voucher</h3>
-                          <Row className="voucher">
-                            <Col className="title"><p>{voucher.voucher}</p></Col>
-                            <Col className="price"><p>- {voucher.giagiam}Đ</p></Col>
+                          <Row className="ship">
+                            <Col className="title"><p>Phí vận chuyển</p></Col>
+                            <Col className="price"><p>{order.ship}Đ</p></Col>
                           </Row>
+                          {voucher === null ? ("") : (
+                            <>
+                              <h3>Áp dụng voucher</h3>
+                              <Row className="voucher">
+                                <Col className="title"><p>{voucher.voucher}</p></Col>
+                                <Col className="price"><p>- {voucher.giagiam}Đ</p></Col>
+                              </Row>
+                            </>
+                          )}
                         </>
                       )}
                     </Col>
@@ -213,7 +224,7 @@ const Payments2 = (props) => {
                     ) : (
                       payValue === "Thanh toán MOMO" ? (
                         <Button className="momo" value="submit" type="primary" htmlType="submit" >
-                          Thanh toán MoMo
+                          VÍ MoMo
                         </Button>
                       ) : (
                         <Button className="pay" value="submit" type="primary" htmlType="submit">

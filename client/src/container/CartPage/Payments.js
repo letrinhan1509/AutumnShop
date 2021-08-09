@@ -142,11 +142,11 @@ const Payments = (props) => {
   };
   const sumCart = cartView.reduce((a, c) => a + c.gia * c.soluong, 0);
 
-  const [deliveryValue, setDeliveryValue] = useState("Hệ thống cửa hàng");
+  const [deliveryValue, setDeliveryValue] = useState("SHOP");
   const [cityGHN, setCityGHN] = useState([]);
   const selectDelivery = (e) => {
     setDeliveryValue(e.target.value);
-    if (e.target.value === "Giao hàng nhanh") {
+    if (e.target.value === "GHN") {
       //API city GHN
       /* city.getAll().then((res) => {
         setCityGHN(res.data.city);
@@ -265,11 +265,13 @@ const Payments = (props) => {
                     <Col>
                       <Row className="select-pay">
                         <Radio.Group onChange={selectDelivery} value={deliveryValue}>
-                          <Space >
-                            <Radio value="Hệ thống cửa hàng"><img width="30" src="https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/icon-pay%2FGHCH.png?alt=media&token=dbff4bfa-eb58-40f4-95dd-e7d5988a3dc5" />Hệ thống cửa hàng</Radio>
-                            <Radio value="Giao hàng nhanh"><img width="30" src="https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/icon-pay%2FGHN.png?alt=media&token=4787d3ba-5811-4666-a561-c513889baa5d" />Giao hàng nhanh</Radio>
-                            {/* <Radio value="Giao hàng tiết kiệm"><img width="30" src="https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/icon-pay%2FGHTK.png?alt=media&token=ac61547a-5896-49b3-a0da-49cf94db70b6" />Giao hàng tiết kiệm</Radio> */}
-                          </Space>
+                          <Row>
+                            <Radio style={{ width: 250 }} value="SHOP"><img width="30" src="https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/icon-pay%2FGHCH.png?alt=media&token=dbff4bfa-eb58-40f4-95dd-e7d5988a3dc5" />Hệ thống cửa hàng</Radio>
+                            <Radio style={{ width: 250 }} value="GHN"><img width="30" src="https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/icon-pay%2FGHN.png?alt=media&token=4787d3ba-5811-4666-a561-c513889baa5d" />Giao hàng nhanh</Radio>
+                          </Row>
+                          <Row>
+                            <Radio style={{ width: 250, marginTop: 20 }} value="GHTK"><img width="30" src="https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/icon-pay%2FGHTK.png?alt=media&token=ac61547a-5896-49b3-a0da-49cf94db70b6" />Giao hàng tiết kiệm</Radio>
+                          </Row>
                         </Radio.Group>
                       </Row>
                     </Col>
@@ -279,7 +281,7 @@ const Payments = (props) => {
                       id="city"
                       label="Thành phố"
                     >
-                      {deliveryValue === "Giao hàng nhanh" ? (
+                      {deliveryValue === "GHN" ? (
                         <Select onChange={ChangeCityGHN}>
                           {cityGHN.map((item) => {
                             return (
@@ -306,7 +308,7 @@ const Payments = (props) => {
                       id="district"
                       label="Quận - Huyện"
                     >
-                      {deliveryValue === "Giao hàng nhanh" ? (
+                      {deliveryValue === "GHN" ? (
                         <Select onChange={ChangeDistrictGHN}>
                           {districtGHN.map((item) => {
                             return (
@@ -333,7 +335,7 @@ const Payments = (props) => {
                       id="ward"
                       label="Phường - Xã"
                     >
-                      {deliveryValue === "Giao hàng nhanh" ? (
+                      {deliveryValue === "GHN" ? (
                         <Select>
                           {wardGHN.map((item) => {
                             return (
@@ -396,21 +398,23 @@ const Payments = (props) => {
                           <Button type="primary" disabled>Áp dụng</Button>
                         </>
                       )}
-
-                      <Row className="ship">
-                        <Col className="title"><p>Phí vận chuyển</p></Col>
-                        <Col className="price"><p>{ship}Đ</p></Col>
-                      </Row>
-                      {khuyenmai.length === 0 ? ("") : (
+                      {deliveryValue === "GHN" || deliveryValue === "GHTK" ? ("") : (
                         <>
-                          <h3>Áp dụng voucher</h3>
-                          <Row className="voucher">
-                            <Col className="title"><a onClick={deleteVoucher}><CloseOutlined /></a><p>{khuyenmai.voucher}</p></Col>
-                            <Col className="price"><p>- {khuyenmai.giagiam}Đ</p></Col>
+                          <Row className="ship">
+                            <Col className="title"><p>Phí vận chuyển</p></Col>
+                            <Col className="price"><p>{ship}Đ</p></Col>
                           </Row>
+                          {khuyenmai.length === 0 ? ("") : (
+                            <>
+                              <h3>Áp dụng voucher</h3>
+                              <Row className="voucher">
+                                <Col className="title"><a onClick={deleteVoucher}><CloseOutlined /></a><p>{khuyenmai.voucher}</p></Col>
+                                <Col className="price"><p>- {khuyenmai.giagiam}Đ</p></Col>
+                              </Row>
+                            </>
+                          )}
                         </>
                       )}
-
                     </Col>
                   </Row>
                   <Row className="product-sum">

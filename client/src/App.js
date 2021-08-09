@@ -76,7 +76,6 @@ function App() {
     });
   }, []);
 
-  console.log(ListProductHome);
   //Hàm random sản phẩm
   const shuffled = ListProductHome.sort(() => 0.5 - Math.random());
   const randomItem = shuffled.slice(0, 4);
@@ -92,12 +91,10 @@ function App() {
     setCount(data);
   }
   let storageItem = (localStorage.getItem("cart") || "[]");
-  console.log("storageItem", storageItem);
   const [cart, setCart] = useState(JSON.parse(storageItem));
   useEffect(() => {
     localStorage.setItem(...['cart', JSON.stringify(cart)]);
   }, [cart])
-  console.log("cart", cart);
   function Thongbao_Them(productItem) {
     const exist = cart.find((x) => x.masp === productItem.masp && x.mau === productItem.mau && x.size === productItem.size);
     if (exist) {
