@@ -1,8 +1,7 @@
 var express = require('express');
-const axios = require('axios');
 var router = express.Router();
+const authController = require('../controllers/authController');
 const indexController = require('../controllers/indexController');
-const modelIndex = require('../models/model_index'); //nhúng model products vào controller này để sử dụng
 
 
 router.get('/dang-nhap', (req, res, next) => { 
@@ -13,14 +12,23 @@ router.get('/dang-nhap', (req, res, next) => {
             // API 
     //GET:
 router.get('/tien-te', indexController.getListCurrency);
-router.get('/city', indexController.getListCities); // Danh sách tất cả thành phố
-router.get('/city/:id', indexController.getDetailCity);   // Chi tiết 1 Tỉnh/Thành phố
-router.get('/city/:id/district', indexController.getListCounties);  // Danh sách toàn bộ Quận/Huyện theo Tỉnh/Thành phố
+router.get("/ca-lay-hang-GHN", indexController.getPickShift);   // Chọn ca để GHN lấy hàng
+router.get('/city', indexController.getListCities);         // Danh sách tất cả thành phố
+router.get('/city-GHN', indexController.getProvince);       // API danh sách thành phố GHN
+router
+    .route("/shop")
+    .get(indexController.getShop)
+    .post(indexController.postCreateShop);
+
+router.get('/city/:id', indexController.getDetailCity);     // Chi tiết 1 Tỉnh/Thành phố
+router.get('/dich-vu-GHN/:id', indexController.getService); // Danh sách các dịch vụ của GHN
 router.get('/district/:id', indexController.getDetailDistrict); // Chi tiết 1 Quận/Huyện
+router.get('/district-GHN/:id', indexController.getDistrict);   // API danh sách quận GHN
+router.get('/ward-GHN/:id', indexController.getWard);       // API danh sách phường GHN
+
+router.get('/city/:id/district', indexController.getListCounties);  // Danh sách toàn bộ Quận/Huyện theo Tỉnh/Thành phố
 router.get('/district/:id/ward', indexController.getListWards); // Danh sách toàn bộ Phường/Xã thuộc Quận/Huyện
 router.get('/ward/:id', indexController.getDetailWard); // Chi tiết 1 phường, xã, thị trấn
-
-
 
 router.post('/fee', indexController.postTransportFee);
 

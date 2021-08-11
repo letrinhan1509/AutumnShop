@@ -64,10 +64,9 @@ const Payments2 = (props) => {
     }
 
     console.log(values);
-    /* if (payValue === "Thanh toán MOMO") {
+    if (payValue === "Thanh toán MOMO") {
       //API MoMo
     } else {
-      //const url = "http://localhost:5000/api/v1/don-hang/";
       Oder
         .addOrder(values)
         .then(async (res) => {
@@ -89,7 +88,7 @@ const Payments2 = (props) => {
             `Đặt hàng thất bại ! \n ${err.response.data.message}`
           );
         });
-    } */
+    }
   };
 
   const back = () => {

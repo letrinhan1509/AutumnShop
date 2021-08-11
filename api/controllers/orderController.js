@@ -1,10 +1,124 @@
 const axios = require('axios');
+const crypto = require('crypto');
 const catchAsync = require('../utils/catchAsync');
 const modelOrder = require('../models/model_order');
 const modelUser = require('../models/model_user');
 
 
                     // ORDER CONTROLLER
+
+const create_order_GHTK = async(cart, madonhang, email, tel, name, address, province, district, ward, street, freeship, sumpay, note) => {
+    try {
+        let products = [];
+        let temp = {};
+        cart.forEach(element => {
+            temp.name =  element.tensp;
+            temp.weight = element.soluong * 0.1;
+            products.push(temp);
+        });
+        const data = {
+            "products": products,
+            "order": {
+                "id": String(madonhang),
+                "pick_name": "Lê Trí Nhân",
+                "pick_address": "82/72",
+                "pick_province": "TP. Hồ Chí Minh",
+                "pick_district": "Quận Bình Thạnh",
+                "pick_ward": "Phường 1",
+                "pick_email": "autumnshop180@gmail.com",
+                "pick_tel": "0969362915",
+                "return_name": "Lê Trí Nhân",
+                "return_address": "82/72",
+                "return_province": "TP. Hồ Chí Minh",
+                "return_district": "Quận Bình Thạnh",
+                "return_tel": "0969362915",
+                "return_email": "autumnshop180@gmail.com",
+                "email": email,
+                "tel": tel,
+                "name": name,
+                "address": address,
+                "province": province,
+                "district": district,
+                "ward": ward,
+                "street": street,
+                "hamlet": "Khác",
+                "is_freeship": freeship, 
+                "pick_money": sumpay,// Số tiền CoD. Nếu bằng 0 thì không thu tiền CoD. Tính theo VNĐ.
+                "note": note,
+                "value": 10000,//Giá trị đóng bảo hiểm, là căn cứ để tính phí bảo hiểm và bồi thường khi có sự cố.
+                "transport": "road",//Phương thức vận chuyển
+                "pick_option":"cod" ,// Đơn hàng xfast yêu cầu bắt buộc pick_option là COD     
+                "deliver_option" : "xteam", // nếu lựa chọn kiểu vận chuyển xfast    
+                "pick_session" : "8_mai", // Phiên lấy xfast 
+            }
+        }
+        //var url = `https://services.giaohangtietkiem.vn/services/shipment/order`;   // URL môi trường thật
+        var url = `https://services.ghtklab.com/services/shipment/order`; // URL môi trường thử nghiệm, sandbox
+        const order = await axios.post(url, data, {
+            //headers: { 'Token': 'c86FbBF0d29fD8fE2b58F3bE5e6571711CcF180a','Content-Type': 'application/json' }
+            headers: { 'Token': 'c86FbBF0d29fD8fE2b58F3bE5e6571711CcF180a' }
+        });
+        if(order.status == 200) {
+            return order.data;
+        };
+    } catch (error) {
+        return error; 
+    }
+};
+const pay_Momo = async(sumpay, orderID) => {
+    try {
+        var endpoint = "https://payment.momo.vn/gw_payment/transactionProcessor"
+        var hostname = "https://test-payment.momo.vn"
+        var path = "/gw_payment/transactionProcessor"
+        var partnerCode = "MOMOH8PS20210810"
+        var accessKey = "MuKpOqDVHUTn31q1"
+        var serectkey = "DggJevNUCROJX7lycfA8KS1Y06vh7jg1"
+        var orderInfo = "Thông tin đơn hàng"    // Thông tin đơn hàng
+        var returnUrl = "http://localhost:3000/hoan-tat-don-hang"
+        var notifyurl = "https://callback.url/notify"
+        var amount = sumpay;  // Tổng tiền đơn hàng
+        var orderId = orderID;      // Mã đơn hàng
+        var requestId = orderID;  // Mã đơn hàng
+        var requestType = "captureMoMoWallet"
+        var extraData = "merchantName=[Autumnshop];merchantId=[MOMOH8PS20210810]"// Tên cửa hàng và ID cửa hàng
+        
+        var rawSignature = "partnerCode="+partnerCode+"&accessKey="+accessKey+"&requestId="+requestId+
+        "&amount="+amount+"&orderId="+orderId+"&orderInfo="+orderInfo+"&returnUrl="+returnUrl+
+        "&notifyUrl="+notifyurl+"&extraData="+extraData;
+
+        //puts raw signature
+        console.log("--------------------RAW SIGNATURE----------------")
+        console.log(rawSignature)
+        var signature = crypto.createHmac('sha256', serectkey)
+                    .update(rawSignature)
+                    .digest('hex');
+        console.log("--------------------SIGNATURE----------------")
+        console.log(signature)
+        //json object send to MoMo endpoint
+        var body = JSON.stringify({
+            partnerCode : partnerCode,
+            accessKey : accessKey,
+            requestId : requestId,
+            amount : amount,
+            orderId : orderId,
+            orderInfo : orderInfo,
+            returnUrl : returnUrl,
+            notifyUrl : notifyurl,
+            extraData : extraData,
+            requestType : requestType,
+            signature : signature,
+        })
+
+        let url = `test-payment.momo.vn`;
+        const momo = await axios.post(url, values);
+        console.log(momo);
+
+
+    } catch (error) {
+        return error;
+    }
+};
+
 
         // GET
 // GET: List order 
@@ -207,52 +321,92 @@ exports.statisticalMonth = catchAsync(async (req, res, next) => {
 
 
         // POST
-// POST: Create an order 
+// POST: Tạo đơn hàng trên web của shop 
 exports.postCreateOrder = catchAsync(async (req, res, next) => {
-
-    let data = req.body;
-    console.log(data);
-    let makh = req.body.order.makh;
-    let tenkh = req.body.order.tenkh;
-    let email = req.body.order.email;
-    let sodienthoai = req.body.order.sodienthoai;
-    let address = req.body.order.address;
-    let ward = req.body.order.ward;
-    let tongtien = req.body.sumpay;
-    let makm = req.body.makm;
-    let ship = req.body.ship;
-    let ghichu = req.body.note;
-    let hinhthuc = req.body.pay;
-    let vanchuyen = req.body.delivery;
-    var today = new Date();
-    var ngaydat = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
-    let cart = req.body.order.cart; // Mảng danh sách các sản phẩm
-
     try {
-        if(!tenkh || !email || !sodienthoai || !address || !ship || !tongtien || !hinhthuc || !vanchuyen || !ward) {
-            return res.status(400).json({ 
-                status: "Fail", 
-                message: "Thiếu thông tin đơn hàng, vui lòng kiểm tra lại thông tin !"
-            });
+        var makh = req.body.order.makh;
+        var tenkh = req.body.order.tenkh;
+        var email = req.body.order.email;
+        var sodienthoai = req.body.order.sodienthoai;
+        var diachi = req.body.order.address;
+        var ward_id = req.body.order.ward;
+        var tongtien = req.body.order.sumpay;
+        var makm = req.body.order.makm;
+        var ship = req.body.order.ship;
+        var ghichu = req.body.note;
+        var hinhthuc = req.body.pay;
+        var vanchuyen = req.body.order.delivery;
+        var today = new Date();
+        var ngaydat = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+        var cart = req.body.order.cart; // Mảng danh sách các sản phẩm
+        var freeship = req.body.is_freeship; 
+    
+        if(!tenkh || !email || !sodienthoai || !diachi || !ship || !tongtien || !hinhthuc || !vanchuyen || !ward_id) {
+            return res.status(400).json({ status: "Fail", message: "Thiếu thông tin đơn hàng, vui lòng kiểm tra lại thông tin !" });
         };
         if(!cart) {
-            return res.status(400).json({ 
-                status: "Fail", 
-                message: "Giỏ hàng rỗng không thể tạo đơn hàng, vui lòng kiểm tra lại giỏ hàng !"
-            });
+            return res.status(400).json({ status: "Fail", message: "Giỏ hàng rỗng không thể tạo đơn hàng, vui lòng kiểm tra lại giỏ hàng !" });
         };
-        var url = "https://thongtindoanhnghiep.co/api/ward/" + ward;
-        const list = await axios.get(url);
-        let diachi = address+ ', ' +list.data.Title+ ', ' +list.data.QuanHuyenTitle+ ', ' +list.data.TinhThanhTitle;
+        //var diachi = address;
+        if(vanchuyen == "GHN") {
+            let province_GHN = req.body.order.province;
+            let district_GHN = req.body.order.district;
+            let phuong_GHN = req.body.order.wardGHN;
+            var url_district_GHN = `https://dev-online-gateway.ghn.vn/shiip/public-api/master-data/district?province_id=` + province_GHN;
+            var url_ward_GHN = `https://dev-online-gateway.ghn.vn/shiip/public-api/master-data/ward?district_id=` + district_GHN;
+            const listDistrict = await axios.get(url_district_GHN, {
+                headers: { Token: process.env.TOKEN_GHN_DEV }
+            });
+            let province = {};
+            let district = {};
+            let ward = {};
+            listDistrict.forEach(element => {
+                if(element.ProvinceID == province_GHN) { province = element.ProvinceName; }
+                else if(element.DistrictID == district_GHN) { district = element.DistrictName; }
+            });
+            const listWard = await axios.get(url_ward_GHN, {
+                headers: { Token: process.env.TOKEN_GHN_DEV }
+            });
+            listWard.forEach(element => {
+                if(element.WardCode === phuong_GHN) { ward = element.WardName; }
+            });
+            diachi = diachi+ ', ' +ward+ ', ' +district+ ', ' +province;
+        } else {
+            var url = "https://thongtindoanhnghiep.co/api/ward/" + ward_id;
+            const list = await axios.get(url);
+            var phuong_API = list.data.Title;
+            var quan = list.data.QuanHuyenTitle;
+            var thanhpho = list.data.TinhThanhTitle;
+            diachi = diachi+ ', ' +list.data.Title+ ', ' +list.data.QuanHuyenTitle+ ', ' +list.data.TinhThanhTitle;
+        };
         if(makh == undefined){
             // Tạo đơn hàng cho khách không có tài khoản
             let queryNotUserDiscount = await modelOrder.insert_Order(tenkh, email, sodienthoai, diachi, ship, tongtien, ghichu, makm, hinhthuc, vanchuyen, ngaydat, cart);
-            // Cập nhật lại số lượng sản phẩm:
-
-            return res.status(200).json({
-                status: "Success",
-                message: queryNotUserDiscount
-            });
+            if(vanchuyen == "GHTK") {
+                const order_GHTK = await create_order_GHTK(cart, queryNotUserDiscount, email, sodienthoai, tenkh, diachi, thanhpho, quan, phuong_API, diachi, freeship, tongtien, ghichu);
+                if(order_GHTK.success) {
+                    console.log("Tạo đơn hàng trên GHTK thành công");
+                    return res.status(200).json({
+                        status: "Success",
+                        message: "Tạo đơn với phương thức vận chuyển là Giao Hàng Tiết Kiệm thành công !",
+                        order: order_GHTK.order
+                    });
+                } else {
+                    console.log("Tạo đơn hàng thành công, tạo đơn trên GHTK ko thành công !");
+                    const delete_Order = await modelOrder.delete_GHTK(queryNotUserDiscount);
+                    return res.status(400).json({
+                        status: "Fail",
+                        message: "Tạo đơn hàng bằng phương thức vận chuyển Giao Hàng Tiết Kiệm thất bại !",
+                        message_error: order_GHTK.message
+                    });
+                }
+            } else {
+                // Tạo đơn hàng thành công vs hình thức giao hàng là: "SHOP"
+                return res.status(200).json({
+                    status: "Success",
+                    message: "Tạo đơn thành công !"
+                });
+            }
         } else {
             // Tạo đơn hàng cho khách có tài khoản
             const userExist = await modelUser.get_By_Id(makh);
@@ -262,13 +416,271 @@ exports.postCreateOrder = catchAsync(async (req, res, next) => {
                     message: "Tài khoản khách hàng này không tồn tại, vui lòng kiểm tra lại !"
                 });
             } else {
-                let queryUserDiscount = await modelOrder.insert_Order_User(makh, tenkh, email, sodienthoai, diachi, ship, tongtien, ghichu, makm, hinhthuc, vanchuyen, ngaydat, cart);
-                return res.status(200).json({
-                    status: "Success",
-                    message: queryUserDiscount
-                });
+                //let queryUserDiscount = await modelOrder.insert_Order_User(makh, tenkh, email, sodienthoai, diachi, ship, tongtien, ghichu, makm, hinhthuc, vanchuyen, ngaydat, cart);
+                // Thanh toán Momo:
+
+                // Tạo đơn trên GHTK:
+                if(vanchuyen == "GHTK") {
+                    let madonhang = "DH51703846";
+                    const order_GHTK = await create_order_GHTK(cart, madonhang, email, sodienthoai, tenkh, diachi, thanhpho, quan, phuong_API, diachi, freeship, tongtien, ghichu);
+                    if(order_GHTK.success) {
+                        return res.status(200).json({
+                            status: "Success",
+                            message: "Tạo đơn với phương thức vận chuyển là Giao Hàng Tiết Kiệm thành công !",
+                            order: order_GHTK.order
+                        });
+                    } else {
+                        //const delete_Order = await modelOrder.delete_GHTK(queryUserDiscount);
+                        return res.status(400).json({
+                            status: "Fail",
+                            message: "Tạo đơn hàng bằng phương thức vận chuyển Giao Hàng Tiết Kiệm thất bại !",
+                            message_error: order_GHTK.message
+                        });
+                    }
+                } else {
+                    // Tạo đơn hàng thành công vs hình thức giao hàng là: "SHOP", "GHN"
+                    return res.status(200).json({
+                        status: "Success",
+                        message: "Tạo đơn thành công !"
+                    });
+                }
             }
         }
+    } catch (error) {
+        console.log(error);
+        return res.status(400).json({ 
+            status: "Fail", 
+            message: "Something went wrong!", 
+            error: error 
+        });
+    }
+});
+// POST: Tạo đơn hàng trên GHN: 
+exports.postCreateOrderGHN = catchAsync(async (req, res, next) => {
+    try {
+        let data_raw = {
+            "payment_type_id": 2,// Người trả phí vận chuyển. (1: Shop, 2: Khách hàng)
+            "note": req.body.note,// Lưu ý của khách hàng cho người gửi hàng.
+            "required_note": "CHOXEMHANGKHONGTHU",// Lưu ý của đơn hàng vận chuyển.
+            "return_phone": "0969362915",// SĐT của shop, để liên hệ để trả lại bưu kiện. 
+            "return_address": "82/72 Lê Văn Duyệt, Quận Bình Thạnh, TP.Hồ Chí Minh",// Địa chỉ trả lại bưu kiện.
+            "return_district_id": 1462,
+            "return_ward_code": "21601",
+            "to_name": req.body.order.tenkh,// Tên người nhận.
+            "to_phone": req.body.order.sodienthoai,// SĐT người nhận.
+            "to_address": req.body.order.address, // Địa chỉ người nhận.
+            "to_ward_code": "",// Require
+            "to_district_id": 1444,// Require
+            "cod_amount": 200000,// Tổng tiền đơn hàng.
+            "content": "Cửa hàng thời trang Autumn",// Nội dung đặt hàng.
+            "weight": 200,// Trọng lượng gói hàng.(gram) - Maximum : 1600000gram
+            "length": 1,// Chiều dài gói hàng.(cm) - Maximum : 200cm
+            "width": 19,// Chiều rộng gói hàng.(cm) - Maximum : 200cm
+            "height": 10,// Chiều cao gói hàng.(cm) - Maximum : 200cm
+            //"pick_station_id": 1444,
+            //"deliver_station_id": null,
+            //"insurance_value": 10000000,
+            "service_id": 0,// Require: Chọn dịch vụ phù hợp với gói vận chuyển của bạn(Nhanh, Tiêu chuẩn hoặc Tiết kiệm). Mỗi ID dịch vụ có phí và thời gian thực hiện khác nhau.
+            "service_type_id":2,// Require: (1: Hàng không, 2: Xe tải).
+            //"order_value":130000,// 
+            //"coupon":null,// Not required: Mã khuyến mãi giảm giá.
+            "pick_shift":[2],// Not required: Chọn ca lấy hàng.
+            "items": [
+                {
+                    "name":"Áo Polo",// Require: Tên sản phẩm
+                    "quantity": 1,// Require: Số lượng
+                    "price": 200000,
+                }
+            ]
+        };
+        if(!data_raw.to_name || !data_raw.to_phone || !data_raw.to_address || !data_raw.to_ward_code || !data_raw.to_district_id 
+            || !data_raw.cod_amount || !data_raw.weight || !data_raw.length || !data_raw.width || !data_raw.height || !data_raw.service_id 
+            || !data_raw.service_type_id || !data_raw.pick_shift || !data_raw.items) {
+                return res.status(400).json({
+                    status: "Fail", 
+                    message: "Thiếu thông tin đơn hàng, vui lòng kiểm tra lại !"
+                });
+            };
+        var url = `https://dev-online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/create`;
+        const order = await axios.post(url, data_raw, {
+            headers: {
+                ShopId: 81200,
+                Token: process.env.TOKEN_GHN_DEV
+            }
+        });
+        if(order.data.message == "Success") {
+            return res.status(200).json({ 
+                status: "Success", 
+                message: "Tạo đơn hàng trên Giao Hành Nhanh thành công !",
+                order: order.data.data 
+            });
+        };
+    } catch (error) {
+        return res.status(400).json({
+            status: "Fail", 
+            message: "Something went wrong",
+            error: error.response.data
+        });
+    }
+});
+// POST: Chi tiết 1 đơn hàng của GHN dựa vào mã đơn hàng.
+exports.postDetailOrderGHN = catchAsync(async (req, res, next) => {
+    try {
+        //let order_code = req.body.madonhang;
+        let order_code = "5ENLKKHD";
+        var url = `https://dev-online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/detail`;
+        const order = await axios.post(url, order_code, {
+            headers: {
+                Token: process.env.TOKEN_GHN_DEV
+            }
+        });
+        if(order.data.message == "Success") {
+            return res.status(200).json({ 
+                status: "Success", 
+                message: "",
+                order: order.data.data 
+            });
+        };
+    } catch (error) {
+        console.log(error.response);
+        return res.status(400).json({ 
+            status: "Fail", 
+            message: "Something went wrong!", 
+            error: error.response.data 
+        });
+    }
+});
+// POST: Tạo đơn hàng trên GHTK: (Để test trên Postman)
+exports.postCreateOrderGHTK = catchAsync(async (req, res, next) => {
+try {
+    let cart = req.body.products;
+    let madonhang = req.body.order.id;
+    let email = req.body.order.email;
+    let tel = req.body.order.tel;
+    let name = req.body.order.name;
+    let address = req.body.order.address;
+    let province = req.body.order.province;
+    let district = req.body.order.district;
+    let ward = req.body.order.ward;
+    let street = req.body.order.street;
+    let freeship = 0;
+    let sumpay = req.body.order.pick_money;
+    let note = req.body.order.note;
+    const data = {
+        "products": cart,
+        "order": {
+            "id": madonhang,
+            "pick_name": "Lê Trí Nhân",
+            "pick_address": "82/72",
+            "pick_province": "TP. Hồ Chí Minh",
+            "pick_district": "Quận Bình Thạnh",
+            "pick_ward": "Phường 1",
+            "pick_email": "autumnshop180@gmail.com",
+            "pick_tel": "0969362915",
+            "return_name": "Lê Trí Nhân",
+            "return_address": "82/72",
+            "return_province": "TP. Hồ Chí Minh",
+            "return_district": "Quận Bình Thạnh",
+            "return_tel": "0969362915",
+            "return_email": "autumnshop180@gmail.com",
+            "email": email,
+            "tel": tel,
+            "name": name,
+            "address": address,
+            "province": province,
+            "district": district,
+            "ward": ward,
+            "street": street,
+            "hamlet": "Khác",
+            "is_freeship": freeship, 
+            "pick_money": sumpay,// Số tiền CoD. Nếu bằng 0 thì không thu tiền CoD. Tính theo VNĐ.
+            "note": note,
+            "value": 10000,//Giá trị đóng bảo hiểm, là căn cứ để tính phí bảo hiểm và bồi thường khi có sự cố.
+            "transport": "road",//Phương thức vận chuyển
+            "pick_option":"cod" ,// Đơn hàng xfast yêu cầu bắt buộc pick_option là COD     
+            "deliver_option" : "xteam", // nếu lựa chọn kiểu vận chuyển xfast    
+            "pick_session" : "8_mai", // Phiên lấy xfast 
+        }
+    }
+    //var url = `https://services.giaohangtietkiem.vn/services/shipment/order`;   // URL môi trường thật
+    var url = `https://services.ghtklab.com/services/shipment/order`; // URL môi trường thử nghiệm, sandbox
+    const order = await axios.post(url, data, {
+        headers: { Token: process.env.TOKEN_GHTK_DEV }
+    });
+    if(order.status == 200) {
+        if(order.data.success == "true") { 
+            return res.status(200).json({ 
+                status: "Success", 
+                message: "Tạo đơn hàng trên Giao Hành Tiết Kiệm thành công !",
+                order: order.data.order 
+            }); 
+        } else {
+            return res.status(200).json({ 
+                status: "Success", 
+                message: order.data.message
+            }); 
+        }
+    };
+} catch (error) {
+    return res.status(400).json({
+        status: "Fail", 
+        message: "Something went wrong",
+        message_details: error.response.data.message,
+        error: error.message
+    });
+}
+});
+// POST: Thanh toán qua momo
+exports.postPaymentMomo = catchAsync(async (req, res, next) => {
+    try {
+        var endpoint = "https://payment.momo.vn/gw_payment/transactionProcessor"
+        var hostname = "https://test-payment.momo.vn"
+        var path = "/gw_payment/transactionProcessor"
+        var partnerCode = "MOMOH8PS20210810"
+        var accessKey = "MuKpOqDVHUTn31q1"
+        var serectkey = "DggJevNUCROJX7lycfA8KS1Y06vh7jg1"
+        var orderInfo = "Thông tin đơn hàng"    // Thông tin đơn hàng
+        var returnUrl = "http://localhost:3000/hoan-tat-don-hang"
+        var notifyurl = "https://callback.url/notify"
+        var amount = req.body.order.sumpay;  // Tổng tiền đơn hàng
+        var orderId = uuidv1()      // Mã đơn hàng
+        var requestId = uuidv1()    // Mã đơn hàng
+        var requestType = "captureMoMoWallet"
+        var extraData = "merchantName=;merchantId="// Tên cửa hàng và ID cửa hàng
+        
+        var rawSignature = "partnerCode="+partnerCode+"&accessKey="+accessKey+"&requestId="+requestId+
+        "&amount="+amount+"&orderId="+orderId+"&orderInfo="+orderInfo+"&returnUrl="+returnUrl+
+        "&notifyUrl="+notifyurl+"&extraData="+extraData
+
+        //puts raw signature
+        console.log("--------------------RAW SIGNATURE----------------")
+        console.log(rawSignature)
+        var signature = crypto.createHmac('sha256', serectkey)
+                    .update(rawSignature)
+                    .digest('hex');
+        console.log("--------------------SIGNATURE----------------")
+        console.log(signature)
+        //json object send to MoMo endpoint
+        var body = JSON.stringify({
+            partnerCode : partnerCode,
+            accessKey : accessKey,
+            requestId : requestId,
+            amount : amount,
+            orderId : orderId,
+            orderInfo : orderInfo,
+            returnUrl : returnUrl,
+            notifyUrl : notifyurl,
+            extraData : extraData,
+            requestType : requestType,
+            signature : signature,
+        })
+
+        let url = `test-payment.momo.vn`;
+        const momo = await axios.post(url, values);
+        console.log(momo);
+
+
+        
     } catch (error) {
         return res.status(400).json({ 
             status: "Fail", 
@@ -366,6 +778,32 @@ exports.deleteOrder = catchAsync(async (req, res, next) => {
             status: "Fail", 
             message: "Something went wrong!", 
             error: error 
+        });
+    }
+});
+// Huỷ đơn hàng vận chuyển từ GHN
+exports.deleteOrderGHN = catchAsync(async (req, res, next) => {
+    try {
+        let order_codes = req.params.id;
+        let data_raw = { "order_codes": order_codes };
+        var url = `https://dev-online-gateway.ghn.vn/shiip/public-api/v2/switch-status/cancel`;
+        const deleteOrder = await axios.post(url, data_raw, {
+            headers: {
+                ShopId: 81200,
+                Token: process.env.TOKEN_GHN_DEV
+            }
+        });
+        if(deleteOrder.data.message == "Success") {
+            return res.status(200).json({ 
+                status: "Success", 
+                message: "Huỷ đơn hàng trên GIAO HÀNG NHANH thành công !"
+            });
+        };
+    } catch (error) {
+        return res.status(400).json({
+            status: "Fail", 
+            message: "Something went wrong",
+            error: error.response.data
         });
     }
 });

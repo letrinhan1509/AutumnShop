@@ -250,6 +250,228 @@ exports.getListCurrency = catchAsync(async (req, res, next) => {
         });
     }
 });
+// GET: List of all cities of GHN
+exports.getProvince = catchAsync(async (req, res, next) => {
+    try {
+        var url = "https://dev-online-gateway.ghn.vn/shiip/public-api/master-data/province";
+        const province = await axios.get(url, {
+            headers: {
+                Token: process.env.TOKEN_GHN_DEV
+            }
+        });
+        if(province.data.message == "Success") {
+            return res.status(200).json({ 
+                status: "Success", 
+                city: province.data.data 
+            });
+        };
+    } catch (error) {
+        console.log(error);
+        return res.status(400).json({
+            status: "Fail", 
+            message: "Something went wrong",
+            error: error
+        });
+    };
+});
+// GET: Danh sách quận/huyện theo id thành phố
+exports.getDistrict = catchAsync(async (req, res, next) => {
+    try {
+        let province_id = req.params.id;
+        var url = `https://dev-online-gateway.ghn.vn/shiip/public-api/master-data/district?province_id=${province_id}`;
+        const district = await axios.get(url, {
+            headers: {
+                Token: process.env.TOKEN_GHN_DEV
+            }
+        });
+        /* let quan = {};
+        district.data.data.forEach(element => {
+            if(element.DistrictID == 1462) {
+                quan = element;
+            }
+        });
+        console.log(quan); */
+        if(district.data.message == "Success") {
+            return res.status(200).json({ 
+                status: "Success", 
+                district: district.data.data 
+            });
+        };
+    } catch (error) {
+        console.log(error);
+        return res.status(400).json({
+            status: "Fail", 
+            message: "Something went wrong",
+            code_message: error.response.data.code_message_value,
+            error: error.message
+        });
+    };
+});
+// GET: Danh sách phường/xã theo id quận/huyện
+exports.getWard = catchAsync(async (req, res, next) => {
+    try {
+        let district_id = req.params.id;
+        var url = `https://dev-online-gateway.ghn.vn/shiip/public-api/master-data/ward?district_id=${district_id}`;
+        const ward = await axios.get(url, {
+            headers: {
+                Token: process.env.TOKEN_GHN_DEV
+            }
+        });
+        if(ward.data.message == "Success") {
+            return res.status(200).json({ 
+                status: "Success", 
+                ward: ward.data.data 
+            });
+        };
+    } catch (error) {
+        return res.status(400).json({
+            status: "Fail", 
+            message: "Something went wrong",
+            code_message: error.response.data.code_message_value,
+            error: error.message
+        });
+    };
+});
+// GET: Danh sách các địa chỉ nhận hàng
+exports.getShop = catchAsync(async (req, res, next) => {
+    try {
+        let values = {
+            "offset": 0,
+            "limit": 50,
+            "client_phone": "0969362915"
+        };
+        var url = `https://dev-online-gateway.ghn.vn/shiip/public-api/v2/shop/all`;
+        const shop = await axios.post(url, values, {
+            headers: {
+                Token: process.env.TOKEN_GHN_DEV
+            }
+        });
+        var shop_open = [];
+        var shop_close = [];
+        if(shop.data.message == "Success") {
+            shop.data.data.shops.forEach(element => {
+                if(element.is_created_chat_channel == true) {
+                    shop_open.push(element);
+                } else {
+                    shop_close.push(element);
+                }
+            });
+            return res.status(200).json({ 
+                status: "Success", 
+                shop: shop.data.data.shops.length,
+                shop_open: shop_open,
+                shop_close: shop_close,
+                list_shop: shop.data.data.shops 
+                //shop: shop.data.data.shops
+            });
+        };
+    } catch (error) {
+        return res.status(400).json({
+            status: "Fail", 
+            message: "Something went wrong",
+            code_message: error.response.data.code_message_value,
+            error: error.message
+        });
+    };
+});
+// GET: Các ca lấy hàng của GHN
+exports.getPickShift = catchAsync(async (req, res, next) => {
+    try {
+        var url = `https://dev-online-gateway.ghn.vn/shiip/public-api/v2/shift/date`;
+        const pickShift = await axios.get(url, {
+            headers: {
+                Token: process.env.TOKEN_GHN_DEV
+            }
+        });
+        if(pickShift.data.message == "Success") {
+            return res.status(200).json({ 
+                status: "Success", 
+                pickShift: pickShift.data.data
+            });
+        };
+    } catch (error) {
+        return res.status(400).json({
+            status: "Fail", 
+            message: "Something went wrong",
+            error: error.response.data
+        });
+    }
+});
+// GET: Các dịch vụ của GHN
+exports.getService = catchAsync(async (req, res, next) => {
+    try {
+        let district_id = req.params.id;
+        if(district_id == undefined) {
+            return res.status(400).json({
+                status: "Fail", 
+                message: "Thiếu thông tin quận, vui lòng chọn quận để xem danh sách dịch vụ !"
+            });
+        } else {
+            let data_raw = {
+                "shop_id": 81200,
+                "from_district": 1462,// DistrictID Quận Bình Thạnh
+                "to_district": parseInt(district_id)
+            };
+            var url = `https://dev-online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/available-services`;
+            const service = await axios.post(url, data_raw, {
+                headers: {
+                    Token: process.env.TOKEN_GHN_DEV
+                }
+            });
+            let listService = [];
+            service.data.data.forEach(element => {
+                if(element.short_name !== '') {
+                    listService.push(element);
+                }
+            });
+            if(service.data.message == "Success") {
+                return res.status(200).json({ 
+                    status: "Success", 
+                    service: listService
+                });
+            };
+        }
+    } catch (error) {
+        return res.status(400).json({
+            status: "Fail", 
+            message: "Something went wrong",
+            error: error.response.data
+        });
+    }
+});
+
+
+// POST: Thêm cửa hàng, cửa hàng là nơi giúp GHN biết nơi lấy đồ.
+exports.postCreateShop = catchAsync(async (req, res, next) => {
+    try {
+        let district_id = req.body.district_id;
+        let ward_code = req.body.ward_code;
+        let name = req.body.name;
+        let phone = req.body.phone;
+        let address = req.body.address;
+        var url = `https://dev-online-gateway.ghn.vn/shiip/public-api/v2/shop/register?district_id=${district_id}&ward_code=${ward_code}
+        &name=${name}&phone=${phone}&address=${address}`;
+        const shop = await axios.get(url, {
+            headers: {
+                Token: process.env.TOKEN_GHN_DEV
+            }
+        });
+        if(shop.data.message == "Success") {
+            return res.status(200).json({ 
+                status: "Success", 
+                message: "Thêm cửa hàng trên Giao Hàng Nhanh thành công !",
+                shop_id: shop.data.data.shop_id 
+            });
+        };
+    } catch (error) {
+        return res.status(400).json({
+            status: "Fail", 
+            message: "Something went wrong",
+            code_message: error.response.data.code_message_value,
+            error: error.message
+        });
+    };
+});
 // Tiền vận chuyển:
 exports.postTransportFee = catchAsync(async (req, res, next) => {
     try {

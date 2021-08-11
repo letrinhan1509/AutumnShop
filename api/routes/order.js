@@ -24,6 +24,12 @@ router.get('/:id/chi-tiet-dhang', orderController.getListDetailOrders); // Danh 
 router.get('/khach-hang/:id', orderController.getListOrderUser);        // Đơn hàng theo mã khách hàng
 router.get('/so-dien-thoai/:phone', orderController.getListOrderPhone); // Đơn hàng theo số điện thoại
 
+router.delete("/GHN/cancel/:id", orderController.deleteOrderGHN);   // Huỷ đơn hàng vận chuyển từ GHN
+router.post("/GHN/create", orderController.postCreateOrderGHN); // Tạo đơn hàng của GHN
+router.post("/GHN/detail", orderController.postDetailOrderGHN); // Thông tin chi tiết 1 đơn hàng
+
+router.post("/test-GHTK", orderController.postCreateOrderGHTK);
+
 
 //router.post('/tao-don-hang', orderController.postCreateOrder);
 //router.put('/cap-nhat-trang-thai', orderController.putEditStatus);

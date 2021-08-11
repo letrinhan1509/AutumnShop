@@ -54,6 +54,8 @@ exports.getProduct = catchAsync(async (req, res, next) => {
         };
         var today = new Date();
         const productExist = await modelProduct.get_By_Id(masp);
+        //const productExist = await modelProduct.update_amount_test(masp);
+
         /* var ngaytao = today.getDate()+'-'+(today.getMonth()+1)+'-'+today.getFullYear();
         console.log(ngaytao);
         console.log(productExist.ngaytao);
@@ -383,22 +385,20 @@ exports.postCheckSize = catchAsync(async (req, res, next) => {
 exports.putEditProduct = catchAsync(async (req, res, next) => {
     try {
         let masp = req.body.masp;
-        let code = req.body.code;
         let tensp = req.body.tensp;
-        let soluong = req.body.soluong;
-        let size = req.body.size;
-        let mau = req.body.mau;
         let gia = req.body.gia;
+        let chitiet = req.body.chitiet;
         let tenhinh = req.body.imgName;
         let hinh = req.body.img;
-        //let hinhchitiet = req.body.hinhchitiet;
+        //let tenhinhct = req.body.imgNameDetail;
+        //let hinhchitiet = req.body.imgDetail;
         let mota = req.body.mota;
         let trangthai = req.body.trangthai;
         let mansx = req.body.mansx;
         let maloai = req.body.maloai;
         let madm = req.body.madm;
         
-        if(!masp || !tensp || !soluong || !size || !mau || !gia || !tenhinh || !hinh || !trangthai || !mansx || !maloai || !madm) {
+        if(!masp || !tensp || !chitiet || !gia || !tenhinh || !hinh || !trangthai || !mansx || !maloai || !madm) {
             return res.status(400).json({ 
                 status: "Fail", 
                 message: "Thiếu thông tin sản phẩm, vui lòng kiểm tra lại !"
@@ -408,16 +408,13 @@ exports.putEditProduct = catchAsync(async (req, res, next) => {
         if(productExist == -1) {
             return res.status(400).json({ 
                 status: "Fail", 
-                message: "Không tìm thấy sản phẩm này, vui lòng kiểm tra lại !"
+                message: "Không tìm thấy sản phẩm này, vui lòng kiểm tra lại thông tin !"
             });
         } else {
-            /* if(!hinhchitiet) {
-                hinhchitiet = "undefined";
-            }; */
-            let query = await modelProduct.update_product(masp, tensp, soluong, size, mau, gia, tenhinh, hinh, mota, trangthai, mansx, maloai, madm);
+            let query = await modelProduct.update_product(masp, tensp, gia, chitiet, tenhinh, hinh, mota, trangthai, mansx, maloai, madm);
             return res.status(200).json({ 
                 status: "Success", 
-                message: "Cập nhật sản phẩm thành công!"
+                message: "Cập nhật thông tin sản phẩm thành công !"
             });
         }
     } catch (error) {

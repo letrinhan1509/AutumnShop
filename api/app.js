@@ -19,6 +19,7 @@ const producerRouter = require('./routes/producer');
 const commentRouter = require('./routes/comment');
 const discountRouter = require('./routes/discount');
 const cartRouter = require('./routes/cart');
+const sizeRouter = require('./routes/size');
 
 var app = express();
 
@@ -53,14 +54,15 @@ app.use(limiter);
 
 app.use('/api', indexRouter);
 app.use('/api/v1/admin', adminRouter);
-app.use('/api/v1/khach-hang', usersRouter);
-app.use('/api/v1/gio-hang', cartRouter);
-app.use('/api/v1/danh-muc', catalogRouter);
-app.use('/api/v1/san-pham', productRouter);
-app.use('/api/v1/don-hang', orderRouter);
-app.use('/api/v1/nha-san-xuat', producerRouter);
 app.use('/api/v1/binh-luan', commentRouter);
+app.use('/api/v1/danh-muc', catalogRouter);
+app.use('/api/v1/don-hang', orderRouter);
+app.use('/api/v1/gio-hang', cartRouter);
+app.use('/api/v1/khach-hang', usersRouter);
 app.use('/api/v1/khuyen-mai', discountRouter);
+app.use('/api/v1/nha-san-xuat', producerRouter);
+app.use('/api/v1/san-pham', productRouter);
+app.use('/api/v1/size', sizeRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

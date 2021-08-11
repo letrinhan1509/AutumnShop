@@ -1,16 +1,20 @@
 var express = require('express');
 var router = express.Router();
+const authController = require('../controllers/authController')
 const sizeController = require('../controllers/sizeController');
 
 
-// API SIZE
+            // API SIZE:
 router
-  .route("/size")
-  .get(sizeController.getListSize)  // Danh sách các size của sản phẩm
-  .post(sizeController.postCreateSize)  // Thêm size sản phẩm
-  .put(sizeController.putEditSize); // Cập nhật tên size sản phẩm
+    .route("/")
+    .get(authController.isLoggedIn, authController.restrictTo, sizeController.getListSize)
+    .post(authController.isLoggedIn, authController.restrictTo, sizeController.postCreateSize)
+    .put(authController.isLoggedIn, authController.restrictTo, sizeController.putEditSize);
 
 router
-  .route("/size/:id")
-  .get(sizeController.getSize)
-  .delete(sizeController.deleteSize);
+    .route("/:id")
+    .get(authController.isLoggedIn, authController.restrictTo, sizeController.getSize)
+    .delete(authController.isLoggedIn, authController.restrictTo, sizeController.deleteSize);
+
+
+module.exports = router;

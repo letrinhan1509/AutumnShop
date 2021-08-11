@@ -58,6 +58,7 @@ const Payments = (props) => {
   useEffect(() => {
     city.getAll().then((res) => {
       setlistCity(res.data.city);
+      console.log(res.data.city);
     })
   }, []);
   //API Quận - Huyện
@@ -148,27 +149,27 @@ const Payments = (props) => {
     setDeliveryValue(e.target.value);
     if (e.target.value === "GHN") {
       //API city GHN
-      /* city.getAll().then((res) => {
+      city.getAllCity_GHN().then((res) => {
         setCityGHN(res.data.city);
-      }) */
+      })
     }
   };
   //API Quận - Huyện GHN
   const [districtGHN, setDistrictGHN] = useState([]);
   const ChangeCityGHN = (e) => {
     let idCity = e;
-    city.getCityDistrict(idCity).then((res) => {
+    city.getDistrict_GHN(idCity).then((res) => {
       setDistrictGHN(res.data.district);
     })
   };
-
   //API Phường - Xã GHN
   const [wardGHN, setWardGHN] = useState([]);
   const ChangeDistrictGHN = (e) => {
     let idDistrict = e;
-    city.getDistrictWard(idDistrict).then((res) => {
+    city.getWard_GHN(idDistrict).then((res) => {
       setWardGHN(res.data.ward);
-    })
+      console.log(res.data.ward);
+    });
     //lấy phí ship
     let sum = 0;
     props.cart.map((item) => (<>{sum = sum + item.soluong}</>))
@@ -286,7 +287,7 @@ const Payments = (props) => {
                           {cityGHN.map((item) => {
                             return (
                               <>
-                                <Option value={item.ID}>{item.Title}</Option>
+                                <Option value={item.ProvinceID}>{item.ProvinceName}</Option>
                               </>
                             )
                           })}
@@ -313,7 +314,7 @@ const Payments = (props) => {
                           {districtGHN.map((item) => {
                             return (
                               <>
-                                <Option value={item.ID}>{item.Title}</Option>
+                                <Option value={item.DistrictID}>{item.DistrictName}</Option>
                               </>
                             )
                           })}
@@ -340,7 +341,7 @@ const Payments = (props) => {
                           {wardGHN.map((item) => {
                             return (
                               <>
-                                <Option value={item.ID}>{item.Title}</Option>
+                                <Option value={item.WardID}>{item.WardName}</Option>
                               </>
                             )
                           })}

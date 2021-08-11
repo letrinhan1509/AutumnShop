@@ -196,14 +196,12 @@ exports.create_product = (data) => {
     });
 }
     // Sửa sản phẩm:
-exports.update_product = (masp, tensp, soluong, size, mau, gia, tenhinh, hinh, mota, trangthai, mansx, maloai, madm) => {
+exports.update_product = (masp, tensp, gia, chitiet, tenhinh, hinh, mota, trangthai, mansx, maloai, madm) => {
     return new Promise( (hamOK, hamLoi) => {
         let sql = `UPDATE sanpham SET   
         tensp='${tensp}', 
-        soluong='${soluong}', 
-        size='${size}', 
-        mau='${mau}', 
         gia='${gia}', 
+        chitiet='${chitiet}', 
         tenhinh='${tenhinh}', 
         hinh='${hinh}',
         mota='${mota}',
@@ -214,10 +212,8 @@ exports.update_product = (masp, tensp, soluong, size, mau, gia, tenhinh, hinh, m
         WHERE masp='${masp}'`;
         let query = db.query(sql, (err, result) => {
             if(err){
-                console.log("Lỗi!", err);
                 hamLoi(err);
             }else{
-                console.log('Update product success');
                 hamOK(result);
             }
         });
@@ -233,6 +229,34 @@ exports.update_amount = (masp, chitiet) => {
             } else {
                 console.log('Update amount product success !');
                 hamOK(result);
+            }
+        })
+    })
+}
+// Cập nhật số lượng sản phẩm:
+exports.update_amount_test = (masp) => {
+    const data = [];
+    return new Promise( (hamOK, hamLoi) => {
+        let sql = `SELECT * FROM sanpham WHERE masp = '${masp}'`;
+        db.query(sql, (err, result) => {
+            if(err){
+                hamLoi(err);
+            } else {
+                var chitiet = JSON.parse(result[0].chitiet);
+                chitiet.forEach(element => {
+                    if(element.size == "S" && element.mau == "trắng") {
+                        element.soluong = element.soluong - 1;
+                    }
+                });
+                result[0].chitiet = JSON.stringify(chitiet);
+                let sql_update = `UPDATE sanpham SET chitiet = '${result[0].chitiet}' WHERE masp = '${masp}'`;
+                db.query(sql_update, (error, result1) => {
+                    if(error){
+                        hamLoi(error);
+                    } else {
+                        hamOK(result[0]);
+                    }
+                })  
             }
         })
     })

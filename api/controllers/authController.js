@@ -101,7 +101,8 @@ exports.isLoggedIn = async (req, res, next) => {
         try {
             // 1) verify token
             const decoded = await promisify(jwt.verify)(
-                req.cookies.jwtAdmin,
+                //req.cookies.jwtAdmin,
+                req.headers.jwtadmin,
                 process.env.JWT_SECRET_ADMIN
             );
             if(decoded._id == undefined) {
@@ -140,6 +141,17 @@ exports.isLoggedIn = async (req, res, next) => {
 exports.restrictTo = catchAsync(async (req, res, next) => {
     const role = req.user.quyen;
     if(role == 'Admin' || role == 'QLCH') {
+        return next();
+    } else {
+        return res.status(403).json({
+            status: 'Fail',
+            message: 'Bạn không có quyền truy cập vào đây !'
+        })
+    }
+});
+exports.restrictTo_QLNS = catchAsync(async (req, res, next) => {
+    const role = req.user.quyen;
+    if(role == 'Admin' || role == 'QLNS') {
         return next();
     } else {
         return res.status(403).json({

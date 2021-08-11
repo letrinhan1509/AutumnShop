@@ -8,7 +8,7 @@ var dataName = [];
     // Danh sách tất cả đơn hàng:
 exports.list_Orders = async () => {
     return new Promise( (hamOK, hamLoi) => {
-        let sql = `SELECT DH.madonhang, DH.makh, DH.tenkh, DH.email, DH.sodienthoai, DH.diachi, DH.tienship, DH.tongtien, DH.ghichu, DH.makm, DH.hinhthuc, DH.ngaydat, DH.ngaygiao, DH.trangthai, TT.tentt as tentt
+        let sql = `SELECT DH.madonhang, DH.makh, DH.tenkh, DH.email, DH.sodienthoai, DH.diachi, DH.tienship, DH.tongtien, DH.ghichu, DH.makm, DH.hinhthuc, DH.vanchuyen, DH.ngaydat, DH.ngaygiao, DH.trangthai, TT.tentt as tentt
         FROM (donhang AS DH JOIN trangthai AS TT ON DH.trangthai = TT.trangthai)`;
         db.query(sql, (err, result) => {
             if(err){
@@ -25,7 +25,7 @@ exports.list_Orders = async () => {
 exports.get_By_Id = async (orderId) => {
     //const data = [];
     return new Promise( (hamOK, hamLoi) => {
-        let sql = `SELECT DH.madonhang, DH.makh, DH.tenkh, DH.email, DH.sodienthoai, DH.diachi, DH.tienship, DH.tongtien, DH.ghichu, DH.makm, DH.hinhthuc, DH.ngaydat, DH.ngaygiao, DH.trangthai, TT.tentt as tentt 
+        let sql = `SELECT DH.madonhang, DH.makh, DH.tenkh, DH.email, DH.sodienthoai, DH.diachi, DH.tienship, DH.tongtien, DH.ghichu, DH.makm, DH.hinhthuc, DH.vanchuyen, DH.chitiet, DH.ngaydat, DH.ngaygiao, DH.trangthai, TT.tentt as tentt 
         FROM (donhang AS DH JOIN trangthai AS TT ON DH.trangthai = TT.trangthai)
         WHERE DH.madonhang = '${orderId}'`;
         db.query(sql, (err, result) => {
@@ -164,6 +164,16 @@ exports.update_Status = (data) => {
         }
     })
 }
+    // Cập nhật kết quả tạo đơn hàng trên GHTK - GHN:
+exports.update_Result = (madonhang, ketqua) => {
+    return new Promise( (hamOK, hamLoi) => {
+        let sql = `UPDATE donhang SET ketqua='${ketqua}' WHERE madonhang='${madonhang}'`;
+            db.query(sql, (err, result) => {
+                if(err) { hamLoi(err); } 
+                else { hamOK("Cập nhật thông tin đơn hàng thành công !"); }
+        })
+    })
+}
     // Tạo đơn hàng cho khách không có tài khoản: (cart là 1 mảng các sản phẩm)
 exports.insert_Order = (name, email, phone, address, ship, total, note, promoCode, formality, delivery, orderDate, cart) => {
     return new Promise( (hamOK, hamLoi) => {
@@ -172,40 +182,38 @@ exports.insert_Order = (name, email, phone, address, ship, total, note, promoCod
             let sql = `INSERT INTO donhang(tenkh, email, sodienthoai, diachi, tienship, tongtien, ghichu, hinhthuc, vanchuyen, ngaydat) 
         VALUES ('${name}', '${email}', '${phone}', '${address}', '${ship}', '${total}', '${note}', '${formality}', '${delivery}', '${orderDate}')`;
             db.query(sql, (err, result) => {
-                if(err){
-                    console.log(err);
-                    hamLoi(err);
-                }  
+                if(err) { hamLoi(err); }  
             });
             let sql_orderId = "SELECT LAST_INSERT_ID() as LastID;"; // Kết quả trả về là id đơn hàng vừa tạo.
             db.query(sql_orderId, (err, resultId) => {    // result sẽ trả về id đơn hàng vừa tạo.
                 console.log(resultId[0].LastID);
-                if(err){
-                    console.log(err);
-                    hamLoi(err)
-                } else{
+                if(err) { hamLoi(err); } 
+                else {
                     let sql_orderDetail = `INSERT INTO chitietdh SET ?`;
                     cart.forEach(element => {
-                        let thanhtien = element.gia * element.qty;
+                        let thanhtien = element.gia * element.soluong;
                         let data = {
                             masp: element.masp,
                             size: element.size,
                             mau: element.mau,
                             gia: element.gia,
                             //giagiam: element.giagiam,
-                            soluong: element.qty,
+                            soluong: element.soluong,
                             thanhtien: thanhtien,
                             //makm: element.makm,
                             madonhang: resultId[0].LastID
                         };
                         db.query(sql_orderDetail, data, (err, result1) => {    // Câu lệnh tạo chi tiết đơn hàng.
-                            if(err){
-                                console.log(err);
+                            if(err) {
+                                let sql_delete = `DELETE FROM donhang WHERE madonhang='${resultId[0].LastID}'`;
+                                db.query(sql_orderDetail, data, (error2, result2) => {
+                                    if(error2) { hamLoi(error2); }
+                                });
                                 hamLoi(err);
                             }
                         });
                     });
-                    hamOK("Tạo đơn hàng thành công !");
+                    hamOK(resultId[0].LastID);
                 }
             });
         } else {
@@ -213,37 +221,35 @@ exports.insert_Order = (name, email, phone, address, ship, total, note, promoCod
             let sql = `INSERT INTO donhang(tenkh, email, sodienthoai, diachi, tienship, tongtien, ghichu, makm, hinhthuc, vanchuyen, ngaydat) 
         VALUES ('${name}', '${email}', '${phone}', '${address}', '${ship}', '${total}', '${note}', '${promoCode}','${formality}', '${delivery}', '${orderDate}')`;
             db.query(sql, (err, result) => {
-                if(err){
-                    console.log(err);
-                    hamLoi(err);
-                }  
+                if(err) { hamLoi(err); }  
             })
             let sql_orderId = "SELECT LAST_INSERT_ID() as LastID;"; // Kết quả trả về là id đơn hàng vừa tạo.
             db.query(sql_orderId, (err, resultId) => {    // result sẽ trả về id đơn hàng vừa tạo.
-                if(err){
-                    console.log(err);
-                    hamLoi(err)
-                } else{
+                if(err) { hamLoi(err); } 
+                else {
                     let sql_orderDetail = `INSERT INTO chitietdh SET ?`;
                     cart.forEach(element => {
-                        let thanhtien = element.gia * element.qty;
+                        let thanhtien = element.gia * element.soluong;
                         let data = {
                             masp: element.masp,
                             size: element.size,
                             mau: element.mau,
                             gia: element.gia,
-                            soluong: element.qty,
+                            soluong: element.soluong,
                             thanhtien: thanhtien,
                             madonhang: resultId[0].LastID
                         };
                         db.query(sql_orderDetail, data, (err, result1) => {    // Câu lệnh tạo chi tiết đơn hàng.
-                            if(err){
-                                console.log(err);
+                            if(err) {
+                                let sql_delete = `DELETE FROM donhang WHERE madonhang='${resultId[0].LastID}'`;
+                                db.query(sql_orderDetail, data, (error2, result2) => {
+                                    if(error2) { hamLoi(error2); }
+                                });
                                 hamLoi(err);
                             }
                         });
                     });
-                    hamOK("Tạo đơn hàng thành công !");
+                    hamOK(resultId[0].LastID);
                 }
             });
         };
@@ -259,36 +265,37 @@ exports.insert_Order_User = (userId, name, email, phone, address, ship, total, n
         VALUES ('${userId}', '${name}', '${email}', '${phone}', '${address}', '${ship}', '${total}', '${note}', '${formality}', '${delivery}', '${orderDate}')`;
             db.query(sql, (err, result) => {
                 if(err){
-                    console.log(err);
                     hamLoi(err);
                 }  
             })
             let sql_orderId = "SELECT LAST_INSERT_ID() as LastID;"; // Kết quả trả về là id đơn hàng vừa tạo
             db.query(sql_orderId, (err, resultId) => {    // result sẽ trả về id đơn hàng vừa tạo
                 if(err){
-                    console.log(err);
                     hamLoi(err)
                 } else{
                     let sql_orderDetail = `INSERT INTO chitietdh SET ?`;
                     cart.forEach(element => {
-                        let thanhtien = element.gia * element.qty;
+                        let thanhtien = element.gia * element.soluong;
                         let data = {
                             masp: element.masp,
                             size: element.size,
                             mau: element.mau,
                             gia: element.gia,
-                            soluong: element.qty,
+                            soluong: element.soluong,
                             thanhtien: thanhtien,
                             madonhang: resultId[0].LastID
                         };
                         db.query(sql_orderDetail, data, (err, result1) => {    // Câu lệnh tạo chi tiết đơn hàng.
                             if(err){
-                                console.log(err);
+                                let sql_delete = `DELETE FROM donhang WHERE madonhang='${resultId[0].LastID}'`;
+                                db.query(sql_orderDetail, data, (error2, result2) => {
+                                    if(error2) { hamLoi(error2); }
+                                });
                                 hamLoi(err);
                             }
                         });
                     });
-                    hamOK("Tạo đơn hàng thành công !");
+                    hamOK(resultId[0].LastID);
                 }
             });
         } else {
@@ -297,36 +304,37 @@ exports.insert_Order_User = (userId, name, email, phone, address, ship, total, n
         VALUES ('${userId}', '${name}', '${email}', '${phone}', '${address}', '${ship}', '${total}', '${note}', '${promoCode}', '${formality}', '${delivery}', '${orderDate}')`;
             db.query(sql, (err, result) => {
                 if(err){
-                    console.log(err);
                     hamLoi(err);
                 }  
             })
             let sql_orderId = "SELECT LAST_INSERT_ID() as LastID;"; // Kết quả trả về là id đơn hàng vừa tạo.
             db.query(sql_orderId, (err, resultId) => {    // result sẽ trả về id đơn hàng vừa tạo.
                 if(err){
-                    console.log(err);
                     hamLoi(err)
                 } else{
                     let sql_orderDetail = `INSERT INTO chitietdh SET ?`;
                     cart.forEach(element => {
-                        let thanhtien = element.gia * element.qty;
+                        let thanhtien = element.gia * element.soluong;
                         let data = {
                             masp: element.masp,
                             size: element.size,
                             mau: element.mau,
                             gia: element.gia,
-                            soluong: element.qty,
+                            soluong: element.soluong,
                             thanhtien: thanhtien,
                             madonhang: resultId[0].LastID
                         };
                         db.query(sql_orderDetail, data, (err, result1) => {    // Câu lệnh tạo chi tiết đơn hàng.
                             if(err){
-                                console.log(err);
+                                let sql_delete = `DELETE FROM donhang WHERE madonhang='${resultId[0].LastID}'`;
+                                db.query(sql_orderDetail, data, (error2, result2) => {
+                                    if(error2) { hamLoi(error2); }
+                                });
                                 hamLoi(err);
                             }
                         });
                     });
-                    hamOK("Tạo đơn hàng thành công !");
+                    hamOK(resultId[0].LastID);
                 }
             });
         };
@@ -341,6 +349,23 @@ exports.delete = (madh) => {
                 hamLoi(err);
             else
                 hamOK("Huỷ đơn hàng thành công !");
+        })
+    })
+};
+
+    // Xoá đơn hàng khi chọn phương thức GHTK:
+exports.delete_GHTK = (madh) => {
+    return new Promise( (resolve, reject) => {
+        let sql_deleteDetail = `DELETE FROM chitietdh WHERE madonhang='${madh}'`;
+        db.query(sql_deleteDetail, (err, result) => {
+            if(err) { reject(err); }
+            else { 
+                let sql_delete = `DELETE FROM donhang WHERE madonhang='${madh}'`;
+                db.query(sql_delete, (error, result1) => {
+                    if(error) { hamLoi(error); }
+                });
+                resolve("Xoá đơn hàng thành công !");
+            }
         })
     })
 };

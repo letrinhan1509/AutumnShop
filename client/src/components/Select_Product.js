@@ -271,6 +271,7 @@ const Select_Product = (props) => {
         let add = {};
         add['makh'] = User.makh;
         add['masp'] = detail.masp;
+        add['tensp'] = detail.tensp;
         add['gia'] = detail.gia;
         add['hinh'] = detail.hinh;
         if (proTemp.giagiam !== 0) {

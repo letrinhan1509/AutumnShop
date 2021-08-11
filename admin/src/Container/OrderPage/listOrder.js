@@ -133,6 +133,11 @@ const ListOrder = (props) => {
             key: 'hinhthuc',
         },
         {
+            title: 'Vận chuyển',
+            dataIndex: 'vanchuyen',
+            key: 'vanchuyen',
+        },
+        {
             title: 'Ngày đặt',
             dataIndex: 'ngaydat',
             key: 'ngaydat',

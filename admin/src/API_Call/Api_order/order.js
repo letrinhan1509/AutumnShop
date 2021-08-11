@@ -5,9 +5,17 @@ const order = {
         const url = "/";
         return AxiosOrder.get(url);
     },
+    getAll_pickShiftGHN: () => {
+        const url = "/ca-lay-hang-GHN";
+        return AxiosOrder.get(url);
+    },
     //(Chi tiết 1 đơn hàng theo mã đơn hàng)
     getOrderID: (id) => {
         const url = `/${id}`;
+        return AxiosOrder.get(url);
+    },
+    getAll_ServiceGHN: (id) => {
+        const url = `/dich-vu-GHN/${id}`;
         return AxiosOrder.get(url);
     },
     //(Danh sách chi tiết của 1 đơn hàng theo mã đơn hàng)

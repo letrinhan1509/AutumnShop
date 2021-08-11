@@ -6,9 +6,21 @@ const city = {
         const url = '/city';
         return AxiosCity.get(url);
     },
+    getAllCity_GHN: () => {
+        const url = '/city-GHN';
+        return AxiosCity.get(url);
+    },
     //(Chi tiết 1 thành phố theo ID)
     getCityID: (id) => {
         const url = `/city/${id}`;
+        return AxiosCity.get(url);
+    },
+    getDistrict_GHN: (id) => {
+        const url = `/district-GHN/${id}`;
+        return AxiosCity.get(url);
+    },
+    getWard_GHN: (id) => {
+        const url = `/ward-GHN/${id}`;
         return AxiosCity.get(url);
     },
     //(Danh sách toàn bộ Quận/Huyện thuộc 1 Tỉnh/Thành phố)

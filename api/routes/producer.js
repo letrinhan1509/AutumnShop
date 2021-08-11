@@ -17,10 +17,5 @@ router
 
 router.put("/cap-nhat-trang-thai", producerController.putEditStatus); // Cập nhật trạng thái nhà sản xuất
 
-//router.get('/:id', producerController.getProducer);
-//router.post('/them', producerController.postProducer);   
-//router.put('/cap-nhat', producerController.putEditProducer);
-//router.delete('/xoa/:id', producerController.deleteProducer);
-
 
 module.exports = router;
