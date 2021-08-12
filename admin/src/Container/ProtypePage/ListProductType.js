@@ -1,4 +1,4 @@
-import { Button, message, Table, Tag, Modal } from 'antd';
+import { Button, message, Table, Input, Modal, Col, Row, Form } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { LockOutlined, UnlockOutlined } from '@ant-design/icons';
@@ -115,6 +115,7 @@ const ListProductType = () => {
       },
     });
   }
+  
 
   ListType.forEach(element => {
     if (element.trangthai === 1) {
@@ -181,42 +182,41 @@ const ListProductType = () => {
       onFilter: (value, record) => record.trangthai.stt.includes(value),
     }, */
     result.permission === 'Admin' || result.permission === 'QLCH' ?
-    {
-      title: 'Trạng thái',
-      dataIndex: 'trangthai',
-      data: 'maloai',
-      key: 'trangthai',
-      render: (trangthai) => //(<Button data-id={text} type="primary" icon={<LockOutlined />} /* onClick={linkto} */></Button>)
-      (
-        <>
-          {trangthai.stt.map(tragth => {
-            if (tragth === 'Ẩn') {
-              return (
-                <div className="btn-box lock"><Button data-id={trangthai.id} type="primary" icon={<UnlockOutlined />} onClick={unlock}> Hiện </Button></div>
-              );
-            } else {
-              return (
-                <div className="btn-box lock"><Button data-id={trangthai.id} type="danger" icon={<LockOutlined />} onClick={lock}> Ẩn </Button></div>
-              )
-            }
-          })}
-        </>
-      )
-    } : (<> </>),
+      {
+        title: 'Trạng thái',
+        dataIndex: 'trangthai',
+        data: 'maloai',
+        key: 'trangthai',
+        render: (trangthai) => //(<Button data-id={text} type="primary" icon={<LockOutlined />} /* onClick={linkto} */></Button>)
+        (
+          <>
+            {trangthai.stt.map(tragth => {
+              if (tragth === 'Ẩn') {
+                return (
+                  <div className="btn-box lock"><Button data-id={trangthai.id} type="primary" icon={<UnlockOutlined />} onClick={unlock}> Hiện </Button></div>
+                );
+              } else {
+                return (
+                  <div className="btn-box lock"><Button data-id={trangthai.id} type="danger" icon={<LockOutlined />} onClick={lock}> Ẩn </Button></div>
+                )
+              }
+            })}
+          </>
+        )
+      } : (<> </>),
     result.permission === 'Admin' || result.permission === 'QLCH' ?
-    {
-      dataIndex: 'maloai',
-      key: 'maloai',
-      render: maloai => (<div className="btn-box fix"><Button data-id={maloai} key={maloai} type="primary" onClick={linkto}> Sửa </Button></div>)
-    } : (<> </>),
+      {
+        dataIndex: 'maloai',
+        key: 'maloai',
+        render: maloai => (<div className="btn-box fix"><Button data-id={maloai} key={maloai} type="primary" onClick={linkto}> Sửa </Button></div>)
+      } : (<> </>),
     result.permission === 'Admin' || result.permission === 'QLCH' ?
       {
 
         dataIndex: 'maloai',
         key: 'maloai',
         render: maloai => (<div className="btn-box delete"><Button data-id={maloai} key={maloai} type="danger" onClick={deleteType}> Xoá </Button></div>)
-      } : (<> </>)
-
+      } : (<> </>),
   ];
 
 

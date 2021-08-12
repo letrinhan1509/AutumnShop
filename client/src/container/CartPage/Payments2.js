@@ -21,15 +21,19 @@ const Payments2 = (props) => {
 
   //API Thành Phố
   useEffect(() => {
-    city.getCityID(order.city).then((res) => {
-      setCITY(res.data.city.Title);
-    })
-    city.getDistrictID(order.district).then((res) => {
-      setDISTRICT(res.data.district.Title);
-    })
-    city.getWardID(order.ward).then((res) => {
-      setWARD(res.data.ward.Title);
-    })
+    if (order.delivery === "GHN") {
+      //API GHN theo ID
+    } else {
+      city.getCityID(order.city).then((res) => {
+        setCITY(res.data.city.Title);
+      })
+      city.getDistrictID(order.district).then((res) => {
+        setDISTRICT(res.data.district.Title);
+      })
+      city.getWardID(order.ward).then((res) => {
+        setWARD(res.data.ward.Title);
+      })
+    }
     setTimeout(() => {
       if (order !== null) {
         setLoading(true);
@@ -62,7 +66,14 @@ const Payments2 = (props) => {
     } else {
       values['is_freeship'] = 0;
     }
-
+    if(order.delivery === "GHN"){
+      let chitietGHN = {
+        DistrictID: order.districtGHN,
+        WardCode: order.wardGHN
+      }
+      values['chitiet'] = chitietGHN;
+    }
+    
     console.log(values);
     if (payValue === "Thanh toán MOMO") {
       //API MoMo

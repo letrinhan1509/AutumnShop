@@ -15,42 +15,47 @@ const Cart = (props) => {
     const [cartView, setCartView] = useState([]);
     console.log(props.cart);
     const [loading, setLoading] = useState(false);
-    useEffect(() => {       
-       /*  if (User !== null) {
-            let url = `http://127.0.0.1:5000/api/v1/gio-hang/khach-hang/${User.makh}`;
-            axios.get(url).then((res) => {
-                if (res.data.status === "Success") {
-                    console.log(res.data.cart);
-                    setCartView(res.data.cart);
-                    setTimeout(() => {
-                        if (res.data.cart.length !== 0) {
-                            setLoading(true);
-                        }
-                    }, 1000);
-                }
-            });
-        } else {
-            
-        } */
+    const [empty, setEmpty] = useState(false);
+    useEffect(() => {
+        /*  if (User !== null) {
+             let url = `http://127.0.0.1:5000/api/v1/gio-hang/khach-hang/${User.makh}`;
+             axios.get(url).then((res) => {
+                 if (res.data.status === "Success") {
+                     console.log(res.data.cart);
+                     setCartView(res.data.cart);
+                     setTimeout(() => {
+                         if (res.data.cart.length !== 0) {
+                             setLoading(true);
+                         }
+                     }, 1000);
+                 }
+             });
+         } else {
+             
+         } */
         setCartView(props.cart);
-            console.log(props.cart);
-            setTimeout(() => {
-                if (props.cart.length !== 0) {
-                    setLoading(true);
-                }
-            }, 1000);
+        console.log(props.cart);
+        setTimeout(() => {
+            if (props.cart.length !== 0) {
+                setLoading(true);
+            }
+        }, 1000);
     }, [])
     useEffect(() => {
-        localStorage.setItem(...['cart', JSON.stringify(cartView)]);
-    }, [cartView])
+        setTimeout(() => {
+            if (props.cart.length === 0) {
+                setEmpty(true);
+            }
+        }, 1000);
+    }, [props.cart])
     // Đếm số lượng
     let sum = 0;
     props.cart.map((item) => (<>{sum = sum + item.soluong}</>))
     props.CountUsercart(cartView)
     //Thành tiền User
-    const sumUser =  props.cart.reduce((a, c) => a + c.gia * c.soluong, 0);
+    const sumUser = props.cart.reduce((a, c) => a + c.gia * c.soluong, 0);
 
-    const addCart = (productItem) => {
+    /* const addCart = (productItem) => {
         const exist = cartView.find((x) => x.masp === productItem.masp && x.mau === productItem.mau && x.size === productItem.size);
         if (exist) {
             setCartView(
@@ -85,24 +90,30 @@ const Cart = (props) => {
                 console.log('Cancel');
             },
         });
-    }
+    } */
 
     return (
         <Layout className="container">
-            {cartView.length === 0 ? (
+            {props.cart.length === 0 ? (
                 <div className="cart-empty">
-                    <div>
-                        <p>Giỏ hàng của bạn chưa có sản phẩm nào !</p>
+                    {empty === false ? (
+                        <Col className="spin-wrapper">
+                            <Spin className="spin" size="large" />
+                        </Col>
+                    ) : (
                         <div>
-                            <Link to="/">
-                                <Button type="primary" shape="round" size="large">
-                                    Mua Hàng
-                                </Button>
-                            </Link>
+                            <p>Giỏ hàng của bạn chưa có sản phẩm nào !</p>
+                            <div>
+                                <Link to="/">
+                                    <Button type="primary" shape="round" size="large">
+                                        Mua Hàng
+                                    </Button>
+                                </Link>
 
+                            </div>
+                            <img src="https://chillydraji.files.wordpress.com/2015/08/empty_cart.jpeg" alt="empty" />
                         </div>
-                        <img src="https://chillydraji.files.wordpress.com/2015/08/empty_cart.jpeg" alt="empty" />
-                    </div>
+                    )}
                 </div>
             ) :
                 (
@@ -145,7 +156,7 @@ const Cart = (props) => {
                                                         <Col>
                                                             <div className="quantity-box">
                                                                 <button onClick={() => props.removeCart(item)} className="remove">-</button>
-                                                                    <p>{item.soluong}</p>
+                                                                <p>{item.soluong}</p>
                                                                 <button onClick={() => props.addCart(item)} className="add">+</button>
                                                             </div>
                                                         </Col>

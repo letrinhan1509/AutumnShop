@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Row, Col, Button, Input, Steps, message, Form, Layout, Select, Divider, Spin, Radio, Space } from "antd";
 import { CloseOutlined, RollbackOutlined, LoadingOutlined, CheckCircleOutlined, FileDoneOutlined } from "@ant-design/icons";
 import axios from "axios";
@@ -11,14 +11,13 @@ const { Step } = Steps;
 const { Option } = Select;
 const Payments = (props) => {
   const history = useHistory();
+
   const cart = JSON.parse(localStorage.getItem("cart"));
   const User = JSON.parse(localStorage.getItem("user"));
   let VOUCHER = JSON.parse(localStorage.getItem("voucher"));
   const [khuyenmai, setKhuyenmai] = useState([]);
   const [loading, setLoading] = useState(false);
   const [cartView, setCartView] = useState([]);
-
-  console.log(cart);
   useEffect(() => {
     /* if (User !== null) {
       let url = `http://127.0.0.1:5000/api/v1/gio-hang/khach-hang/${User.makh}`;
@@ -144,7 +143,7 @@ const Payments = (props) => {
   const sumCart = cartView.reduce((a, c) => a + c.gia * c.soluong, 0);
 
   const [deliveryValue, setDeliveryValue] = useState("SHOP");
-  const [cityGHN, setCityGHN] = useState([]);
+  const [cityGHN, setCityGHN] = useState([])
   const selectDelivery = (e) => {
     setDeliveryValue(e.target.value);
     if (e.target.value === "GHN") {
@@ -181,6 +180,9 @@ const Payments = (props) => {
       setShip(res.data.ship);
     })
   };
+  const onClear = (e) => {
+    console.log(e)
+  }
   return (
     <>
       <Layout className="container">
@@ -277,88 +279,105 @@ const Payments = (props) => {
                       </Row>
                     </Col>
                     <Divider orientation="left" plain><h3>Thông tin giao hàng</h3></Divider>
-                    <Form.Item
-                      name="city"
-                      id="city"
-                      label="Thành phố"
-                    >
-                      {deliveryValue === "GHN" ? (
-                        <Select onChange={ChangeCityGHN}>
+                    {deliveryValue === "GHN" ? (
+                      <Form.Item
+                        name="cityGHN"
+                        id="cityGHN"
+                        label="Thành phố"
+                      >
+                        <Select onChange={ChangeCityGHN} onClear={onClear}>
                           {cityGHN.map((item) => {
                             return (
                               <>
-                                <Option value={item.ProvinceID}>{item.ProvinceName}</Option>
+                                <Option key={item.ProvinceID} value={item.ProvinceID}>{item.ProvinceName}</Option>
                               </>
                             )
                           })}
                         </Select>
-                      ) : (
+                      </Form.Item>
+                    ) : (
+                      <Form.Item
+                        name="city"
+                        id="city"
+                        label="Thành phố"
+                      >
                         <Select onChange={onChangeCity}>
                           {listCity.map((item) => {
                             return (
                               <>
-                                <Option value={item.ID}>{item.Title}</Option>
+                                <Option key={item.ID} value={item.ID}>{item.Title}</Option>
                               </>
                             )
                           })}
                         </Select>
-                      )}
-                    </Form.Item>
-                    <Form.Item
-                      name="district"
-                      id="district"
-                      label="Quận - Huyện"
-                    >
-                      {deliveryValue === "GHN" ? (
+                      </Form.Item>
+                    )}
+                    {deliveryValue === "GHN" ? (
+                      <Form.Item
+                        name="districtGHN"
+                        id="districtGHN"
+                        label="Quận - Huyện"
+                      >
                         <Select onChange={ChangeDistrictGHN}>
                           {districtGHN.map((item) => {
                             return (
                               <>
-                                <Option value={item.DistrictID}>{item.DistrictName}</Option>
+                                <Option key={item.DistrictID} value={item.DistrictID}>{item.DistrictName}</Option>
                               </>
                             )
                           })}
                         </Select>
-                      ) : (
+                      </Form.Item>
+                    ) : (
+                      <Form.Item
+                        name="district"
+                        id="district"
+                        label="Quận - Huyện"
+                      >
                         <Select onChange={onChangeDistrict}>
                           {listDistrict.map((item) => {
                             return (
                               <>
-                                <Option value={item.ID}>{item.Title}</Option>
+                                <Option key={item.ID} value={item.ID}>{item.Title}</Option>
                               </>
                             )
                           })}
                         </Select>
-                      )}
-                    </Form.Item>
-                    <Form.Item
-                      name="ward"
-                      id="ward"
-                      label="Phường - Xã"
-                    >
-                      {deliveryValue === "GHN" ? (
+                      </Form.Item>
+                    )}
+                    {deliveryValue === "GHN" ? (
+                      <Form.Item
+                        name="wardGHN"
+                        id="wardGHN"
+                        label="Phường - Xã"
+                      >
                         <Select>
                           {wardGHN.map((item) => {
                             return (
                               <>
-                                <Option value={item.WardID}>{item.WardName}</Option>
+                                <Option key={item.WardCode} value={item.WardCode}>{item.WardName}</Option>
                               </>
                             )
                           })}
                         </Select>
-                      ) : (
+                      </Form.Item>
+                    ) : (
+                      <Form.Item
+                        name="ward"
+                        id="ward"
+                        label="Phường - Xã"
+                      >
                         <Select>
                           {listWard.map((item) => {
                             return (
                               <>
-                                <Option value={item.ID}>{item.Title}</Option>
+                                <Option key={item.ID} value={item.ID}>{item.Title}</Option>
                               </>
                             )
                           })}
                         </Select>
-                      )}
-
-                    </Form.Item>
+                      </Form.Item>
+                    )}
                     <Form.Item
                       name="address"
                       id="address"
@@ -399,32 +418,46 @@ const Payments = (props) => {
                           <Button type="primary" disabled>Áp dụng</Button>
                         </>
                       )}
-                      {deliveryValue === "GHN" || deliveryValue === "GHTK" ? ("") : (
-                        <>
-                          <Row className="ship">
-                            <Col className="title"><p>Phí vận chuyển</p></Col>
-                            <Col className="price"><p>{ship}Đ</p></Col>
-                          </Row>
-                          {khuyenmai.length === 0 ? ("") : (
+                      {deliveryValue === "GHN" ? ("") : (
+                        deliveryValue === "GHTK" ? (
+                          khuyenmai.length === 0 ? ("") : (
                             <>
                               <h3>Áp dụng voucher</h3>
                               <Row className="voucher">
                                 <Col className="title"><a onClick={deleteVoucher}><CloseOutlined /></a><p>{khuyenmai.voucher}</p></Col>
-                                <Col className="price"><p>- {khuyenmai.giagiam}Đ</p></Col>
+                                {/* <Col className="price"><p>- {khuyenmai.giagiam}Đ</p></Col> */}
                               </Row>
                             </>
-                          )}
-                        </>
+                          )
+                        ) : (
+                          <>
+                            <Row className="ship">
+                              <Col className="title"><p>Phí vận chuyển</p></Col>
+                              <Col className="price"><p>{ship}Đ</p></Col>
+                            </Row>
+                            {khuyenmai.length === 0 ? ("") : (
+                              <>
+                                <h3>Áp dụng voucher</h3>
+                                <Row className="voucher">
+                                  <Col className="title"><a onClick={deleteVoucher}><CloseOutlined /></a><p>{khuyenmai.voucher}</p></Col>
+                                  <Col className="price"><p>- {khuyenmai.giagiam}Đ</p></Col>
+                                </Row>
+                              </>
+                            )}
+                          </>
+                        )
                       )}
                     </Col>
                   </Row>
                   <Row className="product-sum">
                     <Col className="title"><p>Tổng Thanh toán</p></Col>
-                    {khuyenmai.length === 0 ? (
+                    {deliveryValue === "GHTK" || deliveryValue === "GHN" ? (
+                      <Col className="price"><p>{Number(sumCart)}Đ</p></Col>
+                    ) : (khuyenmai.length === 0 ? (
                       <Col className="price"><p>{ship + Number(sumCart)}Đ</p></Col>
                     ) : (
                       <Col className="price"><p>{ship + Number(sumCart) - Number(khuyenmai.giagiam)}Đ</p></Col>
-                    )}
+                    ))}
                   </Row>
                   <Row className="button-group">
                     <Button className="pay" value="submit" type="primary" htmlType="submit" >Tiếp tục</Button>
