@@ -390,6 +390,7 @@ exports.getPickShift = catchAsync(async (req, res, next) => {
             });
         };
     } catch (error) {
+        console.log(error.response);
         return res.status(400).json({
             status: "Fail", 
             message: "Something went wrong",

@@ -324,6 +324,7 @@ exports.statisticalMonth = catchAsync(async (req, res, next) => {
 // POST: Tạo đơn hàng trên web của shop 
 exports.postCreateOrder = catchAsync(async (req, res, next) => {
     try {
+        var chitiet = "NULL";
         var makh = req.body.order.makh;
         var tenkh = req.body.order.tenkh;
         var email = req.body.order.email;
@@ -340,8 +341,9 @@ exports.postCreateOrder = catchAsync(async (req, res, next) => {
         var ngaydat = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
         var cart = req.body.order.cart; // Mảng danh sách các sản phẩm
         var freeship = req.body.is_freeship; 
+        let momo = req.body.momo;
     
-        if(!tenkh || !email || !sodienthoai || !diachi || !ship || !tongtien || !hinhthuc || !vanchuyen || !ward_id) {
+        if(!tenkh || !email || !sodienthoai || !diachi || !tongtien || !hinhthuc || !vanchuyen) {
             return res.status(400).json({ status: "Fail", message: "Thiếu thông tin đơn hàng, vui lòng kiểm tra lại thông tin !" });
         };
         if(!cart) {
@@ -349,35 +351,44 @@ exports.postCreateOrder = catchAsync(async (req, res, next) => {
         };
         //var diachi = address;
         if(vanchuyen == "GHN") {
-            let province_GHN = req.body.order.province;
-            let district_GHN = req.body.order.district;
-            let phuong_GHN = req.body.order.wardGHN;
+            let province_GHN = req.body.chitiet.ProvinceID;
+            let district_GHN = req.body.chitiet.DistrictID;
+            let ward_GHN = req.body.chitiet.WardCode;
+            let url_city_GHN = `https://dev-online-gateway.ghn.vn/shiip/public-api/master-data/province`;
             var url_district_GHN = `https://dev-online-gateway.ghn.vn/shiip/public-api/master-data/district?province_id=` + province_GHN;
             var url_ward_GHN = `https://dev-online-gateway.ghn.vn/shiip/public-api/master-data/ward?district_id=` + district_GHN;
-            const listDistrict = await axios.get(url_district_GHN, {
+            const listProvince = await axios.get(url_city_GHN, {
                 headers: { Token: process.env.TOKEN_GHN_DEV }
             });
-            let province = {};
-            let district = {};
-            let ward = {};
-            listDistrict.forEach(element => {
-                if(element.ProvinceID == province_GHN) { province = element.ProvinceName; }
-                else if(element.DistrictID == district_GHN) { district = element.DistrictName; }
+            const listDistrict = await axios.get(url_district_GHN, {
+                headers: { Token: process.env.TOKEN_GHN_DEV }
             });
             const listWard = await axios.get(url_ward_GHN, {
                 headers: { Token: process.env.TOKEN_GHN_DEV }
             });
-            listWard.forEach(element => {
-                if(element.WardCode === phuong_GHN) { ward = element.WardName; }
+            let diachi_GHN = {};
+            listProvince.data.data.forEach(element => {
+                if(element.ProvinceID === province_GHN) { diachi_GHN['province'] = element.ProvinceName; }
             });
-            diachi = diachi+ ', ' +ward+ ', ' +district+ ', ' +province;
+            listDistrict.data.data.forEach(element => {
+                if(element.DistrictID == district_GHN) { diachi_GHN['district'] = element.DistrictName; };
+            });
+            listWard.data.data.forEach(element => {
+                if(element.WardCode === ward_GHN) { diachi_GHN['ward'] = element.WardName; }
+            });
+            diachi = diachi+ ', ' +diachi_GHN.ward+ ', ' +diachi_GHN.district+ ', ' +diachi_GHN.province;
+            chitiet = JSON.stringify(req.body.chitiet);
         } else {
-            var url = "https://thongtindoanhnghiep.co/api/ward/" + ward_id;
-            const list = await axios.get(url);
-            var phuong_API = list.data.Title;
-            var quan = list.data.QuanHuyenTitle;
-            var thanhpho = list.data.TinhThanhTitle;
-            diachi = diachi+ ', ' +list.data.Title+ ', ' +list.data.QuanHuyenTitle+ ', ' +list.data.TinhThanhTitle;
+            if(ward_id == undefined) {
+                return res.status(400).json({ status: "Fail", message: "Thiếu thông tin địa chỉ đơn hàng, vui lòng kiểm tra lại !" });
+            } else {
+                var url = "https://thongtindoanhnghiep.co/api/ward/" + ward_id;
+                const list = await axios.get(url);
+                var phuong_API = list.data.Title;
+                var quan = list.data.QuanHuyenTitle;
+                var thanhpho = list.data.TinhThanhTitle;
+                diachi = diachi+ ', ' +list.data.Title+ ', ' +list.data.QuanHuyenTitle+ ', ' +list.data.TinhThanhTitle;
+            }
         };
         if(makh == undefined){
             // Tạo đơn hàng cho khách không có tài khoản
@@ -416,12 +427,14 @@ exports.postCreateOrder = catchAsync(async (req, res, next) => {
                     message: "Tài khoản khách hàng này không tồn tại, vui lòng kiểm tra lại !"
                 });
             } else {
-                //let queryUserDiscount = await modelOrder.insert_Order_User(makh, tenkh, email, sodienthoai, diachi, ship, tongtien, ghichu, makm, hinhthuc, vanchuyen, ngaydat, cart);
                 // Thanh toán Momo:
+                if(momo === "YES") {
 
+                }
                 // Tạo đơn trên GHTK:
                 if(vanchuyen == "GHTK") {
                     let madonhang = "DH51703846";
+                    //let queryUserDiscount = await modelOrder.insert_Order_User(makh, tenkh, email, sodienthoai, diachi, ship, tongtien, ghichu, makm, hinhthuc, vanchuyen, ngaydat, cart);
                     const order_GHTK = await create_order_GHTK(cart, madonhang, email, sodienthoai, tenkh, diachi, thanhpho, quan, phuong_API, diachi, freeship, tongtien, ghichu);
                     if(order_GHTK.success) {
                         return res.status(200).json({
@@ -438,10 +451,11 @@ exports.postCreateOrder = catchAsync(async (req, res, next) => {
                         });
                     }
                 } else {
-                    // Tạo đơn hàng thành công vs hình thức giao hàng là: "SHOP", "GHN"
+                    // Tạo đơn hàng với hình thức giao hàng là: "SHOP", "GHN"
+                    let queryUserDiscount = await modelOrder.insert_Order_User(makh, tenkh, email, sodienthoai, diachi, ship, tongtien, ghichu, makm, hinhthuc, vanchuyen, chitiet, ngaydat, cart);
                     return res.status(200).json({
                         status: "Success",
-                        message: "Tạo đơn thành công !"
+                        message: "Tạo đơn hàng thành công !"
                     });
                 }
             }
@@ -458,41 +472,61 @@ exports.postCreateOrder = catchAsync(async (req, res, next) => {
 // POST: Tạo đơn hàng trên GHN: 
 exports.postCreateOrderGHN = catchAsync(async (req, res, next) => {
     try {
+        let madonhang = req.body.madonhang;
+        const orderExist = await modelOrder.get_By_Id(madonhang);
+        if(orderExist == -1) {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Không tìm thấy đơn hàng này, không thể tạo đơn hàng trên Giao Hàng Nhanh ! Vui lòng kiểm tra lại !"
+            });
+        };
+        if(orderExist.vanchuyen !== "GHN") {
+            return res.status(400).json({
+                status: "Fail",
+                message: "Phương thức vận chuyển không đúng. Vui lòng kiểm tra lại !"
+            });
+        }
+        let chitiet = JSON.parse(req.body.chitiet);
+        let cart = req.body.giohang;
+        let products = [];
+        let temp = {};
+        cart.forEach(element => {
+            temp.name =  element.tensp;
+            temp.quantity = element.soluong;
+            temp.size =  element.size;
+            temp.mau =  element.mau;
+            products.push(temp);
+        });
         let data_raw = {
             "payment_type_id": 2,// Người trả phí vận chuyển. (1: Shop, 2: Khách hàng)
-            "note": req.body.note,// Lưu ý của khách hàng cho người gửi hàng.
+            "note": req.body.ghichu,// Lưu ý của khách hàng cho người gửi hàng.
             "required_note": "CHOXEMHANGKHONGTHU",// Lưu ý của đơn hàng vận chuyển.
             "return_phone": "0969362915",// SĐT của shop, để liên hệ để trả lại bưu kiện. 
             "return_address": "82/72 Lê Văn Duyệt, Quận Bình Thạnh, TP.Hồ Chí Minh",// Địa chỉ trả lại bưu kiện.
             "return_district_id": 1462,
             "return_ward_code": "21601",
-            "to_name": req.body.order.tenkh,// Tên người nhận.
-            "to_phone": req.body.order.sodienthoai,// SĐT người nhận.
-            "to_address": req.body.order.address, // Địa chỉ người nhận.
-            "to_ward_code": "",// Require
-            "to_district_id": 1444,// Require
-            "cod_amount": 200000,// Tổng tiền đơn hàng.
+            "to_name": req.body.tenkh,// Tên người nhận.
+            "to_phone": req.body.sodienthoai,// SĐT người nhận.
+            "to_address": req.body.diachi, // Địa chỉ người nhận.
+            "to_ward_code": chitiet.WardCode,// Require
+            "to_district_id": chitiet.DistrictID,// Require
+            "cod_amount": parseInt(req.body.tongtien),// Tổng tiền đơn hàng.
             "content": "Cửa hàng thời trang Autumn",// Nội dung đặt hàng.
-            "weight": 200,// Trọng lượng gói hàng.(gram) - Maximum : 1600000gram
-            "length": 1,// Chiều dài gói hàng.(cm) - Maximum : 200cm
-            "width": 19,// Chiều rộng gói hàng.(cm) - Maximum : 200cm
-            "height": 10,// Chiều cao gói hàng.(cm) - Maximum : 200cm
+            "weight": parseInt(req.body.trongluong),// Trọng lượng gói hàng.(gram) - Maximum : 1600000gram
+            "length": parseInt(req.body.dai),// Chiều dài gói hàng.(cm) - Maximum : 200cm
+            "width": parseInt(req.body.rong),// Chiều rộng gói hàng.(cm) - Maximum : 200cm
+            "height": parseInt(req.body.cao),// Chiều cao gói hàng.(cm) - Maximum : 200cm
             //"pick_station_id": 1444,
             //"deliver_station_id": null,
             //"insurance_value": 10000000,
-            "service_id": 0,// Require: Chọn dịch vụ phù hợp với gói vận chuyển của bạn(Nhanh, Tiêu chuẩn hoặc Tiết kiệm). Mỗi ID dịch vụ có phí và thời gian thực hiện khác nhau.
-            "service_type_id":2,// Require: (1: Hàng không, 2: Xe tải).
+            "service_id": parseInt(req.body.dichvuID),// Require: Chọn dịch vụ phù hợp với gói vận chuyển của bạn(Nhanh, Tiêu chuẩn hoặc Tiết kiệm). Mỗi ID dịch vụ có phí và thời gian thực hiện khác nhau.
+            "service_type_id": parseInt(req.body.service_type_id),// Require: (1: Hàng không, 2: Xe tải).
             //"order_value":130000,// 
             //"coupon":null,// Not required: Mã khuyến mãi giảm giá.
-            "pick_shift":[2],// Not required: Chọn ca lấy hàng.
-            "items": [
-                {
-                    "name":"Áo Polo",// Require: Tên sản phẩm
-                    "quantity": 1,// Require: Số lượng
-                    "price": 200000,
-                }
-            ]
+            "pick_shift":[req.body.ca],// Not required: Chọn ca lấy hàng.
+            "items": products
         };
+        console.log(data_raw);
         if(!data_raw.to_name || !data_raw.to_phone || !data_raw.to_address || !data_raw.to_ward_code || !data_raw.to_district_id 
             || !data_raw.cod_amount || !data_raw.weight || !data_raw.length || !data_raw.width || !data_raw.height || !data_raw.service_id 
             || !data_raw.service_type_id || !data_raw.pick_shift || !data_raw.items) {
@@ -508,12 +542,22 @@ exports.postCreateOrderGHN = catchAsync(async (req, res, next) => {
                 Token: process.env.TOKEN_GHN_DEV
             }
         });
-        if(order.data.message == "Success") {
-            return res.status(200).json({ 
-                status: "Success", 
-                message: "Tạo đơn hàng trên Giao Hành Nhanh thành công !",
-                order: order.data.data 
-            });
+        console.log("Mã đơn hàng: ", order.data.data.order_code);
+        console.log("Phí vận chuyển: ", order.data.data.total_fee);
+        if(order.status == 200) {
+            if(order.data.code == 200) {
+                let tongtien = orderExist.tongtien + order.data.data.total_fee;
+                let code_GHN = order.data.data.order_code;
+                let tienship = order.data.data.total_fee;
+                const update_Order = await modelOrder.update_GHN(madonhang, code_GHN, tienship, tongtien);
+                return res.status(200).json({ 
+                    status: "Success", 
+                    message: "Tạo đơn hàng trên Giao Hành Nhanh thành công! " + order.data.code_message_value,
+                    message_display: order.data.message_display,
+                    order_code: order.data.data.order_code,
+                    order: order.data.data 
+                });
+            }
         };
     } catch (error) {
         return res.status(400).json({

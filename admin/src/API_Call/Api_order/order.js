@@ -5,17 +5,9 @@ const order = {
         const url = "/";
         return AxiosOrder.get(url);
     },
-    getAll_pickShiftGHN: () => {
-        const url = "/ca-lay-hang-GHN";
-        return AxiosOrder.get(url);
-    },
     //(Chi tiết 1 đơn hàng theo mã đơn hàng)
     getOrderID: (id) => {
         const url = `/${id}`;
-        return AxiosOrder.get(url);
-    },
-    getAll_ServiceGHN: (id) => {
-        const url = `/dich-vu-GHN/${id}`;
         return AxiosOrder.get(url);
     },
     //(Danh sách chi tiết của 1 đơn hàng theo mã đơn hàng)
@@ -27,6 +19,11 @@ const order = {
     getUserID: (id) => {
         const url = `/khach-hang/${id}`;
         return AxiosOrder.get(url);
+    },
+    // Tạo đơn hàng GHN:
+    createOrderGHN: (values) => {
+        const url = "/GHN/create";
+        return AxiosOrder.post(url, values);
     },
     //(Cập nhật trạng thái đơn hàng)
     updateStatus: (values) => {

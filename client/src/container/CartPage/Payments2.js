@@ -68,10 +68,15 @@ const Payments2 = (props) => {
     }
     if(order.delivery === "GHN"){
       let chitietGHN = {
+        ProvinceID: order.cityGHN,
         DistrictID: order.districtGHN,
         WardCode: order.wardGHN
       }
       values['chitiet'] = chitietGHN;
+    }
+    values['momo'] = "NO";
+    if(payValue === "Thanh toán MOMO") {
+      values['momo'] = "YES";
     }
     
     console.log(values);

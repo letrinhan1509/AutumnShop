@@ -168,30 +168,8 @@ exports.create_product = (data) => {
     return new Promise( (hamOK, hamLoi) => {
         let sql = "INSERT INTO sanpham SET ?";
         let query = db.query(sql, data, (err, result) => {
-            if(err)
-                hamLoi(err);
-            console.log('Create product success');
-        });
-        let sql_productId = "SELECT LAST_INSERT_ID() as LastID;";
-        let query1 = db.query(sql_productId, (err, result1) => {
-            console.log("ID sản phẩm vừa tạo: ", result1[0].LastID);
-            if(err)
-                hamLoi(err);
-            else{
-                let dataCTDM = {
-                    masp: result1[0].LastID,
-                    madm: data.madm,
-                }
-                let sql_CTDM = `INSERT INTO chitietdm SET ?`;
-                let query2 = db.query(sql_CTDM, dataCTDM, (err, result) => {
-                    if(err)
-                        hamLoi(err);
-                    else{
-                        console.log('Create chi tiết danh mục success');
-                        hamOK(1);
-                    }
-                });
-            }
+            if(err) { hamLoi(err); }
+            else { hamOK(1); }
         });
     });
 }
@@ -224,17 +202,13 @@ exports.update_amount = (masp, chitiet) => {
     return new Promise( (hamOK, hamLoi) => {
         let sql = `UPDATE sanpham SET chitiet = '${chitiet}' WHERE masp = '${masp}'`;
         db.query(sql, (err, result) => {
-            if(err){
-                hamLoi(err);
-            } else {
-                console.log('Update amount product success !');
-                hamOK(result);
-            }
+            if(err){ hamLoi(err); } 
+            else { hamOK("Cập nhật chi tiết số lượng thành công !"); }
         })
     })
 }
 // Cập nhật số lượng sản phẩm:
-exports.update_amount_test = (masp) => {
+exports.update_amount_test = (masp, cart) => {
     const data = [];
     return new Promise( (hamOK, hamLoi) => {
         let sql = `SELECT * FROM sanpham WHERE masp = '${masp}'`;
@@ -290,37 +264,28 @@ exports.unlock_product = (masp) => {
     })
 }
     // Xoá sản phẩm:
-exports.delete = (idProduct) => {
+exports.delete = (masp) => {
     return new Promise( (hamOK, hamLoi) => {
-        let sql_donhang = `SELECT * FROM chitietdh WHERE masp='${idProduct}'`;
-        let query = db.query(sql_donhang, (err, result) => {
-            if(err)
-                hamLoi(err);
+        let sql_donhang = `SELECT * FROM chitietdh WHERE masp='${masp}'`;
+        let query = db.query(sql_donhang, (error, result) => {
+            if(error) { hamLoi(error); }
             else {
                 if(result.length > 0) {
                     hamOK(-1);  // Có sản phẩm trong chi tiết đơn hàng nên ko thể xoá;
+                } else {
+                    let sql_sp = `DELETE FROM sanpham WHERE masp='${masp}'`;
+                    let query1 = db.query(sql_sp, (err, result1) => {
+                        if(err) { hamLoi(err); }
+                        else { hamOK(1); }
+                    });
                 }
-            }
-        });
-        let sql = `DELETE FROM chitietdm WHERE masp='${idProduct}'`;
-        let query1 = db.query(sql, (err, result) => {
-            if(err)
-                hamLoi(err);
-        });
-        let sql_sp = `DELETE FROM sanpham WHERE masp='${idProduct}'`;
-        let query2 = db.query(sql_sp, (err, result) => {
-            if(err)
-                hamLoi(err);
-            else {
-                console.log('Delete success');
-                hamOK(1);
             }
         });
     });
 }
 
 
-            // MODEL BẢNG SIZE ÁO QUẦN:
+            // MODEL BẢNG SIZE ÁO QUẦN THEO CHIỀU CAO-CÂN NẶNG:
 
     // Danh sách tất cả size quần áo:
 exports.list_Size = async () => {

@@ -509,7 +509,7 @@ exports.putEditSize = catchAsync(async (req, res, next) => {
 
 
         // DELETE
-// Delete:
+// Delete: Xoá sản phẩm
 exports.deleteProduct = catchAsync(async (req, res, next) => {
     try {
         let masp = req.params.id;
@@ -530,14 +530,15 @@ exports.deleteProduct = catchAsync(async (req, res, next) => {
             if(query == -1) {
                 return res.status(400).json({ 
                     status: "Fail", 
-                    message: "Sản phẩm đã có trong đơn hàng! Không thể xoá sản phẩm !"
+                    message: "Sản phẩm đã có trong đơn hàng! Không thể xoá sản phẩm này !"
                 });
-            } else {
+            };
+            if(query == 1) {
                 return res.status(200).json({ 
                     status: "Success", 
                     message: "Xoá sản phẩm thành công !"
                 });
-            }
+            };
         }
     } catch (error) {
         return res.status(400).json({ 

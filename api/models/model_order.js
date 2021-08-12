@@ -23,8 +23,8 @@ exports.list_Orders = async () => {
 }
     // Đơn hàng theo mã đơn hàng:
 exports.get_By_Id = async (orderId) => {
-    //const data = [];
     return new Promise( (hamOK, hamLoi) => {
+        //const data = [];
         let sql = `SELECT DH.madonhang, DH.makh, DH.tenkh, DH.email, DH.sodienthoai, DH.diachi, DH.tienship, DH.tongtien, DH.ghichu, DH.makm, DH.hinhthuc, DH.vanchuyen, DH.chitiet, DH.ngaydat, DH.ngaygiao, DH.trangthai, TT.tentt as tentt 
         FROM (donhang AS DH JOIN trangthai AS TT ON DH.trangthai = TT.trangthai)
         WHERE DH.madonhang = '${orderId}'`;
@@ -34,7 +34,7 @@ exports.get_By_Id = async (orderId) => {
                 hamLoi(err);
             }else{
                 if(result.length > 0){
-                    let sql = `SELECT CTDH.mact, sanpham.tensp, CTDH.gia, CTDH.giagiam, CTDH.soluong, CTDH.thanhtien,
+                    let sql = `SELECT CTDH.mact, CTDH.masp, sanpham.tensp, CTDH.size, CTDH.mau, CTDH.gia, CTDH.giagiam, CTDH.soluong, CTDH.thanhtien,
                     CTDH.madonhang FROM (chitietdh AS CTDH JOIN sanpham ON CTDH.masp = sanpham.masp)
                     WHERE CTDH.madonhang = ?`;
                     db.query(sql, result[0].madonhang, (err, result1) => {
@@ -165,7 +165,7 @@ exports.update_Status = (data) => {
     })
 }
     // Cập nhật kết quả tạo đơn hàng trên GHTK - GHN:
-exports.update_Result = (madonhang, ketqua) => {
+exports.update_GHN = (madonhang, ketqua) => {
     return new Promise( (hamOK, hamLoi) => {
         let sql = `UPDATE donhang SET ketqua='${ketqua}' WHERE madonhang='${madonhang}'`;
             db.query(sql, (err, result) => {
@@ -175,12 +175,12 @@ exports.update_Result = (madonhang, ketqua) => {
     })
 }
     // Tạo đơn hàng cho khách không có tài khoản: (cart là 1 mảng các sản phẩm)
-exports.insert_Order = (name, email, phone, address, ship, total, note, promoCode, formality, delivery, orderDate, cart) => {
+exports.insert_Order = (name, email, phone, address, ship, total, note, promoCode, formality, delivery, detail, orderDate, cart) => {
     return new Promise( (hamOK, hamLoi) => {
         if(promoCode == undefined){
             // Đơn hàng không dùng mã khuyến mãi
-            let sql = `INSERT INTO donhang(tenkh, email, sodienthoai, diachi, tienship, tongtien, ghichu, hinhthuc, vanchuyen, ngaydat) 
-        VALUES ('${name}', '${email}', '${phone}', '${address}', '${ship}', '${total}', '${note}', '${formality}', '${delivery}', '${orderDate}')`;
+            let sql = `INSERT INTO donhang(tenkh, email, sodienthoai, diachi, tienship, tongtien, ghichu, hinhthuc, vanchuyen, chitiet, ngaydat) 
+        VALUES ('${name}', '${email}', '${phone}', '${address}', '${ship}', '${total}', '${note}', '${formality}', '${delivery}', '${detail}', '${orderDate}')`;
             db.query(sql, (err, result) => {
                 if(err) { hamLoi(err); }  
             });
@@ -218,8 +218,8 @@ exports.insert_Order = (name, email, phone, address, ship, total, note, promoCod
             });
         } else {
             // Đơn hàng dùng mã khuyến mãi
-            let sql = `INSERT INTO donhang(tenkh, email, sodienthoai, diachi, tienship, tongtien, ghichu, makm, hinhthuc, vanchuyen, ngaydat) 
-        VALUES ('${name}', '${email}', '${phone}', '${address}', '${ship}', '${total}', '${note}', '${promoCode}','${formality}', '${delivery}', '${orderDate}')`;
+            let sql = `INSERT INTO donhang(tenkh, email, sodienthoai, diachi, tienship, tongtien, ghichu, makm, hinhthuc, vanchuyen, chitiet, ngaydat) 
+        VALUES ('${name}', '${email}', '${phone}', '${address}', '${ship}', '${total}', '${note}', '${promoCode}','${formality}', '${delivery}', '${detail}', '${orderDate}')`;
             db.query(sql, (err, result) => {
                 if(err) { hamLoi(err); }  
             })
@@ -257,12 +257,12 @@ exports.insert_Order = (name, email, phone, address, ship, total, note, promoCod
 };
 
     // Tạo đơn hàng cho khách hàng có tài khoản:
-exports.insert_Order_User = (userId, name, email, phone, address, ship, total, note, promoCode, formality, delivery, orderDate, cart) => {
+exports.insert_Order_User = (userId, name, email, phone, address, ship, total, note, promoCode, formality, delivery, detail, orderDate, cart) => {
     return new Promise( (hamOK, hamLoi) => {
         if(promoCode == undefined){
             // Đơn hàng không dùng mã khuyến mãi 
-            let sql = `INSERT INTO donhang(makh, tenkh, email, sodienthoai, diachi, tienship, tongtien, ghichu, hinhthuc, vanchuyen, ngaydat) 
-        VALUES ('${userId}', '${name}', '${email}', '${phone}', '${address}', '${ship}', '${total}', '${note}', '${formality}', '${delivery}', '${orderDate}')`;
+            let sql = `INSERT INTO donhang(makh, tenkh, email, sodienthoai, diachi, tienship, tongtien, ghichu, hinhthuc, vanchuyen, chitiet, ngaydat) 
+        VALUES ('${userId}', '${name}', '${email}', '${phone}', '${address}', '${ship}', '${total}', '${note}', '${formality}', '${delivery}', '${detail}', '${orderDate}')`;
             db.query(sql, (err, result) => {
                 if(err){
                     hamLoi(err);
@@ -300,8 +300,8 @@ exports.insert_Order_User = (userId, name, email, phone, address, ship, total, n
             });
         } else {
             // Đơn hàng dùng mã khuyến mãi
-            let sql = `INSERT INTO donhang(makh, tenkh, email, sodienthoai, diachi, tienship, tongtien, ghichu, makm, hinhthuc, vanchuyen, ngaydat) 
-        VALUES ('${userId}', '${name}', '${email}', '${phone}', '${address}', '${ship}', '${total}', '${note}', '${promoCode}', '${formality}', '${delivery}', '${orderDate}')`;
+            let sql = `INSERT INTO donhang(makh, tenkh, email, sodienthoai, diachi, tienship, tongtien, ghichu, makm, hinhthuc, vanchuyen, chitiet, ngaydat) 
+        VALUES ('${userId}', '${name}', '${email}', '${phone}', '${address}', '${ship}', '${total}', '${note}', '${promoCode}', '${formality}', '${delivery}', '${detail}', '${orderDate}')`;
             db.query(sql, (err, result) => {
                 if(err){
                     hamLoi(err);

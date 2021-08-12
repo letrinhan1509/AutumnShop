@@ -4,6 +4,7 @@ import Meta from "antd/lib/card/Meta";
 import { useHistory, Link } from "react-router-dom";
 import "Container/scss/addpro.scss";
 import order from 'API_Call/Api_order/order';
+import ghn from 'API_Call/Api_city/city';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -22,9 +23,9 @@ const ListOrder = (props) => {
             setListOrder(res.data.data);
             setWordSearch(res.data.data);
         })
-        /* order.getAll_pickShiftGHN().then((res) => {
-            setPickUp(res.data);
-        }) */
+        ghn.getAll_pickShiftGHN().then((res) => {
+            setPickUp(res.data.pickShift);
+        })
     }, []);
 
 
@@ -111,16 +112,16 @@ const ListOrder = (props) => {
 
     const [visible, setVisible] = useState(false);
     const [oderDetail, setOderDetail] = useState([]);
-    //const [service, setService] = useState([]);
+    const [service, setService] = useState([]);
     const TurnOn_GHN = (e) => {
         let id = e.currentTarget.dataset.id;
         order.getOrderID(id).then((res) => {
             if (res.data.status === "Success") {
                 setOderDetail(res.data.data);
                 console.log(res.data.data);
-                let disID = res.data.data.chitietDH.districtID;
-                order.getAll_ServiceGHN(disID).then((res) => {
-                    console.log(res.data);
+                let disID = JSON.parse(res.data.data.chitiet);
+                ghn.getAll_ServiceGHN(disID.DistrictID).then((res) => {
+                    setService(res.data.service);
                 })
             }
             setVisible(true)
@@ -198,6 +199,16 @@ const ListOrder = (props) => {
             key: 'tensp',
         },
         {
+            title: 'Size',
+            dataIndex: 'size',
+            key: 'size',
+        },
+        {
+            title: 'Màu',
+            dataIndex: 'mau',
+            key: 'mau',
+        },
+        {
             title: 'Giá',
             dataIndex: 'gia',
             key: 'gia',
@@ -216,10 +227,26 @@ const ListOrder = (props) => {
 
 
     const Create_GHN = (values) => {
+        service.map((item) => {
+            if(item.service_id === values.dichvuID) {
+                values["service_type_id"] = item.service_type_id;
+            }
+        })
         values["giohang"] = oderDetail.chitietDH;
         values["chitiet"] = oderDetail.chitiet;
+        values["tongtien"] = oderDetail.tongtien;
         console.log(values);
-        setVisible(false)
+        setVisible(false);
+        order.createOrderGHN(values).then(async (res) => {
+            if (res.data.status === "Success") {
+                    message.success(res.data.message);
+                } else {
+                message.error("Tạo đơn hàng trên GHN thất bại !");
+                }
+            })
+            .catch((err) => {
+                message.error(`\n ${err.response.data.message}`);
+            });
     }
 
 
@@ -340,32 +367,32 @@ const ListOrder = (props) => {
                         </Form.Item>
                     </Col>
                     <Form.Item
-                        name="dichvu"
+                        name="dichvuID"
                         label="Dịch vụ"
                     >
-                        {/* <Select>
+                        <Select>
                             {service.map((item) => {
                                 return (
                                     <>
-                                        <Option value={item.service_id}>{item.service_id}</Option>
+                                        <Option value={item.service_id}>{item.short_name}</Option>
                                     </>
                                 )
                             })}
-                        </Select> */}
+                        </Select>
                     </Form.Item>
                     <Form.Item
                         name="ca"
                         label="Ca lấy hàng"
                     >
-                        {/* <Select>
+                        <Select>
                             {pickUp.map((item) => {
                                 return (
                                     <>
-                                        <Option value={item.service_id}>{item.service_id}</Option>
+                                        <Option value={item.id}>{item.title}</Option>
                                     </>
                                 )
                             })}
-                        </Select> */}
+                        </Select>
                     </Form.Item>
                     <Form.Item>
                         <Button type="primary" htmlType="submit" style={{ marginLeft: 30 }}>
