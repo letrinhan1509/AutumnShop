@@ -54,8 +54,8 @@ function App() {
       console.log('Logged in user: ', user);
       const token = await user.getIdToken;
       console.log('logged in user token: ', token);
-      userEmail["name"] = user.displayName;
-      userEmail["gmail"] = user.email;
+      userEmail["tenkh"] = user.displayName; //Tên KH
+      userEmail["email"] = user.email;
       userEmail["uid"] = user.uid;
       userEmail["img"] = user.photoURL;
 
