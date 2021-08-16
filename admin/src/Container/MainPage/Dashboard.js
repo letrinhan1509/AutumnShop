@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import product from 'API_Call/Api_product/product';
 import catalog from 'API_Call/Api_catalog/catalog';
-import producer from 'API_Call/Api_producer/producer';
+import voucher from 'API_Call/Api_discount/discount';
 import admins from 'API_Call/Api_admin/admin';
 import user from 'API_Call/Api_user/user';
 import order from 'API_Call/Api_order/order';
@@ -15,24 +15,13 @@ console.log(admin);
 const Dashboard = () => {
 
     const [ListProduct, setListProduct] = useState([]);
-    const [ListProducer, setListProducer] = useState([]);
-    const [ListProType, setListProType] = useState([]);
-    const [ListCatalog, setListCatalog] = useState([]);
     const [ListAdmin, setListAdmin] = useState([]);
     const [ListUser, setListUser] = useState([]);
+    const [ListVoucher, setListVoucher] = useState([]);
     const [statistical, setStatistical] = useState([]);
     useEffect(() => {
         product.getAll().then((res) => {
             setListProduct(res.data.data);
-        });
-        producer.getAll().then((res) => {
-            setListProducer(res.data.data);
-        });
-        catalog.getAllType().then((res) => {
-            setListProType(res.data.data);
-        });
-        catalog.getAll().then((res) => {
-            setListCatalog(res.data.listCategorys);
         });
         admins.getAll().then((res) => {
             setListAdmin(res.data.data);
@@ -43,8 +32,10 @@ const Dashboard = () => {
         order.statistical().then((res) => {
             setStatistical(res.data.statistical);
         });
+        voucher.getAllVoucher().then((res) => {
+            setListVoucher(res.data.voucher);
+        })
     }, []);
-    const [date, setDate] = useState([]);
 
     return (
         <>
@@ -181,7 +172,7 @@ const Dashboard = () => {
                         <div className="img-box">
                             <Image
                                 className="sale_img"
-                                src="https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/Voucher_img%2Fng%C4%83%CC%81m%20tr%C6%A1%CC%80i.jpg?alt=media&token=ebc41b47-37e0-4843-9555-a0d790644281"
+                                src="https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/Dashbroad%2Fcustomer.jpg?alt=media&token=add0dfdf-93c6-4002-88c1-393f3a242c68"
                                 preview={{
                                     visible: false,
                                     /* onVisibleChange: () => { onClick() }, */
@@ -199,7 +190,7 @@ const Dashboard = () => {
                         <div className="img-box">
                             <Image
                                 className="sale_img"
-                                src="https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/Voucher_img%2Fng%C4%83%CC%81m%20tr%C6%A1%CC%80i.jpg?alt=media&token=ebc41b47-37e0-4843-9555-a0d790644281"
+                                src="https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/Dashbroad%2Fstore.jpg?alt=media&token=c125bffd-d255-4db2-b8d6-23f5ece4f5fd"
                                 preview={{
                                     visible: false,
                                     /* onVisibleChange: () => { onClick() }, */
@@ -213,18 +204,18 @@ const Dashboard = () => {
                             />
                         </div>
                     </Link>
-                    <Link to={'/danh-sach-loai'}>
+                    <Link to={'/danh-sach-voucher'}>
                         <div className="img-box">
                             <Image
                                 className="sale_img"
-                                src="https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/Voucher_img%2Fng%C4%83%CC%81m%20tr%C6%A1%CC%80i.jpg?alt=media&token=ebc41b47-37e0-4843-9555-a0d790644281"
+                                src="https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/Dashbroad%2Fvoucher.jpg?alt=media&token=56f2e798-cd68-4f4a-b11a-a3fa56ece214"
                                 preview={{
                                     visible: false,
                                     /* onVisibleChange: () => { onClick() }, */
                                     mask: <div className="link_product">
 
                                         <span>
-                                            PRODUCTTYPE: {ListProType.length}
+                                            VOUCHER: {ListVoucher.length}
                                         </span>
                                     </div>
                                 }}

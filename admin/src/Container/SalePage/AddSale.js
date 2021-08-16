@@ -67,7 +67,7 @@ const AddSale = (props) => {
         values["trangthai"] = title;
         values["sanphamCK"] = add;
         console.log(values);
-
+        
         //const url = "http://127.0.0.1:5000/api/v1/khuyen-mai/them-khuyen-mai/san-pham"
         /* discount.addSale(values).then((res) => {
             if (res.data.status === "Success") {
@@ -172,11 +172,6 @@ const AddSale = (props) => {
 
             }
         })
-        /* values['masp'] = proData.masp;
-        values['tensp'] = proData.tensp;
-        values['gia'] = proData.gia;
-        values['chitietKM'] = chitiets;
-        console.log(values); */
     }
 
 
@@ -233,7 +228,7 @@ const AddSale = (props) => {
         let chietkhau = valueOption.current.props.value;
         if (proTemp !== "" && chietkhau !== "") {
             let tam = id + 1;
-            let value = []            
+            let value = []
             value['id'] = tam;
             value['sanpham'] = proTemp;
             value['chietkhau'] = chietkhau;
@@ -241,7 +236,7 @@ const AddSale = (props) => {
             setAdd([...add, { ...value }]);
             setID(tam);
             setProTemp([]);
-        }else{
+        } else {
             message.error("Bạn chưa thêm sản phẩm hoặc chiết khấu !");
         }
 
@@ -370,9 +365,16 @@ const AddSale = (props) => {
                                 <Button className="ant-btn ant-btn-dashed " onClick={back} style={{ marginLeft: -30 }}>
                                     Trở về
                                 </Button>
-                                <Button type="primary" htmlType="submit" style={{ marginLeft: 30 }}>
-                                    Thêm voucher
-                                </Button>
+                                {add.length !== 0 ? (
+                                    <Button type="primary" htmlType="submit" style={{ marginLeft: 30 }}>
+                                        Tạo chương trình
+                                    </Button>
+                                ) : (
+                                    <Button type="primary" htmlType="submit" style={{ marginLeft: 30 }} disabled>
+                                        Tạo chương trình
+                                    </Button>
+                                )}
+
                             </Form.Item>
                         </Form>
                     </div>
@@ -382,25 +384,49 @@ const AddSale = (props) => {
                             id="themproduct"
                         >
 
-                            <Form.Item
-                                label="Loại sản phẩm"
-                                rules={[
-                                    {
-                                        required: true,
-                                        message: 'Vui lòng chọn loại sản phẩm!',
-                                    },
-                                ]}
-                            >
-                                <Select onChange={getSP}>
-                                    {listTypes.map((item) => {
+                            <Row style={{ display: 'flex', justifyContent: 'space-evenly' }}>
+                                <Form.Item
+                                    label="Loại sản phẩm"
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message: 'Vui lòng chọn loại sản phẩm!',
+                                        },
+                                    ]}
+                                >
+                                    <Select onChange={getSP} style={{ width: 200 }}>
+                                        {listTypes.map((item) => {
+                                            return (
+                                                <>
+                                                    <Option value={item.maloai}>{item.tenloai}</Option>
+                                                </>
+                                            )
+                                        })}
+                                    </Select>
+                                </Form.Item>
+                                <Form.Item
+                                    name="chietkhau"
+                                    id="persen"
+                                    label="Chiết khấu"
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message: 'Vui lòng chọn chiết khấu!',
+                                        },
+                                    ]}
+                                >
+                                    {/* <Select onChange={plusID}>
+                                    {chietkhau.map((item) => {
                                         return (
                                             <>
-                                                <Option value={item.maloai}>{item.tenloai}</Option>
+                                                <Option ref={valueOption} value={item.key}>{item.persen}</Option>
                                             </>
                                         )
                                     })}
-                                </Select>
-                            </Form.Item>
+                                </Select> */}
+                                    <Input ref={valueOption} style={{ width: 200 }} />
+                                </Form.Item>
+                            </Row>
                             <Row className="add-sale">
                                 {
                                     proTemp !== "" ? (
@@ -439,41 +465,19 @@ const AddSale = (props) => {
                                 }
                             </Row>
                             <Table /*rowSelection={rowSelection}*/ rowKey={listPro => listPro.masp} dataSource={listPro} columns={columns} pagination={{ pageSize: 5 }} />
-                            <Form.Item
-                                name="chietkhau"
-                                id="persen"
-                                label="Chiết khấu"
-                                rules={[
-                                    {
-                                        required: true,
-                                        message: 'Vui lòng chọn chiết khấu!',
-                                    },
-                                ]}
-                            >
-                                {/* <Select onChange={plusID}>
-                                    {chietkhau.map((item) => {
-                                        return (
-                                            <>
-                                                <Option ref={valueOption} value={item.key}>{item.persen}</Option>
-                                            </>
-                                        )
-                                    })}
-                                </Select> */}
-                                <Input ref={valueOption} />
-                            </Form.Item>
-                            <Button onClick={thempro} >Thêm</Button>
+                            <Button onClick={thempro} >Thêm chương trình</Button>
+                            {/* <Row className="sale-title">
+                                <h1 >CHƯƠNG TRÌNH ĐÃ THÊM</h1>
+                            </Row> */}
                             <Row className="add-sale">
                                 {
-                                    add !== "" ? (
+                                    add.length !== 0 ? (
                                         <>
+                                            <h1 >CHƯƠNG TRÌNH ĐÃ THÊM</h1>
                                             {add.map((item) => {
                                                 return (
                                                     <>
-                                                        {/* <Col>
-                                                            <Button onClick={() => showDeleteProduct(item)} type="primary" danger>
-                                                                <CloseOutlined />
-                                                            </Button>
-                                                        </Col> */}
+
                                                         <Col className="box-selected">
                                                             {/* <p>{item.id}</p> */}
                                                             <Row className="title">
