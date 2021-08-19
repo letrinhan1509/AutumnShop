@@ -56,14 +56,14 @@ const ListComment = (props) => {
       })
   };
 
-  //Redirect sửa size theo masize
-  const edit = (e) => {
+
+  const detail = (e) => {
     let id = e.currentTarget.dataset.id
     COMMENTS.getid(id).then((res) => {
     if (res.data.status === "Success") {
         localStorage.setItem('detailComment', JSON.stringify(res.data.detailComment));
         setTimeout(() => {
-        Link.push('/bang-size/sua-size');
+          history.push('/danh-sach-binh-luan/phan-hoi');
         }, 100)
     }
     });
@@ -74,7 +74,7 @@ const reply = (e) => {
   if (res.data.status === "Success") {
       localStorage.setItem('detailComment', JSON.stringify(res.data.detailComment));
       setTimeout(() => {
-        Link.push('/bang-size/phan-hoi');
+        history.push('/danh-sach-binh-luan/phan-hoi');
       }, 100)
   }
   });
@@ -159,7 +159,7 @@ const reply = (e) => {
       {
         dataIndex: 'mabl',
         key: 'mabl',
-        render: (mabl) => <Button className="detail-btn" data-id={mabl} type="primary" onClick={edit}>Chi tiết</Button>
+        render: (mabl) => <Button className="detail-btn" data-id={mabl} type="primary" onClick={detail}>Chi tiết</Button>
       },
 
   ];

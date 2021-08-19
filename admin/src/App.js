@@ -28,6 +28,7 @@ import ListProducer from "./Container/ProducerPage/listProducer";
 import EditProducer from "./Container/ProducerPage/editProducer";
 import EditCatalog from "./Container/CatalogPage/editCategory";
 import ListComment from "./Container/CommentPage/listComment";
+import Reply from "./Container/CommentPage/Reply";
 import EditProduct from "./Container/ProductPage/editProduct";
 import ListOrder from "./Container/OrderPage/listOrder";
 import OrderDetail from "./Container/OrderPage/OrderDetail";
@@ -184,6 +185,9 @@ function App() {
                   </Route>
                   <Route exact path="/danh-sach-binh-luan">
                     <ListComment />
+                  </Route>
+                  <Route exact path="/danh-sach-binh-luan/phan-hoi">
+                    <Reply />
                   </Route>
                   <Route exact path="/danh-sach-don-hang">
                     <ListOrder />

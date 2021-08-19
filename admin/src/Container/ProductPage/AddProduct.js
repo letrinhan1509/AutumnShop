@@ -197,7 +197,7 @@ const AddProduct = (props) => {
         values['imgName'] = imageName.name;
         values['chitiet'] = JSON.stringify(add);
         console.log(values);
-        product.addproduct(values, token).then((res) => {
+        product.addproduct(values).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message)
                 setTimeout(() => {

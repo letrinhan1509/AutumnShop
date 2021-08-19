@@ -202,7 +202,7 @@ const AddSize = (props) => {
                         <Button className="ant-btn ant-btn-dashed " onClick={back} style={{ marginLeft: -30 }}>
                             Trở về
                         </Button>
-                        <Button type="primary" htmlType="submit">
+                        <Button type="primary" htmlType="submit" style={{ marginLeft: 30 }}>
                             Thêm size
                         </Button>
                     </Form.Item>

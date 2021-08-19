@@ -1,5 +1,6 @@
 import { Button, Form, Input, message, Select, Modal } from 'antd';
 import React from 'react';
+import { useHistory } from "react-router-dom";
 import "Container/scss/addpro.scss";
 import Status from 'API_Call/Api_admin/admin';
 
@@ -32,6 +33,7 @@ const AddStatus = (props) => {
     const [form] = Form.useForm();
     const { Option } = Select;
     const { confirm } = Modal;
+    const history = useHistory();
     const addStatus = (values) => {
         console.log(values);
         Status.addSTTorder(values, token).then((res) => {
@@ -49,7 +51,7 @@ const AddStatus = (props) => {
             okType: 'danger',
             cancelText: 'Không',
             onOk() {
-                history.push('/bang-size');
+                history.push('/danh-sach-trang-thai');
             },
             onCancel() {
                 console.log('Cancel');
@@ -96,7 +98,7 @@ const AddStatus = (props) => {
                         <Button className="ant-btn ant-btn-dashed " onClick={back} style={{ marginLeft: -30 }}>
                             Trở về
                         </Button>
-                        <Button type="primary" htmlType="submit">
+                        <Button type="primary" htmlType="submit"  style={{ marginLeft: 30 }}>
                             Thêm size
                         </Button>
                     </Form.Item>

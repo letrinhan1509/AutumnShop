@@ -1,6 +1,7 @@
 import "Container/scss/addpro.scss";
 import { Button, Form, Input, message, Select, Modal } from "antd";
 import React from 'react';
+import { useHistory } from "react-router-dom";
 import SttOrder from 'API_Call/Api_admin/admin';
 
 const formItemLayout = {
@@ -38,8 +39,9 @@ const EditStatus = (props) => {
     const token = localStorage.getItem("token");
     const [form] = Form.useForm();
     const statusOrder = JSON.parse(localStorage.getItem("statusOrder"))
-
-
+    const history = useHistory();
+    const { confirm } = Modal;
+    
     const editSttOrder = (values) => {
         console.log(values)
         SttOrder.updateSTTorder(values, token).then((res) => {

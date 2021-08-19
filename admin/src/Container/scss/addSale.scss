@@ -42,13 +42,27 @@
                     }
                     .product-inf {
                         display: flex;
-                        justify-content: space-between;
+                        justify-content: space-around;
 
                         .ant-col {
                             span {
                                 font-weight: 500;
                                 font-size: 16px;
                                 margin-right: 5px;
+                            }
+                        }
+                    }
+                    .product-detail{
+                        list-style: circle;
+                        width: 590px;
+                        .li {
+                            width: 100%;
+                            display: flex;
+                            justify-content: space-evenly;
+                            span {
+                                font-weight: 500;
+                                font-size: 16px;
+                                margin-right: 2px;
                             }
                         }
                     }

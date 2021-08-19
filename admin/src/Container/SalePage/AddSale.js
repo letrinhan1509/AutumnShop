@@ -106,85 +106,57 @@ const AddSale = (props) => {
         console.log(listPro);
     };
     const [add, setAdd] = useState([]);
-    //const add = [];
-    let proSelect = [];
-    let ct = "";
-    /* const rowSelection = {
-        onChange: (selectedRowKeys, selectedRows) => {
-            if (selectedRows.length !== 0) {
-                let values = [];
-                values["masp"] = selectedRows[0].masp;
-                values["tensp"] = selectedRows[0].tensp;
-                values["gia"] = selectedRows[0].gia;
-                ct = JSON.parse(selectedRows[0].chitiet);
-                const exist = ct.find((x) => x.id === chitiets);
-                values["chitietKM"] = exist;
-                proSelect.push(values);
-                console.log(values);
-                console.log(proSelect);
-            }
-
-        },
-        onSelect: (record, selected, selectedRows) => {
-            console.log(record, selected, selectedRows);
-
-        },
-        onSelectAll: (selectedRows, changeRows) => {
-            console.log(changeRows);
-            //proSelect = changeRows;
-        },
-    }; */
-
 
     const [chitiets, setChitiets] = useState("");
     function ChangeDetail(value) {
-        console.log(value);
         setChitiets(value);
-        console.log(proSelect);
     }
     const [proTemp, setProTemp] = useState([]);
-    const [temp, setTemp] = useState([]);
     const addTemp = (e) => {
         let ma = e.currentTarget.dataset.id;
-        let values = [];
         product.getid(ma).then((res) => {
             if (res.data.status === "Success") {
-                values['masp'] = res.data.dataSpham.masp;
-                values['tensp'] = res.data.dataSpham.tensp;
-                values['gia'] = res.data.dataSpham.gia;
-                let ct = JSON.parse(res.data.dataSpham.chitiet);
-                let existCT = [];
-                existCT.push(ct.find((x) => x.id === chitiets));
-                const Ex = ct.find((x) => x.id === chitiets);
-                values['chitietKM'] = Ex;
-                if (proTemp.length === 0) {
-                    setProTemp([...proTemp, { ...values }]);
-                } else {
-                    const existMA = proTemp.find((x) => x.masp === res.data.dataSpham.masp && x.chitietKM.mau === Ex.mau && x.chitietKM.size === Ex.size);
-                    console.log(existMA);
-                    if (existMA) {
-                        /* const exist = proTemp.find((x) => x.chitietKM.mau === Ex.mau && x.chitietKM.size === Ex.size);
-                        console.log(exist);
-                        if(exist){
-                            message.error("Sản phẩm đã được thêm trước đó !");
-                        }else{
-                            existCT.push(existMA.chitietKM);
-                            setProTemp({ ...existMA, chitietKM: existCT });                      
-                            
-                            //setTemp([...temp, { ...existCT }]);
-                            //console.log(values);
-                            //existMA.chitietKM.push(existCT);
-                        } */
-                        message.error("Sản phẩm đã được thêm trước đó !");
-                    } else {
-                        setProTemp([...proTemp, { ...values }]);
+                const ct = JSON.parse(res.data.dataSpham.chitiet);
+                let newArr = [];
+                let arrChiTiet = [];
+                if (proTemp.length > 0) {
+                    newArr = [...proTemp];
+                }
+                const existMa = proTemp.find((x) => x.masp === res.data.dataSpham.masp)
+                if (!existMa) {
+                    arrChiTiet.push({
+                        ...ct.find(x => x.id === chitiets)
+                    })
+                    newArr.push({
+                        ...res.data.dataSpham,
+                        chitiet: arrChiTiet
+                    });
+                    setProTemp(newArr)
+                }
+                else {
+                    if (proTemp.length > 0) {
+                        arrChiTiet = [...existMa.chitiet];
+                    }
+                    const tam = ct.find((x) => x.id === chitiets);
+                    const existChiTiet = existMa.chitiet.find((x) => x.id === chitiets && x.mau === tam.mau && x.size === tam.size);
+                    if (!existChiTiet) {
+                        arrChiTiet.push({
+                            ...ct.find(x => x.id === chitiets)
+                        })
+                        const replaceIndex = newArr.findIndex((x) => x.masp === res.data.dataSpham.masp);
+                        newArr.splice(replaceIndex, 1, {
+                            ...res.data.dataSpham,
+                            chitiet: arrChiTiet
+                        })
+                        setProTemp(newArr)
+                    }
+                    else {
+                        message.error("Sản phẩm đã được thêm!");
                     }
                 }
-
             }
         })
     }
-
 
     const columns = [
         {
@@ -454,20 +426,27 @@ const AddSale = (props) => {
                                                         <Col className="box-selected">
                                                             {/* <p>{item.id}</p> */}
                                                             <Row className="title">
+
+                                                            </Row>
+                                                            <Row className="product-inf">
+                                                                <Col><span>Mã: </span>{item.masp}</Col>
+                                                                <Col><span>Tên: </span>{item.tensp}</Col>
+                                                                <Col><span>Giá: </span>{item.gia}</Col>
                                                                 <Col>
                                                                     <Button onClick={() => showDeleteProduct(item)} size="small" type="primary" danger>
                                                                         <CloseOutlined />
                                                                     </Button>
                                                                 </Col>
                                                             </Row>
-                                                            <Row className="product-inf">
-                                                                <Col><span>Mã: </span>{item.masp}</Col>
-                                                                <Col><span>Tên: </span>{item.tensp}</Col>
-                                                                <Col><span>Giá: </span>{item.gia}</Col>
-                                                                <Col><span>Size: </span>{item.chitietKM.size}</Col>
-                                                                <Col><span>Màu: </span>{item.chitietKM.mau}</Col>
-                                                                <Col><span>Số lượng: </span>{item.chitietKM.soluong}</Col>
-                                                            </Row>
+                                                            <ul className="product-detail">
+                                                                {item.chitiet.map((ct) => (
+                                                                    <li style={{ marginTop: 10 }}>
+                                                                        <span>Size: {ct.size}</span>
+                                                                        <span style={{ marginLeft: 50 }}>Màu: {ct.mau}</span>
+                                                                        <span style={{ marginLeft: 50 }}>Số lượng: {ct.soluong}</span>
+                                                                    </li>
+                                                                ))}
+                                                            </ul>
                                                         </Col>
                                                     </>
                                                 );
@@ -502,14 +481,22 @@ const AddSale = (props) => {
                                                             </Row>
                                                             {item.sanpham.map((sp) => {
                                                                 return (
-                                                                    <Row className="product-inf">
-                                                                        <Col><span>Mã: </span>{sp.masp}</Col>
-                                                                        <Col><span>Tên: </span>{sp.tensp}</Col>
-                                                                        <Col><span>Giá: </span>{sp.gia}</Col>
-                                                                        <Col><span>Số lượng: </span>{sp.chitietKM.soluong}</Col>
-                                                                        <Col><span>Size: </span>{sp.chitietKM.size}</Col>
-                                                                        <Col><span>Màu: </span>{sp.chitietKM.mau}</Col>
-                                                                    </Row>
+                                                                    <>
+                                                                        <Row className="product-inf" style={{margin: 0}}>
+                                                                            <Col><span>Mã: </span>{sp.masp}</Col>
+                                                                            <Col><span>Tên: </span>{sp.tensp}</Col>
+                                                                            <Col><span>Giá: </span>{sp.gia}</Col>
+                                                                        </Row>
+                                                                        <ul className="product-detail" style={{marginLeft: 25}}>
+                                                                            {sp.chitiet.map((ct) => (
+                                                                                <li style={{ marginTop: 10 }}>
+                                                                                    <span>Size: {ct.size}</span>
+                                                                                    <span style={{ marginLeft: 50 }}>Màu: {ct.mau}</span>
+                                                                                    <span style={{ marginLeft: 50 }}>Số lượng: {ct.soluong}</span>
+                                                                                </li>
+                                                                            ))}
+                                                                        </ul>
+                                                                    </>
                                                                 );
                                                             })}
                                                         </Col>

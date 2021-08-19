@@ -15,6 +15,15 @@ const ListStatusOrder = () => {
   useEffect(() => {
     statusOrder.getTitle().then((res) => {
       setListStatus(res.data.data);
+      /* const data = [];
+      const { trangthai } = res.data.data;
+      res.data.data.forEach(dt => {
+        data.push({
+          trangthai: trangthai,
+
+        })
+      })
+      setListStatus(data) */
     })
   }, []);
 
@@ -103,6 +112,7 @@ const ListStatusOrder = () => {
         ) : ("")}
         <Table className="item" dataSource={listStatus} columns={columns} pagination={{ pageSize: 6 }} style={{ padding: 10 }} size="middle" />
       </div>
+
     </>
   );
 }

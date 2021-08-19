@@ -22,7 +22,7 @@ const Reply = (props) => {
     <>
       <div className="product-wrapper">
         <h2 style={{ textAlign: 'center', marginTop: "20px", marginBottom: "20px" }}>DANH SÁCH TẤT CẢ BÌNH LUẬN</h2>
-        {/* <a className="ant-btn ant-btn-primary" href='/Themsanpham'  type="primary">Thêm sản phẩm</a> */}
+        {detailComment}
       </div>
     </>
   );
