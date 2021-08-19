@@ -398,14 +398,14 @@ const Payments = (props) => {
                   {cartView.map(item => (
                     <Row className="product-count">
                       <Col className="title"><p>{item.soluong}x {item.tensp}</p></Col>
-                      <Col><p>{item.soluong * item.gia}Đ</p></Col>
+                      <Col><p>{(item.soluong * item.gia).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} đ</p></Col>
                     </Row>
                   ))}
                   <Row className="product-code">
                     <Col className="abc">
                       <Row className="sum-cart">
                         <Col className="title"><p>Tổng đơn hàng</p></Col>
-                        <Col className="price"><p>{sumCart}Đ</p></Col>
+                        <Col className="price"><p>{(sumCart).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} đ</p></Col>
                       </Row>
                       {khuyenmai.length === 0 ? (
                         <>
@@ -433,7 +433,7 @@ const Payments = (props) => {
                           <>
                             <Row className="ship">
                               <Col className="title"><p>Phí vận chuyển</p></Col>
-                              <Col className="price"><p>{ship}Đ</p></Col>
+                              <Col className="price"><p>{(ship).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} đ</p></Col>
                             </Row>
                             {khuyenmai.length === 0 ? ("") : (
                               <>
@@ -452,11 +452,11 @@ const Payments = (props) => {
                   <Row className="product-sum">
                     <Col className="title"><p>Tổng Thanh toán</p></Col>
                     {deliveryValue === "GHTK" || deliveryValue === "GHN" ? (
-                      <Col className="price"><p>{Number(sumCart)}Đ</p></Col>
+                      <Col className="price"><p>{(sumCart).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} đ</p></Col>
                     ) : (khuyenmai.length === 0 ? (
-                      <Col className="price"><p>{ship + Number(sumCart)}Đ</p></Col>
+                      <Col className="price"><p>{(ship + Number(sumCart)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} đ</p></Col>
                     ) : (
-                      <Col className="price"><p>{ship + Number(sumCart) - Number(khuyenmai.giagiam)}Đ</p></Col>
+                      <Col className="price"><p>{(ship + Number(sumCart) - Number(khuyenmai.giagiam)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} đ</p></Col>
                     ))}
                   </Row>
                   <Row className="button-group">

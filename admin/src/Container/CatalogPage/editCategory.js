@@ -39,6 +39,7 @@ const normFile = (e: any) => {
 };
 
 const EditCategory = (props) => {
+    const token = localStorage.getItem("token");
     const [form] = Form.useForm();
     const { confirm } = Modal;
     const history = useHistory();
@@ -135,7 +136,7 @@ const EditCategory = (props) => {
             values['img'] = Category.hinh;
         }
         console.log(values)
-        catalog.updateCatalog(values).then((res) => {
+        catalog.updateCatalog(values, token).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message)
                 if (link !== "") {

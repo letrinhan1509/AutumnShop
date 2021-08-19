@@ -29,9 +29,9 @@ const user = {
         const url = "/cap-nhat-tai-khoan";
         return AxiosUser.put(url, values);
     },
-    updateStatus: (values) => {
+    updateStatus: (values, token) => {
         const url = "/cap-nhat-trang-thai";
-        return AxiosUser.put(url, values);
+        return AxiosUser.put(url, values, token);
     }
 };
 

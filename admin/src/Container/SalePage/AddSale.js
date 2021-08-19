@@ -35,6 +35,7 @@ const tailFormItemLayout = {
 
 
 const AddSale = (props) => {
+    const token = localStorage.getItem("token");
     const valueOption = useRef(null);
     const [form] = Form.useForm();
     const history = useHistory();
@@ -67,9 +68,10 @@ const AddSale = (props) => {
         values["trangthai"] = title;
         values["sanphamCK"] = add;
         console.log(values);
-        
+
+
         //const url = "http://127.0.0.1:5000/api/v1/khuyen-mai/them-khuyen-mai/san-pham"
-        /* discount.addSale(values).then((res) => {
+        /* discount.addSale(values, token).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message)
                 setTimeout(() => {
@@ -139,15 +141,9 @@ const AddSale = (props) => {
         console.log(value);
         setChitiets(value);
         console.log(proSelect);
-        /* if (proSelect.length !== 0) {
-            const exist = ct.find((x) => x.id === value);
-            console.log(exist);
-            proSelect[0].chitietKM = exist;
-            console.log(proSelect);
-
-        } */
     }
     const [proTemp, setProTemp] = useState([]);
+    const [temp, setTemp] = useState([]);
     const addTemp = (e) => {
         let ma = e.currentTarget.dataset.id;
         let values = [];
@@ -157,13 +153,28 @@ const AddSale = (props) => {
                 values['tensp'] = res.data.dataSpham.tensp;
                 values['gia'] = res.data.dataSpham.gia;
                 let ct = JSON.parse(res.data.dataSpham.chitiet);
-                const existCT = ct.find((x) => x.id === chitiets);
-                values['chitietKM'] = existCT;
+                let existCT = [];
+                existCT.push(ct.find((x) => x.id === chitiets));
+                const Ex = ct.find((x) => x.id === chitiets);
+                values['chitietKM'] = Ex;
                 if (proTemp.length === 0) {
                     setProTemp([...proTemp, { ...values }]);
                 } else {
-                    const exist = proTemp.find((x) => x.masp === res.data.dataSpham.masp && x.chitietKM.mau === existCT.mau && x.chitietKM.size === existCT.size);
-                    if (exist) {
+                    const existMA = proTemp.find((x) => x.masp === res.data.dataSpham.masp && x.chitietKM.mau === Ex.mau && x.chitietKM.size === Ex.size);
+                    console.log(existMA);
+                    if (existMA) {
+                        /* const exist = proTemp.find((x) => x.chitietKM.mau === Ex.mau && x.chitietKM.size === Ex.size);
+                        console.log(exist);
+                        if(exist){
+                            message.error("Sản phẩm đã được thêm trước đó !");
+                        }else{
+                            existCT.push(existMA.chitietKM);
+                            setProTemp({ ...existMA, chitietKM: existCT });                      
+                            
+                            //setTemp([...temp, { ...existCT }]);
+                            //console.log(values);
+                            //existMA.chitietKM.push(existCT);
+                        } */
                         message.error("Sản phẩm đã được thêm trước đó !");
                     } else {
                         setProTemp([...proTemp, { ...values }]);
@@ -224,6 +235,7 @@ const AddSale = (props) => {
     //let id = 0;
 
     const thempro = () => {
+        console.log(proTemp);
         //proTemp !== ""
         let chietkhau = valueOption.current.props.value;
         if (proTemp !== "" && chietkhau !== "") {
@@ -394,7 +406,7 @@ const AddSale = (props) => {
                                         },
                                     ]}
                                 >
-                                    <Select onChange={getSP} style={{ width: 200 }}>
+                                    <Select onChange={getSP} style={{ width: 150 }}>
                                         {listTypes.map((item) => {
                                             return (
                                                 <>
@@ -424,7 +436,7 @@ const AddSale = (props) => {
                                         )
                                     })}
                                 </Select> */}
-                                    <Input ref={valueOption} style={{ width: 200 }} />
+                                    <Input ref={valueOption} style={{ width: 150 }} />
                                 </Form.Item>
                             </Row>
                             <Row className="add-sale">

@@ -31,7 +31,7 @@ const Order = (props) => {
     }
     function filterItems(arr, query) {
         return arr.filter(function (el) {
-            if (removeAccents(el.tennv.toLowerCase()).indexOf(removeAccents(query.toLowerCase())) !== -1) {
+            if (removeAccents(el.code_GHN.toLowerCase()).indexOf(removeAccents(query.toLowerCase())) !== -1) {
                 return el;
             } else {
                 return "";
@@ -39,24 +39,24 @@ const Order = (props) => {
 
         });
     }
-    //let demo = ListAdmin;
+    let demo = ListOrder;
     const [wordSearch, setWordSearch] = useState([]);
-    /* function onChange(e) {
+    function onChange(e) {
         if (e.target.value !== "") {
-            let filter = filterItems(ListAdmin, e.target.value);
+            let filter = filterItems(ListOrder, e.target.value);
             if (filter !== "") {
                 demo = filter;
                 setWordSearch(demo);
             } else {
-                demo = ListAdmin;
+                demo = ListOrder;
                 setWordSearch(demo);
             }
         } else {
-            demo = ListAdmin;
+            demo = ListOrder;
             setWordSearch(demo);
         }
         console.log(demo);
-    } */
+    }
     const [pageSize, setPageSize] = useState(6);
     const size = [
         {
@@ -125,6 +125,11 @@ const Order = (props) => {
             key: 'madonhang',
         },
         {
+            title: 'Mã đơn GHTK',
+            dataIndex: 'code_GHN',
+            key: 'code_GHN',
+        },
+        {
             title: 'Mã khách hàng',
             dataIndex: 'makh',
             key: 'makh',
@@ -186,17 +191,12 @@ const Order = (props) => {
                                 })}
                             </Select>
                         </div>
-                        <div className="btn-wrapper" >
-                            <Button type="primary">
-                                Đơn hàng COD
-                            </Button>
-                            <Button type="primary">
-                                Đơn hàng GHTK
-                            </Button>
+                        <div className="search-box">
+                            <span>Tìm kiếm: </span>
+                            <input placeholder='Nhập tên đơn hàng tiết kiệm' style={{ width: 300 }} onChange={e => onChange(e)} />
                         </div>
                     </div>
                     <Table className="proItem" dataSource={wordSearch} columns={columns} pagination={{ pageSize: `${pageSize}` }} size="middle" />
-                    {/* <Link to={'/Themnhanvien'}><p className="ant-btn ant-btn-primary" type="primary">Thêm nhân viên</p></Link> */}
                 </div>
             </div>
             <Modal

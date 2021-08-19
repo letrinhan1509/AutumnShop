@@ -26,44 +26,44 @@ const catalog = {
         return AxiosCatalog.get(url);
     },
     //(Thêm mới 1 danh mục sp)
-    addCatalog: (values) => {
+    addCatalog: (values, token) => {
         const url = "/";
-        return AxiosCatalog.post(url, values);
+        return AxiosCatalog.post(url, values, token);
     },
     //(Thêm mới 1 loại sp)
-    addProtype: (values) => {
+    addProtype: (values, token) => {
         const url = "/loai";
-        return AxiosCatalog.post(url, values);
+        return AxiosCatalog.post(url, values, token);
     },
     //(Cập nhật thông tin danh mục theo mã danh mục)
-    updateCatalog: (values) => {
+    updateCatalog: (values, token) => {
         const url = "/";
-        return AxiosCatalog.put(url, values);
+        return AxiosCatalog.put(url, values, token);
     },
     //(Cập nhật thông tin loại theo mã loại)
-    updateProtype: (values) => {
+    updateProtype: (values, token) => {
         const url = "/loai";
-        return AxiosCatalog.put(url, values);
+        return AxiosCatalog.put(url, values, token);
     },
     //(Cập nhật trạng thái loại theo mã loại)
-    updateStatusType: (values) => {
+    updateStatusType: (values, token) => {
         const url = "/cap-nhat-trang-thai-loai";
-        return AxiosCatalog.put(url, values);
+        return AxiosCatalog.put(url, values, token);
     },
     //(Cập nhật trạng thái danh mục theo mã danh mục)
-    updateStatusCata: (values) => {
+    updateStatusCata: (values, token) => {
         const url = "/cap-nhat-trang-thai";
-        return AxiosCatalog.put(url, values);
+        return AxiosCatalog.put(url, values, token);
     },
     //(Xoá loại sản phẩm theo id)
-    deleteProtype: (id) => {
+    deleteProtype: (id, token) => {
         const url = `/loai/${id}`;
-        return AxiosCatalog.delete(url);
+        return AxiosCatalog.delete(url, token);
     },
     //(Xoá danh mục sản phẩm theo id)
-    deleteCatalog: (id) => {
+    deleteCatalog: (id, token) => {
         const url = `/${id}`;
-        return AxiosCatalog.delete(url);
+        return AxiosCatalog.delete(url, token);
     }
 };
 

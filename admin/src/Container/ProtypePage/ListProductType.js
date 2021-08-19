@@ -1,12 +1,12 @@
 import { Button, message, Table, Input, Modal, Col, Row, Form } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
-import { LockOutlined, UnlockOutlined } from '@ant-design/icons';
 import "Container/scss/addpro.scss";
 import catalog from 'API_Call/Api_catalog/catalog';
 import { storage } from 'Container/Firebase/firebase';
 
 const ListProductType = () => {
+  const token = localStorage.getItem("token");
   const { confirm } = Modal;
   const link = useHistory();
   let result = JSON.parse(localStorage.getItem('user'));
@@ -35,9 +35,8 @@ const ListProductType = () => {
   //Cập nhật trạng thái Voucher:
   const unlock = (e) => {
     let id = e.currentTarget.dataset.id;
-    //console.log("Id:", id);
     let values = { maloai: id, trangthai: 1 };
-    catalog.updateStatusType(values).then((res) => {
+    catalog.updateStatusType(values, token).then((res) => {
       if (res.data.status === "Success") {
         message.success(res.data.message)
         setTimeout(() => {
@@ -55,9 +54,8 @@ const ListProductType = () => {
   }
   const lock = (e) => {
     let id = e.currentTarget.dataset.id;
-    //console.log("Id:", id);
     let values = { maloai: id, trangthai: 0 };
-    catalog.updateStatusType(values).then((res) => {
+    catalog.updateStatusType(values, token).then((res) => {
       if (res.data.status === "Success") {
         message.success(res.data.message);
         setTimeout(() => {
@@ -88,7 +86,7 @@ const ListProductType = () => {
       okType: 'danger',
       cancelText: 'Không',
       onOk() {
-        catalog.deleteProtype(id).then((res) => {
+        catalog.deleteProtype(id, token).then((res) => {
           if (res.data.status === "Success") {
             message.success(res.data.message)
             const del = storage.ref(`ProductType_Img/${type.tenhinh}`);

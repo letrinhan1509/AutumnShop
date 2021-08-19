@@ -1,6 +1,6 @@
 import { LockOutlined, UnlockOutlined } from '@ant-design/icons';
 import { Button, message, Table, Tag, Select, Modal } from 'antd';
-import axios from 'axios';
+import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import { useHistory, Link } from "react-router-dom";
 import "Container/scss/addpro.scss";
@@ -9,6 +9,7 @@ import voucher from 'API_Call/Api_discount/discount';
 
 const { Option } = Select;
 const ListVoucher = (props) => {
+    const token = localStorage.getItem("token");
     const { confirm } = Modal;
     const [listVoucher, setListVoucher] = useState([]);
     const history = useHistory();
@@ -46,7 +47,7 @@ const ListVoucher = (props) => {
         });
     }
 
-    //xóa loại SP
+    //xóa voucher
     const deleteVoucher = (e) => {
         let id = e.currentTarget.dataset.id;
         let vouchers = [];
@@ -61,7 +62,7 @@ const ListVoucher = (props) => {
         okType: 'danger',
         cancelText: 'Không',
         onOk() {
-            voucher.deleteSale(id).then((res) => {
+            voucher.deleteVoucher(id, token).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message)
                 const del = storage.ref(`ProductType_Img/${voucher.tenhinh}`);
@@ -120,10 +121,8 @@ const ListVoucher = (props) => {
             dataIndex: 'ngaybd',
             key: 'ngaybd',
             render: ngaybd => {
-                var date = new Date(ngaybd);
                 return (
-                    console.log(date),
-                    date.toLocaleDateString()
+                    moment(ngaybd).format('DD/MM/YYYY')
                 );
             }
         },
@@ -132,9 +131,8 @@ const ListVoucher = (props) => {
             dataIndex: 'ngaykt',
             key: 'ngaykt',
             render: ngaykt => {
-                var date = new Date(ngaykt);
                 return (
-                    date.toLocaleDateString()
+                    moment(ngaykt).format('DD/MM/YYYY')
                 );
             }
         },

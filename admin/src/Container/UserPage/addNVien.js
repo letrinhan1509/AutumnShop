@@ -1,7 +1,6 @@
 import { Button, Form, Input, message, Select } from "antd";
 import admin from 'API_Call/Api_admin/admin';
 import city from 'API_Call/Api_city/city';
-import axios from "axios";
 import React, { useEffect, useState } from 'react';
 import { Link, useHistory } from "react-router-dom";
 import "Container/scss/addpro.scss";
@@ -30,6 +29,7 @@ const tailFormItemLayout = {
     },
 };
 const AddNV = (props) => {
+    const token = localStorage.getItem("token");
     const [form] = Form.useForm();
     const history = useHistory();
 
@@ -71,9 +71,8 @@ const AddNV = (props) => {
     };
 
     const register = (values) => {
-        let a = JSON.stringify({ admin: "adas@gmail.com" });
         console.log(values);
-        admin.register(values).then((res) => {
+        admin.register(values, token).then((res) => {
             if (res.data.status ==="Success") {
                 message.success(res.data.message)
                 setTimeout(() => {

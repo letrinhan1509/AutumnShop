@@ -198,27 +198,27 @@ const Payments2 = (props) => {
                   {order.cart.map(item => (
                     <Row className="product-count">
                       <Col className="title"><p>{item.soluong}x {item.tensp}</p></Col>
-                      <Col><p>{item.soluong * item.gia}Đ</p></Col>
+                      <Col><p>{(item.soluong * item.gia).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} đ</p></Col>
                     </Row>
                   ))}
                   <Row className="product-code">
                     <Col className="abc">
                       <Row className="sum-cart">
                         <Col className="title"><p>Tổng đơn hàng</p></Col>
-                        <Col className="price"><p>{sumCart}Đ</p></Col>
+                        <Col className="price"><p>{(sumCart).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} đ</p></Col>
                       </Row>
                       {order.delivery === "GHN" || order.delivery === "GHTK" ? ("") : (
                         <>
                           <Row className="ship">
                             <Col className="title"><p>Phí vận chuyển</p></Col>
-                            <Col className="price"><p>{order.ship}Đ</p></Col>
+                            <Col className="price"><p>{(order.ship).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} đ</p></Col>
                           </Row>
                           {voucher === null ? ("") : (
                             <>
                               <h3>Áp dụng voucher</h3>
                               <Row className="voucher">
                                 <Col className="title"><p>{voucher.voucher}</p></Col>
-                                <Col className="price"><p>- {voucher.giagiam}Đ</p></Col>
+                                <Col className="price"><p>- {(voucher.giagiam).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} đ</p></Col>
                               </Row>
                             </>
                           )}
@@ -228,7 +228,7 @@ const Payments2 = (props) => {
                   </Row>
                   <Row className="product-sum">
                     <Col className="title"><p>Tổng Thanh toán</p></Col>
-                    <Col className="price"><p>{order.sumpay}Đ</p></Col>
+                    <Col className="price"><p>{(order.sumpay).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} đ</p></Col>
                   </Row>
                   <Row><textarea placeholder="Ghi chú" onChange={note} /></Row>
                   <Row className="button-group">

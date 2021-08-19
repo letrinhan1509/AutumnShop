@@ -109,7 +109,6 @@ const Cart = (props) => {
                                         Mua Hàng
                                     </Button>
                                 </Link>
-
                             </div>
                             <img src="https://chillydraji.files.wordpress.com/2015/08/empty_cart.jpeg" alt="empty" />
                         </div>
@@ -148,7 +147,7 @@ const Cart = (props) => {
                                                             <ul>
                                                                 <li>Màu: {item.mau}</li>
                                                                 <li>Size: {item.size}</li>
-                                                                <li>Giá: {item.gia}Đ</li>
+                                                                <li>Giá: {(item.gia).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} đ</li>
                                                             </ul>
                                                         </Col>
                                                     </Row>
@@ -160,24 +159,24 @@ const Cart = (props) => {
                                                                 <button onClick={() => props.addCart(item)} className="add">+</button>
                                                             </div>
                                                         </Col>
-                                                        <Col><p>{item.soluong * item.gia.toFixed(2)}Đ</p></Col>
+                                                        <Col><p>{(item.soluong * item.gia).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} đ</p></Col>
                                                     </Row>
                                                 </Col>
                                             </Row>
                                         ))}
                                         <Row className="product-count">
                                             <Col><p>{sum} Sản phẩm</p></Col>
-                                            <Col className="price"><p>{sumUser.toFixed(2)}Đ</p></Col>
+                                            <Col className="price"><p>{(sumUser).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} đ</p></Col>
                                         </Row>
                                     </Col>
                                     <Col className="col-two">
                                         <Row className="product-count">
                                             <Col><p>{sum} Sản phẩm</p></Col>
-                                            <Col className="price"><p>{sumUser.toFixed(2)}Đ</p></Col>
+                                            <Col className="price"><p>{(sumUser).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} đ</p></Col>
                                         </Row>
                                         <Row className="product-sum">
                                             <Col className="title"><p>Tổng đơn hàng</p></Col>
-                                            <Col className="price"><p>{sumUser.toFixed(2)}Đ</p></Col>
+                                            <Col className="price"><p>{(sumUser).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} đ</p></Col>
                                         </Row>
                                         <Row className="product-warning">
                                             {/* <Input placeholder="Nhập mã khuyến mãi" />

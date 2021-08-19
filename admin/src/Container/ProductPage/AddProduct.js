@@ -43,6 +43,7 @@ const normFile = (e: any) => {
 };
 
 const AddProduct = (props) => {
+    const token = localStorage.getItem("token");
     const SIZE = useRef(null);
     const MAU = useRef(null);
     const SOLUONG = useRef(null);
@@ -196,15 +197,14 @@ const AddProduct = (props) => {
         values['imgName'] = imageName.name;
         values['chitiet'] = JSON.stringify(add);
         console.log(values);
-        product.addproduct(values).then((res) => {
+        product.addproduct(values, token).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message)
                 setTimeout(() => {
                     history.push('/tat-ca-san-pham');
                 }, 2000)
             };
-        })
-            .catch(err => {
+        }).catch(err => {
                 console.log(err.response);
                 message.error(`Thêm thất bại!\n ${err.response.data.message}`)
             })

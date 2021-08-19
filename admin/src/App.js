@@ -46,6 +46,8 @@ import ListSize from "./Container/SizePage/ListSize";
 import AddSize from "./Container/SizePage/AddSize";
 import EditSize from "./Container/SizePage/EditSize";
 import ListStatusOrder from "./Container/StatusOrderPage/listStatusOrder";
+import AddStatus from "./Container/StatusOrderPage/AddStatus";
+import EditStatus from "./Container/StatusOrderPage/EditStatus";
 
 function App() {
   const PrivateRoute = ({ component: Component, ...rest }) => (
@@ -60,6 +62,10 @@ function App() {
         }} /> */
     )} />
   )
+  const [kqToken, setKqToken] = useState([]);
+  const TokenData = function (data) {
+    setKqToken(data);
+  }
   const [isAuth, setIsAuth] = useState(true);
   //localStorage.getItem('user') === null ? setIsAuth(false) : setIsAuth(true)
   const admin = JSON.parse(localStorage.getItem('user'));
@@ -209,7 +215,7 @@ function App() {
                   <Route exact path="/bang-size">
                     <ListSize />
                   </Route>
-                  <Route exact path="/them-size">
+                  <Route exact path="/bang-size/them-size">
                     <AddSize />
                   </Route>
                   <Route exact path="/bang-size/sua-size">
@@ -217,6 +223,12 @@ function App() {
                   </Route>
                   <Route exact path="/danh-sach-trang-thai">
                     <ListStatusOrder />
+                  </Route>
+                  <Route exact path="/danh-sach-trang-thai/them-trang-thai">
+                    <AddStatus />
+                  </Route>
+                  <Route exact path="/danh-sach-trang-thai/sua-trang-thai">
+                    <EditStatus />
                   </Route>
                 </Content>
               </Col>

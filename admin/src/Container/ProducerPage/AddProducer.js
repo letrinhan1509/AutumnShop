@@ -28,12 +28,13 @@ const tailFormItemLayout = {
 };
 
 const AddProducer = (props) => {
+    const token = localStorage.getItem("token");
     const [form] = Form.useForm();
     const history = useHistory();
     const { confirm } = Modal;
     const addProducer = (values) => {
         console.log(values);
-        producer.addProducer(values).then((res) => {
+        producer.addProducer(values, token).then((res) => {
             message.success(res.data.message)
             setTimeout(() => {
                 history.push('/danh-sach-nha-sx');

@@ -90,6 +90,11 @@ function App() {
   const CountUsercart = function (data) {
     setCount(data);
   }
+  const [tokenData, setTokenData] = useState([]);
+  const getToken = function (data) {
+    setTokenData(data);
+  }
+  console.log(tokenData);
   let storageItem = (localStorage.getItem("cart") || "[]");
   const [cart, setCart] = useState(JSON.parse(storageItem));
   useEffect(() => {
@@ -223,7 +228,7 @@ function App() {
                   <Register />
                 </Route>
                 <Route exact path="/dang-nhap">
-                  <Login />
+                  <Login getToken={getToken} />
                 </Route>
                 <Route exact path="/san-pham/:id">
                   <Shirt link={link} Thongbao_Them={Thongbao_Them} />

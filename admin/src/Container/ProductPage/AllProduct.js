@@ -8,6 +8,7 @@ import { storage } from 'Container/Firebase/firebase';
 
 const { Option } = Select;
 const AllProduct = () => {
+  const token = localStorage.getItem("token");
   let link = useHistory()
   const { confirm } = Modal;
   const [idPro, setIdPro] = useState([]);
@@ -40,7 +41,7 @@ const AllProduct = () => {
     let id = e.currentTarget.dataset.id;
     console.log("Id:", id);
     let values = { masp: id, trangthai: 1 };
-    product.updateStatus(values).then((res) => {
+    product.updateStatus(values, token).then((res) => {
       if (res.data.status === "Success") {
         message.success(res.data.message)
         setTimeout(() => {
@@ -59,7 +60,7 @@ const AllProduct = () => {
     let id = e.currentTarget.dataset.id;
     console.log("Id:", id);
     let values = { masp: id, trangthai: 0 };
-    product.updateStatus(values).then((res) => {
+    product.updateStatus(values, token).then((res) => {
       if (res.data.status === "Success") {
         message.success(res.data.message)
         setTimeout(() => {
@@ -113,7 +114,7 @@ const AllProduct = () => {
       okType: 'danger',
       cancelText: 'Không',
       onOk() {
-        product.deletePro(id).then((res) => {
+        product.deletePro(id, token).then((res) => {
           if (res.data.status === "Success") {
             message.success(res.data.message);
             const del = storage.ref(`Product_Img/${pro.tenhinh}`);

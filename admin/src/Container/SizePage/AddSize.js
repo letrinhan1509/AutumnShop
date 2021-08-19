@@ -30,26 +30,21 @@ const tailFormItemLayout = {
 
 
 const AddSize = (props) => {
+    const token = localStorage.getItem("token");
     const { confirm } = Modal;
     const [form] = Form.useForm();
     const history = useHistory();
-    /* const [listSize, setListSize] = useState([]);
-    useEffect(() => {
-        size.getSize().then((res) => {
-            setListSize(res.data.listSize)
-        })
-    }, []); */
 
     const addSize = (values) => {
-        SIZE.addSize(values).then((res) => {
+        console.log(values);
+        SIZE.addSize(values, token).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message)
                 setTimeout(() => {
                     history.push('/bang-size');
                 }, 2000)
             }
-        })
-            .catch(err => {
+        }).catch(err => {
                 message.error(`${err.response.data.message}`)
             })
     };
@@ -108,7 +103,7 @@ const AddSize = (props) => {
     return (
         <>
             <div className="form-wrapper">
-                <h2 style={{ textAlign: 'center' }}> Nhập thông tin của size</h2>
+                <h2 style={{ textAlign: 'center', marginTop: "10px", marginBottom: "30px" }}> Nhập thông tin của size</h2>
                 <Form
                     {...formItemLayout}
                     form={form}
@@ -207,7 +202,7 @@ const AddSize = (props) => {
                         <Button className="ant-btn ant-btn-dashed " onClick={back} style={{ marginLeft: -30 }}>
                             Trở về
                         </Button>
-                        <Button type="primary" htmlType="submit" style={{ marginLeft: 30 }}>
+                        <Button type="primary" htmlType="submit">
                             Thêm size
                         </Button>
                     </Form.Item>

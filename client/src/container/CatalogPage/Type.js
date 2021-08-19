@@ -215,7 +215,7 @@ const Shirt = (props) => {
                             />
                           </div>
                           <Row className="product-price">
-                            <Col>{`${productItem.gia} VNĐ`}</Col>
+                            <Col>{(productItem.gia).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} đ</Col>
                           </Row>
                           <Row className="product-name">
                             <Col>{productItem.tensp}</Col>

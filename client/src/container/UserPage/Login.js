@@ -46,7 +46,7 @@ const uiConfig = {
     ]
 };
 
-const Login = () => {
+const Login = (props) => {
     const history = useHistory();
 
     const login = (values) => {
@@ -69,7 +69,8 @@ const Login = () => {
                             localStorage.setItem('cart', JSON.stringify(res.data.cart))
                         }
                     });
-                    localStorage.setItem('token', res.data.token)
+                    props.getToken(res.data.token);
+                    //localStorage.setItem('token', res.data.token)
                     localStorage.setItem('user', JSON.stringify(res.data.data))
                     setTimeout(() => {
                         history.push("/")

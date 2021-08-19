@@ -36,6 +36,7 @@ const tailFormItemLayout = {
 };
 
 const EditProducer = (props) => {
+    const token = localStorage.getItem("token");
     const [form] = Form.useForm();
     const history = useHistory();
     const { confirm } = Modal;
@@ -60,7 +61,7 @@ const EditProducer = (props) => {
 
     const update = (values) => {
         console.log(values)
-        producers.updateProducer(values).then((res) => {
+        producers.updateProducer(values, token).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message)
                 localStorage.removeItem("producer");

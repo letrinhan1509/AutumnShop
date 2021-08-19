@@ -26,9 +26,9 @@ const order = {
         return AxiosOrder.post(url, values);
     },
     //(Cập nhật trạng thái đơn hàng)
-    updateStatus: (values) => {
+    updateStatus: (values, token) => {
         const url = "/";
-        return AxiosOrder.put(url, values);
+        return AxiosOrder.put(url, values, token);
     },
     //(Thống kê doanh thu bán hàng và đơn hàng)
     statistical: () => {

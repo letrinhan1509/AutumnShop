@@ -1,64 +1,64 @@
-import { Button, message, Table, Tag, Modal } from 'antd';
-import { LockOutlined, UnlockOutlined } from '@ant-design/icons';
+import { Button, message, Table, Modal } from 'antd';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import "Container/scss/addpro.scss";
 import statusOrder from 'API_Call/Api_admin/admin';
 
+
 const ListStatusOrder = () => {
-    const link = useHistory();
-    const { confirm } = Modal;
-    let result = JSON.parse(localStorage.getItem('user'));
-    //API ListStatusOrder
-    const [listStatus, setListStatus] = useState([]);
-    useEffect(() => {
-        statusOrder.getTitle().then((res) => {
-            setListStatus(res.data.data);
-        })
-    }, []);
+  const link = useHistory();
+  const { confirm } = Modal;
+  let result = JSON.parse(localStorage.getItem('user'));
+  //API ListStatusOrder
+  const [listStatus, setListStatus] = useState([]);
+  useEffect(() => {
+    statusOrder.getTitle().then((res) => {
+      setListStatus(res.data.data);
+    })
+  }, []);
 
-    //Redirect sửa
-    const edit = (e) => {
-        let id = e.currentTarget.dataset.id
-        statusOrder.getTitleID(id).then((res) => {
-        if (res.data.status === "Success") {
-            localStorage.setItem('statusOrder', JSON.stringify(res.data.data));
+  //Redirect sửa
+  const edit = (e) => {
+    let id = e.currentTarget.dataset.id
+    statusOrder.getTitleID(id).then((res) => {
+      if (res.data.status === "Success") {
+        localStorage.setItem('statusOrder', JSON.stringify(res.data.data));
+        setTimeout(() => {
+          link.push('/danh-sach-trang-thai/sua-trang-thai');
+        }, 100)
+      }
+    });
+  }
+
+  //Xóa trạng thái đơn hàng
+  const deleteSttOrder = (e) => {
+    let id = e.currentTarget.dataset.id;
+    confirm({
+      title: 'Bạn có thật sự muốn xóa trạng thái đơn hàng này không?',
+      okText: 'Xóa',
+      okType: 'danger',
+      cancelText: 'Không',
+      onOk() {
+        statusOrder.deleteStatusOrder(id).then((res) => {
+          if (res.data.status === "Success") {
+            message.success(res.data.message)
             setTimeout(() => {
-            link.push('/danh-sach-trang-thai/sua-trang-thai');
-            }, 100)
-        }
-        });
-    }
+              link.go({ pathname: '/danh-sach-trang-thai' });
+            }, 800)
+          }
+        })
+          .catch(err => {
+            message.error(`Không thể xoá trạng thái đơn hàng này !!! `);
+          })
+      },
+      onCancel() {
+        console.log('Cancel');
+      },
+    });
+  }
 
-    //Xóa trạng thái đơn hàng
-    const deleteProducer = (e) => {
-        let id = e.currentTarget.dataset.id;
-        confirm({
-        title: 'Bạn có thật sự muốn xóa trạng thái đơn hàng này không?',
-        okText: 'Xóa',
-        okType: 'danger',
-        cancelText: 'Không',
-        onOk() {
-            statusOrder.deleteStatusOrder(id).then((res) => {
-            if (res.data.status === "Success") {
-                message.success(res.data.message)
-                setTimeout(() => {
-                link.go({ pathname: '/danh-sach-trang-thai' });
-                }, 800)
-            }
-            })
-            .catch(err => {
-                message.error(`Không thể xoá trạng thái đơn hàng này !!! `);
-            })
-        },
-        onCancel() {
-            console.log('Cancel');
-        },
-        });
-    }
-
-    const columns = [
+  const columns = [
     {
       title: 'Mã trạng thái',
       dataIndex: 'trangthai',
@@ -70,21 +70,23 @@ const ListStatusOrder = () => {
       key: 'tentt',
     },
     result.permission === 'Admin' || result.permission === 'QLCH' ?
-    {
+      {
         title: 'Hành động',
         dataIndex: 'trangthai',
         key: 'trangthai',
         render: trangthai => (<div className="btn-box fix"><Button data-id={trangthai} type="primary" key={trangthai} onClick={edit}> Sửa </Button></div>)
-    } : (<> </>),
+      } : (<> </>),
     result.permission === 'Admin' || result.permission === 'QLCH' ?
-    {
+      {
         dataIndex: 'trangthai',
         key: 'trangthai',
-        render: trangthai => (<div className="btn-box delete"><Button data-id={trangthai} key={trangthai} type="danger" onClick={deleteProducer}> Xoá </Button></div>)
-    } : (<> </>)
+        render: trangthai => (<div className="btn-box delete"><Button data-id={trangthai} key={trangthai} type="danger" onClick={deleteSttOrder}> Xoá </Button></div>)
+      } : (<> </>)
 
   ];
 
+  const [visible, setVisible] = useState(false);
+  const [visibleEdit, setVisibleEdit] = useState(false);
 
   return (
     <>
@@ -92,7 +94,7 @@ const ListStatusOrder = () => {
         <h2 style={{ textAlign: 'center', marginTop: "30px" }}>DANH SÁCH TRẠNG THÁI ĐƠN HÀNG</h2>
         {result.permission === 'Admin' ? (
           <div className="btn-wrapper">
-            <Link to={'/them-trang-thai'}>
+            <Link to={'/danh-sach-trang-thai/them-trang-thai'}>
               <Button type="primary">
                 Thêm trạng thái đơn hàng
               </Button>

@@ -38,6 +38,7 @@ const tailFormItemLayout = {
     },
 };
 const EditSale = (props) => {
+    const token = localStorage.getItem("token");
     const [form] = Form.useForm();
     const history = useHistory();
     const { confirm } = Modal;
@@ -85,7 +86,7 @@ const EditSale = (props) => {
         }
         values["trangthai"] = title;
         console.log(values);
-        orders.updateStatus(values).then((res) => {
+        orders.updateSale(values, token).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message)
                 localStorage.removeItem("order");

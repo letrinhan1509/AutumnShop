@@ -8,6 +8,7 @@ import catalog from 'API_Call/Api_catalog/catalog';
 import { storage } from 'Container/Firebase/firebase';
 
 const ListCata = () => {
+  const token = localStorage.getItem("token");
   const link = useHistory();
   const { confirm } = Modal;
   //API ListCategory
@@ -48,7 +49,7 @@ const ListCata = () => {
       okType: 'danger',
       cancelText: 'Không',
       onOk() {
-        catalog.deleteCatalog(id).then((res) => {
+        catalog.deleteCatalog(id, token).then((res) => {
           if (res.data.status === "Success") {
             message.success(res.data.message)
             const del = storage.ref(`Catalog_Img/${cata.tenhinh}`);
@@ -82,7 +83,7 @@ const ListCata = () => {
       "madm": id,
       "trangthai": 1
     };
-    catalog.updateStatusCata(values).then((res) => {
+    catalog.updateStatusCata(values, token).then((res) => {
       if (res.data.status === "Success") {
         message.success(res.data.message)
         setTimeout(() => {
@@ -100,7 +101,7 @@ const ListCata = () => {
       "madm": id,
       "trangthai": 0
     };
-    catalog.updateStatusCata(values).then((res) => {
+    catalog.updateStatusCata(values, token).then((res) => {
       if (res.data.status === "Success") {
         message.success(res.data.message)
         setTimeout(() => {

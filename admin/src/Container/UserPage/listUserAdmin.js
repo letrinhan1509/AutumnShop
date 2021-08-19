@@ -7,6 +7,7 @@ import admin from 'API_Call/Api_admin/admin';
 
 const { Option } = Select;
 const ListUserAdmin = () => {
+  const token = localStorage.getItem("token");
   const link = useHistory();
   const [ListAdmin, setListAdmin] = useState([]);
   //API ListAdmin
@@ -49,7 +50,7 @@ const ListUserAdmin = () => {
       "adminId": id,
       "stt": 1
     };
-    admin.updateStatus(values).then((res) => {
+    admin.updateStatus(values, token).then((res) => {
       if (res.data.status === "Success") {
         message.success(res.data.message)
         setTimeout(() => {
@@ -72,7 +73,7 @@ const ListUserAdmin = () => {
       "adminId": id,
       "stt": 0
     };
-    admin.updateStatus(values).then((res) => {
+    admin.updateStatus(values, token).then((res) => {
       if (res.data.status === "Success") {
         message.success(res.data.message)
         setTimeout(() => {

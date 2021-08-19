@@ -42,7 +42,7 @@ const normFile = (e: any) => {
     return e && e.fileList;
 };
 const EditVoucher = (props) => {
-
+    const token = localStorage.getItem("token");
     const [form] = Form.useForm();
     const history = useHistory();
     let voucherID = JSON.parse(localStorage.getItem('voucherID'));
@@ -149,8 +149,8 @@ const EditVoucher = (props) => {
             values["ngaybd"] = moment(datestart).format('YYYY-MM-DD');
             values["ngaykt"] = moment(dateEnd).format('YYYY-MM-DD');
         } else {
-            values["ngaybd"] = moment(dateBD).format('YYYY-MM-DD');
-            values["ngaykt"] = moment(dateKT).format('YYYY-MM-DD');
+            values["ngaybd"] = moment(voucherID.ngaybd).format('YYYY-MM-DD');
+            values["ngaykt"] = moment(voucherID.ngaykt).format('YYYY-MM-DD');
         }
         values["trangthai"] = title;
         if (imageName !== "") {
@@ -164,7 +164,7 @@ const EditVoucher = (props) => {
             values['img'] = voucherID.hinh;
         }
         console.log(values);
-        voucher.updateVoucher(values).then((res) => {
+        voucher.updateVoucher(values, token).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message)
                 if (link !== "") {
@@ -337,7 +337,7 @@ const EditVoucher = (props) => {
                             },
                         ]}
                     >
-                        {datePickers === false ? (<span>{dateBD.toLocaleDateString()}</span>) : (<DatePicker onChange={startChange} />)}
+                        {datePickers === false ? (<span>{moment(voucherID.ngaybd).format('DD/MM/YYYY')}</span>) : (<DatePicker onChange={startChange} />)}
                         <Button type="primary" onClick={changeDate} style={{ marginLeft: 10 }}>Đổi</Button>
                     </Form.Item>
                     <Form.Item
@@ -349,7 +349,7 @@ const EditVoucher = (props) => {
                             },
                         ]}
                     >
-                        {datePickers === false ? (<span>{dateKT.toLocaleDateString()}</span>) : (<DatePicker onChange={endChange} />)}
+                        {datePickers === false ? (<span>{moment(voucherID.ngayky).format('DD/MM/YYYY')}</span>) : (<DatePicker onChange={endChange} />)}
                     </Form.Item>
                     <Form.Item
                         label="Trạng thái"

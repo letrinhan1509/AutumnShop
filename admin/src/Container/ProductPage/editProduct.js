@@ -50,6 +50,7 @@ const normFile = (e: any) => {
 };
 
 const EditProduct = (props) => {
+    const token = localStorage.getItem("token");
     const [form] = Form.useForm();
     const history = useHistory();
     const SIZE = useRef(null);
@@ -148,7 +149,7 @@ const EditProduct = (props) => {
             values['img'] = ProductEdit.hinh;
         }
         console.log(values);
-        /* product.updatePro(values).then((res) => {
+        /* product.updatePro(values, token).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message)
                 if (link !== "") {

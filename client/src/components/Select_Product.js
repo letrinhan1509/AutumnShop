@@ -1,6 +1,6 @@
-import { Col, Layout, Row, Rate, Statistic, Select, Button, Card, Carousel, Tabs, Comment, List, Form, Input, Avatar, message, Radio, Modal } from "antd";
+import { Col, Layout, Row, Rate, Statistic, Select, Button, Card, Carousel, Tabs, Comment, List, Form, Input, Avatar, message, Radio, Menu, Dropdown } from "antd";
 import moment from 'moment';
-import { ShoppingCartOutlined, HeartOutlined, FacebookOutlined, TwitterOutlined } from '@ant-design/icons';
+import { ShoppingCartOutlined, HeartOutlined, FacebookOutlined, TwitterOutlined, EllipsisOutlined } from '@ant-design/icons';
 import React, { createContext, useState, useEffect } from 'react';
 import "../components/components-css/SelectProduct.scss";
 import { useParams } from "react-router";
@@ -83,10 +83,9 @@ const Select_Product = (props) => {
         comment.addComment(value).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message);
-                document.getElementById("cmt").reset();
-                /* setTimeout(() => {
-                    window.location.reload();
-                }, 100);  */
+                console.log(res.data);
+                //setListComment(res.data.listComment);
+                //document.getElementById("cmt").reset();
             } else {
                 message.error(res.data.message)
             }
@@ -161,16 +160,30 @@ const Select_Product = (props) => {
             </Form>
         </>
     );
+    const menu = (
+        <Menu>
+            <Menu.Item>
+                <a target="_blank" rel="noopener noreferrer" href="https://www.antgroup.com">
+                    Chỉnh sửa
+                </a>
+            </Menu.Item>
+            <Menu.Item>
+                <a target="_blank" style={{color: 'red'}} rel="noopener noreferrer" href="https://www.antgroup.com">
+                    Xóa
+                </a>
+            </Menu.Item>
+        </Menu>
+    );
     const TabsProduct = () => {
         return (
             <Tabs defaultActiveKey="1" style={{ width: 900 }}>
-                <TabPane tab="Product Infomation" key="1">
+                <TabPane tab="Thông tin sản phẩm" key="1">
                     <p>{detail.mota}</p>
                 </TabPane>
-                <TabPane tab="Reviews" key="2">
+                <TabPane tab="Đánh giá" key="2">
                     <List
                         className="comment-list"
-                        header={`${ListComment.length} replies`}
+                        header={`${ListComment.length} Đánh giá`}
                         itemLayout="horizontal"
                         dataSource={ListComment}
                         renderItem={item => {
@@ -179,7 +192,11 @@ const Select_Product = (props) => {
                                 <>
                                     <li>
                                         <Comment
-                                            actions={[<span key="comment-list-reply-to-0">Reply to</span>]}
+                                            actions={[<span key="comment-list-reply-to-0">Reply to</span>,
+                                            <Dropdown overlay={menu}>
+                                                <EllipsisOutlined />
+                                            </Dropdown>
+                                            ]}
                                             author={item.tenkh}
                                             avatar={item.hinh}
                                             content={item.noidung}
@@ -325,13 +342,13 @@ const Select_Product = (props) => {
                             <h1>{detail.tensp}</h1>
                             <ul className="vote-star">
                                 <li><Rate /></li>
-                                <li><Statistic title="reviews" value={0} /></li>
-                                <li><a href="#/">Submit a review</a></li>
+                                <li><Statistic title="Đánh giá" value={0} /></li>
+                                {/* <li><a href="#/">Submit a review</a></li> */}
                             </ul>
                             <div className="sale-imfo">
                                 <Row>
                                     <Col><p>Giá:</p></Col>
-                                    <Col offset={7}><p>{detail.gia}VNĐ</p></Col>
+                                    <Col offset={7}><p>{(detail.gia).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} đ</p></Col>
                                 </Row>
                                 <Row>
                                     <Col><p>Giảm giá:</p></Col>
@@ -355,7 +372,7 @@ const Select_Product = (props) => {
                                             <span>Chọn size:</span>
                                         </Col>
                                         <Col>
-                                            <Select style={{ width: 120 }} onChange={Changesize}>
+                                            <Select  style={{ width: 120 }} onChange={Changesize}>
                                                 {SIZE.map((item) => {
                                                     return (
                                                         <Option key={item.key} value={item.value}>{item.value}</Option>
@@ -404,14 +421,13 @@ const Select_Product = (props) => {
                                         <Form.Item
                                             label="Chiều cao"
                                             name="chieucao"
-                                            rules={[{ required: true, message: 'Vui lòng nhập chiều cao!' }]}
+                                            
                                         >
                                             <Input style={{ width: 100 }} />
                                         </Form.Item>
                                         <Form.Item
                                             label="Cân nặng"
                                             name="cannang"
-                                            rules={[{ required: true, message: 'Vui lòng nhập cân nặng!' }]}
                                         >
                                             <Input style={{ width: 100 }} />
                                         </Form.Item>

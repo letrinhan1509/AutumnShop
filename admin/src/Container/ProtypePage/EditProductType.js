@@ -48,6 +48,7 @@ const normFile = (e: any) => {
 };
 
 const EditProductType = (props) => {
+    const token = localStorage.getItem("token");
     const [form] = Form.useForm();
     const history = useHistory();
     const Type = JSON.parse(localStorage.getItem("type"))
@@ -102,7 +103,7 @@ const EditProductType = (props) => {
             values['img'] = Type.hinh;
         }
         console.log(values)
-        catalog.updateProtype(values).then((res) => {
+        catalog.updateProtype(values, token).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message)
                 if (link !== "") {

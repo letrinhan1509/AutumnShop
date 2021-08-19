@@ -1,16 +1,19 @@
 import { LockOutlined, UnlockOutlined } from '@ant-design/icons';
-import { Button, message, Table, Tag, Select } from 'antd';
+import { Button, message, Table, Modal, Select } from 'antd';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useHistory, Link } from "react-router-dom";
 import "Container/scss/addpro.scss";
+import { storage } from 'Container/Firebase/firebase';
 import discount from 'API_Call/Api_discount/discount';
+import moment from 'moment';
 
 const { Option } = Select;
 const ListSale = (props) => {
+    const token = localStorage.getItem("token");
     const [listVoucher, setListVoucher] = useState([]);
-    const [a, setA] = useState([]);
     const history = useHistory();
+    const { confirm } = Modal;
     let user = JSON.parse(localStorage.getItem('user'));
     const [wordSearch, setWordSearch] = useState([]);
     //API List Sale:
@@ -23,7 +26,6 @@ const ListSale = (props) => {
     }, []);
     console.log(listVoucher);
     // Sửa voucher:
-    const [voucherID, setVoucherID] = useState([]);
     const loadEdit = (e) => {
         let id = e.currentTarget.dataset.id;
         discount.getSaleID(id).then((res) => {
@@ -49,7 +51,7 @@ const ListSale = (props) => {
 
 
     //Cập nhật trạng thái Voucher:
-    const unlock = (e) => {
+    /* const unlock = (e) => {
         let id = e.currentTarget.dataset.id;
         //console.log("Id:", id);
         let values = { makm: id, trangthai: 1 };
@@ -88,9 +90,49 @@ const ListSale = (props) => {
                 console.log(err.response);
                 message.error(`${err.response.data.message}`);
             });
-    };
+    }; */
 
-
+    const deleteSale = (e) => {
+        let id = e.currentTarget.dataset.id;
+        /* let sale = [];
+        discount.getSaleID(id).then((res) => {
+        if (res.data.status === "Success") {
+            sale = res.data.voucher;
+        }
+        }); */
+        confirm({
+        title: 'Bạn có thật sự muốn xóa khuyến mãi này?',
+        okText: 'Xóa',
+        okType: 'danger',
+        cancelText: 'Không',
+        onOk() {
+            discount.deleteSale(id, token).then((res) => {
+            if (res.data.status === "Success") {
+                message.success(res.data.message)
+                /* const del = storage.ref(`ProductType_Img/${sale.tenhinh}`);
+                del.delete().then((res) => {
+                message.success("Đã xóa ảnh!");
+                }).catch((error) => {
+                console.log(error);
+                }); */
+                setTimeout(() => {
+                    window.location.reload()
+                }, 1000);
+            }
+            else {
+                message.error(res.data.message)
+            }
+            })
+            .catch(err => {
+                console.log(err.response);
+                message.error(`${err.response.data.message}`)
+            })
+        },
+        onCancel() {
+            console.log('Cancel');
+        },
+        });
+    }
 
     //Setup trạng thái cho datatable
     listVoucher.forEach(element => {
@@ -127,9 +169,8 @@ const ListSale = (props) => {
             dataIndex: 'ngaybd',
             key: 'ngaybd',
             render: ngaybd => {
-                var date = new Date(ngaybd);
                 return (
-                    date.toLocaleDateString()
+                    moment(ngaybd).format('DD/MM/YYYY')
                 );
             }
         },
@@ -138,21 +179,26 @@ const ListSale = (props) => {
             dataIndex: 'ngaykt',
             key: 'ngaykt',
             render: ngaykt => {
-                var date = new Date(ngaykt);
                 return (
-                    date.toLocaleDateString()
+                    moment(ngaykt).format('DD/MM/YYYY')
                 );
             }
         },
         user.permission !== 'NVBH' ? ({
             dataIndex: "makm",
             key: "makm",
-            render: makm => (<div className="btn-box fix"><Button data-id={makm} onClick={loadDetail} type="primary">Sửa</Button></div>)
+            render: makm => (<div className="btn-box fix"><Button data-id={makm} onClick={loadEdit} type="primary">Sửa</Button></div>)
         }) : {
             dataIndex: "makm",
             key: "makm",
             render: makm => (<div className="btn-box"><Button data-id={makm} onClick={loadDetail} type="primary">Chi tiết</Button></div>)
         },
+        user.permission === "Admin" || user.permission === "QLCH" ? 
+        {
+            dataIndex: "makm",
+            key: "makm",
+            render: makm => (<div className="btn-box delete"><Button data-id={makm} onClick={deleteSale} type="danger"> Xoá </Button></div>)
+        } : (<></>)
     ];
 
 
