@@ -26,36 +26,6 @@ const signToken = (user) => {
     });
 };
 
-exports.isLoggedInUser = async (req, res, next) => {
-    if(req.cookies.jwt) {
-        try {
-            // 1) verify token
-            const decoded = await promisify(jwt.verify)(
-                req.cookies.jwt,
-                process.env.JWT_SECRET
-            );
-
-            // 2) Check if user still exists
-            const currentUser = await modelUser.get_By_Id(decoded.id);
-            if (currentUser == -1) {
-                return res.status(400).json({ 
-                    status: "Fail", 
-                    message: "This token does not exist !"
-                });
-            } else {
-                return next();
-            }
-        } catch (error) {
-            return res.status(400).json({ 
-                status: "Fail", 
-                message: "Something went wrong!", 
-                error: error 
-            });
-        };
-    };
-    next();
-};
-
 exports.protectUser = Model => catchAsync(async (req, res, next) => {
     //1) getting token and check of it's there
     let token;
@@ -94,15 +64,55 @@ exports.protectUser = Model => catchAsync(async (req, res, next) => {
     }
 });
 
+exports.isLoggedInUser = async (req, res, next) => {
+    if(req.headers.token) {
+        try {
+            // 1) verify token
+            const decoded = await promisify(jwt.verify)(
+                req.headers.token,
+                process.env.JWT_SECRET
+            );
+            if(decoded._id == undefined) {
+                return res.status(403).json({ 
+                    status: "Fail", 
+                    message: "This token does not exist !"
+                });
+            };
+            // 2) Check if user still exists
+            const currentUser = await modelUser.get_By_Id(decoded._id);
+            if (currentUser == -1) {
+                return res.status(403).json({ 
+                    status: "Fail", 
+                    message: "This token does not exist !"
+                });
+            } else {
+                req.user = currentUser;
+                res.locals.user = currentUser;
+                return next();
+            }
+        } catch (error) {
+            return res.status(400).json({ 
+                status: "Fail", 
+                message: "Something went wrong!", 
+                error: error 
+            });
+        };
+    };
+    return res.status(401).json({ 
+        status: "Fail", 
+        message: "No login !"
+    });
+};
+
 exports.isLoggedIn = async (req, res, next) => {
     console.log("token:", req.cookies.jwtAdmin);
-    //console.log("token:", req.headers.jwtadmin);
+    //console.log("token:", req.headers.token);
     if(req.cookies.jwtAdmin) {
         try {
             // 1) verify token
             const decoded = await promisify(jwt.verify)(
                 //req.cookies.jwtAdmin,
-                req.headers.jwtadmin,
+                req.headers.token,
                 process.env.JWT_SECRET_ADMIN
             );
             if(decoded._id == undefined) {
@@ -131,11 +141,12 @@ exports.isLoggedIn = async (req, res, next) => {
                 error: error.message
             });
         };
-    };
-    return res.status(401).json({ 
-        status: "Fail", 
-        message: "No login !"
-    });
+    } else {
+        return res.status(401).json({ 
+            status: "Fail", 
+            message: "No login !"
+        });
+    }
 };
 
 exports.restrictTo = catchAsync(async (req, res, next) => {

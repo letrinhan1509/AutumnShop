@@ -76,7 +76,8 @@ exports.get_By_discountId = async (makm) => {
     // Tìm voucher theo tên:
 exports.check_By_voucherName = async (name) => {
     return new Promise( (hamOK, hamLoi) => {
-        let sql = `SELECT * FROM khuyenmai WHERE khuyenmai.voucher = '${name}' AND voucher IS NOT NULL`;
+        let sql = `SELECT makm, tenkm, voucher, ghichu, tenhinh, hinh, dieukien, giagiam, DATE_FORMAT(ngaybd, '%e-%c-%Y') as ngaybd,
+        DATE_FORMAT(ngaykt, '%e-%c-%Y') as ngaykt FROM khuyenmai WHERE khuyenmai.voucher = '${name}'`;
         db.query(sql, (err, result) => {
             if(err){
                 hamLoi(err);
@@ -106,28 +107,26 @@ exports.create_Discount = (data, chitietKM) => {
     return new Promise( (resolve, reject) => {
         let sql = "INSERT INTO khuyenmai SET ?";
         db.query(sql, data, (error, result) => {
-            if(error)
-                reject(error);
+            if(error) { reject(error); }
             console.log('Insert khuyenmai successfully');
         });
         let sql_makm = "SELECT LAST_INSERT_ID() as LastID;";
         db.query(sql_makm, (err0, resultId) => {
             console.log(resultId[0].LastID);
-            if(err0)
-                reject(err0);
+            if(err0) { reject(err0); }
             else{
                 let sql_CTKM = `INSERT INTO chitietkm SET ?`;
                 chitietKM.forEach(element => {
                     element.sanpham.forEach(e => {
                         let dataCTKM = {
                             masp: e.masp,
+                            chitiet_km: e.chitiet,
                             chietkhau: element.chietkhau,
-                            giakm: e.gia - (e.gia * (element.chietkhau/100)),
+                            giagiam: e.gia - (e.gia * (element.chietkhau/100)),
                             makm: resultId[0].LastID
                         };
                         db.query(sql_CTKM, dataCTKM, (err, result1) => {
-                            if(err)
-                                reject(err);
+                            if(err) { reject(err); }
                             console.log('Create CTKM success');
                         });
                     });
@@ -148,30 +147,6 @@ exports.update_Voucher = (data) => {
             } else
                 resolve("Cập nhật thông tin khuyến mãi thành công !");
         });
-    });
-};
-    // Khoá khuyến mãi:
-exports.update_Status = (data) => {
-    return new Promise( (resolve, reject) => {
-        if(data.trangthai == 0){
-            let sql = `UPDATE khuyenmai SET trangthai = 0 WHERE makm = '${data.makm}'`;
-            db.query(sql, (err, result) => {
-                if(err)
-                    reject(err);
-                else
-                    resolve("Ẩn chương trình khuyến mãi thành công !");
-            });
-        } else if(data.trangthai == 1) {
-            let sql = `UPDATE khuyenmai SET trangthai = 1 WHERE makm = '${data.makm}'`;
-            db.query(sql, (err, result) => {
-                if(err)
-                    reject(err);
-                else
-                    resolve("Hiện chương trình khuyến mãi thành công !");
-            });
-        } else {
-            reject("Sai thông tin, Cập nhật chương trình khuyến mãi thất bại !");
-        };
     });
 };
     // Xoá khuyến mãi:

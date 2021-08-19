@@ -86,18 +86,27 @@ exports.getDetailPromotion = catchAsync(async (req, res, next) => {
 exports.getDetailPromotionVoucher = catchAsync(async (req, res, next) => {
     try {
         let maVoucher = req.params.ma;
-        let voucher = await modelDiscount.check_By_voucherName(maVoucher);
+        var today = new Date();
+        var ngayhientai = today.getDate()+'-'+(today.getMonth()+1)+'-'+today.getFullYear();
+        let voucher = await modelDiscount.check_By_voucherName(maVoucher.toUpperCase());
         if(voucher == false){
             return res.status(400).json({ 
                 status: "Fail", 
-                message: "Không tìm thấy mã voucher này, hoặc mã voucher này đã hết hạn !!!" 
+                message: "Không tìm thấy mã voucher này, vui lòng kiểm tra lại !!!" 
             });
         } else {
-            return res.status(200).json({ 
-                status: "Success", 
-                message: "Áp dụng voucher thành công !", 
-                voucher: voucher 
-            });
+            if(parseInt(ngayhientai) > parseInt(voucher.ngaykt)) {
+                return res.status(400).json({
+                    status: "Fail", 
+                    message: "Mã voucher này đã hết hạn sử dụng !"
+                });
+            } else {
+                return res.status(200).json({ 
+                    status: "Success", 
+                    message: "Áp dụng voucher thành công !", 
+                    voucher: voucher 
+                });
+            }
         }
     } catch (error) {
         return res.status(400).json({
@@ -115,7 +124,7 @@ exports.postPromotionCODE = catchAsync(async (req, res, next) => {
     try {
         let data = {
             tenkm: req.body.tenkm,
-            voucher: req.body.voucher,
+            voucher: req.body.voucher.toUpperCase(),
             ghichu: req.body.ghichu,
             tenhinh: req.body.imgName,
             hinh: req.body.img,
@@ -162,15 +171,11 @@ exports.postPromotionProduct = catchAsync(async (req, res, next) => {
             tenkm: req.body.tenkm,
             ghichu: req.body.ghichu,
             ngaybd: req.body.ngaybd,
-            ngaykt: req.body.ngaykt,
-            trangthai: req.body.trangthai
+            ngaykt: req.body.ngaykt
         }
         let chitietKM = req.body.sanphamCK;
-        if(!data.tenkm || !data.ghichu || !data.ngaybd || !chitietKM) {
-            return res.status(400).json({
-                status: "Fail",
-                message: "Thiếu thông tin. Vui lòng kiểm tra lại thông tin !!!"
-            });
+        if(!data.tenkm || !data.ghichu || !data.ngaybd || !data.ngaykt || !chitietKM) {
+            return res.status(400).json({ status: "Fail", message: "Thiếu thông tin. Vui lòng kiểm tra lại thông tin !!!" });
         };
         let query = await modelDiscount.create_Discount(data, chitietKM);
         return res.status(200).json({ 
@@ -245,40 +250,6 @@ exports.putEditPromotionCODE = catchAsync(async (req, res, next) => {
 exports.putEditPromotionProduct = catchAsync(async (req, res, next) => {
     try {
         
-    } catch (error) {
-        return res.status(400).json({
-            status: "Fail", 
-            message: "Something went wrong",
-            error: error
-        });
-    }
-});
-// PUT: Update status 1 promotion
-exports.putEditPromotionStatus = catchAsync(async (req, res, next) => {
-    try {
-        let data = { 
-            makm: req.body.makm, 
-            trangthai: req.body.trangthai 
-        };
-        if(!data.makm || data.trangthai == undefined) {
-            return res.status(400).json({
-                status: "Fail",
-                message: "Thiếu thông tin. Vui lòng kiểm tra lại thông tin !!!"
-            }); 
-        };
-        const promotionExist = await modelDiscount.get_By_discountId(data.makm);
-        if(promotionExist == -1) {
-            return res.status(400).json({ 
-                status: "Fail", 
-                message: "Không tìm thấy chương trình khuyến mãi này, vui lòng kiểm tra lại thông tin !!!" 
-            });
-        } else {
-            let voucher = await modelDiscount.update_Status(data);
-            return res.status(200).json({ 
-                status: "Success", 
-                message: voucher 
-            });
-        }
     } catch (error) {
         return res.status(400).json({
             status: "Fail", 

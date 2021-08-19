@@ -132,12 +132,50 @@ exports.unlock_User = (userId) => {
     // Xoá tài khoản khách hàng:
 exports.delete_User = (userId) => {
     return new Promise( (resolve, reject) => {
-        let sql = `DELETE FROM khachhang WHERE makh = '${userId}'`;
-        db.query(sql, (err, result) => {
-            if(err) {
-                reject(err);
-            } else {
-                resolve("Xoá tài khoản khách hàng thành công !");
+        let sql_foreignKey_Order = `SELECT * FROM donhang WHERE makh = '${userId}'`;
+        db.query(sql_foreignKey_Order, (error, result) => {
+            if(error) { reject(error); } 
+            else {
+                if(result.length <= 0) {
+                    let sql_foreignKey_Cmt = `SELECT * FROM binhluan WHERE makh = '${userId}'`;
+                    db.query(sql_foreignKey_Cmt, (error_cmt, result_cmt) => {
+                        if(error_cmt) { reject(error_cmt); } 
+                        else { 
+                            if(result_cmt.length <= 0) {
+                                let sql_deleteCart = `DELETE FROM giohang WHERE makh = '${userId}'`;
+                                db.query(sql_deleteCart, (error_cart, result_cart) => {
+                                    if(error_cart) { reject(error_cart); } 
+                                    else { 
+                                        let sql_delete_User = `DELETE FROM khachhang WHERE makh = '${userId}'`;
+                                        db.query(sql_delete_User, (error_user, result_user) => {
+                                            if(error_user) { reject(error_user); }
+                                            else {
+                                                resolve("Xoá tài khoản user thành công !");
+                                            }
+                                        })
+                                    }
+                                });
+                            } else { 
+                                let sql_lock = `UPDATE khachhang SET trangthai = 0 WHERE makh = '${userId}'`;
+                                db.query(sql_lock, (error_lock, result_lock) => {
+                                    if(error_lock) { reject(error_lock); }
+                                    else {
+                                        resolve(6);
+                                    }
+                                });
+                            }
+                        }
+                    });
+                } else {
+                    // Có khoá ngoại không thể xoá:
+                    let sql_lock = `UPDATE khachhang SET trangthai = 0 WHERE makh = '${userId}'`;
+                    db.query(sql_lock, (error_lock, result_lock) => {
+                        if(error_lock) { reject(error_lock); }
+                        else {
+                            resolve(6);
+                        }
+                    });
+                }
             }
         })
     })

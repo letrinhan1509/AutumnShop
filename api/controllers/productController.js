@@ -14,6 +14,8 @@ const { json } = require('body-parser');
 exports.getListProducts = catchAsync(async (req, res, next) => {
     try {
         let listProducts = await modelProduct.list_products();
+        const newArray = [...listProducts].reverse();
+        console.log(newArray);
         return res.status(200).json({ 
             status: "Success", 
             data: listProducts
@@ -205,40 +207,6 @@ exports.getProductProducer = catchAsync(async (req, res, next) => {
         });
     }
 });
-// GET: Clothing size list
-exports.getListSize = catchAsync(async(req, res, next) => {
-    try {
-        let listSize = await modelProduct.list_Size();
-        return res.status(200).json({ 
-            status: "Success", 
-            message: "Lấy danh sách size quần áo thành công", 
-            listSize: listSize
-        });
-    } catch (error) {
-        return res.status(400).json({ 
-            status: "Fail", 
-            message: "Something went wrong!", 
-            error: error 
-        });
-    }
-});
-// GET: 
-exports.getSize = catchAsync(async(req, res, next) => {
-    try {
-        let masize = req.params.id;
-        const size = await modelProduct.get_Size(masize);
-        return res.status(200).json({ 
-            status: "Success",  
-            size: size
-        });
-    } catch (error) {
-        return res.status(400).json({ 
-            status: "Fail", 
-            message: "Something went wrong!", 
-            error: error 
-        });
-    }
-});
 
 
         // POST
@@ -273,9 +241,11 @@ exports.postProduct = catchAsync(async (req, res, next) => {
             // Tên sản phẩm không bị trùng:
             const query = await modelProduct.create_product(data);
             if(query == 1) {
+                const listProducts = await modelProduct.list_products();
                 return res.status(200).json({ 
                     status: "Success", 
-                    message: "Thêm sản phẩm thành công !"
+                    message: "Thêm sản phẩm thành công !",
+                    listProducts: listProducts
                 });
             } else {
                 return res.status(400).json({ 
@@ -290,85 +260,6 @@ exports.postProduct = catchAsync(async (req, res, next) => {
                 message: "Tên của sản phẩm này đã tồn tại, vui lòng nhập tên khác !"
             });
         }
-    } catch (error) {
-        console.log(error);
-        return res.status(400).json({ 
-            status: "Fail", 
-            message: "Something went wrong!", 
-            error: error 
-        });
-    }
-});
-// Post: Create size
-exports.postCreateSize = catchAsync(async (req, res, next) => {
-    try {
-        let body = req.body;
-        if(!body.size || !body.gioitinh || !body.cannangtu || !body.cannangden || !body.chieucaotu || !body.chieucaoden) {
-            return res.status(400).json({ 
-                status: "Fail", 
-                message: "Thiếu thông tin, vui lòng kiểm tra lại !"
-            });
-        };
-        let data = {
-            size: body.size,
-            gioitinh: body.gioitinh,
-            cannangtu: body.cannangtu,
-            cannangden: body.cannangden,
-            chieucaotu: body.chieucaotu,
-            chieucaoden: body.chieucaoden
-        };
-        const sizeExist = await modelProduct.check_Size_Exist(data.size, data.gioitinh);
-        if(sizeExist == -1) {
-            const size = await modelProduct.insert_Size(data);
-            return res.status(200).json({ 
-                status: "Success", 
-                message: size
-            });
-        } else {
-            return res.status(400).json({ 
-                status: "Fail", 
-                message: "Mã size và giới tính này đã tồn tại, vui lòng kiểm tra lại !"
-            });
-        }
-    } catch (error) {
-        console.log(error);
-        return res.status(400).json({ 
-            status: "Fail", 
-            message: "Something went wrong!", 
-            error: error 
-        });
-    };
-});
-// Post: Check size
-exports.postCheckSize = catchAsync(async (req, res, next) => {
-    try {
-        let gioitinh = req.body.gioitinh;
-        let cannang = req.body.cannang;
-        let chieucao = req.body.chieucao;
-        if(!gioitinh || !cannang || !chieucao) {
-            return res.status(400).json({ 
-                status: "Fail", 
-                message: "Thiếu số cân nặng hoặc chiều cao, vui lòng kiểm tra lại !"
-            });
-        };
-        const size = await modelProduct.check_Size(gioitinh);
-        size.some(element => {
-            if(chieucao <= element.chieucaoden && cannang <= element.cannangden) {
-                return res.status(200).json({ 
-                    status: "Success", 
-                    message: "Bạn cao "+`${chieucao}`+" cm, Cân nặng "+`${cannang}`+" kg, Size "+`${element.size}`+" phù hợp nhất với bạn.",
-                    size: element
-                });
-            } else if(chieucao <= element.chieucaoden) {
-                if(cannang <= element.cannangden) {
-                    return res.status(200).json({ 
-                        status: "Success", 
-                        message: "Bạn cao "+`${chieucao}`+" cm, Cân nặng "+`${cannang}`+" kg, Size "+`${element.size}`+" phù hợp nhất với bạn.",
-                        size: element
-                    });
-                }
-            }
-        });
     } catch (error) {
         console.log(error);
         return res.status(400).json({ 
@@ -412,9 +303,11 @@ exports.putEditProduct = catchAsync(async (req, res, next) => {
             });
         } else {
             let query = await modelProduct.update_product(masp, tensp, gia, chitiet, tenhinh, hinh, mota, trangthai, mansx, maloai, madm);
+            const listProducts = await modelProduct.list_products();
             return res.status(200).json({ 
                 status: "Success", 
-                message: "Cập nhật thông tin sản phẩm thành công !"
+                message: "Cập nhật thông tin sản phẩm thành công !",
+                listProducts: listProducts
             });
         }
     } catch (error) {
@@ -466,46 +359,6 @@ exports.putEditStatus = catchAsync(async (req, res, next) => {
         });
     }
 });
-// Put: Adjust the size of clothes
-exports.putEditSize = catchAsync(async (req, res, next) => {
-    try {
-        let body = req.body;
-        if(!body.masize || !body.size || !body.gioitinh || !body.cannangtu || !body.cannangden || !body.chieucaotu || !body.chieucaoden) {
-            return res.status(400).json({ 
-                status: "Fail", 
-                message: "Thiếu thông tin, vui lòng kiểm tra lại !"
-            });
-        };
-        let data = {
-            masize: body.masize,
-            /* size: body.size,
-            gioitinh: body.gioitinh, */
-            cannangtu: body.cannangtu,
-            cannangden: body.cannangden,
-            chieucaotu: body.chieucaotu,
-            chieucaoden: body.chieucaoden
-        };
-        const sizeExist = await modelProduct.get_Size(data.masize);
-        if(sizeExist == -1) {
-            return res.status(400).json({ 
-                status: "Fail", 
-                message: "Không tìm thấy mã size quần áo này, vui lòng kiểm tra lại !"
-            });
-        } else {
-            const size = await modelProduct.update_Size(data);
-            return res.status(200).json({ 
-                status: "Success", 
-                message: size
-            });
-        };
-    } catch (error) {
-        return res.status(400).json({ 
-            status: "Fail", 
-            message: "Something went wrong!", 
-            error: error 
-        });
-    }
-});
 
 
         // DELETE
@@ -534,42 +387,13 @@ exports.deleteProduct = catchAsync(async (req, res, next) => {
                 });
             };
             if(query == 1) {
+                const listProducts = await modelProduct.list_products();
                 return res.status(200).json({ 
                     status: "Success", 
-                    message: "Xoá sản phẩm thành công !"
+                    message: "Xoá sản phẩm thành công !",
+                    listProducts: listProducts
                 });
             };
-        }
-    } catch (error) {
-        return res.status(400).json({ 
-            status: "Fail", 
-            message: "Something went wrong!", 
-            error: error 
-        });
-    }
-});
-// Delete: 
-exports.deleteSize = catchAsync(async (req, res, next) => {
-    try {
-        let masize = req.params.id;
-        if(!masize) {
-            return res.status(400).json({ 
-                status: "Fail", 
-                message: "Thiếu thông tin, vui lòng kiểm tra lại !"
-            });
-        };
-        const sizeExist = await modelProduct.get_Size(masize);
-        if(sizeExist == -1) {
-            return res.status(400).json({ 
-                status: "Fail", 
-                message: "Không tìm thấy mã size này, vui lòng kiểm tra lại !"
-            });
-        } else {
-            const size = await modelProduct.delete_Size(masize);
-            return res.status(200).json({ 
-                status: "Success", 
-                message: size
-            });
         }
     } catch (error) {
         return res.status(400).json({ 

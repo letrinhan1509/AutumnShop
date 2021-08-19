@@ -16,5 +16,7 @@ router
     .get(authController.isLoggedIn, authController.restrictTo, sizeController.getSize)
     .delete(authController.isLoggedIn, authController.restrictTo, sizeController.deleteSize);
 
+router.post("/check-size", sizeController.postCheckSize);
+
 
 module.exports = router;

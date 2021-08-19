@@ -52,7 +52,11 @@ exports.getByPhone = async (phone) => {
     return new Promise( (hamOk, hamLoi) => {
         let sql = `SELECT * FROM admin WHERE sodienthoai=${phone}`;
         db.query(sql, (err, result) => {
-            hamOk(result[0]);
+            if(err) { hamLoi(err); }
+            else {
+                if(result.length <= 0) { hamOk(-1); }
+                else { hamOk(result[0]); }
+            }
         });
     });
 };
@@ -141,14 +145,44 @@ exports.unlock_Admin = (adminId) => {
     // Xoá tài khoản quản trị viên:
 exports.delete_Admin = (adminId) => {
     return new Promise( (resolve, reject) => {
-        let sql = `DELETE FROM admin WHERE manv = '${adminId}'`;
-        db.query(sql, (err, result) => {
-            if(err) {
-                reject(err);
-            } else {
-                resolve("Xoá tài khoản quản trị viên thành công !");
+        let sql_foreignKey_Order = `SELECT * FROM donhang WHERE manv = '${adminId}'`;
+        db.query(sql_foreignKey_Order, (error, result) => {
+            if(error) { reject(error); } 
+            else {
+                if(result.length <= 0) {
+                    let sql_foreignKey_DetailCmt = `SELECT * FROM chitietbl WHERE manv = '${adminId}'`;
+                    db.query(sql_foreignKey_DetailCmt, (error_detailCmt, result_detailCmt) => {
+                        if(error_detailCmt) { reject(error_detailCmt); } 
+                        else {
+                            if(result_detailCmt.length <= 0) {
+                                // Tài khoản có thể xoá
+                                let sql_delete = `DELETE FROM admin WHERE manv = '${adminId}'`;
+                                db.query(sql_delete, (err_delete, result_delete) => {
+                                    if(err_delete) { reject(err_delete); } 
+                                    else { resolve("Xoá tài khoản quản trị viên thành công !"); }
+                                })
+                            } else {
+                                let sql_lock = `UPDATE admin SET trangthai = 0 WHERE manv = '${adminId}'`;
+                                db.query(sql_lock, (err, result) => {
+                                    if(err) { reject(err); }
+                                    else {
+                                        resolve(6);
+                                    }
+                                });
+                            }
+                        }
+                    });
+                } else {
+                    let sql_lock = `UPDATE admin SET trangthai = 0 WHERE manv = '${adminId}'`;
+                    db.query(sql_lock, (err, result) => {
+                        if(err) { reject(err); }
+                        else {
+                            resolve(6);
+                        }
+                    });
+                }
             }
-        })
+        });
     })
 }
 
@@ -183,6 +217,20 @@ exports.status_Order = async (id) => {
         })
     })
 }
+    // Chi tiết 1 trạng thái đơn hàng theo tên:
+exports.status_Order_Name = async (name) => {
+    return new Promise( (resolve, reject) => {
+        let sql = `SELECT * FROM trangthai WHERE tentt='${name}'`;
+        db.query(sql, (err, result) => {
+            if(err) { reject(err); }
+            else{
+                if(result.length <= 0) { resolve(-1); }
+                else { resolve(result[0]); }
+            }
+                          
+        })
+    })
+}
     // Thêm trạng thái:
 exports.insert_Status_Or = (data) => {
     return new Promise( (resolve, reject) => {
@@ -191,7 +239,6 @@ exports.insert_Status_Or = (data) => {
             if(err)
                 reject(err);
             else{
-                console.log('Insert status order successfully')
                 resolve("Thêm trạng thái đơn hàng thành công !");
             }
         })
@@ -202,10 +249,8 @@ exports.update_Status_Or = (sttId, name) => {
     return new Promise( (hamOK, hamLoi) => {
         let sql = `UPDATE trangthai SET tentt = '${name}' WHERE trangthai = '${sttId}'`;
         db.query(sql, (err, result) => {
-            if(err) {
-                hamLoi(err);
-            } else {
-                console.log('Update status success');
+            if(err) { hamLoi(err); } 
+            else {
                 hamOK("Cập nhật trạng thái đơn hàng thành công !")
             };
         });
@@ -219,9 +264,8 @@ exports.delete_Status_Order = (sttId) => {
         ON donhang.trangthai = TT.trangthai
         WHERE donhang.trangthai = '${sttId}'`;
         db.query(sql_type, (error, result) => {
-            if(error) {
-                hamLoi(error);
-            } else {
+            if(error) { hamLoi(error); } 
+            else {
                 if(result.length <= 0){
                     console.log("Xoá được!");
                     let sql = `DELETE FROM trangthai WHERE trangthai='${sttId}'`;
@@ -229,13 +273,12 @@ exports.delete_Status_Order = (sttId) => {
                         if(err) {
                             hamLoi(err);
                         } else {
-                            console.log('Delete type success');
                             hamOK(1);
                         };
                     });
                 }else{
                     console.log("Không xoá được!");
-                    hamOK(-1);
+                    hamOK(6);
                 };
             };
         });

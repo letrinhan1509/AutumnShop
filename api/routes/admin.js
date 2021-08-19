@@ -36,7 +36,7 @@ router.get('/danh-sach', authController.isLoggedIn, authController.restrictTo, a
 router
     .route("/:id")
     .get(adminController.getAdmin)  // Chi tiết 1 nhân viên theo mã
-    //.delete(adminController.deleteAdmin)  // Xoá tài khoản nhân viên.
+    .delete(authController.isLoggedIn, authController.restrictTo_QLNS, adminController.deleteAdmin)  // Xoá tài khoản nhân viên.
 
 router
     .route("/trang-thai-don-hang/:id")

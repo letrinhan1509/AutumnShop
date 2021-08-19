@@ -5,11 +5,7 @@ const authController = require('../controllers/authController');
 const modelUser = require('../models/model_user');
 
 const signToken = (id, email) => {
-    const userData = {
-        _id: id,
-        email: email
-    };
-	return jwt.sign({ userData }, process.env.JWT_SECRET, {
+	return jwt.sign({ _id: id, email: email }, process.env.JWT_SECRET, {
 		expiresIn: process.env.JWT_EXPIRES_IN,
 	});
 };
@@ -182,7 +178,7 @@ exports.postUserLogin = catchAsync(async (req, res, next) => {
             });
         } else {
             // Email này tồn tại
-            if(userExist.trangthai == 0){
+            if(userExist.trangthai === 0){
                 return res.status(400).json({
                     status: "LoginFail",
                     message: "Tài khoản này hiện đang tạm khoá, vui lòng liên nhân viên để mở khoá !"
@@ -439,7 +435,7 @@ exports.putEditUserStatus = catchAsync(async (req, res, next) => {
 exports.deleteUser = catchAsync(async (req, res, next) => {
     try {
         let makh = req.params.id;
-        if(!makh) {
+        if(makh == undefined) {
             return res.status(400).json({
                 status: "Fail",
                 message: "Thiếu thông tin. Vui lòng kiểm tra lại thông tin !"
@@ -453,10 +449,18 @@ exports.deleteUser = catchAsync(async (req, res, next) => {
             });
         } else {
             const query = await modelUser.delete_User(makh);
-            return res.status(200).json({ 
-                status: "Success", 
-                message: query 
-            });
+            // error_Code = 6 : Có ràng buộc khoá ngoại ko thể xoá.
+            if(query == 6) {
+                return res.status(400).json({
+                    status: "Fail",
+                    message: "Hiện tại không thể xoá tài khoản này, đã chuyển trạng thái tài khoản thành khoá !"
+                });
+            } else {
+                return res.status(200).json({ 
+                    status: "Success", 
+                    message: query 
+                });
+            }
         }
     } catch (error) {
         return res.status(400).json({

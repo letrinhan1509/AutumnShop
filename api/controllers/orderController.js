@@ -2,7 +2,9 @@ const axios = require('axios');
 const crypto = require('crypto');
 const catchAsync = require('../utils/catchAsync');
 const modelOrder = require('../models/model_order');
+const modelDiscount = require('../models/model_discount');
 const modelUser = require('../models/model_user');
+const modelCart = require('../models/model_cart');
 
 
                     // ORDER CONTROLLER
@@ -148,7 +150,6 @@ exports.getOrder = catchAsync(async (req, res, next) => {
             });
         };
         let order = await modelOrder.get_By_Id(orderId);
-        console.log(order.trangthai);
         if(order == -1) {
             return res.status(404).json({ 
                 status: "Fail", 
@@ -429,21 +430,22 @@ exports.postCreateOrder = catchAsync(async (req, res, next) => {
             } else {
                 // Thanh toán Momo:
                 if(momo === "YES") {
-
-                }
-                // Tạo đơn trên GHTK:
+                    tongtien = 0;
+                };
+                // Tạo đơn hàng với hình thức giao hàng là: GHTK:
                 if(vanchuyen == "GHTK") {
                     let madonhang = "DH51703846";
-                    //let queryUserDiscount = await modelOrder.insert_Order_User(makh, tenkh, email, sodienthoai, diachi, ship, tongtien, ghichu, makm, hinhthuc, vanchuyen, ngaydat, cart);
+                    let queryUserDiscount = await modelOrder.insert_Order_User(makh, tenkh, email, sodienthoai, diachi, ship, tongtien, ghichu, makm, hinhthuc, vanchuyen, ngaydat, cart);
                     const order_GHTK = await create_order_GHTK(cart, madonhang, email, sodienthoai, tenkh, diachi, thanhpho, quan, phuong_API, diachi, freeship, tongtien, ghichu);
                     if(order_GHTK.success) {
+                        let delet_cart = await modelCart.deleteCart_Customer(makh); // Xoá sản phẩm khỏi giỏ hàng sau khi tạo đơn hàng thành công.
                         return res.status(200).json({
                             status: "Success",
                             message: "Tạo đơn với phương thức vận chuyển là Giao Hàng Tiết Kiệm thành công !",
                             order: order_GHTK.order
                         });
                     } else {
-                        //const delete_Order = await modelOrder.delete_GHTK(queryUserDiscount);
+                        //const delete_Order = await modelOrder.delete_GHTK(queryUserDiscount); // Tạo đơn trên GHTK thất bại => Xoá đơn hàng vừa tạo khỏi DB.
                         return res.status(400).json({
                             status: "Fail",
                             message: "Tạo đơn hàng bằng phương thức vận chuyển Giao Hàng Tiết Kiệm thất bại !",
@@ -453,11 +455,13 @@ exports.postCreateOrder = catchAsync(async (req, res, next) => {
                 } else {
                     // Tạo đơn hàng với hình thức giao hàng là: "SHOP", "GHN"
                     let queryUserDiscount = await modelOrder.insert_Order_User(makh, tenkh, email, sodienthoai, diachi, ship, tongtien, ghichu, makm, hinhthuc, vanchuyen, chitiet, ngaydat, cart);
+                    //let updateAmountProduct = await modelCart;
+                    let delet_cart = await modelCart.deleteCart_Customer(makh);
                     return res.status(200).json({
                         status: "Success",
                         message: "Tạo đơn hàng thành công !"
                     });
-                }
+                };
             }
         }
     } catch (error) {
@@ -472,6 +476,7 @@ exports.postCreateOrder = catchAsync(async (req, res, next) => {
 // POST: Tạo đơn hàng trên GHN: 
 exports.postCreateOrderGHN = catchAsync(async (req, res, next) => {
     try {
+        let payment_type_id = 2;
         let madonhang = req.body.madonhang;
         const orderExist = await modelOrder.get_By_Id(madonhang);
         if(orderExist == -1) {
@@ -485,7 +490,17 @@ exports.postCreateOrderGHN = catchAsync(async (req, res, next) => {
                 status: "Fail",
                 message: "Phương thức vận chuyển không đúng. Vui lòng kiểm tra lại !"
             });
-        }
+        };
+        if(orderExist.makm !== null) {
+            const discountExist = await modelDiscount.get_By_discountId(orderExist.makm);
+            if(discountExist !== -1) {
+                if(discountExist.voucher === "FREESHIP") { payment_type_id = 1; }
+            };
+        };
+        var tongtien = parseInt(req.body.tongtien);
+        if(orderExist.hinhthuc !== "Thanh toán khi nhận hàng") {
+            tongtien = 0;
+        };
         let chitiet = JSON.parse(req.body.chitiet);
         let cart = req.body.giohang;
         let products = [];
@@ -498,7 +513,7 @@ exports.postCreateOrderGHN = catchAsync(async (req, res, next) => {
             products.push(temp);
         });
         let data_raw = {
-            "payment_type_id": 2,// Người trả phí vận chuyển. (1: Shop, 2: Khách hàng)
+            "payment_type_id": payment_type_id,// Người trả phí vận chuyển. (1: Shop, 2: Khách hàng)
             "note": req.body.ghichu,// Lưu ý của khách hàng cho người gửi hàng.
             "required_note": "CHOXEMHANGKHONGTHU",// Lưu ý của đơn hàng vận chuyển.
             "return_phone": "0969362915",// SĐT của shop, để liên hệ để trả lại bưu kiện. 
@@ -510,7 +525,7 @@ exports.postCreateOrderGHN = catchAsync(async (req, res, next) => {
             "to_address": req.body.diachi, // Địa chỉ người nhận.
             "to_ward_code": chitiet.WardCode,// Require
             "to_district_id": chitiet.DistrictID,// Require
-            "cod_amount": parseInt(req.body.tongtien),// Tổng tiền đơn hàng.
+            "cod_amount": tongtien,// Tổng tiền đơn hàng.
             "content": "Cửa hàng thời trang Autumn",// Nội dung đặt hàng.
             "weight": parseInt(req.body.trongluong),// Trọng lượng gói hàng.(gram) - Maximum : 1600000gram
             "length": parseInt(req.body.dai),// Chiều dài gói hàng.(cm) - Maximum : 200cm
@@ -594,90 +609,17 @@ exports.postDetailOrderGHN = catchAsync(async (req, res, next) => {
         });
     }
 });
-// POST: Tạo đơn hàng trên GHTK: (Để test trên Postman)
-exports.postCreateOrderGHTK = catchAsync(async (req, res, next) => {
-try {
-    let cart = req.body.products;
-    let madonhang = req.body.order.id;
-    let email = req.body.order.email;
-    let tel = req.body.order.tel;
-    let name = req.body.order.name;
-    let address = req.body.order.address;
-    let province = req.body.order.province;
-    let district = req.body.order.district;
-    let ward = req.body.order.ward;
-    let street = req.body.order.street;
-    let freeship = 0;
-    let sumpay = req.body.order.pick_money;
-    let note = req.body.order.note;
-    const data = {
-        "products": cart,
-        "order": {
-            "id": madonhang,
-            "pick_name": "Lê Trí Nhân",
-            "pick_address": "82/72",
-            "pick_province": "TP. Hồ Chí Minh",
-            "pick_district": "Quận Bình Thạnh",
-            "pick_ward": "Phường 1",
-            "pick_email": "autumnshop180@gmail.com",
-            "pick_tel": "0969362915",
-            "return_name": "Lê Trí Nhân",
-            "return_address": "82/72",
-            "return_province": "TP. Hồ Chí Minh",
-            "return_district": "Quận Bình Thạnh",
-            "return_tel": "0969362915",
-            "return_email": "autumnshop180@gmail.com",
-            "email": email,
-            "tel": tel,
-            "name": name,
-            "address": address,
-            "province": province,
-            "district": district,
-            "ward": ward,
-            "street": street,
-            "hamlet": "Khác",
-            "is_freeship": freeship, 
-            "pick_money": sumpay,// Số tiền CoD. Nếu bằng 0 thì không thu tiền CoD. Tính theo VNĐ.
-            "note": note,
-            "value": 10000,//Giá trị đóng bảo hiểm, là căn cứ để tính phí bảo hiểm và bồi thường khi có sự cố.
-            "transport": "road",//Phương thức vận chuyển
-            "pick_option":"cod" ,// Đơn hàng xfast yêu cầu bắt buộc pick_option là COD     
-            "deliver_option" : "xteam", // nếu lựa chọn kiểu vận chuyển xfast    
-            "pick_session" : "8_mai", // Phiên lấy xfast 
-        }
-    }
-    //var url = `https://services.giaohangtietkiem.vn/services/shipment/order`;   // URL môi trường thật
-    var url = `https://services.ghtklab.com/services/shipment/order`; // URL môi trường thử nghiệm, sandbox
-    const order = await axios.post(url, data, {
-        headers: { Token: process.env.TOKEN_GHTK_DEV }
-    });
-    if(order.status == 200) {
-        if(order.data.success == "true") { 
-            return res.status(200).json({ 
-                status: "Success", 
-                message: "Tạo đơn hàng trên Giao Hành Tiết Kiệm thành công !",
-                order: order.data.order 
-            }); 
-        } else {
-            return res.status(200).json({ 
-                status: "Success", 
-                message: order.data.message
-            }); 
-        }
-    };
-} catch (error) {
-    return res.status(400).json({
-        status: "Fail", 
-        message: "Something went wrong",
-        message_details: error.response.data.message,
-        error: error.message
-    });
-}
+
+exports.postResult = catchAsync(async (req, res, next) => {
+    console.log(req.body);
+    console.log("ok");
 });
 // POST: Thanh toán qua momo
 exports.postPaymentMomo = catchAsync(async (req, res, next) => {
     try {
-        var endpoint = "https://payment.momo.vn/gw_payment/transactionProcessor"
+        let tongtien = req.body.order.sumpay;
+
+        /* var endpoint = "https://payment.momo.vn/gw_payment/transactionProcessor"
         var hostname = "https://test-payment.momo.vn"
         var path = "/gw_payment/transactionProcessor"
         var partnerCode = "MOMOH8PS20210810"
@@ -685,27 +627,43 @@ exports.postPaymentMomo = catchAsync(async (req, res, next) => {
         var serectkey = "DggJevNUCROJX7lycfA8KS1Y06vh7jg1"
         var orderInfo = "Thông tin đơn hàng"    // Thông tin đơn hàng
         var returnUrl = "http://localhost:3000/hoan-tat-don-hang"
-        var notifyurl = "https://callback.url/notify"
-        var amount = req.body.order.sumpay;  // Tổng tiền đơn hàng
-        var orderId = uuidv1()      // Mã đơn hàng
-        var requestId = uuidv1()    // Mã đơn hàng
+        //var notifyurl = "https://momo.vn/"
+        var notifyurl = "http://localhost:5000/api/v1/don-hang/ket-qua-thanh-toan"
+        var amount = String(tongtien);//req.body.order.sumpay;  // Tổng tiền đơn hàng
+        var orderId = "MOMOH8PS20210810014"      // Mã đơn hàng
+        var requestId = "MOMOH8PS20210810014"    // Mã đơn hàng
         var requestType = "captureMoMoWallet"
-        var extraData = "merchantName=;merchantId="// Tên cửa hàng và ID cửa hàng
-        
-        var rawSignature = "partnerCode="+partnerCode+"&accessKey="+accessKey+"&requestId="+requestId+
-        "&amount="+amount+"&orderId="+orderId+"&orderInfo="+orderInfo+"&returnUrl="+returnUrl+
-        "&notifyUrl="+notifyurl+"&extraData="+extraData
+        var extraData = "merchantName=[AutumnShop];merchantId=[]"// Tên cửa hàng và ID cửa hàng */
 
+        var endpoint = "https://test-payment.momo.vn/gw_payment/transactionProcessor"
+        var hostname = "https://test-payment.momo.vn"
+        var path = "/gw_payment/transactionProcessor"
+        var partnerCode = "MOMOH8PS20210810"
+        var accessKey = "MuKpOqDVHUTn31q1"
+        var serectkey = "DggJevNUCROJX7lycfA8KS1Y06vh7jg1"
+        var orderInfo = "pay with MoMo"
+        var returnUrl = "http://localhost:3000/hoan-tat-don-hang"
+        var notifyurl = "http://localhost:5000/api/v1/don-hang/ket-qua-thanh-toan"
+        var amount = "11000"
+        var orderId = "MOMOH8PS20210810015"
+        var requestId = "MOMOH8PS20210810015"
+        var requestType = "captureMoMoWallet"
+        var extraData = "merchantName=;merchantId="
+        
+        var rawSignature = "partnerCode="+partnerCode+"&accessKey="+accessKey+"&requestId="+requestId+"&amount="+amount+"&orderId="+orderId+"&orderInfo="+orderInfo+"&returnUrl="+returnUrl+"&notifyUrl="+notifyurl+"&extraData="+extraData
         //puts raw signature
         console.log("--------------------RAW SIGNATURE----------------")
         console.log(rawSignature)
+        //signature
+        const crypto = require('crypto');
         var signature = crypto.createHmac('sha256', serectkey)
-                    .update(rawSignature)
-                    .digest('hex');
+                        .update(rawSignature)
+                        .digest('hex');
         console.log("--------------------SIGNATURE----------------")
         console.log(signature)
+
         //json object send to MoMo endpoint
-        var body = JSON.stringify({
+        var body = {
             partnerCode : partnerCode,
             accessKey : accessKey,
             requestId : requestId,
@@ -717,15 +675,39 @@ exports.postPaymentMomo = catchAsync(async (req, res, next) => {
             extraData : extraData,
             requestType : requestType,
             signature : signature,
-        })
-
-        let url = `test-payment.momo.vn`;
-        const momo = await axios.post(url, values);
-        console.log(momo);
+        }
 
 
-        
+        let url = `https://payment.momo.vn/gw_payment/transactionProcessor`;
+        const momo = await axios.post(url, body);
+        console.log(momo.data);
+        if(momo.data.errorCode == 0) {
+            return res.status(200).json({ 
+                status: "Success", 
+                message: momo.data.localMessage,
+                payUrl: momo.data.payUrl
+            });
+        } else {
+            return res.status(400).json({ 
+                status: "Fail", 
+                message: momo.data.localMessage,
+            });
+        }
+
+        /* console.log(body);
+        axios.post(url, body).then(function (response) {
+            console.log(response.data);
+            if (response.data.errorCode == 0) {
+                return res.status(200).json({
+                    status: "Success", 
+                    message: response.data.localMessage,
+                    payUrl: response.data.payUrl
+                });
+            }
+        }); */
     } catch (error) {
+        console.log(error);
+        console.log(error.response.data);
         return res.status(400).json({ 
             status: "Fail", 
             message: "Something went wrong!", 

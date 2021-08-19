@@ -155,7 +155,8 @@ exports.signup = catchAsync(async (req, res, next) => {
             quyen: permission
         };
         let query = await modelAdmin.insert_Admin(data);
-        return res.status(200).json({ status: "Success", message: query });
+        const listAdmin = await modelAdmin.list_Admins();
+        return res.status(200).json({ status: "Success", message: query, listAdmin: listAdmin });
     };
 });
 // Đăng nhập
@@ -197,20 +198,27 @@ exports.logout = (req, res) => {
 };
 // thêm trạng thái đơn hàng
 exports.postStatusOrder = catchAsync(async (req, res, next) => {
-    const data = {
-        trangthai: req.body.trangthai,
-        tentt: req.body.tentt,
-    };
-    if(!data.trangthai || !data.tentt ) {
-        return res.status(400).json({ status: "Fail", message: "Thiếu thông tin, thêm trạng thái đơn hàng thất bại !" });
-    };
-    const sttOrder = await modelAdmin.status_Order(data.trangthai);
-    if(data.trangthai == sttOrder.trangthai) {
-        return res.status(400).json({ status: "Fail", message: "Trạng thái này đã tồn tại vui lòng nhập lại !" });
-    };
     try {
-        let query = await modelAdmin.insert_Status_Or(data);
-        return res.status(200).json({ status: "Success", message: query });
+        const data = {
+            trangthai: req.body.trangthai,
+            tentt: req.body.tentt,
+        };
+        if(data.trangthai == undefined || !data.tentt ) {
+            return res.status(400).json({ status: "Fail", message: "Thiếu thông tin, thêm trạng thái đơn hàng thất bại !" });
+        };
+        const sttOrder = await modelAdmin.status_Order(data.trangthai);
+        if(sttOrder == -1) {
+            const nameSttOrder = await modelAdmin.status_Order_Name(data.tentt);
+            if(nameSttOrder == -1) {
+                const query = await modelAdmin.insert_Status_Or(data);
+                const listOrders = await modelAdmin.list_Status_Order();
+                return res.status(200).json({ status: "Success", message: query, listOrders: listOrders });
+            } else {
+                return res.status(400).json({ status: "Fail", message: "Tên trạng thái này đã tồn tại, vui lòng nhập lại !" });
+            }
+        } else {
+            return res.status(400).json({ status: "Fail", message: "Mã trạng thái này đã tồn tại, vui lòng nhập lại !" });
+        }
     } catch (error) {
         return res.status(400).json({ 
             status: "Fail", 
@@ -240,7 +248,6 @@ exports.putEditProfile = catchAsync(async (req, res, next) => {
             });
         };
         const adminExist = await modelAdmin.get_Admin_Id(id);
-        console.log(adminExist.admin);
         if(adminExist == -1) {
             return res.status(400).json({ 
                 status: "Fail", 
@@ -252,15 +259,35 @@ exports.putEditProfile = catchAsync(async (req, res, next) => {
                 hinh = "https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/User_Img%2FuserICON.png?alt=media&token=b64576ab-18b6-4d7a-9864-c15f59d5717c&fbclid=IwAR0UVyyCkNoF_dfbguTVOkC5lzvHPk-0C4Ef_iFmPxl8lKX2xQsKObTo568";
             };
             if(email == adminExist.admin) {
-                const query = await modelAdmin.update_Profile_Admin(id, ten, tenhinh, hinh, diachi, sdt);
-                const admin = await modelAdmin.get_Admin_Id(id);
-                admin.matkhau = undefined;
-                admin.permission = admin.quyen;
-                return res.status(200).json({ 
-                    status: "Success", 
-                    message: query,
-                    admin: admin
-                });
+                const phoneAdmin = await modelAdmin.getByPhone(sdt);
+                if(phoneAdmin == -1) {
+                    const query = await modelAdmin.update_Profile_Admin(id, ten, tenhinh, hinh, diachi, sdt);
+                    const admin = await modelAdmin.get_Admin_Id(id);
+                    admin.matkhau = undefined;
+                    admin.permission = admin.quyen;
+                    return res.status(200).json({ 
+                        status: "Success", 
+                        message: query,
+                        admin: admin
+                    });
+                } else {
+                    if(email == phoneAdmin.admin && id == phoneAdmin.manv) {
+                        const query = await modelAdmin.update_Profile_Admin(id, ten, tenhinh, hinh, diachi, sdt);
+                        const admin = await modelAdmin.get_Admin_Id(id);
+                        admin.matkhau = undefined;
+                        admin.permission = admin.quyen;
+                        return res.status(200).json({ 
+                            status: "Success", 
+                            message: query,
+                            admin: admin
+                        });
+                    } else {
+                        return res.status(400).json({ 
+                            status: "Fail", 
+                            message: "Số điện thoại này đã có tài khoản sử dụng, vui lòng nhập số điện thoại khác !" 
+                        });
+                    }
+                }
             } else {
                 return res.status(400).json({ 
                     status: "Fail", 
@@ -392,7 +419,7 @@ exports.putForgotPassword = catchAsync(async (req, res, next) => {
             });
         };
     } catch (error) {
-        res.status(400).json({ 
+        return res.status(400).json({ 
             status: "Fail", 
             message: "Something went wrong!" 
         });
@@ -400,44 +427,101 @@ exports.putForgotPassword = catchAsync(async (req, res, next) => {
 });
 // Cập nhật thông tin của trạng thái đơn hàng
 exports.putEditStatusOrder = catchAsync(async (req, res, next) => {
-    const trangthai = req.body.trangthai;
-    const statusOrder = await modelAdmin.status_Order(trangthai);
-    if(statusOrder == -1) {
-        return res.status(400).json({ status: "Fail", message: "Không tìm thấy trạng thái đơn hàng này !" });
-    };
-    const tentt = req.body.tentt;
-    if(trangthai == undefined && tentt == undefined){
-        return res.status(400).json({ "status": "Fail", "message": "Thiếu thông tin trạng thái, cập nhật thất bại !" });
-    }else{
-        try {
-            let query = await modelAdmin.update_Status_Or(trangthai, tentt);
-            res.status(200).json({ status: "Success", message: query });
-        } catch (error) {
-            res.status(400).json({ "status": "Fail", "message": "Lỗi...! Cập nhật trạng thái thất bại !", "error": error });
+    try {
+        const trangthai = req.body.trangthai;
+        const tentt = req.body.tentt;
+        if(trangthai == undefined || tentt == undefined){
+            return res.status(400).json({ status: "Fail", message: "Thiếu thông tin trạng thái, cập nhật thất bại !" });
         };
-    };
+        const statusOrder = await modelAdmin.status_Order(trangthai);
+        if(statusOrder == -1) {
+            return res.status(400).json({ status: "Fail", message: "Không tìm thấy trạng thái đơn hàng này !" });
+        } else{
+            const nameExist = await modelAdmin.status_Order_Name(tentt);
+            if(nameExist == -1 || trangthai == nameExist.trangthai) {
+                const query = await modelAdmin.update_Status_Or(trangthai, tentt);
+                const listOrderStatus = await modelAdmin.list_Status_Order();
+                return res.status(200).json({ status: "Success", message: query, listOrderStatus: listOrderStatus });
+            } else {
+                return res.status(400).json({ status: "Fail", message: "Trùng tên trạng thái đơn hàng, vui lòng nhập tên khác !" });
+            }
+        }
+    } catch (error) {
+        return res.status(400).json({ 
+            status: "Fail", 
+            message: "Something went wrong!" 
+        });
+    }
 });
 
 
         // DELETE:
+// Xoá tài khoản admin
+exports.deleteAdmin = catchAsync(async (req, res, next) => {
+    try {
+        let adminId = req.params.id;
+        let currentAdmin = req.user.manv;
+        if(adminId == undefined) {
+            res.status(400).json({ status: "Fail", message: "Thiếu mã nhân viên, vui lòng kiểm tra lại !" });
+        };
+        let adminExist = await modelAdmin.get_Admin_Id(adminId);
+        if(adminExist == -1) {
+            res.status(400).json({ status: "Fail", message: "Không tìm thấy nhân viên này, vui lòng kiểm tra lại !" });
+        } else {
+            if(currentAdmin != adminId) {
+                const deleteAdmin = await modelAdmin.delete_Admin(adminId);
+                if(deleteAdmin == 6) {
+                    res.status(400).json({ 
+                        status: "Fail", 
+                        message: "Hiện tại không thể xoá tài khoản này, đã tạm khoá tài khoản !" 
+                    });
+                } else {
+                    const listAdmins = await modelAdmin.list_Admins();
+                    res.status(200).json({ status: "Success", message: deleteAdmin, listAdmins: listAdmins });
+                }
+            } else {
+                res.status(400).json({ status: "Fail", message: "Không thể xoá tài khoản hiện tại !" });
+            }
+        }
+    } catch (error) {
+        return res.status(400).json({ 
+            status: "Fail", 
+            message: "Something went wrong!", 
+            error: error 
+        });
+    }
+});
+
 // Xoá trạng thái đơn hàng
 exports.deleteStatusOrder = catchAsync(async (req, res, next) => {
-    let trangthai = req.params.id;
-    if(!trangthai){
-        return res.status(400).json({ status: "Fail", message: "Vui lòng cung cấp mã trạng thái !" });
-    };
-    const sttOrder = await modelAdmin.status_Order(trangthai);
-    if(sttOrder == -1) {
-        return res.status(400).json({ status: "Fail", message: "Không tìm thấy trạng thái đơn hàng này !" });
-    };
     try {
-        let query = await modelAdmin.delete_Status_Order(trangthai);
-        if(query == -1){
-            res.status(400).json({ status: "Fail", message: "Lỗi...Không thể xoá trạng thái này !" });
-        }else
-            res.status(200).json({ status: "Success", message: "Xoá trạng thái đơn hàng thành công !" });     
+        let trangthai = req.params.id;
+        if(trangthai == undefined){
+            return res.status(400).json({ status: "Fail", message: "Vui lòng cung cấp mã trạng thái !" });
+        };
+        const sttOrder = await modelAdmin.status_Order(trangthai);
+        if(sttOrder == -1) {
+            return res.status(400).json({ status: "Fail", message: "Không tìm thấy trạng thái đơn hàng này !" });
+        } else {
+            let query = await modelAdmin.delete_Status_Order(trangthai);
+            if(query == 6) {
+                return res.status(400).json({ status: "Fail", message: "Hiện tại không thể xoá trạng thái này !" });
+            };
+            if(query == 1) {
+                const listOrderStatus = await modelAdmin.list_Status_Order();
+                return res.status(200).json({ 
+                    status: "Success", 
+                    message: "Xoá trạng thái đơn hàng thành công !", 
+                    listOrderStatus: listOrderStatus 
+                });
+            }
+        }   
     } catch (error) {
-        res.status(400).json({ status: "Fail", message: "Lỗi...! Xoá trạng thái đơn hàng thất bại !", error: error });
+        return res.status(400).json({ 
+            status: "Fail", 
+            message: "Something went wrong!", 
+            error: error 
+        });
     };
 });
 

@@ -8,7 +8,7 @@ const modelComment = require('../models/model_comment');
 // GET List Comment
 exports.getListComments = catchAsync(async (req, res, next) => {
     try {
-        let listComments = await modelComment.list_Comments();
+        const listComments = await modelComment.list_Comments();
         return res.status(200).json({ status: "Success", listComments: listComments });
       } catch (error) {
         return res.status(400).json({ 
@@ -92,26 +92,28 @@ exports.getDetailComment = catchAsync(async (req, res, next) => {
 exports.postComment = catchAsync(async (req, res, next) => {
     try {
         var today = new Date();
+        var ngaybl = req.body.ngay;
         var ngay = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
         var gio = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
         let data = {
             masp: req.body.masp,
             makh: req.body.makh,
             noidung: req.body.content,
-            giobl: gio,
-            //ngaybl: ngay,
-            ngaybl: req.body.ngay
+            ngaybl: ngay +' '+ gio,
+            //ngaybl: ngaybl +' '+ gio
         };
-        if(!data.masp || !data.makh || !data.noidung || !data.giobl || !data.ngaybl) {
+        if(!data.masp || !data.makh || !data.noidung || !data.ngaybl) {
             return res.status(400).json({ 
                 status: "Fail", 
                 message: "Thiếu thông tin, vui lòng nhập đầy đủ thông tin !" 
             });
         } else {
             let query = await modelComment.create_Comment(data);
+            const listComments = await modelComment.list_Comments();
             return res.status(200).json({ 
                 status: "Success", 
-                message: query 
+                message: query,
+                listComments: listComments 
             });
         };
     } catch (error) {
@@ -123,24 +125,36 @@ exports.postComment = catchAsync(async (req, res, next) => {
     };
 });
 // Create Rep Comment
-exports.postReplyComment = catchAsync(async (req, res, next) => {
+exports.postAdminReplyComment = catchAsync(async (req, res, next) => {
     try {
-        let makh = req.body.makh;
+        var today = new Date();
+        var ngay = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+        var gio = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+        const role = req.user.quyen;
         let data = {
-            makh: makh,
-            ten: req.body.tenkh,
-            noidung: req.body.content,
-            ngaybl: req.body.date,
+            ten: req.body.tennv,
+            noidung: req.body.noidung,
+            ngaybl: ngay +' '+ gio,
             manv: req.body.manv,
             mabl: req.body.mabl
         };
-        if(!data.mabl || !data.ten || !data.noidung || !data.ngaybl) {
-            return res.status(400).json({ status: "Fail", message: "Thiếu thông tin, vui lòng nhập đầy đủ thông tin !" });
+        if(data.mabl == undefined || !data.ten || !data.noidung || !data.ngaybl || data.manv == undefined) {
+            return res.status(400).json({ status: "Fail", message: "Thiếu thông tin phản hồi, vui lòng nhập đầy đủ thông tin để thêm phản hồi !" });
         };
-        let query = await modelComment.create_RepComment(data);
-        return res.status(200).json({ status: "Success", message: query });
+        const cmtExist = await modelComment.get_by_Id(data.mabl);
+        if(cmtExist == -1) {
+            return res.status(400).json({ status: "Fail", message: "Không tìm thấy bình luận này, vui lòng kiểm tra lại để thêm phản hồi !" });
+        } else {
+            if(role === 'NVCH') {
+                let query = await modelComment.create_AdminRepComment(data);
+                const cmt = await modelComment.get_by_Id(data.mabl);
+                return res.status(200).json({ status: "Success", message: query, comment: cmt });
+            } else {
+                return res.status(400).json({ status: "Fail", message: "Bạn không có quyền thêm phản hồi !" });
+            }
+        }
     } catch (error) {
-        return res.status(400).json({ status: "Fail", message: "Lỗi...!", error: error });
+        return res.status(400).json({ status: "Fail", message: "Something went wrong", error: error });
     };
 });
 
@@ -150,16 +164,23 @@ exports.postReplyComment = catchAsync(async (req, res, next) => {
 exports.putEditCommnet = catchAsync(async (req, res, next) => {
     try {
         let mabl = req.body.mabl;
+        let makh = req.user.makh;// Lấy makh từ token
         let noidung = req.body.noidung;
-        if(!mabl || !noidung) {
-            return res.status(400).json({ status: "Fail", message: "Thiếu thông tin, vui lòng nhập đầy đủ thông tin !" });
+        if(mabl == undefined || makh == undefined || !noidung) {
+            return res.status(400).json({ status: "Fail", message: "Thiếu thông tin, vui lòng kiểm tra lại thông tin !" });
         };
         const comment = await modelComment.get_by_Id(mabl);
         if(comment == -1) {
             return res.status(400).json({ status: "Fail", message: "Mã bình luận " + `${mabl}` + " này không tồn tại, vui lòng kiểm tra lại !" });
-        };
-        let query = await modelComment.update_Comment(mabl, noidung);
-        return res.status(200).json({ status: "Success", message: query });
+        } else {
+            if(comment.makh === makh) {
+                let query = await modelComment.update_Comment(mabl, noidung);
+                const listComments = await modelComment.list_Comments();
+                return res.status(200).json({ status: "Success", message: query, listComments: listComments });
+            } else {
+                return res.status(400).json({ status: "Fail", message: "Bạn không có quyền sửa bình luận này !" });
+            };
+        }
     } catch (error) {
         return res.status(400).json({
             status: "Fail", 
@@ -169,19 +190,28 @@ exports.putEditCommnet = catchAsync(async (req, res, next) => {
     };
 });
 // Edit Reply Comment
-exports.putEditRepComment = catchAsync(async (req, res, next) => {
+exports.putAdminEditRepComment = catchAsync(async (req, res, next) => {
     try {
         let mact = req.body.mact;
+        let mabl = req.body.mabl;
         let noidung = req.body.noidung;
-        if(!mact || !noidung) {
-            return res.status(400).json({ status: "Fail", message: "Thiếu thông tin, vui lòng nhập đầy đủ thông tin !" });
+        let manv = req.user.manv; // Lấy mã của admin từ token
+        if(mact == undefined || manv == undefined || !noidung) {
+            return res.status(400).json({ status: "Fail", message: "Thiếu thông tin bình luận, vui lòng kiểm tra lại thông tin !" });
         };
         const commentDetail = await modelComment.get_detailComment_Id(mact);
         if(commentDetail == -1) {
-            return res.status(400).json({ status: "Fail", message: "Mã bình luận " + `${mact}` + " này không tồn tại, vui lòng kiểm tra lại !" });
-        };
-        let query = await modelComment.update_RepComment(mact, noidung);
-        return res.status(200).json({"status": "Success", "message": "Chỉnh sửa bình luận thành công!", "result": query});
+            return res.status(400).json({ status: "Fail", message: "Không tìm thấy bình luận này, vui lòng kiểm tra lại !" });
+        } else {
+            // Bình luận tồn tại:
+            if(commentDetail.manv == manv && commentDetail.mabl == mabl) {
+                let query = await modelComment.update_AdminRepComment(mact, noidung);
+                const cmt = await modelComment.get_by_Id(mabl);
+                return res.status(200).json({status: "Success", message: query, comment: cmt });
+            } else {
+                return res.status(400).json({ status: "Fail", message: "Bạn không có quyền sửa nội dung của bình luận này !" });
+            }
+        }
     } catch (error) {
         return res.status(400).json({
             status: "Fail", 
@@ -190,7 +220,7 @@ exports.putEditRepComment = catchAsync(async (req, res, next) => {
         });
     };
 });
-// Edit Comment Status
+// Edit Comment Status Client
 exports.putEditCommentStatus = catchAsync(async (req, res, next) => {
     try {
         let mabl = req.body.mabl;
@@ -229,7 +259,7 @@ exports.putEditCommentStatus = catchAsync(async (req, res, next) => {
                 message: "Lỗi...! Cập nhật trạng thái bình luận không thành công !" 
             }); 
     } catch (error) {
-        return res.status(400).json({ status: "Fail", message: "Lỗi...!", error: error });
+        return res.status(400).json({ status: "Fail", message: "Something went wrong!", error: error });
     };
 });
 
@@ -237,27 +267,50 @@ exports.putEditCommentStatus = catchAsync(async (req, res, next) => {
         // DELETE:
 // Xoá bình luận (cha)
 exports.deleteComment = catchAsync(async (req, res, next) => {
-    let mabl = req.params.id;
-    if(!mabl) {
-        return res.status(400).json({ status: "Fail", message: "Thiếu thông tin, xoá bình luận thất bại !" });
-    };
     try {
-        let query = await modelComment.delete_Comment(mabl);
-        return res.status(200).json({ status: "Success", message: query });
+        let mabl = req.params.id;
+        const makh = req.user.makh;
+        if(mabl == undefined) {
+            return res.status(400).json({ status: "Fail", message: "Thiếu thông tin, xoá bình luận thất bại !" });
+        };
+        const cmtExist = await modelComment.get_by_Id(mabl);
+        if(cmtExist == -1) {
+            return res.status(400).json({ status: "Fail", message: "Không tìm thấy bình luận này, vui lòng kiểm tra lại !" });
+        } else {
+            if(cmtExist.makh === makh) {
+                let query = await modelComment.delete_Comment(mabl);
+                const listComments = await modelComment.list_Comments();
+                return res.status(200).json({ status: "Success", message: query, listComments: listComments });
+            } else {
+                return res.status(400).json({ status: "Fail", message: "Bạn không có quyền xoá bình luận này !" });
+            }
+        }
     } catch (error) {
-        return res.status(400).json({ status: "Fail", message: "Lỗi...! Xoá bình luận không thành công!", error: error });
+        return res.status(400).json({ status: "Fail", message: "Something went wrong!", error: error });
     };
 });
 // Xoá 1 chi tiết bình luận (con)
-exports.deleteRepComment = catchAsync(async (req, res, next) => {
-    let mact = req.params.id;
-    if(!mact) {
-        return res.status(400).json({ status: "Fail", message: "Thiếu thông tin, xoá bình luận thất bại !" });
-    };
+exports.deleteAdminRepComment = catchAsync(async (req, res, next) => {
     try {
-        let query = await modelComment.delete_RepComment(mact);
-        return res.status(200).json({ status: "Success", message: query });
+        let mact = req.params.id;
+        const manv = req.user.manv; // Lấy mã của admin từ token 
+        if(mact == undefined) {
+            return res.status(400).json({ status: "Fail", message: "Thiếu thông tin, xoá bình luận thất bại !" });
+        };
+        const cmtExist = await modelComment.get_detailComment_Id(mact);
+        if(cmtExist == -1) {
+            return res.status(400).json({ status: "Fail", message: "Không tìm thấy bình luận này, vui lòng kiểm tra lại !" });
+        } else {
+            if(cmtExist.manv === manv) {
+                var mabl = cmtExist.mabl;
+                let query = await modelComment.delete_AdminRepComment(mact);
+                const cmt = await modelComment.get_by_Id(mabl);
+                return res.status(200).json({ status: "Success", message: query, comment: cmt });
+            } else {
+                return res.status(400).json({ status: "Fail", message: "Bạn không có quyền xoá bình luận này !" });
+            }
+        }
     } catch (error) {
-        return res.status(400).json({ status: "Fail", message: "Lỗi...! Xoá bình luận không thành công!", error: error });
+        return res.status(400).json({ status: "Fail", message: "Something went wrong !", error: error });
     }
 });

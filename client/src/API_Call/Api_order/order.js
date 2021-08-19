@@ -21,6 +21,10 @@ const order = {
         const url = "/";
         return AxiosOrder.post(url, values);
     },
+    addOrderMomo: (values) => {
+        const url = "/pay-momo";
+        return AxiosOrder.post(url, values);
+    },
     cancelOrder: (id) => {
         const url = `/${id}`;
         return AxiosOrder.delete(url);

@@ -158,7 +158,7 @@ exports.delete_Product = async (masp) => {
     });
 };
 // Xoá giỏ hàng theo mã khách hàng:
-exports.delete_Customer = async (makh) => {
+exports.deleteCart_Customer = async (makh) => {
     return new Promise( (resolve, reject) => {
         let sql = `DELETE FROM giohang WHERE makh = '${makh}'`;
         db.query(sql, (err, result) => {
