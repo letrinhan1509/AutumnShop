@@ -20,22 +20,9 @@ router
   .route("/new-product").get(productController.getNewProduct);
 
 router
-  .route("/bang-size")
-  .get(productController.getListSize)
-  .post(productController.postCreateSize)
-  .put(productController.putEditSize);
-
-router.post("/check-size", productController.postCheckSize);
-
-router
   .route("/:id")
   .get(productController.getProduct)// Lọc sản phẩm theo id
   .delete(productController.deleteProduct);  // Xoá sản phẩm
-
-router
-  .route("/bang-size/:id")
-  .get(productController.getSize)
-  .delete(productController.deleteSize);
 
 router.get('/loai/:id', productController.getProductType);// Lọc sản phẩm theo loại
 router.get('/danh-muc/:id', productController.getProductCategory);// lọc sản phẩm theo danh mục

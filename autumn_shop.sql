@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 12, 2021 at 05:06 AM
--- Server version: 10.4.19-MariaDB
--- PHP Version: 8.0.7
+-- Generation Time: Aug 19, 2021 at 06:07 AM
+-- Server version: 10.4.20-MariaDB
+-- PHP Version: 8.0.9
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -89,8 +89,7 @@ CREATE TABLE `binhluan` (
   `masp` int(10) NOT NULL,
   `makh` int(10) NOT NULL,
   `noidung` varchar(2000) NOT NULL,
-  `giobl` time NOT NULL,
-  `ngaybl` date NOT NULL,
+  `ngaybl` datetime NOT NULL DEFAULT current_timestamp(),
   `trangthai` int(10) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -98,8 +97,8 @@ CREATE TABLE `binhluan` (
 -- Dumping data for table `binhluan`
 --
 
-INSERT INTO `binhluan` (`mabl`, `masp`, `makh`, `noidung`, `giobl`, `ngaybl`, `trangthai`) VALUES
-(11, 126, 7, 'Sản phẩm rất tốt !!!', '19:28:04', '2021-08-04', 1);
+INSERT INTO `binhluan` (`mabl`, `masp`, `makh`, `noidung`, `ngaybl`, `trangthai`) VALUES
+(11, 126, 7, 'Sản phẩm rất tốt !!!', '2021-08-04 00:00:00', 1);
 
 -- --------------------------------------------------------
 
@@ -126,8 +125,8 @@ CREATE TABLE `chitietbl` (
 CREATE TABLE `chitietdh` (
   `mact` int(10) NOT NULL,
   `masp` int(10) NOT NULL,
-  `size` varchar(10) DEFAULT NULL,
-  `mau` varchar(10) DEFAULT NULL,
+  `size` varchar(10) CHARACTER SET utf8 NOT NULL,
+  `mau` varchar(10) CHARACTER SET utf8 NOT NULL,
   `gia` int(10) NOT NULL,
   `giagiam` int(10) DEFAULT 0,
   `soluong` int(11) NOT NULL,
@@ -145,49 +144,16 @@ INSERT INTO `chitietdh` (`mact`, `masp`, `size`, `mau`, `gia`, `giagiam`, `soluo
 -- --------------------------------------------------------
 
 --
--- Table structure for table `chitietdm`
---
-
-CREATE TABLE `chitietdm` (
-  `mactdm` int(10) NOT NULL,
-  `madm` varchar(50) NOT NULL,
-  `masp` int(10) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Dumping data for table `chitietdm`
---
-
-INSERT INTO `chitietdm` (`mactdm`, `madm`, `masp`) VALUES
-(36, 'DMA', 126),
-(37, 'DMA', 127);
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `chitietkm`
 --
 
 CREATE TABLE `chitietkm` (
   `mact` int(10) NOT NULL,
   `masp` int(10) NOT NULL,
+  `chitiet_km` longtext DEFAULT NULL,
   `chietkhau` int(10) NOT NULL DEFAULT 10,
   `giakm` int(10) NOT NULL DEFAULT 0,
   `makm` int(10) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `chitiet_sanpham`
---
-
-CREATE TABLE `chitiet_sanpham` (
-  `mact` int(10) NOT NULL,
-  `masp` int(10) NOT NULL,
-  `masize` int(10) NOT NULL,
-  `mau` varchar(50) NOT NULL,
-  `soluong` int(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -235,9 +201,10 @@ CREATE TABLE `donhang` (
   `makm` int(10) DEFAULT NULL,
   `hinhthuc` varchar(50) NOT NULL,
   `vanchuyen` varchar(50) NOT NULL,
-  `chitiet` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`chitiet`)),
+  `chitiet` longtext DEFAULT NULL,
   `ngaydat` date DEFAULT NULL,
   `ngaygiao` date DEFAULT NULL,
+  `manv` int(10) DEFAULT NULL,
   `trangthai` int(11) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -245,8 +212,8 @@ CREATE TABLE `donhang` (
 -- Dumping data for table `donhang`
 --
 
-INSERT INTO `donhang` (`madonhang`, `code_GHN`, `makh`, `tenkh`, `email`, `sodienthoai`, `diachi`, `tienship`, `tongtien`, `ghichu`, `makm`, `hinhthuc`, `vanchuyen`, `chitiet`, `ngaydat`, `ngaygiao`, `trangthai`) VALUES
-(105, NULL, 9, 'Nemo', 'thhphuong2607@gmail.com', '932550587', '233 Vĩnh Viễn, Phường 04, Quận 10, TP Hồ Chí Minh', 18000, 218000, '', NULL, 'Thanh toán khi nhận hàng', 'SHOP', NULL, '2021-08-11', NULL, 0);
+INSERT INTO `donhang` (`madonhang`, `code_GHN`, `makh`, `tenkh`, `email`, `sodienthoai`, `diachi`, `tienship`, `tongtien`, `ghichu`, `makm`, `hinhthuc`, `vanchuyen`, `chitiet`, `ngaydat`, `ngaygiao`, `manv`, `trangthai`) VALUES
+(105, NULL, 9, 'Nemo', 'thhphuong2607@gmail.com', '932550587', '233 Vĩnh Viễn, Phường 04, Quận 10, TP Hồ Chí Minh', 18000, 218000, '', NULL, 'Thanh toán khi nhận hàng', 'SHOP', NULL, '2021-08-11', NULL, NULL, 0);
 
 -- --------------------------------------------------------
 
@@ -283,6 +250,7 @@ INSERT INTO `giohang` (`magiohang`, `makh`, `masp`, `size`, `mau`, `gia`, `giagi
 
 CREATE TABLE `khachhang` (
   `makh` int(10) NOT NULL,
+  `uid` varchar(50) DEFAULT NULL,
   `tenkh` varchar(200) NOT NULL,
   `email` varchar(200) NOT NULL,
   `matkhau` varchar(100) NOT NULL,
@@ -297,17 +265,17 @@ CREATE TABLE `khachhang` (
 -- Dumping data for table `khachhang`
 --
 
-INSERT INTO `khachhang` (`makh`, `tenkh`, `email`, `matkhau`, `tenhinh`, `hinh`, `sodienthoai`, `diachi`, `trangthai`) VALUES
-(1, 'Nguyễn Văn Nhất', 'nvn@gmail.com', '$2b$10$ikhShC0/C3EuPoWNK3WGHebqrGYzgCC2gn1kkxTGtmnwsRldbk//a', '', NULL, '69741120', '15 HTK p5 q8', 1),
-(2, 'Đông Văn Hưng', 'dvh@gmail.com', '123456', '', NULL, '69743365', '15 afg q6 q8', 0),
-(3, 'Phan Thiện Nghĩa', 'ptn@gmail.com', '123456', '', NULL, '9575333', '156 acf p5 q8', 0),
-(4, 'Lê Trí Nhân', 'nhan@gmail.com', '123456789', '', NULL, '69741120', '180 Cao Lỗ', 1),
-(5, 'Nhật Hào', 'hao@gmail.com', '123456@^!^@', '', NULL, '909666555', '182 Cao Lỗ', 1),
-(6, 'Bad Boy', 'trinhan.dh51703846@gmail.com', '$2b$10$cUnPrNVLjaqYlnJdsZ.ajOsUCRD5au5xEF7POFo8Ip0qadqyKEjVq', '', NULL, '906060606', '180 Cao Lỗ, P4', 1),
-(7, 'Trí Nhân', 'letrinhan1509@gmail.com', '$2b$10$bmoZ2SnYw.Bf34Tgt2/Md./j2XSNpBPE.nwkspWMvl8ofkITCY6a.', 'user.png', 'https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/User_Img%2Fuser.png?alt=media&token=6ec247df-90ab-4cc9-b671-7261ef37215f&fbclid=IwAR2Xkjho5Cq5BUR40AYdPAqSj50dW5jIdYzf2-3rbmlq6Ij31iT64AMAQsw', '969362915', '178 Cao Lỗ, Phường 04', 1),
-(8, 'Nhân', 'letrinhan54321@gmail.com', '$2b$10$KvhroYwNu2J4wpn3ytLREOZ/1cdzx65UZA3bbeEhPGnpAJc0BU9hO', 'user.png', 'https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/User_Img%2Fuser.png?alt=media&token=6ec247df-90ab-4cc9-b671-7261ef37215f&fbclid=IwAR2Xkjho5Cq5BUR40AYdPAqSj50dW5jIdYzf2-3rbmlq6Ij31iT64AMAQsw', '909686868', '180 Cao Lỗ', 1),
-(9, 'Nemo', 'thhphuong2607@gmail.com', '$2b$10$AP/zgTS7AJzD7KUGUiI6WedQ2rFOyj2hWK/zsWB.cj/SPoT0sfXne', 'user.png', 'https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/User_Img%2FuserICON.png?alt=media&token=b64576ab-18b6-4d7a-9864-c15f59d5717c&fbclid=IwAR2HhoURE-FDaY0FUpVkWgZS0Hc7-obK_B3rwSepgPe8cdyZFf94bBdWZ8c', '932550587', '233/15 Vĩnh Viễn', 1),
-(10, 'Nhật Hào', 'letrinhan15099@gmail.com', '$2b$10$fq4JuU8B7Mb0h0l9vnMBze1aBXBwMjnfISYZnAj6662PQvBE5a2re', 'user.png', 'https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/User_Img%2Fuser.png?alt=media&token=6ec247df-90ab-4cc9-b671-7261ef37215f&fbclid=IwAR2Xkjho5Cq5BUR40AYdPAqSj50dW5jIdYzf2-3rbmlq6Ij31iT64AMAQsw', '969362915', '178 Cao Lỗ, Phường 4, Quận 08, Tp.HCM', 1);
+INSERT INTO `khachhang` (`makh`, `uid`, `tenkh`, `email`, `matkhau`, `tenhinh`, `hinh`, `sodienthoai`, `diachi`, `trangthai`) VALUES
+(1, NULL, 'Nguyễn Văn Nhất', 'nvn@gmail.com', '$2b$10$ikhShC0/C3EuPoWNK3WGHebqrGYzgCC2gn1kkxTGtmnwsRldbk//a', '', NULL, '69741120', '15 HTK p5 q8', 1),
+(2, NULL, 'Đông Văn Hưng', 'dvh@gmail.com', '123456', '', NULL, '69743365', '15 afg q6 q8', 0),
+(3, NULL, 'Phan Thiện Nghĩa', 'ptn@gmail.com', '123456', '', NULL, '9575333', '156 acf p5 q8', 0),
+(4, NULL, 'Lê Trí Nhân', 'nhan@gmail.com', '123456789', '', NULL, '69741120', '180 Cao Lỗ', 1),
+(5, NULL, 'Nhật Hào', 'hao@gmail.com', '123456@^!^@', '', NULL, '909666555', '182 Cao Lỗ', 1),
+(6, NULL, 'Bad Boy', 'trinhan.dh51703846@gmail.com', '$2b$10$cUnPrNVLjaqYlnJdsZ.ajOsUCRD5au5xEF7POFo8Ip0qadqyKEjVq', '', NULL, '906060606', '180 Cao Lỗ, P4', 1),
+(7, NULL, 'Trí Nhân', 'letrinhan1509@gmail.com', '$2b$10$bmoZ2SnYw.Bf34Tgt2/Md./j2XSNpBPE.nwkspWMvl8ofkITCY6a.', 'user.png', 'https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/User_Img%2Fuser.png?alt=media&token=6ec247df-90ab-4cc9-b671-7261ef37215f&fbclid=IwAR2Xkjho5Cq5BUR40AYdPAqSj50dW5jIdYzf2-3rbmlq6Ij31iT64AMAQsw', '969362915', '178 Cao Lỗ, Phường 04', 1),
+(8, NULL, 'Nhân', 'letrinhan54321@gmail.com', '$2b$10$KvhroYwNu2J4wpn3ytLREOZ/1cdzx65UZA3bbeEhPGnpAJc0BU9hO', 'user.png', 'https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/User_Img%2Fuser.png?alt=media&token=6ec247df-90ab-4cc9-b671-7261ef37215f&fbclid=IwAR2Xkjho5Cq5BUR40AYdPAqSj50dW5jIdYzf2-3rbmlq6Ij31iT64AMAQsw', '909686868', '180 Cao Lỗ', 1),
+(9, NULL, 'Nemo', 'thhphuong2607@gmail.com', '$2b$10$AP/zgTS7AJzD7KUGUiI6WedQ2rFOyj2hWK/zsWB.cj/SPoT0sfXne', 'user.png', 'https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/User_Img%2FuserICON.png?alt=media&token=b64576ab-18b6-4d7a-9864-c15f59d5717c&fbclid=IwAR2HhoURE-FDaY0FUpVkWgZS0Hc7-obK_B3rwSepgPe8cdyZFf94bBdWZ8c', '932550587', '233/15 Vĩnh Viễn', 1),
+(10, NULL, 'Nhật Hào', 'letrinhan15099@gmail.com', '$2b$10$fq4JuU8B7Mb0h0l9vnMBze1aBXBwMjnfISYZnAj6662PQvBE5a2re', 'user.png', 'https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/User_Img%2Fuser.png?alt=media&token=6ec247df-90ab-4cc9-b671-7261ef37215f&fbclid=IwAR2Xkjho5Cq5BUR40AYdPAqSj50dW5jIdYzf2-3rbmlq6Ij31iT64AMAQsw', '969362915', '178 Cao Lỗ, Phường 4, Quận 08, Tp.HCM', 1);
 
 -- --------------------------------------------------------
 
@@ -324,21 +292,21 @@ CREATE TABLE `khuyenmai` (
   `hinh` varchar(500) NOT NULL,
   `dieukien` int(20) DEFAULT NULL,
   `giagiam` int(15) DEFAULT NULL,
+  `soluong` int(10) DEFAULT 0,
   `ngaybd` date NOT NULL,
-  `ngaykt` date DEFAULT NULL,
-  `trangthai` int(10) DEFAULT 1 COMMENT '0: Ẩn -\r\n1: Hiện'
+  `ngaykt` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `khuyenmai`
 --
 
-INSERT INTO `khuyenmai` (`makm`, `tenkm`, `voucher`, `ghichu`, `tenhinh`, `hinh`, `dieukien`, `giagiam`, `ngaybd`, `ngaykt`, `trangthai`) VALUES
-(1, 'Miễn phí vận chuyển', 'FREESHIP', 'Shop đang có chương trình khuyến khích khách hàng mua hàng online nên shop sẽ hỗ trợ miễn phí vận chuyển cho đơn hàng trên 80.000đ. Cùng chung tay chống dịch. Cảm ơn khách hàng đã xem', '', '', 80000, 18000, '2021-07-03', '2021-07-09', 1),
-(2, 'Hỗ trợ khách hàng mùa dịch', 'AUTUMN30', 'Giảm giá cho tất cả đơn hàng mua hàng online với tổng đơn hàng trên 150.000đ. Cảm ơn khách hàng đã ủng hộ shop <3 !!!', '', '', 10000, 3000, '2021-07-03', '2021-07-05', 1),
-(3, 'Cùng autumn shop chung tay chống dịch!', 'COVID19', 'Mỗi đơn hàng mua online với tổng đơn hàng trên 200.000đ quý vị sẽ được giảm 30.000đ trên mỗi đơn hàng.', '', '', 200000, 30000, '2021-07-23', '2021-07-24', 1),
-(4, 'Giảm giá sốc khi mua hàng online trong mùa dịch', 'GIASOC', 'Khi quý vị mua hàng với đơn hàng trên 150.000đ thì quý vị sẽ được giảm 50.000đ trên tổng đơn hàng.', '', 'undefined', 150000, 60000, '2021-07-23', '2021-07-24', 1),
-(12, 'Giảm giá bộ sưu tập hè', 'giaso', 'ádsdsa', 'Free_Shipping.png', 'https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/Voucher_img%2FFree_Shipping.png?alt=media&token=5c6f9ab5-6c34-49c7-ae7b-42fc1a16df81', 50000, 10000, '0000-00-00', '0000-00-00', 1);
+INSERT INTO `khuyenmai` (`makm`, `tenkm`, `voucher`, `ghichu`, `tenhinh`, `hinh`, `dieukien`, `giagiam`, `soluong`, `ngaybd`, `ngaykt`) VALUES
+(1, 'Miễn phí vận chuyển', 'FREESHIP', 'Shop đang có chương trình khuyến khích khách hàng mua hàng online nên shop sẽ hỗ trợ miễn phí vận chuyển cho đơn hàng trên 80.000đ. Cùng chung tay chống dịch. Cảm ơn khách hàng đã xem', '', '', 80000, 18000, 0, '2021-07-03', '2021-07-09'),
+(2, 'Hỗ trợ khách hàng mùa dịch', 'AUTUMN30', 'Giảm giá cho tất cả đơn hàng mua hàng online với tổng đơn hàng trên 150.000đ. Cảm ơn khách hàng đã ủng hộ shop <3 !!!', '', '', 10000, 3000, 0, '2021-07-03', '2021-07-05'),
+(3, 'Cùng autumn shop chung tay chống dịch!', 'COVID19', 'Mỗi đơn hàng mua online với tổng đơn hàng trên 200.000đ quý vị sẽ được giảm 30.000đ trên mỗi đơn hàng.', '', '', 200000, 30000, 0, '2021-07-23', '2021-07-24'),
+(4, 'Giảm giá sốc khi mua hàng online trong mùa dịch', 'GIASOC', 'Khi quý vị mua hàng với đơn hàng trên 150.000đ thì quý vị sẽ được giảm 50.000đ trên tổng đơn hàng.', '', 'undefined', 150000, 60000, 0, '2021-07-23', '2021-07-24'),
+(12, 'Giảm giá bộ sưu tập hè', 'giaso', 'ádsdsa', 'Free_Shipping.png', 'https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/Voucher_img%2FFree_Shipping.png?alt=media&token=5c6f9ab5-6c34-49c7-ae7b-42fc1a16df81', 50000, 10000, 0, '0000-00-00', '0000-00-00');
 
 -- --------------------------------------------------------
 
@@ -417,9 +385,9 @@ CREATE TABLE `sanpham` (
   `masp` int(10) NOT NULL,
   `tensp` varchar(100) NOT NULL,
   `gia` int(10) NOT NULL,
-  `chitiet` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL CHECK (json_valid(`chitiet`)),
+  `chitiet` longtext NOT NULL,
   `tenhinh` varchar(100) NOT NULL,
-  `hinh` varchar(1000) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `hinh` varchar(1000) NOT NULL,
   `tenhinhct` varchar(100) DEFAULT NULL,
   `hinhchitiet` varchar(2000) DEFAULT NULL,
   `mota` text DEFAULT NULL,
@@ -437,17 +405,6 @@ CREATE TABLE `sanpham` (
 INSERT INTO `sanpham` (`masp`, `tensp`, `gia`, `chitiet`, `tenhinh`, `hinh`, `tenhinhct`, `hinhchitiet`, `mota`, `ngaytao`, `trangthai`, `mansx`, `maloai`, `madm`) VALUES
 (126, 'Áo thun ADIDAS', 200000, '[{\"id\":1,\"size\":\"S\",\"mau\":\"trắng\",\"soluong\":\"20\",\"giagiam\":\"0\"},{\"id\":3,\"size\":\"S\",\"mau\":\"đen\",\"soluong\":\"10\",\"giagiam\":\"0\"},{\"id\":4,\"size\":\"M\",\"mau\":\"trắng\",\"soluong\":\"20\",\"giagiam\":\"0\"},{\"id\":5,\"size\":\"L\",\"mau\":\"trắng\",\"soluong\":\"20\",\"giagiam\":\"0\"}]', 'adidasTrang.jpg', 'https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/Product_Img%2FadidasTrang.jpg?alt=media&token=ca8cab95-0f4b-435d-99db-448a853299a3', NULL, NULL, NULL, '2021-08-03 13:49:35', 1, 'ad', 'at', 'DMA'),
 (127, 'Áo thun PEANUTS', 200000, '[{\"id\":1,\"size\":\"S\",\"mau\":\"trắng\",\"soluong\":\"20\",\"giagiam\":\"0\"},{\"id\":2,\"size\":\"M\",\"mau\":\"trắng\",\"soluong\":\"20\",\"giagiam\":\"0\"},{\"id\":3,\"size\":\"L\",\"mau\":\"trắng\",\"soluong\":\"20\",\"giagiam\":\"0\"}]', 'nomousPNuts.jpg', 'https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/Product_Img%2FnomousPNuts.jpg?alt=media&token=f23808f9-3f63-4957-8306-d41cc8a9fc98', NULL, NULL, NULL, '2021-08-03 13:51:41', 1, 'nm', 'at', 'DMA');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `size`
---
-
-CREATE TABLE `size` (
-  `masize` int(10) NOT NULL,
-  `tensize` varchar(10) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -511,27 +468,12 @@ ALTER TABLE `chitietdh`
   ADD KEY `masp` (`masp`);
 
 --
--- Indexes for table `chitietdm`
---
-ALTER TABLE `chitietdm`
-  ADD PRIMARY KEY (`mactdm`),
-  ADD KEY `dm-sanpham_ibfk_1` (`madm`),
-  ADD KEY `dm-sanpham_ibfk_2` (`masp`);
-
---
 -- Indexes for table `chitietkm`
 --
 ALTER TABLE `chitietkm`
   ADD PRIMARY KEY (`mact`),
   ADD KEY `chitietkm_ibfk_1` (`makm`),
   ADD KEY `chitietkm_ibfk_2` (`masp`);
-
---
--- Indexes for table `chitiet_sanpham`
---
-ALTER TABLE `chitiet_sanpham`
-  ADD KEY `chitiet_sanpham_ibfk_1` (`masp`),
-  ADD KEY `chitiet_sanpham_ibfk_2` (`masize`);
 
 --
 -- Indexes for table `danhmuc`
@@ -546,7 +488,8 @@ ALTER TABLE `donhang`
   ADD PRIMARY KEY (`madonhang`),
   ADD KEY `makh` (`makh`),
   ADD KEY `trangthai` (`trangthai`),
-  ADD KEY `donhang_ibfk_4` (`makm`);
+  ADD KEY `donhang_ibfk_4` (`makm`),
+  ADD KEY `donhang_ibfk_2` (`manv`);
 
 --
 -- Indexes for table `giohang`
@@ -590,12 +533,6 @@ ALTER TABLE `sanpham`
   ADD KEY `sanpham_ibfk_3` (`madm`);
 
 --
--- Indexes for table `size`
---
-ALTER TABLE `size`
-  ADD PRIMARY KEY (`masize`);
-
---
 -- Indexes for table `trangthai`
 --
 ALTER TABLE `trangthai`
@@ -628,12 +565,6 @@ ALTER TABLE `chitietbl`
 --
 ALTER TABLE `chitietdh`
   MODIFY `mact` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=72;
-
---
--- AUTO_INCREMENT for table `chitietdm`
---
-ALTER TABLE `chitietdm`
-  MODIFY `mactdm` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
 
 --
 -- AUTO_INCREMENT for table `chitietkm`
@@ -672,12 +603,6 @@ ALTER TABLE `sanpham`
   MODIFY `masp` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=128;
 
 --
--- AUTO_INCREMENT for table `size`
---
-ALTER TABLE `size`
-  MODIFY `masize` int(10) NOT NULL AUTO_INCREMENT;
-
---
 -- Constraints for dumped tables
 --
 
@@ -702,13 +627,6 @@ ALTER TABLE `chitietdh`
   ADD CONSTRAINT `chitietdh_ibfk_2` FOREIGN KEY (`masp`) REFERENCES `sanpham` (`masp`) ON UPDATE CASCADE;
 
 --
--- Constraints for table `chitietdm`
---
-ALTER TABLE `chitietdm`
-  ADD CONSTRAINT `chitietdm_ibfk_1` FOREIGN KEY (`madm`) REFERENCES `danhmuc` (`madm`) ON UPDATE CASCADE,
-  ADD CONSTRAINT `chitietdm_ibfk_2` FOREIGN KEY (`masp`) REFERENCES `sanpham` (`masp`) ON UPDATE CASCADE;
-
---
 -- Constraints for table `chitietkm`
 --
 ALTER TABLE `chitietkm`
@@ -716,17 +634,11 @@ ALTER TABLE `chitietkm`
   ADD CONSTRAINT `chitietkm_ibfk_2` FOREIGN KEY (`masp`) REFERENCES `sanpham` (`masp`) ON UPDATE CASCADE;
 
 --
--- Constraints for table `chitiet_sanpham`
---
-ALTER TABLE `chitiet_sanpham`
-  ADD CONSTRAINT `chitiet_sanpham_ibfk_1` FOREIGN KEY (`masp`) REFERENCES `sanpham` (`masp`) ON UPDATE CASCADE,
-  ADD CONSTRAINT `chitiet_sanpham_ibfk_2` FOREIGN KEY (`masize`) REFERENCES `size` (`masize`) ON UPDATE CASCADE;
-
---
 -- Constraints for table `donhang`
 --
 ALTER TABLE `donhang`
   ADD CONSTRAINT `donhang_ibfk_1` FOREIGN KEY (`makh`) REFERENCES `khachhang` (`makh`) ON UPDATE SET NULL,
+  ADD CONSTRAINT `donhang_ibfk_2` FOREIGN KEY (`manv`) REFERENCES `admin` (`manv`) ON UPDATE SET NULL,
   ADD CONSTRAINT `donhang_ibfk_4` FOREIGN KEY (`makm`) REFERENCES `khuyenmai` (`makm`) ON UPDATE CASCADE,
   ADD CONSTRAINT `donhang_ibfk_5` FOREIGN KEY (`trangthai`) REFERENCES `trangthai` (`trangthai`) ON UPDATE CASCADE;
 

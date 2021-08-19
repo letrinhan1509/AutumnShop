@@ -4,12 +4,13 @@ const modelSize = require('../models/model_size');
 
                     // SIZE CONTROLLER
 
-// GET: Danh sách size của sản phẩm
-exports.getListSize = catchAsync(async (req, res, next) => {
+// GET: Danh sách tất cả size
+exports.getListSize = catchAsync(async(req, res, next) => {
     try {
-        let listSize = await modelSize.list_size();
+        let listSize = await modelSize.list_Size();
         return res.status(200).json({ 
             status: "Success", 
+            message: "Lấy danh sách size quần áo thành công", 
             listSize: listSize
         });
     } catch (error) {
@@ -20,13 +21,13 @@ exports.getListSize = catchAsync(async (req, res, next) => {
         });
     }
 });
-// GET: Chi tiết 1 size của sản phẩm
-exports.getSize = catchAsync(async (req, res, next) => {
+// GET: Lấy chi tiết 1 size
+exports.getSize = catchAsync(async(req, res, next) => {
     try {
         let masize = req.params.id;
-        const size = await modelSize.get_Size_Id(masize);
+        const size = await modelSize.get_Size(masize);
         return res.status(200).json({ 
-            status: "Success", 
+            status: "Success",  
             size: size
         });
     } catch (error) {
@@ -37,29 +38,77 @@ exports.getSize = catchAsync(async (req, res, next) => {
         });
     }
 });
-// POST: Thêm mới 1 size của sản phẩm
+// Post: Create size
 exports.postCreateSize = catchAsync(async (req, res, next) => {
     try {
-        let data = { tensize: req.body.tensize };
-        if(!data.tensize) {
+        let body = req.body;
+        if(!body.size || !body.gioitinh || body.cannangtu == undefined || body.cannangden == undefined || body.chieucaotu == undefined || body.chieucaoden == undefined) {
             return res.status(400).json({ 
                 status: "Fail", 
                 message: "Thiếu thông tin, vui lòng kiểm tra lại !"
             });
         };
-        const sizeExist = await modelSize.get_Size_Name(data.tensize);
+        let data = {
+            size: body.size,
+            gioitinh: body.gioitinh,
+            cannangtu: body.cannangtu,
+            cannangden: body.cannangden,
+            chieucaotu: body.chieucaotu,
+            chieucaoden: body.chieucaoden
+        };
+        const sizeExist = await modelSize.check_Size_Exist(data.size, data.gioitinh);
         if(sizeExist == -1) {
-            const size = await modelSize.insert_size(data);
+            const size = await modelSize.insert_Size(data);
+            const listSize = await modelSize.list_Size();
             return res.status(200).json({ 
                 status: "Success", 
-                message: size
+                message: size,
+                listSize: listSize
             });
         } else {
             return res.status(400).json({ 
                 status: "Fail", 
-                message: "Tên size của sản phẩm này đã tồn tại, vui lòng nhập tên khác !"
+                message: "Mã size và giới tính này đã tồn tại, vui lòng kiểm tra lại !"
+            });
+        }
+    } catch (error) {
+        return res.status(400).json({ 
+            status: "Fail", 
+            message: "Something went wrong!", 
+            error: error 
+        });
+    };
+});
+// Post: Check size
+exports.postCheckSize = catchAsync(async (req, res, next) => {
+    try {
+        let gioitinh = req.body.gioitinh;
+        let cannang = req.body.cannang;
+        let chieucao = req.body.chieucao;
+        if(!gioitinh || cannang == undefined || chieucao == undefined) {
+            return res.status(400).json({ 
+                status: "Fail", 
+                message: "Thiếu số cân nặng hoặc chiều cao, vui lòng kiểm tra lại !"
             });
         };
+        const size = await modelSize.check_Size(gioitinh);
+        size.some(element => {
+            if(chieucao <= element.chieucaoden && cannang <= element.cannangden) {
+                return res.status(200).json({ 
+                    status: "Success", 
+                    message: "Bạn cao "+`${chieucao}`+" cm, Cân nặng "+`${cannang}`+" kg, Size "+`${element.size}`+" phù hợp nhất với bạn.",
+                    size: element
+                });
+            } else if(chieucao <= element.chieucaoden) {
+                if(cannang <= element.cannangden) {
+                    return res.status(200).json({ 
+                        status: "Success", 
+                        message: "Bạn cao "+`${chieucao}`+" cm, Cân nặng "+`${cannang}`+" kg, Size "+`${element.size}`+" phù hợp nhất với bạn.",
+                        size: element
+                    });
+                }
+            }
+        });
     } catch (error) {
         return res.status(400).json({ 
             status: "Fail", 
@@ -68,37 +117,39 @@ exports.postCreateSize = catchAsync(async (req, res, next) => {
         });
     }
 });
-// PUT: Cập nhật tên size sản phẩm
+// Put: Adjust the size of clothes
 exports.putEditSize = catchAsync(async (req, res, next) => {
     try {
-        let masize = req.body.masize;
-        let tensize = req.body.tensize;
-        if(!masize || !tensize) {
+        let body = req.body;
+        if(body.masize == undefined || !body.size || !body.gioitinh || body.cannangtu == undefined || body.cannangden == undefined || body.chieucaotu == undefined || body.chieucaoden == undefined) {
             return res.status(400).json({ 
                 status: "Fail", 
                 message: "Thiếu thông tin, vui lòng kiểm tra lại !"
             });
         };
-        const sizeExist = await modelSize.get_Size_Id(masize);
+        let data = {
+            masize: body.masize,
+            /* size: body.size,
+            gioitinh: body.gioitinh, */
+            cannangtu: body.cannangtu,
+            cannangden: body.cannangden,
+            chieucaotu: body.chieucaotu,
+            chieucaoden: body.chieucaoden
+        };
+        const sizeExist = await modelSize.get_Size(data.masize);
         if(sizeExist == -1) {
             return res.status(400).json({ 
                 status: "Fail", 
-                message: "Không tìm thấy size sản phẩm này, vui lòng kiểm tra lại !"
+                message: "Không tìm thấy mã size quần áo này, vui lòng kiểm tra lại !"
             });
         } else {
-            const nameExist = await modelSize.get_Size_Name(tensize);
-            if(nameExist == -1 || masize == nameExist.masize) {
-                let query = await modelSize.update_size(masize, tensize);
-                return res.status(200).json({ 
-                    status: "Success", 
-                    message: query
-                });
-            } else {
-                return res.status(400).json({ 
-                    status: "Fail", 
-                    message: "Trùng tên size sản phẩm, vui lòng nhập tên khác !"
-                });
-            };
+            const size = await modelSize.update_Size(data);
+            const listSize = await modelSize.list_Size();
+            return res.status(200).json({ 
+                status: "Success", 
+                message: size,
+                listSize: listSize
+            });
         };
     } catch (error) {
         return res.status(400).json({ 
@@ -108,36 +159,31 @@ exports.putEditSize = catchAsync(async (req, res, next) => {
         });
     }
 });
-// DELETE: Xoá size sản phẩm
+// Delete: 
 exports.deleteSize = catchAsync(async (req, res, next) => {
     try {
-        let masize = req.body.masize;
-        if(!masize) {
+        let masize = req.params.id;
+        if(masize == undefined) {
             return res.status(400).json({ 
                 status: "Fail", 
-                message: "Thiếu mã size sản phẩm, vui lòng kiểm tra lại !"
+                message: "Thiếu thông tin, vui lòng kiểm tra lại !"
             });
         };
-        const sizeExist = await modelSize.get_Size_Id(masize);
+        const sizeExist = await modelSize.get_Size(masize);
         if(sizeExist == -1) {
             return res.status(400).json({ 
                 status: "Fail", 
-                message: "Không tìm thấy size sản phẩm này, vui lòng kiểm tra lại !"
+                message: "Không tìm thấy mã size này, vui lòng kiểm tra lại !"
             });
         } else {
-            let queryDelete = await modelSize.delete_size(masize);
-            if(queryDelete == -1) {
-                return res.status(400).json({ 
-                    status: "Fail", 
-                    message: "Có ràng buộc khoá ngoại. Không thể xoá size sản phẩm này !"
-                });
-            } else {
-                return res.status(200).json({ 
-                    status: "Success", 
-                    message: queryDelete
-                });
-            };
-        };
+            const size = await modelSize.delete_Size(masize);
+            const listSize = await modelSize.list_Size();
+            return res.status(200).json({ 
+                status: "Success", 
+                message: size,
+                listSize: listSize
+            });
+        }
     } catch (error) {
         return res.status(400).json({ 
             status: "Fail", 

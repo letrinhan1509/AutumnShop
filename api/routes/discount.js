@@ -7,7 +7,6 @@ const promotionController = require('../controllers/promotionController');
 router
     .route("/")
     .get(promotionController.getList)    // Danh sách tất cả các khuyến mãi (Voucher + Khuyến mãi theo sản phẩm)
-    .put(promotionController.putEditPromotionStatus);// Cập nhật trạng thái khuyến mãi
 
 router
     .route("/san-pham")

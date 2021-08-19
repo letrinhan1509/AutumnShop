@@ -231,7 +231,9 @@ const ListOrder = (props) => {
             if(item.service_id === values.dichvuID) {
                 values["service_type_id"] = item.service_type_id;
             }
-        })
+        });
+        values["madonhang"] = oderDetail.madonhang;
+        values["makm"] = oderDetail.makm;
         values["giohang"] = oderDetail.chitietDH;
         values["chitiet"] = oderDetail.chitiet;
         values["tongtien"] = oderDetail.tongtien;

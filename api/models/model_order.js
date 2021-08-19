@@ -8,8 +8,9 @@ var dataName = [];
     // Danh sách tất cả đơn hàng:
 exports.list_Orders = async () => {
     return new Promise( (hamOK, hamLoi) => {
-        let sql = `SELECT DH.madonhang, DH.makh, DH.tenkh, DH.email, DH.sodienthoai, DH.diachi, DH.tienship, DH.tongtien, DH.ghichu, DH.makm, DH.hinhthuc, DH.vanchuyen, DH.ngaydat, DH.ngaygiao, DH.trangthai, TT.tentt as tentt
-        FROM (donhang AS DH JOIN trangthai AS TT ON DH.trangthai = TT.trangthai)`;
+        let sql = `SELECT DH.madonhang, DH.makh, DH.tenkh, DH.email, DH.sodienthoai, DH.diachi, DH.tienship, DH.tongtien, DH.ghichu, DH.makm,
+        DH.hinhthuc, DH.vanchuyen, DATE_FORMAT(DH.ngaydat, '%e-%c-%Y') as ngaydat, DATE_FORMAT(DH.ngaygiao, '%e-%c-%Y') as ngaygiao, 
+        DH.trangthai, TT.tentt as tentt FROM (donhang AS DH JOIN trangthai AS TT ON DH.trangthai = TT.trangthai)`;
         db.query(sql, (err, result) => {
             if(err){
                 console.log(err);
@@ -165,9 +166,9 @@ exports.update_Status = (data) => {
     })
 }
     // Cập nhật kết quả tạo đơn hàng trên GHTK - GHN:
-exports.update_GHN = (madonhang, ketqua) => {
+exports.update_GHN = (madonhang, code_GHN, tienship, tongtien) => {
     return new Promise( (hamOK, hamLoi) => {
-        let sql = `UPDATE donhang SET ketqua='${ketqua}' WHERE madonhang='${madonhang}'`;
+        let sql = `UPDATE donhang SET code_GHN='${code_GHN}', tienship='${tienship}', tongtien='${tongtien}' WHERE madonhang='${madonhang}'`;
             db.query(sql, (err, result) => {
                 if(err) { hamLoi(err); } 
                 else { hamOK("Cập nhật thông tin đơn hàng thành công !"); }

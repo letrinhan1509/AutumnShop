@@ -5,18 +5,14 @@ var dataList=[]; // biến để chứa dữ liệu đổ về cho controller
     // Danh sách tất cả comment:
 exports.list_Comments = async () => {
     return new Promise( (hamOK, hamLoi) => {
-        let sql = `SELECT binhluan.mabl, binhluan.masp, sanpham.tensp, binhluan.makh, khachhang.tenkh, khachhang.hinh, binhluan.noidung,
-        binhluan.giobl, binhluan.ngaybl, binhluan.trangthai FROM ((binhluan JOIN khachhang ON binhluan.makh = khachhang.makh)
-        JOIN sanpham ON binhluan.masp = sanpham.masp)`;
-        db.query(sql, (err, result) => {
-            if(err){
-                console.log("List fail!");
-                hamLoi(err);
-            }else{
-                console.log("List success!");
-                dataList = result;
-                hamOK(dataList);
-            }
+        var data = [];
+        let dataListCmt = {};
+        let sql = `SELECT binhluan.mabl, binhluan.masp, sanpham.tensp, sanpham.hinh as hinhsp, binhluan.makh, khachhang.tenkh, 
+        khachhang.hinh, binhluan.noidung, TIME(binhluan.ngaybl) as giobl, DATE_FORMAT(binhluan.ngaybl, '%e-%c-%Y') as ngaybl, binhluan.trangthai 
+        FROM ((binhluan JOIN khachhang ON binhluan.makh = khachhang.makh) JOIN sanpham ON binhluan.masp = sanpham.masp)`;
+        db.query(sql, (error, result) => {
+            if(error) { hamLoi(error); } 
+            else { hamOK(result); }
         })
     })
 }
@@ -25,13 +21,11 @@ exports.get_by_Id = async (cmtId) => {
     return new Promise( (hamOK, hamLoi) => {
         const data = [];
         let sql = `SELECT binhluan.mabl, binhluan.masp, sanpham.tensp, binhluan.makh, khachhang.tenkh, khachhang.hinh, binhluan.noidung,
-        binhluan.giobl, binhluan.ngaybl, binhluan.trangthai FROM ((binhluan JOIN khachhang ON binhluan.makh = khachhang.makh)
-        JOIN sanpham ON binhluan.masp = sanpham.masp) WHERE mabl = '${cmtId}'`;
-        db.query(sql, (err, result) => {
-            console.log(result);
-            if(err){
-                hamLoi(err);
-            }else{
+        TIME(binhluan.ngaybl) as giobl, DATE_FORMAT(binhluan.ngaybl, '%e-%c-%Y') as ngaybl, binhluan.trangthai FROM ((binhluan JOIN khachhang ON binhluan.makh = khachhang.makh)
+        JOIN sanpham ON binhluan.masp = sanpham.masp) WHERE binhluan.mabl = '${cmtId}'`;
+        db.query(sql, (error, result) => {
+            if(error) { hamLoi(error); }
+            else {
                 if(result.length > 0){
                     result.forEach(element => {
                         let sql_detail = `SELECT chitietbl.mact, chitietbl.ten, chitietbl.noidung, chitietbl.ngaybl, chitietbl.mabl
@@ -59,12 +53,13 @@ exports.get_by_productId = async (productId) => {
     return new Promise( async (hamOK, hamLoi) => {
         const data = [];
         let sql = `SELECT binhluan.mabl, binhluan.masp, sanpham.tensp, binhluan.makh, khachhang.tenkh, khachhang.hinh, binhluan.noidung,
-        binhluan.giobl, binhluan.ngaybl, binhluan.trangthai FROM ((binhluan JOIN khachhang ON binhluan.makh = khachhang.makh)
-        JOIN sanpham ON binhluan.masp = sanpham.masp) WHERE binhluan.masp = '${productId}' AND binhluan.trangthai = 1`;  
+        TIME(binhluan.ngaybl) as giobl, DATE_FORMAT(binhluan.ngaybl, '%e-%c-%Y') as ngaybl, binhluan.trangthai 
+        FROM ((binhluan JOIN khachhang ON binhluan.makh = khachhang.makh) JOIN sanpham ON binhluan.masp = sanpham.masp) 
+        WHERE binhluan.masp = '${productId}' AND binhluan.trangthai = 1`;  
         db.query(sql, (err, result) => {
-            if(err){
+            if(err) {
                 hamLoi(err);
-            }else{
+            } else{
                 if(result.length > 0){
                     //dataList = result;
                     hamOK(result);
@@ -79,7 +74,7 @@ exports.get_by_productId = async (productId) => {
 exports.get_by_userId = async (userId) => {
     return new Promise( (hamOK, hamLoi) => {
         let sql = `SELECT binhluan.mabl, binhluan.masp, sanpham.tensp, binhluan.makh, khachhang.tenkh, khachhang.hinh, binhluan.noidung,
-        binhluan.giobl, binhluan.ngaybl FROM ((binhluan JOIN khachhang ON binhluan.makh = khachhang.makh)
+        TIME(binhluan.ngaybl) as giobl, DATE_FORMAT(binhluan.ngaybl, '%e-%c-%Y') as ngaybl FROM ((binhluan JOIN khachhang ON binhluan.makh = khachhang.makh)
         JOIN sanpham ON binhluan.masp = sanpham.masp) WHERE binhluan.makh = '${userId}' AND binhluan.trangthai = 1`;
         db.query(sql, (err, result) => {
             if(err){
@@ -98,7 +93,7 @@ exports.get_by_userId = async (userId) => {
     // Danh sách chi tiết comment:
 exports.get_detailComment = async (commentId) => {
     return new Promise( (hamOK, hamLoi) => {
-        let sql = `SELECT chitietbl.mact, chitietbl.ten, chitietbl.noidung, chitietbl.ngaybl, chitietbl.mabl
+        let sql = `SELECT chitietbl.mact, chitietbl.ten, chitietbl.noidung, TIME(chitietbl.ngaybl) as giobl, DATE_FORMAT(chitietbl.ngaybl, '%e-%c-%Y') as ngaybl, chitietbl.mabl
         FROM (chitietbl JOIN binhluan ON chitietbl.mabl = binhluan.mabl) WHERE chitietbl.mabl = '${commentId}' AND binhluan.trangthai=1`;
         db.query(sql, (err, result) => {
             if(err){
@@ -146,17 +141,23 @@ exports.create_Comment = (data) => {
         });
     });
 };
-    // Rep cmt:
-exports.create_RepComment = (data) => {
+    // Admin Rep cmt:
+exports.create_AdminRepComment = (data) => {
     return new Promise( (resolve, reject) => {
         let sql = "INSERT INTO chitietbl SET ?";
         db.query(sql, data, (err, d) => {
-            if(err)
-                reject(err);
-            else{
-                console.log('Insert successfully')
-                resolve("Trả lời bình luận thành công !");
-            };
+            if(err) { reject(err); }
+            else { resolve("Thêm phản hồi bình luận thành công !"); };
+        });
+    });
+};
+    // User Rep cmt:
+exports.create_UserRepComment = (data) => {
+    return new Promise( (resolve, reject) => {
+        let sql = "INSERT INTO chitietbl SET ?";
+        db.query(sql, data, (err, d) => {
+            if(err) { reject(err); }
+            else { resolve("Thêm bình luận thành công !"); };
         });
     });
 };
@@ -174,15 +175,12 @@ exports.update_Comment = (mabl, noidung) => {
     });
 };
     // Chỉnh sửa chi tiết comment:
-exports.update_RepComment = (mact, noidung) => {
+exports.update_AdminRepComment = (mact, noidung) => {
     return new Promise( (hamOK, hamLoi) => {
         let sql = `UPDATE chitietbl SET noidung='${noidung}' WHERE mact='${mact}'`;
         let query = db.query(sql, (err, result) => {
-            if(err){
-                hamLoi(err);
-            }else{
-                hamOK(result);
-            }
+            if(err) { hamLoi(err); }
+            else { hamOK("Chỉnh sửa bình luận thành công !"); }
         });
     });
 };
@@ -191,30 +189,22 @@ exports.delete_Comment = (mabl) => {
     return new Promise( (hamOK, hamLoi) => {
         let deleteCT = `DELETE FROM chitietbl WHERE mabl='${mabl}'`;
         let delete_query = db.query(deleteCT, (error, result) => {
-            if(error) {
-                hamLoi(error);
-            };
+            if(error) { hamLoi(error); };
         });
         let sql = `DELETE FROM binhluan WHERE mabl='${mabl}'`;
         let query = db.query(sql, (err, result1) => {
-            if(err) {
-                hamLoi(err);
-            } else {
-                hamOK("Xoá bình luận thành công !");
-            };
+            if(err) { hamLoi(err); } 
+            else { hamOK("Xoá bình luận thành công !"); };
         });
     });
 };
     // Xoá chi tiết comment:
-exports.delete_RepComment = (mact) => {
+exports.delete_AdminRepComment = (mact) => {
     return new Promise( (hamOK, hamLoi) => {
         let sql = `DELETE FROM chitietbl WHERE mact='${mact}'`;
         let query = db.query(sql, (err, result) => {
-            if(err){
-                hamLoi(err);
-            }else{
-                hamOK("Xoá bình luận thành công !");
-            }
+            if(err) { hamLoi(err); } 
+            else { hamOK("Xoá bình luận thành công !"); };
         });
     });
 };    

@@ -82,6 +82,21 @@ const Payments2 = (props) => {
     console.log(values);
     if (payValue === "Thanh toán MOMO") {
       //API MoMo
+      Oder
+        .addOrderMomo(values)
+        .then(async (res) => {
+          if (res.data.status === "Success") {
+            console.log(res.data);
+            console.log(res.data.payUrl);
+            message.success(res.data.message);
+            window.location.href = res.data.payUrl;
+          }
+        })
+        .catch((err) => {
+          message.error(
+            `Đặt hàng thất bại ! \n ${err.response.data.message}`
+          );
+        });
     } else {
       Oder
         .addOrder(values)
