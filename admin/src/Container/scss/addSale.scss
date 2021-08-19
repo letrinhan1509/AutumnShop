@@ -8,15 +8,15 @@
         filter: drop-shadow(0px 5px 5px rgba(0, 0, 0, 0.2));
         border-radius: 10px;
         width: 1200px;
-        .col-box{
-            
+        .col-box {
+            padding: 10px;
             display: flex;
             justify-content: space-evenly;
             .col-one {
                 width: 40%;
             }
             .col-two {
-                width: 50%;
+                width: 58%;
                 .box-selected {
                     width: 100%;
                     margin-bottom: 20px;
@@ -25,9 +25,9 @@
                     .title {
                         font-weight: 600;
                         font-size: 16px;
-                        Button{
+                        Button {
                             margin-right: 10px;
-                            span{
+                            span {
                                 margin: 0;
                             }
                         }
@@ -38,7 +38,7 @@
                     .product-inf {
                         display: flex;
                         justify-content: space-between;
-                        
+
                         .ant-col {
                             span {
                                 font-weight: 500;
@@ -46,6 +46,13 @@
                                 margin-right: 5px;
                             }
                         }
+                    }
+                }
+                .add-sale{
+                    h1 {
+                        font-size: 20px;
+                        width: 100%;
+                        text-align: center;
                     }
                 }
             }

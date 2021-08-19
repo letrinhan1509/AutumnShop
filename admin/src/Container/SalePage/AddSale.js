@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Row, Col, Form, Input, Button, Select, Checkbox, DatePicker, Space, message, Table, Modal, Radio } from 'antd';
-import { CloseOutlined } from '@ant-design/icons';
+import { CloseOutlined, PlusOutlined } from '@ant-design/icons';
 import { useHistory, Link } from "react-router-dom"
 import "Container/scss/addSale.scss";
 import moment from 'moment';
@@ -38,7 +38,7 @@ const AddSale = (props) => {
     const valueOption = useRef(null);
     const [form] = Form.useForm();
     const history = useHistory();
-
+    const DETAIL = useRef(null);
     const [datestart, setDatestart] = useState("");
     const [dateEnd, setDateEnd] = useState("");
     //let a = "";
@@ -67,9 +67,9 @@ const AddSale = (props) => {
         values["trangthai"] = title;
         values["sanphamCK"] = add;
         console.log(values);
-
+        
         //const url = "http://127.0.0.1:5000/api/v1/khuyen-mai/them-khuyen-mai/san-pham"
-        discount.addSale(values).then((res) => {
+        /* discount.addSale(values).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message)
                 setTimeout(() => {
@@ -81,7 +81,7 @@ const AddSale = (props) => {
             .catch(err => {
                 console.log(err.response);
                 message.error(`${err.response.data.message}\n Tạo khuyến mãi sản phẩm thất bại !`);
-            });
+            }); */
     };
 
     const [listTypes, setListTypes] = useState([]);
@@ -98,10 +98,81 @@ const AddSale = (props) => {
         console.log(id);
         product.getLoai(id).then((res) => {
             setlistPro(res.data.data);
+            console.log(res.data.data);
 
         })
         console.log(listPro);
     };
+    const [add, setAdd] = useState([]);
+    //const add = [];
+    let proSelect = [];
+    let ct = "";
+    /* const rowSelection = {
+        onChange: (selectedRowKeys, selectedRows) => {
+            if (selectedRows.length !== 0) {
+                let values = [];
+                values["masp"] = selectedRows[0].masp;
+                values["tensp"] = selectedRows[0].tensp;
+                values["gia"] = selectedRows[0].gia;
+                ct = JSON.parse(selectedRows[0].chitiet);
+                const exist = ct.find((x) => x.id === chitiets);
+                values["chitietKM"] = exist;
+                proSelect.push(values);
+                console.log(values);
+                console.log(proSelect);
+            }
+
+        },
+        onSelect: (record, selected, selectedRows) => {
+            console.log(record, selected, selectedRows);
+
+        },
+        onSelectAll: (selectedRows, changeRows) => {
+            console.log(changeRows);
+            //proSelect = changeRows;
+        },
+    }; */
+
+
+    const [chitiets, setChitiets] = useState("");
+    function ChangeDetail(value) {
+        console.log(value);
+        setChitiets(value);
+        console.log(proSelect);
+        /* if (proSelect.length !== 0) {
+            const exist = ct.find((x) => x.id === value);
+            console.log(exist);
+            proSelect[0].chitietKM = exist;
+            console.log(proSelect);
+
+        } */
+    }
+    const [proTemp, setProTemp] = useState([]);
+    const addTemp = (e) => {
+        let ma = e.currentTarget.dataset.id;
+        let values = [];
+        product.getid(ma).then((res) => {
+            if (res.data.status === "Success") {
+                values['masp'] = res.data.dataSpham.masp;
+                values['tensp'] = res.data.dataSpham.tensp;
+                values['gia'] = res.data.dataSpham.gia;
+                let ct = JSON.parse(res.data.dataSpham.chitiet);
+                const existCT = ct.find((x) => x.id === chitiets);
+                values['chitietKM'] = existCT;
+                if (proTemp.length === 0) {
+                    setProTemp([...proTemp, { ...values }]);
+                } else {
+                    const exist = proTemp.find((x) => x.masp === res.data.dataSpham.masp && x.chitietKM.mau === existCT.mau && x.chitietKM.size === existCT.size);
+                    if (exist) {
+                        message.error("Sản phẩm đã được thêm trước đó !");
+                    } else {
+                        setProTemp([...proTemp, { ...values }]);
+                    }
+                }
+
+            }
+        })
+    }
 
 
     const columns = [
@@ -115,52 +186,37 @@ const AddSale = (props) => {
             dataIndex: 'tensp',
             key: 'tensp',
         },
-        /* {
-            title: 'Ảnh',
-            dataIndex: 'hinh',
-            key: 'hinh',
-            render: text => <img src={text} width={70} />,
-        }, */
-        {
-            title: 'Số lượng',
-            dataIndex: 'soluong',
-            key: 'soluong',
-        },
-        {
-            title: 'Size',
-            dataIndex: 'size',
-            key: 'size',
-        },
         {
             title: 'Giá',
             dataIndex: 'gia',
             key: 'gia',
         },
         {
-            title: 'Màu',
-            dataIndex: 'mau',
-            key: 'mau',
+            title: 'Chi tiết KM',
+            dataIndex: 'chitiet',
+            key: 'chitiet',
+            render: (size, pro) => {
+                let chitiet = JSON.parse(pro.chitiet);
+                console.log(chitiet);
+                return (
+                    <Select ref={DETAIL} onChange={ChangeDetail} style={{ width: 250 }}>
+                        {chitiet.map((item) => {
+                            return (
+                                <>
+                                    <Option value={item.id}>size: {item.size} - Màu: {item.mau} - Số lượng: {item.soluong}</Option>
+                                </>
+                            )
+                        })}
+                    </Select>
+                );
+            }
         },
+        {
+            dataIndex: "masp",
+            key: "masp",
+            render: masp => (<div className="btn-box"><Button data-id={masp} onClick={addTemp} type="primary"><PlusOutlined /></Button></div>)
+        }
     ];
-
-
-    const [add, setAdd] = useState([]);
-    //const add = [];
-    let proSelect = [];
-    const rowSelection = {
-        onChange: (selectedRowKeys, selectedRows) => {
-            proSelect = selectedRows;
-
-        },
-        onSelect: (record, selected, selectedRows) => {
-            console.log(record, selected, selectedRows);
-
-        },
-        onSelectAll: (selectedRows, changeRows) => {
-            console.log(changeRows);
-            //proSelect = changeRows;
-        },
-    };
 
     //const demo = [];
     const [lenght, setLenght] = useState(0);
@@ -168,17 +224,24 @@ const AddSale = (props) => {
     //let id = 0;
 
     const thempro = () => {
-        let tam = id + 1;
-        console.log(id);
-        let value = []
+        //proTemp !== ""
         let chietkhau = valueOption.current.props.value;
-        value['id'] = tam;
-        value['sanpham'] = proSelect;
-        value['chietkhau'] = chietkhau;
-        setAdd([...add, { ...value }]);
-        setID(tam);
+        if (proTemp !== "" && chietkhau !== "") {
+            let tam = id + 1;
+            let value = []
+            value['id'] = tam;
+            value['sanpham'] = proTemp;
+            value['chietkhau'] = chietkhau;
+            console.log(value);
+            setAdd([...add, { ...value }]);
+            setID(tam);
+            setProTemp([]);
+        } else {
+            message.error("Bạn chưa thêm sản phẩm hoặc chiết khấu !");
+        }
+
         //setlistPro([]);
-        //document.getElementById("persen").values = "";
+        //document.getElementById("P").value = "";
     };
 
     const { confirm } = Modal;
@@ -189,10 +252,26 @@ const AddSale = (props) => {
             okType: 'danger',
             cancelText: 'Không',
             onOk() {
+                setProTemp(
+                    proTemp.filter((x) => x.masp !== item.masp)
+                );
+            },
+            onCancel() {
+                console.log('Cancel');
+            },
+        });
+    }
+
+    function showDeleteSale(item) {
+        confirm({
+            title: 'Bạn thật sự muốn xóa khuyến mãi này?',
+            okText: 'Xóa',
+            okType: 'danger',
+            cancelText: 'Không',
+            onOk() {
                 setAdd(
                     add.filter((x) => x.id !== item.id)
                 );
-
             },
             onCancel() {
                 console.log('Cancel');
@@ -286,9 +365,16 @@ const AddSale = (props) => {
                                 <Button className="ant-btn ant-btn-dashed " onClick={back} style={{ marginLeft: -30 }}>
                                     Trở về
                                 </Button>
-                                <Button type="primary" htmlType="submit" style={{ marginLeft: 30 }}>
-                                    Thêm voucher
-                                </Button>
+                                {add.length !== 0 ? (
+                                    <Button type="primary" htmlType="submit" style={{ marginLeft: 30 }}>
+                                        Tạo chương trình
+                                    </Button>
+                                ) : (
+                                    <Button type="primary" htmlType="submit" style={{ marginLeft: 30 }} disabled>
+                                        Tạo chương trình
+                                    </Button>
+                                )}
+
                             </Form.Item>
                         </Form>
                     </div>
@@ -298,37 +384,38 @@ const AddSale = (props) => {
                             id="themproduct"
                         >
 
-                            <Form.Item
-                                label="Sản phẩm khuyến mãi"
-                                rules={[
-                                    {
-                                        required: true,
-                                        message: 'Vui lòng chọn loại sản phẩm!',
-                                    },
-                                ]}
-                            >
-                                <Select onChange={getSP}>
-                                    {listTypes.map((item) => {
-                                        return (
-                                            <>
-                                                <Option value={item.maloai}>{item.tenloai}</Option>
-                                            </>
-                                        )
-                                    })}
-                                </Select>
-                            </Form.Item>
-                            <Form.Item
-                                name="chietkhau"
-                                id="persen"
-                                label="Chiết khấu"
-                                rules={[
-                                    {
-                                        required: true,
-                                        message: 'Vui lòng chọn chiết khấu!',
-                                    },
-                                ]}
-                            >
-                                {/* <Select onChange={plusID}>
+                            <Row style={{ display: 'flex', justifyContent: 'space-evenly' }}>
+                                <Form.Item
+                                    label="Loại sản phẩm"
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message: 'Vui lòng chọn loại sản phẩm!',
+                                        },
+                                    ]}
+                                >
+                                    <Select onChange={getSP} style={{ width: 200 }}>
+                                        {listTypes.map((item) => {
+                                            return (
+                                                <>
+                                                    <Option value={item.maloai}>{item.tenloai}</Option>
+                                                </>
+                                            )
+                                        })}
+                                    </Select>
+                                </Form.Item>
+                                <Form.Item
+                                    name="chietkhau"
+                                    id="persen"
+                                    label="Chiết khấu"
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message: 'Vui lòng chọn chiết khấu!',
+                                        },
+                                    ]}
+                                >
+                                    {/* <Select onChange={plusID}>
                                     {chietkhau.map((item) => {
                                         return (
                                             <>
@@ -337,15 +424,14 @@ const AddSale = (props) => {
                                         )
                                     })}
                                 </Select> */}
-                                <Input ref={valueOption} />
-                            </Form.Item>
-                            <Button onClick={thempro} >Thêm</Button>
-                            <Table rowSelection={rowSelection} rowKey={listPro => listPro.masp} dataSource={listPro} columns={columns} pagination={{ pageSize: 5 }} />
+                                    <Input ref={valueOption} style={{ width: 200 }} />
+                                </Form.Item>
+                            </Row>
                             <Row className="add-sale">
                                 {
-                                    add !== "" ? (
+                                    proTemp !== "" ? (
                                         <>
-                                            {add.map((item) => {
+                                            {proTemp.map((item) => {
                                                 return (
                                                     <>
                                                         {/* <Col>
@@ -361,6 +447,45 @@ const AddSale = (props) => {
                                                                         <CloseOutlined />
                                                                     </Button>
                                                                 </Col>
+                                                            </Row>
+                                                            <Row className="product-inf">
+                                                                <Col><span>Mã: </span>{item.masp}</Col>
+                                                                <Col><span>Tên: </span>{item.tensp}</Col>
+                                                                <Col><span>Giá: </span>{item.gia}</Col>
+                                                                <Col><span>Size: </span>{item.chitietKM.size}</Col>
+                                                                <Col><span>Màu: </span>{item.chitietKM.mau}</Col>
+                                                                <Col><span>Số lượng: </span>{item.chitietKM.soluong}</Col>
+                                                            </Row>
+                                                        </Col>
+                                                    </>
+                                                );
+                                            })}
+                                        </>
+                                    ) : ("")
+                                }
+                            </Row>
+                            <Table /*rowSelection={rowSelection}*/ rowKey={listPro => listPro.masp} dataSource={listPro} columns={columns} pagination={{ pageSize: 5 }} />
+                            <Button onClick={thempro} >Thêm chương trình</Button>
+                            {/* <Row className="sale-title">
+                                <h1 >CHƯƠNG TRÌNH ĐÃ THÊM</h1>
+                            </Row> */}
+                            <Row className="add-sale">
+                                {
+                                    add.length !== 0 ? (
+                                        <>
+                                            <h1 >CHƯƠNG TRÌNH ĐÃ THÊM</h1>
+                                            {add.map((item) => {
+                                                return (
+                                                    <>
+
+                                                        <Col className="box-selected">
+                                                            {/* <p>{item.id}</p> */}
+                                                            <Row className="title">
+                                                                <Col>
+                                                                    <Button onClick={() => showDeleteSale(item)} size="small" type="primary" danger>
+                                                                        <CloseOutlined />
+                                                                    </Button>
+                                                                </Col>
                                                                 <Col><span>Chiết khấu: </span>{item.chietkhau}</Col>
                                                             </Row>
                                                             {item.sanpham.map((sp) => {
@@ -368,10 +493,10 @@ const AddSale = (props) => {
                                                                     <Row className="product-inf">
                                                                         <Col><span>Mã: </span>{sp.masp}</Col>
                                                                         <Col><span>Tên: </span>{sp.tensp}</Col>
-                                                                        <Col><span>Số lượng: </span>{sp.soluong}</Col>
-                                                                        <Col><span>Size: </span>{sp.size}</Col>
                                                                         <Col><span>Giá: </span>{sp.gia}</Col>
-                                                                        <Col><span>Màu: </span>{sp.mau}</Col>
+                                                                        <Col><span>Số lượng: </span>{sp.chitietKM.soluong}</Col>
+                                                                        <Col><span>Size: </span>{sp.chitietKM.size}</Col>
+                                                                        <Col><span>Màu: </span>{sp.chitietKM.mau}</Col>
                                                                     </Row>
                                                                 );
                                                             })}

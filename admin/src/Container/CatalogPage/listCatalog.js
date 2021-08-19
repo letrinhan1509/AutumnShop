@@ -174,11 +174,11 @@ const ListCata = () => {
           {trangthai.stt.map(tragth => {
             if (tragth === 'Ẩn') {
               return (
-                <div className="btn-box lock"><Button data-id={trangthai.id} type="primary" icon={<UnlockOutlined />} onClick={unlock}></Button></div>
+                <div className="btn-box lock"><Button data-id={trangthai.id} type="primary" onClick={unlock}>Hiện</Button></div>
               );
             } else {
               return (
-                <div className="btn-box lock"><Button data-id={trangthai.id} type="danger" icon={<LockOutlined />} onClick={lock}></Button></div>
+                <div className="btn-box lock"><Button data-id={trangthai.id} type="danger" onClick={lock}>Ẩn</Button></div>
               )
             }
           })}

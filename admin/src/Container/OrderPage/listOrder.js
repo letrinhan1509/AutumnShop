@@ -158,6 +158,7 @@ const ListOrder = (props) => {
             title: 'Vận chuyển',
             dataIndex: 'vanchuyen',
             key: 'vanchuyen',
+
         },
         {
             title: 'Ngày đặt',
@@ -185,11 +186,14 @@ const ListOrder = (props) => {
             key: "madonhang",
             render: madonhang => (<div className="btn-box"><Button data-id={madonhang} onClick={loadDetail} type="primary">Chi tiết</Button></div>)
         },
-        {
-            dataIndex: 'madonhang',
-            key: 'madonhang',
-            render: madonhang => (<div className="btn-box fix"><Button data-id={madonhang} key={madonhang} type="primary" onClick={TurnOn_GHN}> GHN </Button></div>)
-        }
+        user.permission !== "NVGH" ? (
+            {
+                dataIndex: 'madonhang',
+                key: 'madonhang',
+                render: (madonhang, maGHN) => (maGHN.vanchuyen === "GHN" ? (<div className="btn-box fix"><Button data-id={madonhang} key={madonhang} type="primary" onClick={TurnOn_GHN}> GHN </Button></div>) : (""))
+            }
+        ) : ("")
+        
     ];
 
     const giohang = [
