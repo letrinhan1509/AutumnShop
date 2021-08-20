@@ -39,11 +39,11 @@ const tailFormItemLayout = {
     },
 };
 const ListOrder = (props) => {
+    const token = localStorage.getItem("token");
     const [form] = Form.useForm();
     const history = useHistory();
     const { Option } = Select;
     const ORDER = JSON.parse(localStorage.getItem("order"));
-    var date = new Date(ORDER.ngaydat);
 
     const back = () => {
         localStorage.removeItem("order");
@@ -76,7 +76,7 @@ const ListOrder = (props) => {
         }
         values["madonhang"] = ORDER.madonhang;
         console.log(values);
-        orders.updateStatus(values).then((res) => {
+        orders.updateStatus(values, token).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message)
                 localStorage.removeItem("order");
@@ -128,7 +128,7 @@ const ListOrder = (props) => {
                             <li><span>Hình thức thanh toán: </span>{ORDER.hinhthuc}</li>
                             {ORDER.ghichu === "" ? ("") : (<li><span>Ghi chú: </span>{ORDER.ghichu}</li>)}
                             {/* {ORDER.makm === null ? ("") : (<li><span>Mã khuyến mãi: </span>{ORDER.makm}</li>)} */}
-                            <li><span>Ngày đặt: </span>{date.toLocaleDateString()}</li>
+                            <li><span>Ngày đặt: </span>{moment(ORDER.ngaydat).format('DD/MM/YYYY')}</li>
                             <li><span>Ngày giao: </span><DatePicker onChange={endChange} /></li>
                             <li><span>Phí vận chuyển: </span>{ORDER.tienship}</li>
                             <li><span>Tổng hóa đơn: </span>{ORDER.tongtien}</li>

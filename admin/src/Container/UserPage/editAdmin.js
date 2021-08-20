@@ -30,6 +30,7 @@ const tailFormItemLayout = {
 };
 
 const EditNV = (props) => {
+    const token = localStorage.getItem("token");
     const [form] = Form.useForm();
     const history = useHistory();
     const Admin = JSON.parse(localStorage.getItem("admin"));
@@ -44,7 +45,7 @@ const EditNV = (props) => {
         console.log(values)
         let a = JSON.stringify({ admin: "adas@gmail.com" });
         console.log(a);
-        admin.updateInfo(values).then((res) => {
+        admin.updateInfo(values, token).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message)
                 localStorage.removeItem("admin");

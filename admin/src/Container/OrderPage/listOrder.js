@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Image, Row, Col, Input, Button, message, Select, Table, Form, Modal } from 'antd';
 import Meta from "antd/lib/card/Meta";
+import moment from 'moment';
 import { useHistory, Link } from "react-router-dom";
 import "Container/scss/addpro.scss";
 import order from 'API_Call/Api_order/order';
@@ -165,9 +166,8 @@ const ListOrder = (props) => {
             dataIndex: 'ngaydat',
             key: 'ngaydat',
             render: ngaydat => {
-                var date = new Date(ngaydat);
                 return (
-                    date.toLocaleDateString()
+                    moment(ngaydat).format('DD/MM/YYYY')
                 );
             }
         },

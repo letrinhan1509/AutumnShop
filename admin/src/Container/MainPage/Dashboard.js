@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import moment from 'moment';
 import product from 'API_Call/Api_product/product';
 import catalog from 'API_Call/Api_catalog/catalog';
 import voucher from 'API_Call/Api_discount/discount';
@@ -44,9 +45,8 @@ const Dashboard = () => {
                     <Bar
                         data={{
                             labels: statistical.map((item) => {
-                                var date = new Date(item.ngaydat);
                                 return (
-                                    date.toLocaleDateString()
+                                    moment(item.ngaydat).format('DD/MM/YYYY')
                                 );
                             }),
                             datasets: [
@@ -93,9 +93,8 @@ const Dashboard = () => {
                     <Bar
                         data={{
                             labels: statistical.map((item) => {
-                                var date = new Date(item.ngaydat);
                                 return (
-                                    date.toLocaleDateString()
+                                    moment(item.ngaydat).format('DD/MM/YYYY')
                                 );
                             }),
                             datasets: [

@@ -43,6 +43,7 @@ const normFile = (e: any) => {
 };
 
 const AddProduct = (props) => {
+    const token = localStorage.getItem("token");
     const SIZE = useRef(null);
     const MAU = useRef(null);
     const SOLUONG = useRef(null);
@@ -203,8 +204,7 @@ const AddProduct = (props) => {
                     history.push('/tat-ca-san-pham');
                 }, 2000)
             };
-        })
-            .catch(err => {
+        }).catch(err => {
                 console.log(err.response);
                 message.error(`Thêm thất bại!\n ${err.response.data.message}`)
             })

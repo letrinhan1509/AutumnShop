@@ -17,7 +17,7 @@ const order = {
         return AxiosOrder.get(url);
     },
     //(Tạo 1 đơn hàng của khách hàng)
-    addOrder: (values) => {
+    addOrder: (values, token) => {
         const url = "/";
         return AxiosOrder.post(url, values);
     },

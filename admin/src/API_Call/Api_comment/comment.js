@@ -46,9 +46,9 @@ const comment = {
         return AxiosComment.put(url, values);
     },
     //(Cập nhật trạng thái 1 bình luận theo mabl ẩn hoặc hiện)
-    hideCommet: (values) => {
+    hideCommet: (values, token) => {
         const url = "/cap-nhat-trang-thai";
-        return AxiosComment.put(url, values);
+        return AxiosComment.put(url, values, token);
     },
     //(Xoá 1 bình luận theo mabl)
     deleteCommentID: (id) => {

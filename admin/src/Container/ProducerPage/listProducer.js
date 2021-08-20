@@ -7,6 +7,7 @@ import "Container/scss/addpro.scss";
 import producers from 'API_Call/Api_producer/producer';
 
 const ListProducer = () => {
+  const token = localStorage.getItem("token");
   const link = useHistory();
   const { confirm } = Modal;
   let result = JSON.parse(localStorage.getItem('user'));
@@ -38,7 +39,7 @@ const ListProducer = () => {
       "mansx": id,
       "trangthai": 1
     };
-    producers.updateStatus(values).then((res) => {
+    producers.updateStatus(values, token).then((res) => {
       if (res.data.status === "Success") {
         message.success(res.data.message)
         setTimeout(() => {
@@ -56,7 +57,7 @@ const ListProducer = () => {
       "mansx": id,
       "trangthai": 0
     };
-    producers.updateStatus(values).then((res) => {
+    producers.updateStatus(values, token).then((res) => {
       if (res.data.status === "Success") {
         message.success(res.data.message)
         setTimeout(() => {
@@ -78,7 +79,7 @@ const ListProducer = () => {
       okType: 'danger',
       cancelText: 'Không',
       onOk() {
-        producers.deleteProducer(id).then((res) => {
+        producers.deleteProducer(id, token).then((res) => {
           if (res.data.status === "Success") {
             message.success(res.data.message)
             setTimeout(() => {

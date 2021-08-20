@@ -1,6 +1,6 @@
 import "Container/scss/addpro.scss";
 import { Button, Form, Input, message, Select, Modal } from "antd";
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import { Link, useHistory } from "react-router-dom";
 import SIZE from 'API_Call/Api_product/product';
 
@@ -37,15 +37,16 @@ const tailFormItemLayout = {
 };
 
 const EditSize = (props) => {
+    const token = localStorage.getItem("token");
+    const sizeDetail = JSON.parse(localStorage.getItem('sizeDetail'));
     const [form] = Form.useForm();
     const history = useHistory();
     const { confirm } = Modal;
-    const Size = JSON.parse(localStorage.getItem("size"))
 
-
-    const register = (values) => {
+    const editsize = (values) => {
+        
         console.log(values)
-        SIZE.updateSize(values).then((res) => {
+        SIZE.updateSize(values, token).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message)
                 localStorage.removeItem("size");
@@ -116,21 +117,20 @@ const EditSize = (props) => {
 
     return (
         <div className="form-wrapper">
-            <h2 style={{ textAlign: 'center' }}>SỬA THÔNG TIN SIZE QUẦN ÁO</h2>
-
+            <h2 style={{ textAlign: 'center', marginTop: "10px", marginBottom: "30px"  }}>SỬA THÔNG TIN SIZE QUẦN ÁO</h2>
+            {console.log("test" ,props.sizeDetail)}
             <Form
                 {...formItemLayout}
-                form={form}
-                name="register"
-                onFinish={register}
+                name="editsize"
+                onFinish={editsize}
                 initialValues={{
-                    masize: `${Size.masize}`,
-                    size: `${Size.size}`,
-                    gioitinh: `${Size.gioitinh}`,
-                    cannangtu: `${Size.cannangtu}`,
-                    cannangden: `${Size.cannangden}`,
-                    chieucaotu: `${Size.chieucaotu}`,
-                    chieucaoden: `${Size.chieucaoden}`
+                    masize: `${sizeDetail.masize}`,
+                    size: `${sizeDetail.size}`,
+                    gioitinh: `${sizeDetail.gioitinh}`,
+                    cannangtu: `${sizeDetail.cannangtu}`,
+                    cannangden: `${sizeDetail.cannangden}`,
+                    chieucaotu: `${sizeDetail.chieucaotu}`,
+                    chieucaoden: `${sizeDetail.chieucaoden}`
                 }}
                 scrollToFirstError
                 className="register-form"
@@ -138,7 +138,6 @@ const EditSize = (props) => {
 
                 <Form.Item
                     name="masize"
-                    id="masize"
                     label="Mã size"
 
                 >
@@ -167,7 +166,6 @@ const EditSize = (props) => {
                 </Form.Item>
                 <Form.Item
                     name="gioitinh"
-                    id="gioitinh"
                     label="Giới tính"
                 >
                     <Select style={{ width: 200 }}>
@@ -182,7 +180,6 @@ const EditSize = (props) => {
                 </Form.Item>
                 <Form.Item
                     name="cannangtu"
-                    id="cannangtu"
                     label="Cân nặng từ"
                     rules={[
                         {
@@ -195,7 +192,6 @@ const EditSize = (props) => {
                 </Form.Item>
                 <Form.Item
                     name="cannangden"
-                    id="cannangden"
                     label="Cân nặng đến"
                     rules={[
                         {
@@ -208,7 +204,6 @@ const EditSize = (props) => {
                 </Form.Item>
                 <Form.Item
                     name="chieucaotu"
-                    id="chieucaotu"
                     label="Chiều cao từ"
                     rules={[
                         {
@@ -221,7 +216,6 @@ const EditSize = (props) => {
                 </Form.Item>
                 <Form.Item
                     name="chieucaoden"
-                    id="chieucaoden"
                     label="Chiều cao đến"
                     rules={[
                         {

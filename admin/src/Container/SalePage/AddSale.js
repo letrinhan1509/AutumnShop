@@ -35,6 +35,7 @@ const tailFormItemLayout = {
 
 
 const AddSale = (props) => {
+    const token = localStorage.getItem("token");
     const valueOption = useRef(null);
     const [form] = Form.useForm();
     const history = useHistory();
@@ -67,9 +68,10 @@ const AddSale = (props) => {
         values["trangthai"] = title;
         values["sanphamCK"] = add;
         console.log(values);
-        
+
+
         //const url = "http://127.0.0.1:5000/api/v1/khuyen-mai/them-khuyen-mai/san-pham"
-        /* discount.addSale(values).then((res) => {
+        /* discount.addSale(values, token).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message)
                 setTimeout(() => {
@@ -104,76 +106,57 @@ const AddSale = (props) => {
         console.log(listPro);
     };
     const [add, setAdd] = useState([]);
-    //const add = [];
-    let proSelect = [];
-    let ct = "";
-    /* const rowSelection = {
-        onChange: (selectedRowKeys, selectedRows) => {
-            if (selectedRows.length !== 0) {
-                let values = [];
-                values["masp"] = selectedRows[0].masp;
-                values["tensp"] = selectedRows[0].tensp;
-                values["gia"] = selectedRows[0].gia;
-                ct = JSON.parse(selectedRows[0].chitiet);
-                const exist = ct.find((x) => x.id === chitiets);
-                values["chitietKM"] = exist;
-                proSelect.push(values);
-                console.log(values);
-                console.log(proSelect);
-            }
-
-        },
-        onSelect: (record, selected, selectedRows) => {
-            console.log(record, selected, selectedRows);
-
-        },
-        onSelectAll: (selectedRows, changeRows) => {
-            console.log(changeRows);
-            //proSelect = changeRows;
-        },
-    }; */
-
 
     const [chitiets, setChitiets] = useState("");
     function ChangeDetail(value) {
-        console.log(value);
         setChitiets(value);
-        console.log(proSelect);
-        /* if (proSelect.length !== 0) {
-            const exist = ct.find((x) => x.id === value);
-            console.log(exist);
-            proSelect[0].chitietKM = exist;
-            console.log(proSelect);
-
-        } */
     }
     const [proTemp, setProTemp] = useState([]);
     const addTemp = (e) => {
         let ma = e.currentTarget.dataset.id;
-        let values = [];
         product.getid(ma).then((res) => {
             if (res.data.status === "Success") {
-                values['masp'] = res.data.dataSpham.masp;
-                values['tensp'] = res.data.dataSpham.tensp;
-                values['gia'] = res.data.dataSpham.gia;
-                let ct = JSON.parse(res.data.dataSpham.chitiet);
-                const existCT = ct.find((x) => x.id === chitiets);
-                values['chitietKM'] = existCT;
-                if (proTemp.length === 0) {
-                    setProTemp([...proTemp, { ...values }]);
-                } else {
-                    const exist = proTemp.find((x) => x.masp === res.data.dataSpham.masp && x.chitietKM.mau === existCT.mau && x.chitietKM.size === existCT.size);
-                    if (exist) {
-                        message.error("Sản phẩm đã được thêm trước đó !");
-                    } else {
-                        setProTemp([...proTemp, { ...values }]);
+                const ct = JSON.parse(res.data.dataSpham.chitiet);
+                let newArr = [];
+                let arrChiTiet = [];
+                if (proTemp.length > 0) {
+                    newArr = [...proTemp];
+                }
+                const existMa = proTemp.find((x) => x.masp === res.data.dataSpham.masp)
+                if (!existMa) {
+                    arrChiTiet.push({
+                        ...ct.find(x => x.id === chitiets)
+                    })
+                    newArr.push({
+                        ...res.data.dataSpham,
+                        chitiet: arrChiTiet
+                    });
+                    setProTemp(newArr)
+                }
+                else {
+                    if (proTemp.length > 0) {
+                        arrChiTiet = [...existMa.chitiet];
+                    }
+                    const tam = ct.find((x) => x.id === chitiets);
+                    const existChiTiet = existMa.chitiet.find((x) => x.id === chitiets && x.mau === tam.mau && x.size === tam.size);
+                    if (!existChiTiet) {
+                        arrChiTiet.push({
+                            ...ct.find(x => x.id === chitiets)
+                        })
+                        const replaceIndex = newArr.findIndex((x) => x.masp === res.data.dataSpham.masp);
+                        newArr.splice(replaceIndex, 1, {
+                            ...res.data.dataSpham,
+                            chitiet: arrChiTiet
+                        })
+                        setProTemp(newArr)
+                    }
+                    else {
+                        message.error("Sản phẩm đã được thêm!");
                     }
                 }
-
             }
         })
     }
-
 
     const columns = [
         {
@@ -224,6 +207,7 @@ const AddSale = (props) => {
     //let id = 0;
 
     const thempro = () => {
+        console.log(proTemp);
         //proTemp !== ""
         let chietkhau = valueOption.current.props.value;
         if (proTemp !== "" && chietkhau !== "") {
@@ -394,7 +378,7 @@ const AddSale = (props) => {
                                         },
                                     ]}
                                 >
-                                    <Select onChange={getSP} style={{ width: 200 }}>
+                                    <Select onChange={getSP} style={{ width: 150 }}>
                                         {listTypes.map((item) => {
                                             return (
                                                 <>
@@ -424,7 +408,7 @@ const AddSale = (props) => {
                                         )
                                     })}
                                 </Select> */}
-                                    <Input ref={valueOption} style={{ width: 200 }} />
+                                    <Input ref={valueOption} style={{ width: 150 }} />
                                 </Form.Item>
                             </Row>
                             <Row className="add-sale">
@@ -442,20 +426,27 @@ const AddSale = (props) => {
                                                         <Col className="box-selected">
                                                             {/* <p>{item.id}</p> */}
                                                             <Row className="title">
+
+                                                            </Row>
+                                                            <Row className="product-inf">
+                                                                <Col><span>Mã: </span>{item.masp}</Col>
+                                                                <Col><span>Tên: </span>{item.tensp}</Col>
+                                                                <Col><span>Giá: </span>{item.gia}</Col>
                                                                 <Col>
                                                                     <Button onClick={() => showDeleteProduct(item)} size="small" type="primary" danger>
                                                                         <CloseOutlined />
                                                                     </Button>
                                                                 </Col>
                                                             </Row>
-                                                            <Row className="product-inf">
-                                                                <Col><span>Mã: </span>{item.masp}</Col>
-                                                                <Col><span>Tên: </span>{item.tensp}</Col>
-                                                                <Col><span>Giá: </span>{item.gia}</Col>
-                                                                <Col><span>Size: </span>{item.chitietKM.size}</Col>
-                                                                <Col><span>Màu: </span>{item.chitietKM.mau}</Col>
-                                                                <Col><span>Số lượng: </span>{item.chitietKM.soluong}</Col>
-                                                            </Row>
+                                                            <ul className="product-detail">
+                                                                {item.chitiet.map((ct) => (
+                                                                    <li style={{ marginTop: 10 }}>
+                                                                        <span>Size: {ct.size}</span>
+                                                                        <span style={{ marginLeft: 50 }}>Màu: {ct.mau}</span>
+                                                                        <span style={{ marginLeft: 50 }}>Số lượng: {ct.soluong}</span>
+                                                                    </li>
+                                                                ))}
+                                                            </ul>
                                                         </Col>
                                                     </>
                                                 );
@@ -490,14 +481,22 @@ const AddSale = (props) => {
                                                             </Row>
                                                             {item.sanpham.map((sp) => {
                                                                 return (
-                                                                    <Row className="product-inf">
-                                                                        <Col><span>Mã: </span>{sp.masp}</Col>
-                                                                        <Col><span>Tên: </span>{sp.tensp}</Col>
-                                                                        <Col><span>Giá: </span>{sp.gia}</Col>
-                                                                        <Col><span>Số lượng: </span>{sp.chitietKM.soluong}</Col>
-                                                                        <Col><span>Size: </span>{sp.chitietKM.size}</Col>
-                                                                        <Col><span>Màu: </span>{sp.chitietKM.mau}</Col>
-                                                                    </Row>
+                                                                    <>
+                                                                        <Row className="product-inf" style={{margin: 0}}>
+                                                                            <Col><span>Mã: </span>{sp.masp}</Col>
+                                                                            <Col><span>Tên: </span>{sp.tensp}</Col>
+                                                                            <Col><span>Giá: </span>{sp.gia}</Col>
+                                                                        </Row>
+                                                                        <ul className="product-detail" style={{marginLeft: 25}}>
+                                                                            {sp.chitiet.map((ct) => (
+                                                                                <li style={{ marginTop: 10 }}>
+                                                                                    <span>Size: {ct.size}</span>
+                                                                                    <span style={{ marginLeft: 50 }}>Màu: {ct.mau}</span>
+                                                                                    <span style={{ marginLeft: 50 }}>Số lượng: {ct.soluong}</span>
+                                                                                </li>
+                                                                            ))}
+                                                                        </ul>
+                                                                    </>
                                                                 );
                                                             })}
                                                         </Col>

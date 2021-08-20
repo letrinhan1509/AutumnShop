@@ -69,7 +69,7 @@ const ProductDetail = (props) => {
                                                 />
                                             </div>
                                             <Row className="product-price">
-                                                <Col>{`${Items.gia} VNĐ`}</Col>
+                                                <Col>{(Items.gia).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} đ</Col>
                                             </Row>
                                             <Row className="product-name">
                                                 <Col>{Items.tensp}</Col>

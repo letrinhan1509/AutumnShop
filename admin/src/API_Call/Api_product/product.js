@@ -34,33 +34,33 @@ const product = {
         const url = `/bang-size/${id}`;
         return AxiosProduct.get(url);
     },
-    addproduct: (values) => {
+    addproduct: (values, token) => {
         const url = "/";
-        return AxiosProduct.post(url, values);
+        return AxiosProduct.post(url, values, token);
     },
-    addSize: (values) => {
+    addSize: (values, token) => {
         const url = "/bang-size";
-        return AxiosProduct.post(url, values);
+        return AxiosProduct.post(url, values, token);
     },
-    updatePro: (values) => {
+    updatePro: (values, token) => {
         const url = "/cap-nhat-san-pham";
-        return AxiosProduct.put(url, values);
+        return AxiosProduct.put(url, values, token);
     },
-    updateStatus: (values) => {
+    updateStatus: (values, token) => {
         const url = "/cap-nhat-trang-thai";
-        return AxiosProduct.put(url, values);
+        return AxiosProduct.put(url, values, token);
     },
-    updateSize: (values) => {
+    updateSize: (values, token) => {
         const url = "/bang-size";
-        return AxiosProduct.put(url, values);
+        return AxiosProduct.put(url, values, token);
     },
-    deletePro: (id) => {
+    deletePro: (id, token) => {
         const url = `/${id}`;
-        return AxiosProduct.delete(url);
+        return AxiosProduct.delete(url, token);
     },
-    deleteSize: (id) => {
+    deleteSize: (id, token) => {
         const url = `/bang-size/${id}`;
-        return AxiosProduct.delete(url);
+        return AxiosProduct.delete(url, token);
     }
 };
 

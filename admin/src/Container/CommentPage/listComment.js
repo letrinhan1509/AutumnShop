@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Table, Image, Button, message, Tag } from 'antd';
-import { LockOutlined, UnlockOutlined, SearchOutlined } from '@ant-design/icons';
-import { useHistory } from "react-router-dom";
-import axios from 'axios';
+import { useHistory, Link } from "react-router-dom";
 import COMMENTS from 'API_Call/Api_comment/comment';
 import "Container/scss/addpro.scss"
+import moment from 'moment';
 
 const ListComment = (props) => {
+  const token = localStorage.getItem("token");
   const history = useHistory();
   let result = JSON.parse(localStorage.getItem('user'));
   const [listComment, setListComment] = useState([]);
@@ -23,7 +23,7 @@ const ListComment = (props) => {
       "trangthai": 1
     };
     
-    COMMENTS.hideCommet(values).then((res) => {
+    COMMENTS.hideCommet(values, token).then((res) => {
       if (res.data.status === "Success") {
         message.success(res.data.message)
         setTimeout(() => {
@@ -43,7 +43,7 @@ const ListComment = (props) => {
       "mabl": id,
       "trangthai": 0
     };
-    COMMENTS.hideCommet(values).then((res) => {
+    COMMENTS.hideCommet(values, token).then((res) => {
       if (res.data.status === "Success") {
         message.success(res.data.message)
         setTimeout(() => {
@@ -55,26 +55,31 @@ const ListComment = (props) => {
         message.error(`${err.response.data.message}`)
       })
   };
-  const [a, setA] = useState([]);
-  const [comment, setComment] = useState([]);
+
+
   const detail = (e) => {
-    let id = e.currentTarget.dataset.id;
-    console.log(id);
-    setA(id);
-  };
-  useEffect(() => {
-    if (a != '') {
-      let url = "http://127.0.0.1:5000/api/v1/binh-luan/" + a /* +"/chi-tiet-bluan" */;
-      axios.get(url).then((res) => {
-        console.log(res.data);
-        
-      })
+    let id = e.currentTarget.dataset.id
+    COMMENTS.getid(id).then((res) => {
+    if (res.data.status === "Success") {
+        localStorage.setItem('detailComment', JSON.stringify(res.data.detailComment));
+        setTimeout(() => {
+          history.push('/danh-sach-binh-luan/phan-hoi');
+        }, 100)
     }
-  }, [a]);
-console.log(comment);
-  if (comment != '') {
-    localStorage.setItem('detailComment', JSON.stringify(comment));
+    });
+}
+const reply = (e) => {
+  let id = e.currentTarget.dataset.id
+  COMMENTS.getid(id).then((res) => {
+  if (res.data.status === "Success") {
+      localStorage.setItem('detailComment', JSON.stringify(res.data.detailComment));
+      setTimeout(() => {
+        history.push('/danh-sach-binh-luan/phan-hoi');
+      }, 100)
   }
+  });
+}
+
 
   if (listComment != null) {
     listComment.forEach(element => {
@@ -91,9 +96,6 @@ console.log(comment);
     });
   };
 
-  /* let { sortedInfo, filteredInfo } = useState([]);
-  sortedInfo = sortedInfo || {};
-  filteredInfo = filteredInfo || {}; */
   const columns = [
     {
       title: 'Mã',
@@ -121,35 +123,14 @@ console.log(comment);
       dataIndex: 'ngaybl',
       key: 'ngaybl',
       render: ngaybl => {
-        var date = new Date(ngaybl);
         return(
-            date.toLocaleDateString()
+          moment(ngaybl).format('DD/MM/YYYY')
         );
     }
     },
-    {
-      title: 'Trạng thái',
-      dataIndex: 'trangthai',
-      key: 'trangthai',
-      render: (trangthai) => (
-        <>
-          {trangthai.stt.map(tragth => {
-            let color = 'green';
-            if (tragth === 'Ẩn') {
-              color = 'red';
-            }
-            return (
-              <Tag color={color} key={tragth}>
-                {tragth.toUpperCase()}
-              </Tag>
-            );
-          })}
-
-        </>
-      )
-    },
     result.permission === 'Admin' ? (
       {
+        title: 'Trạng thái',
         dataIndex: 'trangthai',
         data: 'makh',
         key: 'trangthai',
@@ -159,17 +140,22 @@ console.log(comment);
             {trangthai.stt.map(tragth => {
               if (tragth === 'Ẩn') {
                 return (
-                  <div className="btn-box lock"><Button data-id={trangthai.id} type="primary" icon={<UnlockOutlined />} onClick={unlockCmt}></Button></div>
+                  <div className="btn-box lock"><Button data-id={trangthai.id} type="primary" onClick={unlockCmt}>Hiện</Button></div>
                 );
               } else {
                 return (
-                  <div className="btn-box lock"><Button data-id={trangthai.id} type="danger" icon={<LockOutlined />} onClick={lockCmt}></Button></div>
+                  <div className="btn-box lock"><Button data-id={trangthai.id} type="danger" onClick={lockCmt}>Ẩn</Button></div>
                 )
               }
             })}
           </>
         )
       }) : (<> </>),
+      {
+        dataIndex: 'mabl',
+        key: 'mabl',
+        render: (mabl) => <Button className="detail-btn" data-id={mabl} type="primary" onClick={reply}>Phản hồi</Button>
+      },
       {
         dataIndex: 'mabl',
         key: 'mabl',

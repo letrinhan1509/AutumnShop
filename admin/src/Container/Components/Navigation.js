@@ -1,7 +1,7 @@
 import React from "react";
 import { Menu } from 'antd';
 import { AppstoreOutlined, UnorderedListOutlined , SettingOutlined, DashboardOutlined, IdcardOutlined,TagsOutlined, MessageOutlined, 
-    ProfileOutlined, OrderedListOutlined, LogoutOutlined, SkinOutlined  } from '@ant-design/icons';
+    ProfileOutlined, DollarCircleOutlined, LogoutOutlined, SkinOutlined  } from '@ant-design/icons';
 import { BrowserRouter as Router, useHistory } from "react-router-dom";
 import "../Components/scss/nav.scss"
 
@@ -51,8 +51,9 @@ const Navigation = () => {
                                 </>
                             ) : ("")}
                         </SubMenu>
-                        <SubMenu key="sub4" icon={<OrderedListOutlined />} title="Quản lý kinh doanh">
-                            <Menu.Item key="danh-sach-don-hang" icon={<ProfileOutlined />} >Danh sách đơn hàng</Menu.Item>
+                        <SubMenu key="sub4" icon={<DollarCircleOutlined />} title="Quản lý kinh doanh">
+                            <Menu.Item key="danh-sach-don-hang" icon={<UnorderedListOutlined />} >Danh sách đơn hàng</Menu.Item>
+                            <Menu.Item key="danh-sach-trang-thai" icon={<UnorderedListOutlined />} >Danh sách trạng thái</Menu.Item>
                             <SubMenu key="sub5" icon={<TagsOutlined />} title="Quản lý khuyến mãi">
                                 <Menu.Item key="danh-sach-voucher" icon={<UnorderedListOutlined />}>Danh sách voucher</Menu.Item>
                                 <Menu.Item key="danh-sach-khuyen-mai" icon={<UnorderedListOutlined />}>Danh sách khuyến mãi</Menu.Item>

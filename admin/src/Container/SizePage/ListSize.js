@@ -1,16 +1,23 @@
-import { Button, message, Table } from 'antd';
+import { Button, message, Table, Modal, Form, Input, Select } from 'antd';
 //import { LockOutlined, UnlockOutlined } from '@ant-design/icons';
 import React, { useEffect, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import "Container/scss/addpro.scss";
 import size from 'API_Call/Api_size/size';
 
+
 const ListSize = () => {
+    const token = localStorage.getItem("token");
     const link = useHistory();
     let result = JSON.parse(localStorage.getItem('user'));
     let token = localStorage.getItem('token');
     //API Size
+    const [click, setClick] = useState(false);
     const [listSize, setListSize] = useState([]);
+
+
+    //Redirect sửa size theo masize
+    const [sizeDetail, setSizeDetail] = useState([]);
     useEffect(() => {
         console.log(token);
         size.getAllSize(token).then((res) => {
@@ -21,34 +28,34 @@ const ListSize = () => {
             message.error(`${err.response.data.message}`);
         })
     }, []);
-
-    //Redirect sửa size theo masize
     const edit = (e) => {
         let id = e.currentTarget.dataset.id
-        size.getSizeId(id, token).then((res) => {
-        if (res.data.status === "Success") {
-            localStorage.setItem('size', JSON.stringify(res.data.size));
-            setTimeout(() => {
-            link.push('/bang-size/sua-size');
-            }, 100)
-        }
+        size.getSizeId(id).then((res) => {
+            if (res.data.status === "Success") {
+                localStorage.setItem('sizeDetail', JSON.stringify(res.data.size))
+                setSizeDetail(res.data.size);
+                console.log(res.data.size);
+                setTimeout(() => {
+                    link.push('/bang-size/sua-size');
+                }, 100)
+            }
         });
     }
 
     //Xóa size
-    const deleteType = (e) => {
+    const deleteSize = (e) => {
         let id = e.currentTarget.dataset.id;
         size.deleteSize(id, token).then((res) => {
-        if (res.data.status === "Success") {
-            message.success(res.data.message)
-            setTimeout(() => {
-            link.go({ pathname: '/danh-sach-size' });
-            }, 800)
-        }
+            if (res.data.status === "Success") {
+                message.success(res.data.message)
+                setTimeout(() => {
+                    link.go({ pathname: '/danh-sach-size' });
+                }, 800)
+            }
         })
-        .catch(err => {
-            message.error(`${err.response.data.message}`);
-        })
+            .catch(err => {
+                message.error(`${err.response.data.message}`);
+            })
     }
 
     const columns = [
@@ -99,37 +106,35 @@ const ListSize = () => {
             key: 'chieucaoden',
         },
         result.permission === 'Admin' || result.permission === 'QLCH' ?
-        {
-            dataIndex: 'masize',
-            key: 'masize',
-            render: masize => (<div className="btn-box fix"><Button data-id={masize} type="primary" key={masize} onClick={edit}> Sửa </Button></div>)
-        } : (<></>),
+            {
+                dataIndex: 'masize',
+                key: 'masize',
+                render: masize => (<div className="btn-box fix"><Button data-id={masize} type="primary" key={masize} onClick={edit}> Sửa </Button></div>)
+            } : (<></>),
         result.permission === 'Admin' || result.permission === 'QLCH' ?
-        {
-            dataIndex: 'masize',
-            key: 'masize',
-            render: masize => (<div className="btn-box delete"><Button data-id={masize} key={masize} type="danger" onClick={deleteType}> Xoá </Button></div>)
-        } : (<></>)
+            {
+                dataIndex: 'masize',
+                key: 'masize',
+                render: masize => (<div className="btn-box delete"><Button data-id={masize} key={masize} type="danger" onClick={deleteSize}> Xoá </Button></div>)
+            } : (<></>)
 
     ];
 
-
     return (
         <>
-        <div className="form-wrapper">
-            <h2 style={{ textAlign: 'center', marginTop: "30px" }}>BẢNG SIZE QUẦN ÁO THEO CHIỀU CAO - CÂN NẶNG</h2>
-            {result.permission === 'Admin' || result.permission === 'QLCH' ? (
-            <div className="btn-wrapper">
-                <Link to={'/them-size'}>
-                <Button type="primary">
-                    Thêm size
-                </Button>
-                </Link>
+            <div className="form-wrapper">
+                <h2 style={{ textAlign: 'center', marginTop: "30px" }}>BẢNG SIZE QUẦN ÁO THEO CHIỀU CAO - CÂN NẶNG</h2>
+                {result.permission === 'Admin' || result.permission === 'QLCH' ? (
+                    <div className="btn-wrapper">
+                        <Link to={'/bang-size/them-size'}>
+                            <Button type="primary">
+                                Thêm size
+                            </Button>
+                        </Link>
+                    </div>
+                ) : ("")}
+                <Table className="item" dataSource={listSize} columns={columns} pagination={{ pageSize: 6 }} style={{ padding: 10 }} size="middle" />
             </div>
-            ) : ("")}
-            <Table className="item" dataSource={listSize} columns={columns} pagination={{ pageSize: 6 }} style={{ padding: 10 }} size="middle" />
-        </div>
-
         </>
     );
 }

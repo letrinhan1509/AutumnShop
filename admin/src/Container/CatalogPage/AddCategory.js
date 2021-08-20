@@ -38,6 +38,7 @@ const normFile = (e: any) => {
 };
 
 const AddCategory = (props) => {
+    const token = localStorage.getItem("token");
     const [imageName, setImageName] = useState("");
     const [form] = Form.useForm();
     const history = useHistory();
@@ -114,7 +115,7 @@ const AddCategory = (props) => {
         values['img'] = link;
         values['imageName'] = imageName.name;
         console.log(values);
-        catalog.addCatalog(values).then((res) => {
+        catalog.addCatalog(values, token).then((res) => {
             message.success(res.data.message)
             setTimeout(() => {
                 history.push('/danh-muc-san-pham');
@@ -125,7 +126,6 @@ const AddCategory = (props) => {
                 message.error(`${err.response.data.message}`)
             })
     };
-
 
     return (
         <>

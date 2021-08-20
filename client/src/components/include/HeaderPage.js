@@ -25,11 +25,11 @@ const HeaderPage = (props) => {
     }
     const handClick2 = (e) => {
         history.push(`/san-pham/${e.key}`);
-        window.location.reload();
+        //window.location.reload();
     }
     const handClick3 = (e) => {
         history.push(`/san-pham/theo-loai/${e.key}`);
-        window.location.reload();
+        //window.location.reload();
     }
     const logout = () => {
         localStorage.removeItem("token")

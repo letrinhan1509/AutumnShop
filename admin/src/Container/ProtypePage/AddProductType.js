@@ -39,7 +39,7 @@ const normFile = (e: any) => {
 };
 
 const AddProductType = (props) => {
-
+    const token = localStorage.getItem("token");
     const [form] = Form.useForm();
     const history = useHistory();
     const [imageName, setImageName] = useState("");
@@ -116,7 +116,7 @@ const AddProductType = (props) => {
         values['img'] = link;
         values['imgName'] = imageName.name;
         console.log(values);
-        catalog.addProtype(values).then((res) => {
+        catalog.addProtype(values, token).then((res) => {
             message.success(res.data.message)
             setTimeout(() => {
                 history.push('/danh-sach-loai');

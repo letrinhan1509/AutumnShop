@@ -44,7 +44,7 @@ const normFile = (e: any) => {
 
 
 const AddVoucher = (props) => {
-
+    const token = localStorage.getItem("token");
     const [form] = Form.useForm();
     const history = useHistory();
 
@@ -136,7 +136,7 @@ const AddVoucher = (props) => {
         });
     };
 
-    const addProduct = (values) => {
+    const addVoucher = (values) => {
         //console.log(datestart.toLocaleDateString());
         values["ngaybd"] = moment(datestart).format('YYYY-MM-DD');
         values["ngaykt"] = moment(dateEnd).format('YYYY-MM-DD');
@@ -144,7 +144,7 @@ const AddVoucher = (props) => {
         values['img'] = link;
         values['imgName'] = imageName.name;
         console.log(values);
-        /* discount.addVoucher(values).then((res) => {
+        discount.addVoucher(values, token).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message)
                 setTimeout(() => {
@@ -156,7 +156,7 @@ const AddVoucher = (props) => {
             .catch(err => {
                 console.log(err.response);
                 message.error(`Tạo voucher thất bại !\n ${err.response.data.message}`)
-            }); */
+            });
     };
     const [listProduct, setlistProduct] = useState([]);
 
@@ -174,7 +174,7 @@ const AddVoucher = (props) => {
                     {...formItemLayout}
                     form={form}
                     name="register"
-                    onFinish={addProduct}
+                    onFinish={addVoucher}
                     scrollToFirstError
                 >
                     {/* <Form.Item

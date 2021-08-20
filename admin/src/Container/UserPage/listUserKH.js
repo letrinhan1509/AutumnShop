@@ -8,6 +8,7 @@ import user from 'API_Call/Api_user/user';
 
 const { Option } = Select;
 const ListUserKH = (props) => {
+  const token = localStorage.getItem("token");
   const [ListUser, setListUser] = useState([]);
   const history = useHistory();
 
@@ -28,7 +29,7 @@ const ListUserKH = (props) => {
       "userId": id,
       "stt": unLock
     };
-    user.updateStatus(values).then((res) => {
+    user.updateStatus(values, token).then((res) => {
       if (res.data.status === "Success") {
         message.success(res.data.message)
         setTimeout(() => {
@@ -55,7 +56,7 @@ const ListUserKH = (props) => {
       "userId": id,
       "stt": shutdown
     };
-    user.updateStatus(values).then((res) => {
+    user.updateStatus(values, token).then((res) => {
       if (res.data.status === "Success") {
         message.success(res.data.message)
         setTimeout(() => {

@@ -77,23 +77,23 @@ const Shirt = (props) => {
     },
     {
       key: 2,
-      value: '10000',
-      name: '< 10000đ'
+      value: 100000,
+      name: '< 100,000đ'
     },
     {
       key: 3,
-      value: '20000',
-      name: '< 20000đ'
+      value: 200000,
+      name: '< 200,000đ'
     },
     {
       key: 4,
-      value: '30000',
-      name: '< 30000đ'
+      value: 300000,
+      name: '< 300,000đ'
     },
     {
       key: 5,
-      value: '40000',
-      name: '< 40000đ'
+      value: 400000,
+      name: '< 400,000đ'
     }
   ];
   const [tempSize, setTempSize] = useState("");
@@ -116,13 +116,14 @@ const Shirt = (props) => {
       console.log(2);
     } else {
       setTempSize(value);
+      console.log(ListProduct);
       const filSize = ListProduct.filter(ListProduct => ListProduct.size === value);
       setListFilter(filSize);
       console.log(3);
     }
   }
   function findPrice(value) {
-    console.log(value);
+    console.log(Number(value));
     if (value === "Mặc định") {
       if (tempSize !== "") {
         const filPrice = ListProduct.filter(ListProduct => ListProduct.size === tempSize);
@@ -223,7 +224,7 @@ const Shirt = (props) => {
                             />
                           </div>
                           <Row className="product-price">
-                            <Col>{`${productItem.gia} VNĐ`}</Col>
+                            <Col>{(productItem.gia).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} đ</Col>
                           </Row>
                           <Row className="product-name">
                             <Col>{productItem.tensp}</Col>
