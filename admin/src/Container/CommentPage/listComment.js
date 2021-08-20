@@ -61,9 +61,9 @@ const ListComment = (props) => {
     let id = e.currentTarget.dataset.id
     COMMENTS.getid(id).then((res) => {
     if (res.data.status === "Success") {
-        localStorage.setItem('detailComment', JSON.stringify(res.data.detailComment));
+        localStorage.setItem('detailComment', JSON.stringify(res.data.comment));
         setTimeout(() => {
-          history.push('/danh-sach-binh-luan/phan-hoi');
+          history.push('/danh-sach-binh-luan/chi-tiet');
         }, 100)
     }
     });
@@ -72,7 +72,8 @@ const reply = (e) => {
   let id = e.currentTarget.dataset.id
   COMMENTS.getid(id).then((res) => {
   if (res.data.status === "Success") {
-      localStorage.setItem('detailComment', JSON.stringify(res.data.detailComment));
+      console.log(res.data.comment);
+      localStorage.setItem('detailComment', JSON.stringify(res.data.comment));
       setTimeout(() => {
         history.push('/danh-sach-binh-luan/phan-hoi');
       }, 100)

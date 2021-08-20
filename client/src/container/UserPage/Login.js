@@ -70,7 +70,7 @@ const Login = (props) => {
                         }
                     });
                     props.getToken(res.data.token);
-                    //localStorage.setItem('token', res.data.token)
+                    localStorage.setItem('token', res.data.token)
                     localStorage.setItem('user', JSON.stringify(res.data.data))
                     setTimeout(() => {
                         history.push("/")
