@@ -26,9 +26,9 @@ const comment = {
         return AxiosComment.get(url);
     },
     //(Thêm mới 1 bình luận)
-    addComment: (values) => {
+    addComment: (values, token) => {
         const url = "/";
-        return AxiosComment.post(url, values);
+        return AxiosComment.post(url, values, token);
     },
     //(Trả lời 1 bình luận đã có sẵn)
     replyComment: (values) => {
@@ -36,9 +36,9 @@ const comment = {
         return AxiosComment.post(url, values);
     },
     //(Chỉnh sửa nội dung bình luận theo mã bình luận)
-    updateComment: (values) => {
+    updateComment: (values, token) => {
         const url = "/";
-        return AxiosComment.put(url, values);
+        return AxiosComment.put(url, values, token);
     },
     //(Chỉnh sửa nội dung chi tiết(trả lời) bình luận theo mã chitietbl)
     updateDeComment: (values) => {
@@ -51,9 +51,9 @@ const comment = {
         return AxiosComment.put(url, values);
     },
     //(Xoá 1 bình luận theo mabl)
-    deleteCommentID: (id) => {
+    deleteCommentID: (id, token) => {
         const url = `/${id}`;
-        return AxiosComment.delete(url, id);
+        return AxiosComment.delete(url, id, token);
     },
     //(Xoá 1 chi tiết(trả lời) bình luận theo mã chitietbl)
     deleteCommentDe: (id) => {

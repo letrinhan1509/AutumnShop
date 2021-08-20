@@ -1,6 +1,6 @@
 import { Col, Layout, Row, Rate, Statistic, Select, Button, Card, Carousel, Tabs, Comment, List, Form, Input, Avatar, message, Radio, Menu, Dropdown } from "antd";
 import moment from 'moment';
-import { ShoppingCartOutlined, HeartOutlined, FacebookOutlined, TwitterOutlined, EllipsisOutlined } from '@ant-design/icons';
+import { ShoppingCartOutlined, HeartOutlined, FacebookOutlined, TwitterOutlined, EditOutlined } from '@ant-design/icons';
 import React, { createContext, useState, useEffect } from 'react';
 import "../components/components-css/SelectProduct.scss";
 import { useParams } from "react-router";
@@ -9,7 +9,6 @@ import comment from 'API_Call/Api_comment/comment';
 import PRODUCT from 'API_Call/Api_product/product';
 import CART from 'API_Call/API_cart/cart';
 import axios from "axios";
-//import moment from 'moment';
 
 
 const { Content } = Layout;
@@ -18,6 +17,7 @@ const { TextArea } = Input;
 export const DataContext = createContext()
 const Select_Product = (props) => {
     const User = JSON.parse(localStorage.getItem('user'));
+    const token = localStorage.getItem('token');
     const detail = JSON.parse(localStorage.getItem('detail'));
     const chitiet = JSON.parse(detail.chitiet);
     const { id } = useParams();
@@ -69,18 +69,24 @@ const Select_Product = (props) => {
         })
     }, []);
 
+    /* let traloi = [];
+    if (ListComment[0].traLoiBL.length !== 0) {
+        traloi = [...ListComment.traLoiBL];
+        console.log(traloi);
+    } */
+
     const [size] = useState('large');
     const { TabPane } = Tabs;
 
     let values = '';
     const [submitting, setSubmitting] = useState(false);
-    const handleSubmit = (value) => {
+    const addComs = (value) => {
         let date2 = new Date();
         value['ngay'] = moment(date2).format('YYYY-MM-DD');
         console.log(value);
         //setSubmitting(true);
 
-        comment.addComment(value).then((res) => {
+        /* comment.addComment(value, token).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message);
                 console.log(res.data);
@@ -93,8 +99,40 @@ const Select_Product = (props) => {
             .catch(err => {
                 console.log(err.response);
                 message.error(`ERROR !\n ${err.response.data.message}`)
-            })
+            }) */
     };
+    const editComs = (value) => {
+        console.log(value);
+
+        /* comment.updateComment(value, token).then((res) => {
+            if (res.data.status === "Success") {
+                message.success(res.data.message);
+                setListComment(res.data.listComment);
+            } else {
+                message.error(res.data.message)
+            }
+        })
+            .catch(err => {
+                console.log(err.response);
+                message.error(`ERROR !\n ${err.response.data.message}`)
+            }) */
+    };
+    const delComment = (e) => {
+        console.log(e.mabl);
+        let mabl = e.mabl;
+        /* comment.deleteCommentID(mabl, token).then((res) => {
+            if (res.data.status === "Success") {
+                message.success(res.data.message);
+                setListComment(res.data.listComment);
+            } else {
+                message.error(res.data.message)
+            }
+        })
+            .catch(err => {
+                console.log(err.response);
+                message.error(`ERROR !\n ${err.response.data.message}`)
+            }) */
+    }
 
     const handleChange = (e) => {
         values = e.target.value;
@@ -121,11 +159,11 @@ const Select_Product = (props) => {
     const Editor = () => (
         <>
             <Form
-                onFinish={handleSubmit}
+                onFinish={addComs}
                 id="cmt"
                 initialValues={{
                     makh: `${User.makh}`,
-                    tenkh: `${User.username}`,
+                    tenkh: `${User.tenkh}`,
                     masp: `${detail.masp}`,
                 }}
             >
@@ -154,56 +192,90 @@ const Select_Product = (props) => {
                 </Form.Item>
                 <Form.Item>
                     <Button  /*loading={submitting}*/ htmlType="submit" type="primary">
-                        Add Comment
+                        Đánh giá
                     </Button>
                 </Form.Item>
             </Form>
         </>
     );
-    const menu = (
-        <Menu>
-            <Menu.Item>
-                <a target="_blank" rel="noopener noreferrer" href="https://www.antgroup.com">
-                    Chỉnh sửa
-                </a>
-            </Menu.Item>
-            <Menu.Item>
-                <a target="_blank" style={{color: 'red'}} rel="noopener noreferrer" href="https://www.antgroup.com">
-                    Xóa
-                </a>
-            </Menu.Item>
-        </Menu>
-    );
+
     const TabsProduct = () => {
+        const [fix, setFix] = useState(false)
         return (
             <Tabs defaultActiveKey="1" style={{ width: 900 }}>
                 <TabPane tab="Thông tin sản phẩm" key="1">
                     <p>{detail.mota}</p>
                 </TabPane>
-                <TabPane tab="Đánh giá" key="2">
+                <TabPane forceRender={true} tab="Đánh giá" key="2">
                     <List
                         className="comment-list"
                         header={`${ListComment.length} Đánh giá`}
                         itemLayout="horizontal"
                         dataSource={ListComment}
                         renderItem={item => {
-                            var date = new Date(item.ngaybl).toLocaleDateString();
+                            //var date = new Date(item.ngaybl).toLocaleDateString();
+                            const Edit = () => {
+                                setFix(!fix);
+                            }
+                            const Customer = ({ children }) => (
+                                <Comment
+                                    actions={[
+                                        fix === true ? ("") : (<a key="comment-list-reply-to-0" onClick={() => delComment(item)}>Xóa</a>)
+                                    ]}
+                                    author={item.tenkh}
+                                    avatar={item.hinh}
+                                    content={[
+                                        fix === true ? (
+                                            <Form
+                                                onFinish={editComs}
+                                                id="cmt"
+                                                initialValues={{
+                                                    mabl: `${item.mabl}`,
+                                                }}
+                                            >
+                                                <Form.Item
+                                                    name="mabl"
+                                                    hidden
+                                                >
+                                                    <Input />
+                                                </Form.Item>
+                                                <Form.Item
+                                                    name="noidung"
+                                                >
+                                                    <TextArea placeholder="Nhập đánh giá của bạn" rows={4} onChange={handleChange} />
+                                                </Form.Item>
+                                                <Form.Item>
+                                                    <Button onClick={Edit} type="dashed">
+                                                        Hủy
+                                                    </Button>
+                                                    <Button htmlType="submit" type="primary" style={{ marginLeft: 30 }}>
+                                                        Chỉnh sửa
+                                                    </Button>
+                                                </Form.Item>
+                                            </Form>
+                                        ) : (item.noidung), fix === true ? ("") : (<a key="comment-list-reply-to-0" onClick={Edit}><EditOutlined style={{ marginLeft: 10 }} /></a>)
+                                    ]}
+                                    datetime={item.giobl + "  " + moment(item.ngaybl).format('DD-MM-YYYY')}
+                                >
+                                    {children}
+                                </Comment>
+                            );
+                            /*const Staff = ({ children }) => (
+                                traloi.length !== 0 ? (
+                                    <Comment
+                                        author={traloi.tennv}
+                                        avatar={traloi.hinh}
+                                        content={[traloi.noidung]}
+                                        datetime={moment(traloi.ngaybl).format('DD-MM-YYYY')}
+                                    >
+                                        {children}
+                                    </Comment>
+                                ) : ("")*/
                             return (
                                 <>
-                                    <li>
-                                        <Comment
-                                            actions={[<span key="comment-list-reply-to-0">Reply to</span>,
-                                            <Dropdown overlay={menu}>
-                                                <EllipsisOutlined />
-                                            </Dropdown>
-                                            ]}
-                                            author={item.tenkh}
-                                            avatar={item.hinh}
-                                            content={item.noidung}
-                                            datetime={item.giobl + "  " + date}
-                                        />
-
-                                    </li>
+                                    <Customer>
+                                        {/* <Staff /> */}
+                                    </Customer>
                                 </>
                             );
                         }}
@@ -221,7 +293,7 @@ const Select_Product = (props) => {
                             content={
                                 <Editor
                                     onChange={handleChange}
-                                    onSubmit={handleSubmit}
+                                    onSubmit={addComs}
                                     submitting={submitting}
                                     value={values}
                                 />
@@ -372,7 +444,7 @@ const Select_Product = (props) => {
                                             <span>Chọn size:</span>
                                         </Col>
                                         <Col>
-                                            <Select  style={{ width: 120 }} onChange={Changesize}>
+                                            <Select style={{ width: 120 }} onChange={Changesize}>
                                                 {SIZE.map((item) => {
                                                     return (
                                                         <Option key={item.key} value={item.value}>{item.value}</Option>
@@ -421,7 +493,7 @@ const Select_Product = (props) => {
                                         <Form.Item
                                             label="Chiều cao"
                                             name="chieucao"
-                                            
+
                                         >
                                             <Input style={{ width: 100 }} />
                                         </Form.Item>

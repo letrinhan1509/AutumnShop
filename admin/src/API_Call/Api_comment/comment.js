@@ -31,19 +31,19 @@ const comment = {
         return AxiosComment.post(url, values);
     },
     //(Trả lời 1 bình luận đã có sẵn)
-    replyComment: (values) => {
+    replyComment: (values, token) => {
         const url = "/tra-loi-binh-luan";
-        return AxiosComment.post(url, values);
+        return AxiosComment.post(url, values, token);
     },
     //(Chỉnh sửa nội dung bình luận theo mã bình luận)
-    updateComment: (values) => {
+    updateComment: (values, token) => {
         const url = "/";
-        return AxiosComment.put(url, values);
+        return AxiosComment.put(url, values, token);
     },
     //(Chỉnh sửa nội dung chi tiết(trả lời) bình luận theo mã chitietbl)
-    updateDeComment: (values) => {
+    updateDeComment: (values, token) => {
         const url = "/cap-nhat-tra-loi";
-        return AxiosComment.put(url, values);
+        return AxiosComment.put(url, values, token);
     },
     //(Cập nhật trạng thái 1 bình luận theo mabl ẩn hoặc hiện)
     hideCommet: (values, token) => {
@@ -51,14 +51,14 @@ const comment = {
         return AxiosComment.put(url, values, token);
     },
     //(Xoá 1 bình luận theo mabl)
-    deleteCommentID: (id) => {
+    deleteCommentID: (id, token) => {
         const url = `/${id}`;
-        return AxiosComment.delete(url);
+        return AxiosComment.delete(url, token);
     },
     //(Xoá 1 chi tiết(trả lời) bình luận theo mã chitietbl)
-    deleteCommentDe: (id) => {
+    deleteCommentDe: (id, token) => {
         const url = `/xoa-tra-loi/${id}`;
-        return AxiosComment.delete(url);
+        return AxiosComment.delete(url, token);
     }
 };
 
