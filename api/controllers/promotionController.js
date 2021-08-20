@@ -174,6 +174,7 @@ exports.postPromotionProduct = catchAsync(async (req, res, next) => {
             ngaykt: req.body.ngaykt
         }
         let chitietKM = req.body.sanphamCK;
+
         if(!data.tenkm || !data.ghichu || !data.ngaybd || !data.ngaykt || !chitietKM) {
             return res.status(400).json({ status: "Fail", message: "Thiếu thông tin. Vui lòng kiểm tra lại thông tin !!!" });
         };

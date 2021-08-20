@@ -105,9 +105,7 @@ exports.isLoggedInUser = async (req, res, next) => {
 };
 
 exports.isLoggedIn = async (req, res, next) => {
-    console.log("token:", req.cookies.jwtAdmin);
-    //console.log("token:", req.headers.token);
-    if(req.cookies.jwtAdmin) {
+    if(req.headers.token) {
         try {
             // 1) verify token
             const decoded = await promisify(jwt.verify)(

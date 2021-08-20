@@ -3,23 +3,29 @@ import { Button, message, Table } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import "Container/scss/addpro.scss";
-import size from 'API_Call/Api_product/product';
+import size from 'API_Call/Api_size/size';
 
 const ListSize = () => {
     const link = useHistory();
     let result = JSON.parse(localStorage.getItem('user'));
+    let token = localStorage.getItem('token');
     //API Size
     const [listSize, setListSize] = useState([]);
     useEffect(() => {
-        size.getSize().then((res) => {
+        console.log(token);
+        size.getAllSize(token).then((res) => {
+            console.log(res.data.listSize);
             setListSize(res.data.listSize);
+        }).catch(err => {
+            console.log(err.response);
+            message.error(`${err.response.data.message}`);
         })
     }, []);
 
     //Redirect sửa size theo masize
     const edit = (e) => {
         let id = e.currentTarget.dataset.id
-        size.getSizeId(id).then((res) => {
+        size.getSizeId(id, token).then((res) => {
         if (res.data.status === "Success") {
             localStorage.setItem('size', JSON.stringify(res.data.size));
             setTimeout(() => {
@@ -32,7 +38,7 @@ const ListSize = () => {
     //Xóa size
     const deleteType = (e) => {
         let id = e.currentTarget.dataset.id;
-        size.deleteSize(id).then((res) => {
+        size.deleteSize(id, token).then((res) => {
         if (res.data.status === "Success") {
             message.success(res.data.message)
             setTimeout(() => {
