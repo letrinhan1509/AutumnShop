@@ -66,7 +66,7 @@ const Payments2 = (props) => {
     } else {
       values['is_freeship'] = 0;
     }
-    if(order.delivery === "GHN"){
+    if (order.delivery === "GHN") {
       let chitietGHN = {
         ProvinceID: order.cityGHN,
         DistrictID: order.districtGHN,
@@ -75,10 +75,10 @@ const Payments2 = (props) => {
       values['chitiet'] = chitietGHN;
     }
     values['momo'] = "NO";
-    if(payValue === "Thanh toán MOMO") {
+    if (payValue === "Thanh toán MOMO") {
       values['momo'] = "YES";
     }
-    
+
     console.log(values);
     if (payValue === "Thanh toán MOMO") {
       //API MoMo
@@ -137,7 +137,20 @@ const Payments2 = (props) => {
   pays['order'] = order;
   pays['note'] = notes;
   pays['pay'] = payValue;
-  //pays['delivery'] = deliveryValue;
+  if (order.delivery === "GHTK") {
+    pays['is_freeship'] = 1;
+  } else {
+    pays['is_freeship'] = 0;
+  }
+  if(order.delivery === "GHN"){
+    let chitietGHN = {
+      ProvinceID: order.cityGHN,
+      DistrictID: order.districtGHN,
+      WardCode: order.wardGHN
+    }
+    pays['chitiet'] = chitietGHN;
+  }
+  pays['momo'] = "NO";
   const demo = pays;
   localStorage.setItem('payment', JSON.stringify(demo));
 

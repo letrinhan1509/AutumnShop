@@ -5,14 +5,15 @@ import { useHistory } from "react-router-dom";
 import axios from "axios";
 
 export default function Paypal(props) {
+    //sb-jyqx17318109@personal.example.com
+    //yE&(;V-9
     const paypal = useRef()
     const history = useHistory();
     console.log(props.order);
     let coin = 0;
     const payment = JSON.parse(localStorage.getItem("payment"));
-
+    coin = Math.floor(payment.order.sumpay / 23000);
     useEffect(() => {
-        
         window.paypal.Buttons({
             createOrder: (data, actions, err) => {
                 return actions.order.create({
@@ -22,7 +23,7 @@ export default function Paypal(props) {
                             description: "Cool looking table",
                             amount: {
                                 currency_code: "USD",
-                                value: 1.00,
+                                value: coin,
                             },
                         },
                     ],
@@ -33,7 +34,6 @@ export default function Paypal(props) {
                 const bill = await actions.order.capture();
                 console.log(bill);
                 console.log(actions);
-
                 if (bill.status === "COMPLETED") {
                     message.success("Ban da thanh toan thanh cong !!!");
                     const url = "http://localhost:5000/api/v1/don-hang/";
