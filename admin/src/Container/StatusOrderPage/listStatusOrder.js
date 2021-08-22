@@ -82,13 +82,14 @@ const ListStatusOrder = () => {
     },
     result.permission === 'Admin' || result.permission === 'QLCH' ?
       {
-        title: 'Hành động',
+        title: 'Cập nhật',
         dataIndex: 'trangthai',
         key: 'trangthai',
         render: trangthai => (<div className="btn-box fix"><Button data-id={trangthai} type="primary" key={trangthai} onClick={edit}> Sửa </Button></div>)
       } : (<> </>),
     result.permission === 'Admin' || result.permission === 'QLCH' ?
       {
+        title: 'Hành động',
         dataIndex: 'trangthai',
         key: 'trangthai',
         render: trangthai => (<div className="btn-box delete"><Button data-id={trangthai} key={trangthai} type="danger" onClick={deleteSttOrder}> Xoá </Button></div>)

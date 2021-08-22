@@ -95,3 +95,32 @@ exports.listCity = async () => {
             // always executed
         });
 }
+
+    // Thống kê doanh thu bán hàng và số đơn hàng theo ngày:
+exports.statistical = async () => {
+    return new Promise( (hamOK, hamLoi) => {
+        let sql = `SELECT madonhang, DATE_FORMAT(ngaydat, '%e-%c-%Y') as ngaydat, SUM(tongtien) as tongdoanhthu, COUNT(ngaydat) as tongdonhang FROM donhang
+        GROUP BY ngaydat ORDER BY ngaydat DESC LIMIT 7`;
+        db.query(sql, (err, result) => {
+            if(err){
+                hamLoi(err);
+            }else{
+                hamOK(result);
+            }
+        })
+    })
+};
+    // Thống kê doanh thu bán hàng và số đơn hàng theo tháng:
+exports.statisticalMonth = async () => {
+    return new Promise( (hamOK, hamLoi) => {
+        let sql = `SELECT madonhang, ngaydat, MONTH (ngaydat) as doanhthuthang, SUM(tongtien) as tongdoanhthu, COUNT(ngaydat) as tongdonhang 
+        FROM donhang GROUP BY MONTH (ngaydat) ORDER BY doanhthuthang DESC`;
+        db.query(sql, (err, result) => {
+            if(err){
+                hamLoi(err);
+            }else{
+                hamOK(result);
+            }
+        })
+    })
+};

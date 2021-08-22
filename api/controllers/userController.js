@@ -369,7 +369,7 @@ exports.putForgotPassword = catchAsync(async (req, res, next) => {
                     return res.status(200).json({
                         status: "Success",
                         message: "Mật khẩu mới đã được gửi qua email của bạn. Vui lòng kiểm tra lại email để nhận mật khẩu !",
-                        pass: newPassword
+                        /* pass: newPassword */
                     });
                 }
             })
@@ -456,9 +456,11 @@ exports.deleteUser = catchAsync(async (req, res, next) => {
                     message: "Hiện tại không thể xoá tài khoản này, đã chuyển trạng thái tài khoản thành khoá !"
                 });
             } else {
+                const listUsers = await modelUser.list();
                 return res.status(200).json({ 
                     status: "Success", 
-                    message: query 
+                    message: query,
+                    listUsers: listUsers 
                 });
             }
         }

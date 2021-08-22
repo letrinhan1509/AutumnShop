@@ -133,6 +133,7 @@ exports.isLoggedIn = async (req, res, next) => {
             }
             //return next();
         } catch (error) {
+            console.log(error);
             return res.status(403).json({ 
                 status: "Fail", 
                 message: "This token does not exist!", 

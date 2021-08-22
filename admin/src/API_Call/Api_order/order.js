@@ -29,10 +29,28 @@ const order = {
             },
         });
     },
+    //(Thống kê đơn hàng)
+    getStatistical_Oder: (values, token) => {
+        const url = `/thong-ke-don-hang`;
+        return AxiosOrder.post(url, values, {
+            headers: {
+                Token: `${token}`,
+            },
+        });
+    },
     //(Cập nhật trạng thái đơn hàng)
     updateStatus: (values, token) => {
         const url = "/";
         return AxiosOrder.put(url, values, {
+            headers: {
+                Token: `${token}`,
+            },
+        });
+    },
+    //(Huỷ đơn hàng)
+    cancelOrder: (id, token) => {
+        const url = `/${id}`;
+        return AxiosOrder.delete(url, {
             headers: {
                 Token: `${token}`,
             },

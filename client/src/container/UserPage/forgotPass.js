@@ -49,27 +49,22 @@ const ForgotPass = () => {
 
     const login = (values) => {
         console.log(values);
-        /* user
-            .login(values)
+        user
+            .forgotPass(values)
             .then(async (res) => {
                 console.log(res.data);
-                if (res.data.status === "LoginSuccess") {
-                    message.success(`Xin chào, ${res.data.data.username}`)
-                    console.log(res.data.data.username)
-                    localStorage.setItem('token', res.data.token)
-                    localStorage.setItem('user', JSON.stringify(res.data.data))
+                if (res.data.status === "Success") {
                     setTimeout(() => {
-                        history.push("/")
-                        window.location.reload()
-                    }, 2000)
+                        history.push("/dang-nhap")
+                    }, 1000)
                 }
                 else {
                     message.error('Login fail !')
                 }
             })
             .catch((err) => {
-                message.error(`Đăng nhập thất bại\n ${err}`)
-            }) */
+                message.error(`${err.respone.data.message}`)
+            })
     }
 
     return (

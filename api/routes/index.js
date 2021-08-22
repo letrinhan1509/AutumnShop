@@ -20,6 +20,8 @@ router
     .get(indexController.getShop)
     .post(indexController.postCreateShop);
 
+router.get('/thong-ke', indexController.postThongkeDashboard);   // Thống kê ở trang Dashboard
+
 router.get('/city/:id', indexController.getDetailCity);     // Chi tiết 1 Tỉnh/Thành phố
 router.get('/dich-vu-GHN/:id', indexController.getService); // Danh sách các dịch vụ của GHN
 router.get('/district/:id', indexController.getDetailDistrict); // Chi tiết 1 Quận/Huyện
@@ -31,6 +33,7 @@ router.get('/district/:id/ward', indexController.getListWards); // Danh sách to
 router.get('/ward/:id', indexController.getDetailWard); // Chi tiết 1 phường, xã, thị trấn
 
 router.post('/fee', indexController.postTransportFee);
+
 
 
 module.exports = router;

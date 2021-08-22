@@ -62,7 +62,7 @@ const ListOrder = (props) => {
     } */
     const [title, setTitle] = useState([]);
     useEffect(() => {
-        admin.getTitle().then((res) => {
+        admin.getTitle(token).then((res) => {
             if (res.data.status === "Success") {
                 setTitle(res.data.data);
             }
@@ -77,6 +77,22 @@ const ListOrder = (props) => {
         values["madonhang"] = ORDER.madonhang;
         console.log(values);
         orders.updateStatus(values, token).then((res) => {
+            if (res.data.status === "Success") {
+                message.success(res.data.message)
+                localStorage.removeItem("order");
+                setTimeout(() => {
+                    history.push('/danh-sach-don-hang');
+                }, 2000)
+            }
+        })
+        .catch(err => {
+                message.error(`${err.response.data.message}\n Cập nhật đơn hàng thất bại! `);
+        })
+    };
+    const cancel = (values) => {
+        let id = ORDER.madonhang;
+        console.log(id);
+        orders.cancelOrder(id, token).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message)
                 localStorage.removeItem("order");
@@ -107,12 +123,19 @@ const ListOrder = (props) => {
             >
                 <Form.Item >
                     <div className="btn-box-edit">                        
-                        <Button onClick={back} className="pay" type="danger">
+                        <Button onClick={back} className="pay" type="primary">
                             <Link to="/danh-sach-don-hang">Trở về</Link>
                         </Button>
-                        <Button className="pay" value="submit" type="primary" htmlType="submit">
-                            Cập nhật
-                        </Button>
+                        {ORDER.trangthai == 4 ? ("") : (
+                            <>
+                                <Button className="pay" value="submit" type="primary" htmlType="submit">
+                                    Cập nhật
+                                </Button>
+                                <Button className="pays" onClick={cancel} type="danger">
+                                    Huỷ đơn
+                                </Button>
+                            </>
+                        )}
                     </div>
                 </Form.Item>
                 <Row className="box">
@@ -139,15 +162,28 @@ const ListOrder = (props) => {
                                     id="trangthai"
                                     label="Trạng thái đơn hàng: "
                                 >
-                                    <Select className="tentt" style={{ width: 300 }}>
-                                        {title.map((item) => {
-                                            return (
-                                                <>
-                                                    <Option className="tentt" value={item.trangthai}>{item.tentt}</Option>
-                                                </>
-                                            )
-                                        })}
-                                    </Select>
+                                    {ORDER.trangthai === 4 ? (
+                                        <Select disabled className="tentt" style={{ width: 300 }}>
+                                            {title.map((item) => {
+                                                return (
+                                                    <>
+                                                        <Option className="tentt" value={item.trangthai}>{item.tentt}</Option>
+                                                    </>
+                                                )
+                                            })}
+                                        </Select>
+                                    ) : (
+                                        <Select className="tentt" style={{ width: 300 }}>
+                                            {title.map((item) => {
+                                                return (
+                                                    <>
+                                                        <Option className="tentt" value={item.trangthai}>{item.tentt}</Option>
+                                                    </>
+                                                )
+                                            })}
+                                        </Select>
+                                    )}
+                                    
                                 </Form.Item>
                             </li>
                         </ul>

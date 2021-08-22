@@ -25,6 +25,7 @@ const order = {
         const url = "/pay-momo";
         return AxiosOrder.post(url, values);
     },
+    //(Huỷ đơn hàng)
     cancelOrder: (id) => {
         const url = `/${id}`;
         return AxiosOrder.delete(url);

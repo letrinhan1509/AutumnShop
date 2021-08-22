@@ -41,7 +41,7 @@ router
 router
     .route("/trang-thai-don-hang/:id")
     .get(adminController.getOrderStatus)    // Chi tiết 1 trạng thái đơn hàng
-    .delete(authController.isLoggedIn, adminController.deleteStatusOrder); // Xoá trạng thái đơn hàng
+    .delete(authController.isLoggedIn, authController.restrictTo, adminController.deleteStatusOrder); // Xoá trạng thái đơn hàng
 
 
 router.get("/dang-xuat", adminController.logout);

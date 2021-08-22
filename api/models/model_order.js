@@ -117,7 +117,7 @@ exports.get_detailOrder = async (orderId) => {
     // Thống kê doanh thu bán hàng và số đơn hàng theo ngày:
 exports.statistical = async () => {
     return new Promise( (hamOK, hamLoi) => {
-        let sql = `SELECT madonhang, ngaydat, SUM(tongtien) as tongdoanhthu, COUNT(ngaydat) as tongdonhang FROM donhang
+        let sql = `SELECT madonhang, DATE_FORMAT(ngaydat, '%e-%c-%Y') as ngaydat, SUM(tongtien) as tongdoanhthu, COUNT(ngaydat) as tongdonhang FROM donhang
         GROUP BY ngaydat ORDER BY ngaydat DESC LIMIT 7`;
         db.query(sql, (err, result) => {
             if(err){

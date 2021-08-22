@@ -774,6 +774,12 @@ exports.deleteOrder = catchAsync(async (req, res, next) => {
                 message: "Đơn hàng này không tồn tại, vui lòng kiểm tra lại !"
             });
         } else {
+            if(orderExist.trangthai == 1) {
+                return res.status(400).json({ 
+                    status: "Fail", 
+                    message: "Đơn hàng đã được duyệt không thể huỷ !"
+                });
+            };
             if(orderExist.trangthai == 2) {
                 return res.status(400).json({ 
                     status: "Fail", 
@@ -791,7 +797,7 @@ exports.deleteOrder = catchAsync(async (req, res, next) => {
                     message: "Đơn hàng đã được huỷ !"
                 });
             };
-            if(orderExist.trangthai == 0 || orderExist.trangthai == 1) {
+            if(orderExist.trangthai == 0) {
                 const query_delete = await modelOrder.delete(madh);
                 return res.status(200).json({ 
                     status: "Success", 

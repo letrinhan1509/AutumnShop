@@ -2,7 +2,7 @@ import "Container/scss/addpro.scss";
 import { Button, Form, Input, message, Select, Modal } from "antd";
 import React, {useEffect, useState} from 'react';
 import { Link, useHistory } from "react-router-dom";
-import SIZE from 'API_Call/Api_product/product';
+import SIZE from 'API_Call/Api_size/size';
 
 const { Option } = Select;
 const formItemLayout = {

@@ -503,17 +503,21 @@ exports.deleteStatusOrder = catchAsync(async (req, res, next) => {
         if(sttOrder == -1) {
             return res.status(400).json({ status: "Fail", message: "Không tìm thấy trạng thái đơn hàng này !" });
         } else {
-            let query = await modelAdmin.delete_Status_Order(trangthai);
-            if(query == 6) {
-                return res.status(400).json({ status: "Fail", message: "Hiện tại không thể xoá trạng thái này !" });
-            };
-            if(query == 1) {
-                const listOrderStatus = await modelAdmin.list_Status_Order();
-                return res.status(200).json({ 
-                    status: "Success", 
-                    message: "Xoá trạng thái đơn hàng thành công !", 
-                    listOrderStatus: listOrderStatus 
-                });
+            if(sttOrder.trangthai == 0 || sttOrder.trangthai == 1 || sttOrder.trangthai == 2 || sttOrder.trangthai == 3 || sttOrder.trangthai == 4) {
+                return res.status(400).json({ status: "Fail", message: "Hiện tại không thể xoá trạng thái đơn hàng này !" });
+            } else {
+                let query = await modelAdmin.delete_Status_Order(trangthai);
+                if(query == 6) {
+                    return res.status(400).json({ status: "Fail", message: "Hiện tại không thể xoá trạng thái đơn hàng này !" });
+                };
+                if(query == 1) {
+                    const listOrderStatus = await modelAdmin.list_Status_Order();
+                    return res.status(200).json({ 
+                        status: "Success", 
+                        message: "Xoá trạng thái đơn hàng thành công !", 
+                        listOrderStatus: listOrderStatus 
+                    });
+                }
             }
         }   
     } catch (error) {

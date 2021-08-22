@@ -441,6 +441,19 @@ exports.getService = catchAsync(async (req, res, next) => {
     }
 });
 
+exports.postThongkeDashboard = catchAsync(async (req, res, next) => {
+    try {
+        let thang = req.body.thang;
+        let nam = req.body.nam;
+        if(thang == undefined) {
+
+        } else {
+
+        }
+    } catch (error) {
+        
+    }
+});
 
 // POST: Thêm cửa hàng, cửa hàng là nơi giúp GHN biết nơi lấy đồ.
 exports.postCreateShop = catchAsync(async (req, res, next) => {

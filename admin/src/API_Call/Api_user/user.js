@@ -40,7 +40,15 @@ const user = {
                 Token: `${token}`,
             },
         });
-    }
+    },
+    delete_Customer: (id, token) => {
+        const url = `/${id}`;
+        return AxiosUser.delete(url, {
+            headers: {
+                Token: `${token}`,
+            },
+        });
+    },
 };
 
 export default user;

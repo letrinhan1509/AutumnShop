@@ -197,7 +197,7 @@ const AddProduct = (props) => {
         values['imgName'] = imageName.name;
         values['chitiet'] = JSON.stringify(add);
         console.log(values);
-        product.addproduct(values).then((res) => {
+        product.addproduct(values, token).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message)
                 setTimeout(() => {
@@ -432,7 +432,7 @@ const AddProduct = (props) => {
                                 name="soluong"
                                 label="Số lượng"
                             >
-                                <InputNumber ref={SOLUONG} min={1} max={20} defaultValue={1} />
+                                <InputNumber ref={SOLUONG} min={1} max={200} defaultValue={1} />
                             </Form.Item>
                             <Form.Item
                                 name="size"

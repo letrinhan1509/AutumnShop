@@ -10,6 +10,7 @@ import { Row, Col, Image } from 'antd';
 import "Container/scss/dashboard.scss";
 import { Link } from 'react-router-dom';
 import { Line, Bar } from 'react-chartjs-2';
+import statis from 'API_Call/Api_city/city';
 
 const admin = JSON.parse(localStorage.getItem('user'));
 console.log(admin);
@@ -36,65 +37,25 @@ const Dashboard = () => {
         voucher.getAllVoucher().then((res) => {
             setListVoucher(res.data.voucher);
         })
+        /* statis.getStatistical().then((res) => {
+            // Trả về tất cả thống kê:
+            setListAdmin(res.data.listAdmins);
+            setListUser(res.data.listUsers);
+            setListProduct(res.data.listProducts);
+            setStatistical(res.data.statistical);
+            setListVoucher(res.data.listVoucher);
+        }) */
     }, []);
 
     return (
         <>
             <div className="char">
-                <div>
+            <div>
                     <Bar
                         data={{
                             labels: statistical.map((item) => {
                                 return (
-                                    moment(item.ngaydat).format('DD/MM/YYYY')
-                                );
-                            }),
-                            datasets: [
-                                {
-                                    label: 'Tổng đơn hàng',
-                                    data: statistical.map((item) => {
-                                        return (
-                                            item.tongdonhang
-                                        );
-                                    }),
-                                    backgroundColor: [
-                                        'rgba(255, 99, 132, 0.2)',
-                                        'rgba(54, 162, 235, 0.2)',
-                                        'rgba(255, 206, 86, 0.2)',
-                                        'rgba(75, 192, 192, 0.2)',
-                                        'rgba(153, 102, 255, 0.2)',
-                                        'rgba(255, 159, 64, 0.2)',
-                                    ],
-                                    borderColor: [
-                                        'rgba(255, 99, 132, 1)',
-                                        'rgba(54, 162, 235, 1)',
-                                        'rgba(255, 206, 86, 1)',
-                                        'rgba(75, 192, 192, 1)',
-                                        'rgba(153, 102, 255, 1)',
-                                        'rgba(255, 159, 64, 1)'
-                                    ],
-                                    borderWidth: 1
-                                }
-                            ]
-                        }}
-                        height={300}
-                        width={500}
-                        options={{
-                            maintainAspectRatio: false,
-                            scales: {
-                                y: {
-                                    beginAtZero: true
-                                }
-                            }
-                        }}
-                    />
-                </div>
-                <div>
-                    <Bar
-                        data={{
-                            labels: statistical.map((item) => {
-                                return (
-                                    moment(item.ngaydat).format('DD/MM/YYYY')
+                                    item.ngaydat
                                 );
                             }),
                             datasets: [
@@ -140,6 +101,54 @@ const Dashboard = () => {
                                 ,
                                 y: {
                                     beginAtZero: true,
+                                }
+                            }
+                        }}
+                    />
+                </div>
+                <div>
+                    <Bar
+                        data={{
+                            labels: statistical.map((item) => {
+                                return (
+                                    item.ngaydat
+                                );
+                            }),
+                            datasets: [
+                                {
+                                    label: 'Tổng đơn hàng',
+                                    data: statistical.map((item) => {
+                                        return (
+                                            item.tongdonhang
+                                        );
+                                    }),
+                                    backgroundColor: [
+                                        'rgba(255, 99, 132, 0.2)',
+                                        'rgba(54, 162, 235, 0.2)',
+                                        'rgba(255, 206, 86, 0.2)',
+                                        'rgba(75, 192, 192, 0.2)',
+                                        'rgba(153, 102, 255, 0.2)',
+                                        'rgba(255, 159, 64, 0.2)',
+                                    ],
+                                    borderColor: [
+                                        'rgba(255, 99, 132, 1)',
+                                        'rgba(54, 162, 235, 1)',
+                                        'rgba(255, 206, 86, 1)',
+                                        'rgba(75, 192, 192, 1)',
+                                        'rgba(153, 102, 255, 1)',
+                                        'rgba(255, 159, 64, 1)'
+                                    ],
+                                    borderWidth: 1
+                                }
+                            ]
+                        }}
+                        height={300}
+                        width={500}
+                        options={{
+                            maintainAspectRatio: false,
+                            scales: {
+                                y: {
+                                    beginAtZero: true
                                 }
                             }
                         }}

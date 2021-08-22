@@ -31,6 +31,8 @@ router.delete("/GHN/cancel/:id", orderController.deleteOrderGHN);   // Huỷ đ�
 router.post("/GHN/create", orderController.postCreateOrderGHN); // Tạo đơn hàng của GHN
 router.post("/GHN/detail", orderController.postDetailOrderGHN); // Thông tin chi tiết 1 đơn hàng
 
+//router.post('/thong-ke-don-hang', indexController.postThongkeDonhang);
+
 
 
 

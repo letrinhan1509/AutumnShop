@@ -29,7 +29,7 @@ const ListSize = () => {
     }, []);
     const edit = (e) => {
         let id = e.currentTarget.dataset.id
-        size.getSizeId(id).then((res) => {
+        size.getSizeId(id, token).then((res) => {
             if (res.data.status === "Success") {
                 localStorage.setItem('sizeDetail', JSON.stringify(res.data.size))
                 setSizeDetail(res.data.size);
@@ -106,12 +106,14 @@ const ListSize = () => {
         },
         result.permission === 'Admin' || result.permission === 'QLCH' ?
             {
+                title: 'Cập nhật',
                 dataIndex: 'masize',
                 key: 'masize',
                 render: masize => (<div className="btn-box fix"><Button data-id={masize} type="primary" key={masize} onClick={edit}> Sửa </Button></div>)
             } : (<></>),
         result.permission === 'Admin' || result.permission === 'QLCH' ?
             {
+                title: 'Hành động',
                 dataIndex: 'masize',
                 key: 'masize',
                 render: masize => (<div className="btn-box delete"><Button data-id={masize} key={masize} type="danger" onClick={deleteSize}> Xoá </Button></div>)

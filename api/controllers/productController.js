@@ -266,7 +266,6 @@ exports.postProduct = catchAsync(async (req, res, next) => {
             });
         }
     } catch (error) {
-        console.log(error);
         return res.status(400).json({ 
             status: "Fail", 
             message: "Something went wrong!", 

@@ -39,6 +39,15 @@ const city = {
         const url = `/ward/${id}`;
         return AxiosCity.get(url);
     },
+    //(Thống kê Dashboard)
+    getStatistical: (token) => {
+        const url = `/thong-ke`;
+        return AxiosCity.get(url, {
+            headers: {
+                Token: `${token}`,
+            },
+        });
+    }
 };
 
 export default city;

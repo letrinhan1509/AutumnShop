@@ -23,7 +23,7 @@ const user = {
     },
     forgotPass: (values) => {
         const url = "/quen-mat-khau";
-        return AxiosUser.post(url, values);
+        return AxiosUser.put(url, values);
     },
     updateInfo: (values) => {
         const url = "/cap-nhat-tai-khoan";

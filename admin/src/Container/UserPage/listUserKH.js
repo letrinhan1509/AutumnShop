@@ -73,6 +73,19 @@ const ListUserKH = (props) => {
       })
   };
 
+  const deleteCus = (e) => {
+    let id = e.currentTarget.dataset.id
+    user.delete_Customer(id, token).then((res) => {
+      if (res.data.status === "Success") {
+        //setWordSearch(res.data.listUsers);
+        setTimeout(() => {
+          history.push('/danh-sach-khach-hang');
+        }, 100)
+      }
+    });
+
+  }
+
   let result = JSON.parse(localStorage.getItem('user'));
 
   //Setup trạng thái cho datatable
@@ -115,7 +128,7 @@ const ListUserKH = (props) => {
       dataIndex: 'diachi',
       key: 'diachi',
     },
-    {
+    /* {
       title: 'Trạng thái',
       dataIndex: 'trangthai',
       key: 'trangthai',
@@ -140,11 +153,11 @@ const ListUserKH = (props) => {
         { text: "Hoạt động", value: "Hoạt động" },
       ],
       onFilter: (value, record) => record.trangthai.stt.includes(value),
-    },
+    }, */
 
     result.permission === 'Admin' || result.permission === 'QLNS' ? (
       {
-        title: 'Hành động',
+        title: 'Trạng thái',
         dataIndex: 'trangthai',
         data: 'makh',
         key: 'trangthai',
@@ -158,13 +171,20 @@ const ListUserKH = (props) => {
                 );
               } else {
                 return (
-                  <div className="btn-box lock"><Button data-id={trangthai.id} type="danger" icon={<LockOutlined />} onClick={lock}> Khoá </Button></div>
+                  <div className="btn-box lock"><Button data-id={trangthai.id} type="primary" icon={<LockOutlined />} onClick={lock}> Khoá </Button></div>
                 )
               }
             })}
           </>
         )
-      }) : (<> </>)
+      }) : (<> </>),
+    result.permission === 'Admin' || result.permission === 'QLNS' ?
+      {
+        title: 'Hành động',
+        dataIndex: 'makh',
+        key: 'makh',
+        render: makh => (<div className="btn-box delete"><Button data-id={makh} key={makh} type="danger" onClick={deleteCus}> Xoá </Button></div>)
+      } : (<> </>)
   ];
 
 

@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+const authController = require('../controllers/authController');
 const productController = require('../controllers/productController');
 const modelProduct = require('../models/model_product'); //nhúng model products vào controller này để sử dụng
 
@@ -14,7 +15,7 @@ router.get('/hot-product', async function(req, res) {
 router
   .route("/")
   .get(productController.getListProducts)// Danh sách tất cả sản phẩm
-  .post(productController.postProduct)  // Thêm sản phẩm
+  .post(authController.isLoggedIn, authController.restrictTo, productController.postProduct)  // Thêm sản phẩm
 
 router
   .route("/new-product").get(productController.getNewProduct);
