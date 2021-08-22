@@ -21,14 +21,22 @@ const order = {
         return AxiosOrder.get(url);
     },
     // Tạo đơn hàng GHN:
-    createOrderGHN: (values) => {
+    createOrderGHN: (values, token) => {
         const url = "/GHN/create";
-        return AxiosOrder.post(url, values);
+        return AxiosOrder.post(url, values, {
+            headers: {
+                Token: `${token}`,
+            },
+        });
     },
     //(Cập nhật trạng thái đơn hàng)
     updateStatus: (values, token) => {
         const url = "/";
-        return AxiosOrder.put(url, values, token);
+        return AxiosOrder.put(url, values, {
+            headers: {
+                Token: `${token}`,
+            },
+        });
     },
     //(Thống kê doanh thu bán hàng và đơn hàng)
     statistical: () => {

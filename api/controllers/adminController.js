@@ -214,10 +214,10 @@ exports.postStatusOrder = catchAsync(async (req, res, next) => {
                 const listOrders = await modelAdmin.list_Status_Order();
                 return res.status(200).json({ status: "Success", message: query, listOrders: listOrders });
             } else {
-                return res.status(400).json({ status: "Fail", message: "Tên trạng thái này đã tồn tại, vui lòng nhập lại !" });
+                return res.status(400).json({ status: "Fail", message: "Tên trạng thái đơn hàng này đã tồn tại, vui lòng nhập lại !" });
             }
         } else {
-            return res.status(400).json({ status: "Fail", message: "Mã trạng thái này đã tồn tại, vui lòng nhập lại !" });
+            return res.status(400).json({ status: "Fail", message: "Mã trạng thái đơn hàng này đã tồn tại, vui lòng nhập lại !" });
         }
     } catch (error) {
         return res.status(400).json({ 

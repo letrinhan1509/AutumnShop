@@ -133,9 +133,9 @@ exports.isLoggedIn = async (req, res, next) => {
             }
             //return next();
         } catch (error) {
-            return res.status(400).json({ 
+            return res.status(403).json({ 
                 status: "Fail", 
-                message: "Something went wrong!", 
+                message: "This token does not exist!", 
                 error: error.message
             });
         };

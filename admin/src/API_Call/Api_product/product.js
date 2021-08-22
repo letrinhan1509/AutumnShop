@@ -5,10 +5,6 @@ const product = {
         const url = "/";
         return AxiosProduct.get(url);
     },
-    getSize: () => {
-        const url = "/bang-size";
-        return AxiosProduct.get(url);
-    },
     //(Sản phẩm theo id)
     getid: (id) => {
         const url = `/${id}`;
@@ -29,39 +25,38 @@ const product = {
         const url = `/nha-san-xuat/${id}`;
         return AxiosProduct.get(url);
     },
-    //(Size theo id)
-    getSizeId: (id) => {
-        const url = `/bang-size/${id}`;
-        return AxiosProduct.get(url);
-    },
     addproduct: (values, token) => {
         const url = "/";
-        return AxiosProduct.post(url, values, token);
-    },
-    addSize: (values, token) => {
-        const url = "/bang-size";
-        return AxiosProduct.post(url, values, token);
+        return AxiosProduct.post(url, values, {
+            headers: {
+                Token: `${token}`,
+            },
+        });
     },
     updatePro: (values, token) => {
         const url = "/cap-nhat-san-pham";
-        return AxiosProduct.put(url, values, token);
+        return AxiosProduct.put(url, values, {
+            headers: {
+                Token: `${token}`,
+            },
+        });
     },
     updateStatus: (values, token) => {
         const url = "/cap-nhat-trang-thai";
-        return AxiosProduct.put(url, values, token);
-    },
-    updateSize: (values, token) => {
-        const url = "/bang-size";
-        return AxiosProduct.put(url, values, token);
+        return AxiosProduct.put(url, values, {
+            headers: {
+                Token: `${token}`,
+            },
+        });
     },
     deletePro: (id, token) => {
         const url = `/${id}`;
-        return AxiosProduct.delete(url, token);
+        return AxiosProduct.delete(url, {
+            headers: {
+                Token: `${token}`,
+            },
+        });
     },
-    deleteSize: (id, token) => {
-        const url = `/bang-size/${id}`;
-        return AxiosProduct.delete(url, token);
-    }
 };
 
 export default product;

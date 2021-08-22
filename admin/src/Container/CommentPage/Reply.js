@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Table, Image, Button, message, Tabs, List, Form, Comment, Input, Avatar, Row, Modal } from 'antd';
 import { EditOutlined } from '@ant-design/icons';
 import { useHistory, Link } from "react-router-dom";
-import COMMENTS from 'API_Call/Api_comment/comment';
+import comment from 'API_Call/Api_comment/comment';
 import "Container/scss/addpro.scss"
 import moment from 'moment';
 
@@ -14,17 +14,15 @@ const Reply = (props) => {
   const history = useHistory();
   const detailComment = JSON.parse(localStorage.getItem('detailComment'));
   let traloi = [];
-  if (detailComment[0].traLoiBL.length !== 0) {
-    traloi = [...detailComment.traLoiBL];
-    console.log(traloi);
+  if (detailComment[0].traLoiBL.length > 0) {
+    traloi = [...detailComment[0].traLoiBL];
   }
   console.log("traloi", traloi);
 
   let values = '';
   const [submitting, setSubmitting] = useState(false);
   const addComs = (value) => {
-    console.log(value);
-    /* comment.replyComment(value, token).then((res) => {
+    comment.replyComment(value, token).then((res) => {
         if (res.data.status === "Success") {
             message.success(res.data.message);
             setTimeout(() => {
@@ -37,12 +35,12 @@ const Reply = (props) => {
         .catch(err => {
             console.log(err.response);
             message.error(`ERROR !\n ${err.response.data.message}`)
-        }) */
+            console.log(err.response.data);
+        })
   };
 
   const editComs = (value) => {
-    console.log(value);
-    /* comment.updateDeComment(value, token).then((res) => {
+    comment.updateDeComment(value, token).then((res) => {
         if (res.data.status === "Success") {
             message.success(res.data.message);
             setTimeout(() => {
@@ -55,7 +53,7 @@ const Reply = (props) => {
         .catch(err => {
             console.log(err.response);
             message.error(`ERROR !\n ${err.response.data.message}`)
-        }) */
+        })
   };
 
   const handleChange = (e) => {
@@ -64,10 +62,10 @@ const Reply = (props) => {
 
   const delComment = (e) => {
     let mact = e.mact;
-    /* comment.deleteCommentDe(mact, token).then((res) => {
+    comment.deleteCommentDe(mact, token).then((res) => {
         if (res.data.status === "Success") {
             message.success(res.data.message);
-            setListComment(res.data.listComment);
+            //setListComment(res.data.comment);
         } else {
             message.error(res.data.message)
         }
@@ -75,7 +73,7 @@ const Reply = (props) => {
         .catch(err => {
             console.log(err.response);
             message.error(`ERROR !\n ${err.response.data.message}`)
-        }) */
+        })
   }
 
   const Editor = () => (
@@ -137,20 +135,20 @@ const Reply = (props) => {
       </Comment>
     );
     const Staff = ({ children }) => (
-      traloi.length !== 0 ? (
+      traloi.length > 0 ? (
         <Comment
           actions={[
-            fix === true ? ("") : (<a key="comment-list-reply-to-0" onClick={() => delComment(traloi)}>Xóa</a>)
+            fix === true ? ("") : (<a key="comment-list-reply-to-0" onClick={() => delComment(traloi[0])}>Xóa</a>)
           ]}
-          author={traloi.tennv}
-          avatar={traloi.hinh}
+          author={traloi[0].ten}
+          avatar={traloi[0].hinh}
           content={[
             fix === true ? (
               <Form
                 onFinish={editComs}
                 id="cmt"
                 initialValues={{
-                  mact: `${traloi.mact}`,
+                  mact: `${traloi[0].mact}`,
                   mabl: `${detailComment[0].mabl}`,
                 }}
               >
@@ -180,9 +178,9 @@ const Reply = (props) => {
                   </Button>
                 </Form.Item>
               </Form>
-            ) : (traloi.noidung), fix === true ? ("") : (<a key="comment-list-reply-to-0" onClick={Edit}><EditOutlined style={{ marginLeft: 10 }} /></a>)
+            ) : (traloi[0].noidung), fix === true ? ("") : (<a key="comment-list-reply-to-0" onClick={Edit}><EditOutlined style={{ marginLeft: 10 }} /></a>)
           ]}
-          datetime={moment(traloi.ngaybl).format('DD-MM-YYYY')}
+          datetime={traloi[0].ngaybl}
         >
           {children}
         </Comment>
@@ -227,6 +225,7 @@ const Reply = (props) => {
       okType: 'danger',
       cancelText: 'Không',
       onOk() {
+        localStorage.removeItem("detailComment");
         history.push('/danh-sach-binh-luan');
       },
       onCancel() {

@@ -1,9 +1,13 @@
 import AxiosUser from "./AxiosUser";
 
 const user = {
-    getAll: () => {
+    getAll: (token) => {
         const url = '/';
-        return AxiosUser.get(url);
+        return AxiosUser.get(url, {
+            headers: {
+                Token: `${token}`,
+            },
+        });
     },
     getID: (id) => {
         const url = `/${id}`;
@@ -31,7 +35,11 @@ const user = {
     },
     updateStatus: (values, token) => {
         const url = "/cap-nhat-trang-thai";
-        return AxiosUser.put(url, values, token);
+        return AxiosUser.put(url, values, {
+            headers: {
+                Token: `${token}`,
+            },
+        });
     }
 };
 

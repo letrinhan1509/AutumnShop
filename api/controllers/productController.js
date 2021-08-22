@@ -3,6 +3,7 @@ const modelProduct = require('../models/model_product'); //nhúng model products
 const modelComment = require('../models/model_comment');
 const modelCatalog = require('../models/model_catalog');
 const modelProducer = require('../models/model_producer');
+const modelDiscount = require('../models/model_discount');
 const e = require('express');
 const { json } = require('body-parser');
 
@@ -74,6 +75,9 @@ exports.getProduct = catchAsync(async (req, res, next) => {
             }
         });
         console.log(chitiet); */
+
+        const khuyenmai = await modelDiscount.get_By_discountId();
+        const sale = {};
         if(productExist == -1) {
             return res.status(400).json({ 
                 status: "Fail", 
@@ -84,7 +88,8 @@ exports.getProduct = catchAsync(async (req, res, next) => {
             return res.status(200).json({ 
                 status: "Success", 
                 dataSpham: productExist,
-                dataCmt: listCmts
+                dataCmt: listCmts,
+                sale: sale
             });
         }
     } catch (error) {

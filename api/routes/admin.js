@@ -27,9 +27,9 @@ router
 
 router
     .route("/trang-thai-don-hang")
-    .get(adminController.getListOrderStatus)    // Danh sách trạng thái đơn hàng
-    .post(adminController.postStatusOrder)      // Thêm 1 trạng thái của đơn hàng
-    .put(adminController.postStatusOrder);  // Cập nhật trạng thái đơn hàng
+    .get(authController.isLoggedIn, adminController.getListOrderStatus)    // Danh sách trạng thái đơn hàng
+    .post(authController.isLoggedIn, adminController.postStatusOrder)      // Thêm 1 trạng thái của đơn hàng
+    .put(authController.isLoggedIn, adminController.putEditStatusOrder);  // Cập nhật trạng thái đơn hàng
 
 router.get('/danh-sach', authController.isLoggedIn, authController.restrictTo, adminController.getListAdmins);
 
@@ -41,7 +41,7 @@ router
 router
     .route("/trang-thai-don-hang/:id")
     .get(adminController.getOrderStatus)    // Chi tiết 1 trạng thái đơn hàng
-    .delete(adminController.deleteStatusOrder); // Xoá trạng thái đơn hàng
+    .delete(authController.isLoggedIn, adminController.deleteStatusOrder); // Xoá trạng thái đơn hàng
 
 
 router.get("/dang-xuat", adminController.logout);

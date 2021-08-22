@@ -28,42 +28,74 @@ const catalog = {
     //(Thêm mới 1 danh mục sp)
     addCatalog: (values, token) => {
         const url = "/";
-        return AxiosCatalog.post(url, values, token);
+        return AxiosCatalog.post(url, values, {
+            headers: {
+                Token: `${token}`,
+            },
+        });
     },
     //(Thêm mới 1 loại sp)
     addProtype: (values, token) => {
         const url = "/loai";
-        return AxiosCatalog.post(url, values, token);
+        return AxiosCatalog.post(url, values, {
+            headers: {
+                Token: `${token}`,
+            },
+        });
     },
     //(Cập nhật thông tin danh mục theo mã danh mục)
     updateCatalog: (values, token) => {
         const url = "/";
-        return AxiosCatalog.put(url, values, token);
+        return AxiosCatalog.put(url, values, {
+            headers: {
+                Token: `${token}`,
+            },
+        });
     },
     //(Cập nhật thông tin loại theo mã loại)
     updateProtype: (values, token) => {
         const url = "/loai";
-        return AxiosCatalog.put(url, values, token);
+        return AxiosCatalog.put(url, values, {
+            headers: {
+                Token: `${token}`,
+            },
+        });
     },
     //(Cập nhật trạng thái loại theo mã loại)
     updateStatusType: (values, token) => {
         const url = "/cap-nhat-trang-thai-loai";
-        return AxiosCatalog.put(url, values, token);
+        return AxiosCatalog.put(url, values, {
+            headers: {
+                Token: `${token}`,
+            },
+        });
     },
     //(Cập nhật trạng thái danh mục theo mã danh mục)
     updateStatusCata: (values, token) => {
         const url = "/cap-nhat-trang-thai";
-        return AxiosCatalog.put(url, values, token);
+        return AxiosCatalog.put(url, values, {
+            headers: {
+                Token: `${token}`,
+            },
+        });
     },
     //(Xoá loại sản phẩm theo id)
     deleteProtype: (id, token) => {
         const url = `/loai/${id}`;
-        return AxiosCatalog.delete(url, token);
+        return AxiosCatalog.delete(url, {
+            headers: {
+                Token: `${token}`,
+            },
+        });
     },
     //(Xoá danh mục sản phẩm theo id)
     deleteCatalog: (id, token) => {
         const url = `/${id}`;
-        return AxiosCatalog.delete(url, token);
+        return AxiosCatalog.delete(url, {
+            headers: {
+                Token: `${token}`,
+            },
+        });
     }
 };
 

@@ -16,8 +16,8 @@ const HeaderPage = () => {
         link.push((`/${e.key}`));
     }
     const logout = () => {
-        //localStorage.removeItem("token")
-        localStorage.removeItem("user")
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
         history.push('/');
         window.location.reload();
     }

@@ -69,9 +69,7 @@ const AddSale = (props) => {
         values["sanphamCK"] = add;
         console.log(values);
 
-
-        //const url = "http://127.0.0.1:5000/api/v1/khuyen-mai/them-khuyen-mai/san-pham"
-        /* discount.addSale(values, token).then((res) => {
+        discount.addSale(values, token).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message)
                 setTimeout(() => {
@@ -83,7 +81,7 @@ const AddSale = (props) => {
             .catch(err => {
                 console.log(err.response);
                 message.error(`${err.response.data.message}\n Tạo khuyến mãi sản phẩm thất bại !`);
-            }); */
+            });
     };
 
     const [listTypes, setListTypes] = useState([]);

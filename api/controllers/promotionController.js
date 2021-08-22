@@ -174,9 +174,22 @@ exports.postPromotionProduct = catchAsync(async (req, res, next) => {
             ngaykt: req.body.ngaykt
         }
         let chitietKM = req.body.sanphamCK;
-
+        /* chitietKM.forEach(element => {
+            element.sanpham.forEach(ele => {
+                let dataCTKM = {
+                    masp: ele.masp,
+                    chitiet_km: ele.chitiet,
+                    chietkhau: element.chietkhau,
+                    giagiam: ele.gia - (ele.gia * (element.chietkhau/100))
+                };
+                ele.chitiet.forEach(e => {
+                    e.giagiam = dataCTKM.giagiam
+                });
+            });
+        });
+        console.log(chitietKM[0].sanpham[0].chitiet); */
         if(!data.tenkm || !data.ghichu || !data.ngaybd || !data.ngaykt || !chitietKM) {
-            return res.status(400).json({ status: "Fail", message: "Thiếu thông tin. Vui lòng kiểm tra lại thông tin !!!" });
+            return res.status(400).json({ status: "Fail", message: "Thiếu thông tin chương trình khuyến mãi. Vui lòng kiểm tra lại thông tin !!!" });
         };
         let query = await modelDiscount.create_Discount(data, chitietKM);
         return res.status(200).json({ 
@@ -184,6 +197,7 @@ exports.postPromotionProduct = catchAsync(async (req, res, next) => {
             message: query 
         });
     } catch (error) {
+        console.log(error);
         return res.status(400).json({
             status: "Fail", 
             message: "Something went wrong",

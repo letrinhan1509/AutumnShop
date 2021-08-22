@@ -7,7 +7,7 @@ const sizeController = require('../controllers/sizeController');
             // API SIZE:
 router
     .route("/")
-    .get(authController.isLoggedIn, authController.restrictTo, sizeController.getListSize)
+    .get(authController.isLoggedIn, sizeController.getListSize)
     .post(authController.isLoggedIn, authController.restrictTo, sizeController.postCreateSize)
     .put(authController.isLoggedIn, authController.restrictTo, sizeController.putEditSize);
 

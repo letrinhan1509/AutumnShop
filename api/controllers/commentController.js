@@ -145,7 +145,7 @@ exports.postAdminReplyComment = catchAsync(async (req, res, next) => {
         if(cmtExist == -1) {
             return res.status(400).json({ status: "Fail", message: "Không tìm thấy bình luận này, vui lòng kiểm tra lại để thêm phản hồi !" });
         } else {
-            if(role === 'NVCH') {
+            if(role === 'NVBH') {
                 let query = await modelComment.create_AdminRepComment(data);
                 const cmt = await modelComment.get_by_Id(data.mabl);
                 return res.status(200).json({ status: "Success", message: query, comment: cmt });
@@ -154,7 +154,7 @@ exports.postAdminReplyComment = catchAsync(async (req, res, next) => {
             }
         }
     } catch (error) {
-        return res.status(400).json({ status: "Fail", message: "Something went wrong", error: error });
+        return res.status(400).json({ status: "Fail", message: "Something went wrong!", error: error });
     };
 });
 
@@ -203,6 +203,7 @@ exports.putAdminEditRepComment = catchAsync(async (req, res, next) => {
         if(commentDetail == -1) {
             return res.status(400).json({ status: "Fail", message: "Không tìm thấy bình luận này, vui lòng kiểm tra lại !" });
         } else {
+            console.log(commentDetail);
             // Bình luận tồn tại:
             if(commentDetail.manv == manv && commentDetail.mabl == mabl) {
                 let query = await modelComment.update_AdminRepComment(mact, noidung);

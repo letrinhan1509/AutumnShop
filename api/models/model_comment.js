@@ -21,15 +21,17 @@ exports.get_by_Id = async (cmtId) => {
     return new Promise( (hamOK, hamLoi) => {
         const data = [];
         let sql = `SELECT binhluan.mabl, binhluan.masp, sanpham.tensp, binhluan.makh, khachhang.tenkh, khachhang.hinh, binhluan.noidung,
-        TIME(binhluan.ngaybl) as giobl, DATE_FORMAT(binhluan.ngaybl, '%e-%c-%Y') as ngaybl, binhluan.trangthai FROM ((binhluan JOIN khachhang ON binhluan.makh = khachhang.makh)
+        TIME(binhluan.ngaybl) as giobl, TIME(binhluan.ngaybl) as ngaybl, binhluan.trangthai FROM ((binhluan JOIN khachhang ON binhluan.makh = khachhang.makh)
         JOIN sanpham ON binhluan.masp = sanpham.masp) WHERE binhluan.mabl = '${cmtId}'`;
         db.query(sql, (error, result) => {
             if(error) { hamLoi(error); }
             else {
                 if(result.length > 0){
                     result.forEach(element => {
-                        let sql_detail = `SELECT chitietbl.mact, chitietbl.ten, chitietbl.noidung, chitietbl.ngaybl, chitietbl.mabl
-                        FROM (chitietbl JOIN binhluan ON chitietbl.mabl = binhluan.mabl) WHERE chitietbl.mabl = '${element.mabl}'`;
+                        let sql_detail = `SELECT chitietbl.mact, chitietbl.ten, chitietbl.noidung, DATE_FORMAT(chitietbl.ngaybl, '%e-%c-%Y') as ngaybl, 
+                        DATE_FORMAT(chitietbl.ngaybl, '%e-%c-%Y') as giobl, chitietbl.manv, admin.hinh as hinhnv, chitietbl.mabl
+                        FROM ((chitietbl JOIN binhluan ON chitietbl.mabl = binhluan.mabl) JOIN admin ON chitietbl.manv = admin.manv) 
+                        WHERE chitietbl.mabl = '${element.mabl}'`;
                         db.query(sql_detail, (err, result1) => {
                             if(err){
                                 hamLoi(err);
@@ -119,7 +121,7 @@ exports.get_detailComment_Id = async (id) => {
             }else{
                 if(result.length > 0){
                     //dataList = result;
-                    hamOK(result);
+                    hamOK(result[0]);
                 }else{
                     hamOK(-1);
                 };

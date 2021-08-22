@@ -26,39 +26,58 @@ const comment = {
         return AxiosComment.get(url);
     },
     //(Thêm mới 1 bình luận)
-    addComment: (values) => {
+    addComment: (values, token) => {
         const url = "/";
-        return AxiosComment.post(url, values);
+        return AxiosComment.post(url, values, {
+            headers: {
+                Token: `${token}`,
+            },
+        });
     },
     //(Trả lời 1 bình luận đã có sẵn)
     replyComment: (values, token) => {
-        const url = "/tra-loi-binh-luan";
-        return AxiosComment.post(url, values, token);
-    },
-    //(Chỉnh sửa nội dung bình luận theo mã bình luận)
-    updateComment: (values, token) => {
-        const url = "/";
-        return AxiosComment.put(url, values, token);
+        const url = "/tra-loi/admin";
+        return AxiosComment.post(url, values, {
+            headers: {
+                Token: `${token}`,
+            },
+        });
     },
     //(Chỉnh sửa nội dung chi tiết(trả lời) bình luận theo mã chitietbl)
     updateDeComment: (values, token) => {
-        const url = "/cap-nhat-tra-loi";
-        return AxiosComment.put(url, values, token);
+        const url = "/cap-nhat-tra-loi/admin";
+        return AxiosComment.put(url, values, {
+            headers: {
+                Token: `${token}`,
+            },
+        });
     },
     //(Cập nhật trạng thái 1 bình luận theo mabl ẩn hoặc hiện)
     hideCommet: (values, token) => {
         const url = "/cap-nhat-trang-thai";
-        return AxiosComment.put(url, values, token);
+        return AxiosComment.put(url, values, {
+            headers: {
+                Token: `${token}`,
+            },
+        });
     },
     //(Xoá 1 bình luận theo mabl)
     deleteCommentID: (id, token) => {
         const url = `/${id}`;
-        return AxiosComment.delete(url, token);
+        return AxiosComment.delete(url, {
+            headers: {
+                Token: `${token}`,
+            },
+        });
     },
     //(Xoá 1 chi tiết(trả lời) bình luận theo mã chitietbl)
     deleteCommentDe: (id, token) => {
-        const url = `/xoa-tra-loi/${id}`;
-        return AxiosComment.delete(url, token);
+        const url = `/xoa-tra-loi/admin/${id}`;
+        return AxiosComment.delete(url, {
+            headers: {
+                Token: `${token}`,
+            },
+        });
     }
 };
 

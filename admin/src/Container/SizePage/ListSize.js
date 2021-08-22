@@ -7,10 +7,9 @@ import size from 'API_Call/Api_size/size';
 
 
 const ListSize = () => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem('token');
     const link = useHistory();
     let result = JSON.parse(localStorage.getItem('user'));
-    let token = localStorage.getItem('token');
     //API Size
     const [click, setClick] = useState(false);
     const [listSize, setListSize] = useState([]);

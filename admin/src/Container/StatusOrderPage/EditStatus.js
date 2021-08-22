@@ -47,6 +47,9 @@ const EditStatus = (props) => {
         SttOrder.updateSTTorder(values, token).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message)
+                setTimeout(() => {
+                    history.push('/danh-sach-trang-thai');
+                }, 2000)
             }
             else {
                 message.error(res.data.message)

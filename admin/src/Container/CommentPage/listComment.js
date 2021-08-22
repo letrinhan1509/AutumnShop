@@ -123,11 +123,7 @@ const reply = (e) => {
       title: 'Ngày bình luận',
       dataIndex: 'ngaybl',
       key: 'ngaybl',
-      render: ngaybl => {
-        return(
-          moment(ngaybl).format('DD/MM/YYYY')
-        );
-    }
+      
     },
     result.permission === 'Admin' ? (
       {

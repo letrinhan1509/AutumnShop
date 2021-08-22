@@ -38,7 +38,10 @@ const AddStatus = (props) => {
         console.log(values);
         Status.addSTTorder(values, token).then((res) => {
             if (res.data.status === "Success") {
-                message.success(res.data.message)
+                message.success(res.data.message);
+                setTimeout(() => {
+                    history.push('/danh-sach-trang-thai');
+                }, 2000)
             }
         }).catch(err => {
                 message.error(`${err.response.data.message}`)
@@ -99,7 +102,7 @@ const AddStatus = (props) => {
                             Trở về
                         </Button>
                         <Button type="primary" htmlType="submit"  style={{ marginLeft: 30 }}>
-                            Thêm size
+                            Thêm trạng thái
                         </Button>
                     </Form.Item>
                 </Form>

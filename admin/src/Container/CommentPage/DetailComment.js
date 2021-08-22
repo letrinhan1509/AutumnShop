@@ -11,8 +11,8 @@ const DetailComment = () => {
     const history = useHistory();
     const detailComment = JSON.parse(localStorage.getItem('detailComment'));
     let traloi = [];
-    if (detailComment[0].traLoiBL.length !== 0) {
-        traloi = [...detailComment.traLoiBL];
+    if (detailComment[0].traLoiBL !== "") {
+        traloi = [...detailComment[0].traLoiBL];
         console.log(traloi);
     }
 
@@ -22,7 +22,7 @@ const DetailComment = () => {
                 author={detailComment[0].tenkh}
                 avatar={detailComment[0].hinh}
                 content={[detailComment[0].noidung]}
-                datetime={detailComment[0].giobl + "  " + moment(detailComment.ngaybl).format('DD-MM-YYYY')}
+                datetime={detailComment[0].giobl + "  " + detailComment[0].ngaybl}
             >
                 {children}
             </Comment>
@@ -30,10 +30,10 @@ const DetailComment = () => {
         const Staff = ({ children }) => (
             traloi.length !== 0 ? (
                 <Comment
-                    author={traloi.tennv}
+                    author={traloi[0].ten}
                     avatar={traloi.hinh}
-                    content={[traloi.noidung]}
-                    datetime={moment(traloi.ngaybl).format('DD-MM-YYYY')}
+                    content={traloi[0].noidung}
+                    datetime={traloi[0].ngaybl}
                 >
                     {children}
                 </Comment>
@@ -57,6 +57,7 @@ const DetailComment = () => {
             okType: 'danger',
             cancelText: 'Không',
             onOk() {
+                localStorage.removeItem("detailComment");
                 history.push('/danh-sach-binh-luan');
             },
             onCancel() {

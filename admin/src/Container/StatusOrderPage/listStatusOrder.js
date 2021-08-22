@@ -10,10 +10,11 @@ const ListStatusOrder = () => {
   const link = useHistory();
   const { confirm } = Modal;
   let result = JSON.parse(localStorage.getItem('user'));
+  const token = localStorage.getItem("token");
   //API ListStatusOrder
   const [listStatus, setListStatus] = useState([]);
   useEffect(() => {
-    statusOrder.getTitle().then((res) => {
+    statusOrder.getTitle(token).then((res) => {
       setListStatus(res.data.data);
       /* const data = [];
       const { trangthai } = res.data.data;
@@ -49,7 +50,7 @@ const ListStatusOrder = () => {
       okType: 'danger',
       cancelText: 'Không',
       onOk() {
-        statusOrder.deleteStatusOrder(id).then((res) => {
+        statusOrder.deleteStatusOrder(id, token).then((res) => {
           if (res.data.status === "Success") {
             message.success(res.data.message)
             setTimeout(() => {
@@ -58,7 +59,8 @@ const ListStatusOrder = () => {
           }
         })
           .catch(err => {
-            message.error(`Không thể xoá trạng thái đơn hàng này !!! `);
+            //message.error(`Không thể xoá trạng thái đơn hàng này !!! `);
+            message.error(`${err.response.data.message}`);
           })
       },
       onCancel() {

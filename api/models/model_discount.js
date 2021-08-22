@@ -115,22 +115,33 @@ exports.create_Discount = (data, chitietKM) => {
             console.log(resultId[0].LastID);
             if(err0) { reject(err0); }
             else{
-                let sql_CTKM = `INSERT INTO chitietkm SET ?`;
+                var sql_CTKM = `INSERT INTO chitietkm SET ?`;
+                const dataCTKM = {
+                    masp: "",
+                    chitiet_km: "",
+                    chietkhau: 0,
+                    giakm: 0,
+                    makm: resultId[0].LastID
+                };
                 chitietKM.forEach(element => {
                     element.sanpham.forEach(e => {
-                        let dataCTKM = {
-                            masp: e.masp,
-                            chitiet_km: e.chitiet,
-                            chietkhau: element.chietkhau,
-                            giagiam: e.gia - (e.gia * (element.chietkhau/100)),
-                            makm: resultId[0].LastID
-                        };
-                        db.query(sql_CTKM, dataCTKM, (err, result1) => {
-                            if(err) { reject(err); }
-                            console.log('Create CTKM success');
+                        dataCTKM.masp = e.masp;
+                        dataCTKM.chitiet_km = e.chitiet;
+                        dataCTKM.chietkhau = element.chietkhau;
+                        dataCTKM.giakm = e.gia - (e.gia * (element.chietkhau/100));
+                        //temp = [...dataCTKM]
+                        console.log("trong vòng lặp: ", dataCTKM);
+                        let query_ct = db.query(sql_CTKM, dataCTKM, (err1, result1) => {    // Câu lệnh tạo chi tiết đơn hàng.
+                            if(err1) {
+                                reject(err1);
+                            } else {
+                                console.log("Thêm ct khuyến mãi thành công ", e.masp);
+                            }
                         });
                     });
+                    console.log("ngoài vòng lặp 1: ", dataCTKM);
                 });
+                console.log("ngoài for: ", dataCTKM);
                 resolve("Tạo chương trình khuyến mãi cho sản phẩm thành công !");
             };
         });
