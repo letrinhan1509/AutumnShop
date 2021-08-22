@@ -268,26 +268,27 @@ const EditProduct = (props) => {
         {
             dataIndex: 'id',
             key: 'id',
-            render: id => (<div className="btn-box delete"><Button data-id={id} key={id} type="danger" onClick={showDeleteDetail}>Xóa</Button></div>)
+            render: (id, ct) => (<div className="btn-box delete"><Button data-id={id} key={id} type="danger" onClick={() => showDeleteDetail(ct)}>Xóa</Button></div>)
         }
     ];
 
     const [add, setAdd] = useState(chitiet);
-    const [id, setID] = useState(0);
+    //const [id, setID] = useState(0);
     const addDetail = () => {
-        let tam = id + 1;
+        //let tam = id + 1;
         let detail = [];
-        detail['id'] = tam;
+        //detail['id'] = tam;
         detail['size'] = SIZE.current.props.value;
         detail['mau'] = MAU.current.props.value.toLowerCase();
         detail['soluong'] = SOLUONG.current.ariaValueNow;
         detail['giagiam'] = '0';
         setAdd([...add, { ...detail }]);
-        setID(tam);
+        //setID(tam);
         console.log(detail);
     };
     function showDeleteDetail(item) {
-        let IDdel = item.currentTarget.dataset.id;
+        console.log(item);
+        //let IDdel = item.currentTarget.dataset.id;
         confirm({
             title: 'Bạn thật sự muốn xóa chi tiết này?',
             okText: 'Xóa',
@@ -296,7 +297,7 @@ const EditProduct = (props) => {
             onOk() {
                 //add.filter((x) => console.log(x.id));
                 setAdd(
-                    add.filter((x) => x.id !== Number(IDdel))
+                    add.filter((x) => x.mau !== item.mau || x.size !== item.size)
                 );
             },
             onCancel() {

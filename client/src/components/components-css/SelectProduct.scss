@@ -10,10 +10,24 @@
             
             .img-box {
                 //margin-right: 50px;
-                img {
-                    filter: drop-shadow(5px 5px 2px rgba(0, 0, 0, 0.4));
-                    border-radius: 10px;
-                    width: 350px;
+                .box1{
+                    img {
+                        filter: drop-shadow(5px 5px 2px rgba(0, 0, 0, 0.4));
+                        border-radius: 10px;
+                        width: 350px;
+                        height: 390px;
+                    }
+                }
+                .img-change {
+                    display: flex;
+                    justify-content: space-between;
+                    img {
+                        filter: drop-shadow(5px 5px 2px rgba(0, 0, 0, 0.2));
+                        margin-top: 20px;
+                        width: 90px;
+                        cursor: pointer;
+                        border-radius: 10px;
+                    }
                 }
             }
             .imfo-col {
@@ -141,18 +155,6 @@
                         height: 50px;
                         background: #03a9f4;
                     }
-                }
-            }
-            .img-change {
-                display: flex;
-                justify-content: space-between;
-    
-                img {
-                    filter: drop-shadow(5px 5px 2px rgba(0, 0, 0, 0.2));
-                    margin-top: 20px;
-                    width: 90px;
-                    cursor: pointer;
-                    border-radius: 10px;
                 }
             }
         }

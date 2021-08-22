@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
-import { Image, Input, Button, message, Form, Menu, Spin } from 'antd';
+import { Image, Input, Button, message, Form, Menu, Spin, notification } from 'antd';
 import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import Menus from "./Menus";
 import { useHistory, Link } from "react-router-dom";
@@ -22,11 +22,28 @@ const ChangePass = (props) => {
         }, 1000);
     }, [])
 
+    //Thông báo action
+    const compelete = type => {
+        notification[type]({
+            message: 'Đổi thành công',
+            description:
+                'Bạn đã đổi mật khẩu tài khoản thành công !',
+        });
+    };
+    const fail = type => {
+        notification[type]({
+          message: 'Đổi thất bại',
+          description:
+            'Đổi mật khẩu tài khoản thất bại, vui lòng đổi lại !',
+        });
+      };
+
     const update = (values) => {
         console.log(values)
         users.changePass(values).then((res) => {
             if (res.data.status === "Success") {
-                message.success(res.data.message)
+                compelete('success');
+                //message.success(res.data.message)
                 localStorage.removeItem("token")
                 localStorage.removeItem("user")
                 setTimeout(() => {
@@ -35,12 +52,13 @@ const ChangePass = (props) => {
                 }, 2000)
             }
             else {
-                message.error(res.data.message)
+                fail('error');
+                //message.error(res.data.message)
             }
         })
             .catch(err => {
-                console.log(err.response);
-                message.error(`ERROR !\n ${err.response.data.message}`)
+                fail('error');
+                //message.error(`ERROR !\n ${err.response.data.message}`)
             })
     };
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
-import { Image, Input, Button, message, Form, Upload, Tooltip, Spin } from 'antd';
+import { Image, Input, Button, message, Form, Upload, Tooltip, Spin, notification } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import { storage } from 'container/Config/firebase';
 import Menus from "./Menus";
@@ -69,7 +69,7 @@ const EditUser = (props) => {
             );
         }
     };
-    const onRemove = file => {  
+    const onRemove = file => {
         const del = storage.ref(`User_Img/${imageName.name}`);
         del.delete().then((res) => {
             setLink("");
@@ -83,7 +83,21 @@ const EditUser = (props) => {
     const deleteImg = () => {
         setImgEdit("");
     }
-
+    //Thông báo action
+    const compelete = type => {
+        notification[type]({
+            message: 'Sửa thành công',
+            description:
+                'Bạn đã sửa thông tin tài khoản thành công !',
+        });
+    };
+    const fail = type => {
+        notification[type]({
+          message: 'Sửa thất bại',
+          description:
+            'Sửa thông tin tài khoản thất bại, vui lòng sửa lại !',
+        });
+      };
     const update = (values) => {
         if (imageName !== "") {
             values['imgName'] = imageName.name;
@@ -98,7 +112,7 @@ const EditUser = (props) => {
         console.log(values)
         users.updateInfo(values).then((res) => {
             if (res.data.status === "Success") {
-                message.success(res.data.message)
+                compelete('success');
                 if (link !== "") {
                     const del = storage.ref(`User_Img/${user.tenhinh}`);
                     del.delete().then((res) => {
@@ -115,12 +129,13 @@ const EditUser = (props) => {
                 }, 2000)
             }
             else {
-                message.error(res.data.message)
+                fail('error');
+                //message.error(res.data.message)
             }
         })
             .catch(err => {
-                console.log(err.response);
-                message.error(`ERROR !\n ${err.response.data.message}`)
+                fail('error');
+                //message.error(`ERROR !\n ${err.response.data.message}`)
             })
     };
 
@@ -153,14 +168,14 @@ const EditUser = (props) => {
                                 >
                                     <h1 className="user-title">Chỉnh sửa thông tin</h1>
                                     <Col className="img-box">
-                                            {link !== "" ? (
-                                                <Image
-                                                    src={link}
-                                                />
-                                            ) : (ImgEdit === "" ? (<span>Tài khoản chưa có ảnh !</span>) : (<Image src={user.hinh} />)
-                                            )}
-                                        </Col>
-                                        {link !== "" ? ("") : (ImgEdit === "" ? ("") : (<Button type="danger" onClick={deleteImg}>Xóa ảnh</Button>))}
+                                        {link !== "" ? (
+                                            <Image
+                                                src={link}
+                                            />
+                                        ) : (ImgEdit === "" ? (<span>Tài khoản chưa có ảnh !</span>) : (<Image src={user.hinh} />)
+                                        )}
+                                    </Col>
+                                    {link !== "" ? ("") : (ImgEdit === "" ? ("") : (<Button type="danger" onClick={deleteImg}>Xóa ảnh</Button>))}
                                     <Form.Item
                                         name="hinh"
                                         label="Ảnh sản phẩm"
@@ -210,11 +225,11 @@ const EditUser = (props) => {
                                     >
                                         <Input placeholder="Địa chỉ" />
                                     </Form.Item>
-                                    { link === "" && ImgEdit === "" ? (
-                                            <Button value="submit" type="primary" htmlType="submit" disabled>Cập nhật</Button>
-                                        ) : (
-                                            <Button value="submit" type="primary" htmlType="submit">Cập nhật</Button>
-                                        )}
+                                    {link === "" && ImgEdit === "" ? (
+                                        <Button value="submit" type="primary" htmlType="submit" disabled>Cập nhật</Button>
+                                    ) : (
+                                        <Button value="submit" type="primary" htmlType="submit">Cập nhật</Button>
+                                    )}
                                 </Form>
                             )}
                         </Col>

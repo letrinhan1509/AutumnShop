@@ -3,7 +3,7 @@ import "./App.css";
 import "antd/dist/antd.css";
 import React, { useState, useEffect } from "react";
 import CART from 'API_Call/API_cart/cart';
-import { Layout, message, Modal } from "antd";
+import { Layout, message, Modal, notification } from "antd";
 import HeaderPage from "./components/include/HeaderPage";
 import { Content } from "antd/lib/layout/layout";
 import ProductDetail from "container/MainPage/Product-detail";
@@ -94,7 +94,37 @@ function App() {
   const getToken = function (data) {
     setTokenData(data);
   }
-  console.log(tokenData);
+
+  //Thông báo action
+  const compelete = type => {
+    notification[type]({
+      message: 'Xóa thành công',
+      description:
+        'Bạn đã xóa sản phẩm trong giỏ hàng !',
+    });
+  };
+  const fail = type => {
+    notification[type]({
+      message: 'Xóa thất bại',
+      description:
+        'Bạn chưa xóa được sản phẩm, vui lòng xóa lại !',
+    });
+  };
+  const plus = type => {
+    notification[type]({
+      message: 'Tăng thành công',
+      description:
+        'Bạn vừa tăng số lượng giỏ hàng !',
+    });
+  };
+  const minus = type => {
+    notification[type]({
+      message: 'giảm thành công',
+      description:
+        'Bạn vừa giảm số lương giỏ hàng !',
+    });
+  };
+
   let storageItem = (localStorage.getItem("cart") || "[]");
   const [cart, setCart] = useState(JSON.parse(storageItem));
   useEffect(() => {
@@ -130,6 +160,7 @@ function App() {
             setCart(
               cart.map((x) => x.masp === productItem.masp && x.mau === productItem.mau && x.size === productItem.size ? { ...exist, soluong: exist.soluong + 1 } : x)
             );
+            plus('success');
           }
         }).catch(err => {
           message.error(`${err.response.data.message}`);
@@ -138,9 +169,11 @@ function App() {
         setCart(
           cart.map((x) => x.masp === productItem.masp && x.mau === productItem.mau && x.size === productItem.size ? { ...exist, soluong: exist.soluong + 1 } : x)
         );
+        plus('success');
       }
     } else {
       setCart([...cart, { ...productItem, soluong: 1 }]);
+      plus('success');
     }
   };
   const removeCart = (productItem) => {
@@ -158,6 +191,7 @@ function App() {
             setCart(
               cart.map((x) => x.masp === productItem.masp && x.mau === productItem.mau && x.size === productItem.size ? { ...exist, soluong: exist.soluong - 1 } : x)
             );
+            minus('success');
           }
         }).catch(err => {
           message.error(`${err.response.data.message}`);
@@ -166,6 +200,7 @@ function App() {
         setCart(
           cart.map((x) => x.masp === productItem.masp && x.mau === productItem.mau && x.size === productItem.size ? { ...exist, soluong: exist.soluong - 1 } : x)
         );
+        minus('success');
       }
     }
   };
@@ -180,13 +215,13 @@ function App() {
           let magiohang = productItem.magiohang;
           CART.deleteCart(magiohang).then((res) => {
             if (res.data.status === "Success") {
-              message.success(res.data.message)
+              compelete('success');
               setCart(
                 cart.filter((x) => x.masp !== productItem.masp || x.mau !== productItem.mau || x.size !== productItem.size)
               );
             }
           }).catch(err => {
-            message.error(`${err.response.data.message}`);
+            fail('error')
           });
         } else {
           setCart(

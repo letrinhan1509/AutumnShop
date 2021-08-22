@@ -7,7 +7,6 @@
         position: relative;
         width: 100%;
         height: 650px;
-        
         img{
             position: relative;
             height: 100%;
@@ -49,19 +48,16 @@
 }
 
 .four{
-    
     width: 100%;
     height: 70vh;
-    
-    background-image: url("./bg/bg1.jpeg");
+    background-image: url("https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/slider%2FHome-slider3.jpeg?alt=media&token=8c2e23a2-071a-4840-91ca-8252c1641408");
     background-repeat: no-repeat;
     background-size: cover;
     background-attachment: fixed;
     position: relative;
     color: #fff;
     display: flex;
-    justify-content: center;
-        
+    justify-content: center;        
     .box{
         text-align: center;
         display: flex;
@@ -95,7 +91,6 @@
             letter-spacing: 20px;
         }
         .button-wrapper{
-
             .btn10{
                 width: 150px;
                 height: 50px;
@@ -121,8 +116,6 @@
                 z-index:10;
                 
             }
-            
-            
             .btn10:hover{
                 border: 2px solid #fff;
                 color: #fff!important;
@@ -149,8 +142,7 @@
               -webkit-transition: all .5s cubic-bezier(0.77, 0, 0.175, 1);
               transition: all .5s cubic-bezier(0.77, 0, 0.175, 1);
                    box-shadow:2px 0px 14px rgba(0,0,0,.6);
-              } 
-            
+              }             
             .btn10::after {
                 content: '';
                 width: 0%;
@@ -179,13 +171,9 @@
                 opacity:1;
                 width: 120%;
             }
-        }
-        
+        } 
     }
-
-    
 }
 
-/* } */
 
 

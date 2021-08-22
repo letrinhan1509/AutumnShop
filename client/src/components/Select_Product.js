@@ -1,4 +1,4 @@
-import { Col, Layout, Row, Rate, Statistic, Select, Button, Card, Carousel, Tabs, Comment, List, Form, Input, Avatar, message, Radio, Menu, Dropdown } from "antd";
+import { Col, Layout, Row, Rate, Statistic, Select, Button, Card, Carousel, Tabs, Comment, List, Form, Input, Avatar, message, Radio, Menu, notification } from "antd";
 import moment from 'moment';
 import { ShoppingCartOutlined, HeartOutlined, FacebookOutlined, TwitterOutlined, EditOutlined } from '@ant-design/icons';
 import React, { createContext, useState, useEffect } from 'react';
@@ -8,7 +8,6 @@ import { Link } from "react-router-dom";
 import comment from 'API_Call/Api_comment/comment';
 import PRODUCT from 'API_Call/Api_product/product';
 import CART from 'API_Call/API_cart/cart';
-import axios from "axios";
 
 
 const { Content } = Layout;
@@ -67,7 +66,7 @@ const Select_Product = (props) => {
             setListComment(res.data.listComment);
             console.log(res.data.listComment);
         })
-    }, []);
+    }, [id]);
 
     /* let traloi = [];
     if (ListComment[0].traLoiBL.length !== 0) {
@@ -300,22 +299,13 @@ const Select_Product = (props) => {
                             }
                         />
                     ) : ("")}
-
-
-                </TabPane>
-                <TabPane tab="Another Tab" key="3">
-                    Content of Tab Pane 3
                 </TabPane>
             </Tabs>
         );
     };
 
-
-
     /* const [current, setCurrent] = useState(product[0].src[0].id);
-
     const handleTab = (imgfile, e) => {
-
         let currentId = e.target.name;
         console.log(current)
         setCurrent(`${current}`);
@@ -330,7 +320,6 @@ const Select_Product = (props) => {
                     listPhoto[i].classList.remove('active');
                 }
         }
-
     }; */
     const [title, setTitle] = useState("Nam");
     const [check, setCheck] = useState("");
@@ -356,6 +345,22 @@ const Select_Product = (props) => {
             })
     };
 
+    //Thông báo action
+    const compelete = type => {
+        notification[type]({
+          message: 'Thêm thành công',
+          description:
+            'Bạn đã thêm sản phẩm vào giỏ hàng !',
+        });
+      };
+      const error = type => {
+        notification[type]({
+          message: 'Thêm thất bại',
+          description:
+            'Bạn vui lòng thêm lại sản phẩm khác !',
+        });
+      };
+
     const Usercart = () => {
         let add = {};
         add['makh'] = User.makh;
@@ -375,7 +380,7 @@ const Select_Product = (props) => {
         let url = "http://127.0.0.1:5000/api/v1/gio-hang";
         CART.addCart(add).then((res) => {
             if (res.data.status === "Success") {
-                message.success(res.data.message);
+                compelete('success');
                 const exist = props.cart.find((x) => x.masp === add.masp && x.mau === add.mau && x.size === add.size);
                 if (exist) {
                     props.setCart(
@@ -384,16 +389,12 @@ const Select_Product = (props) => {
                 } else {
                     props.setCart([...props.cart, { ...add, soluong: 1, magiohang: res.data.cart }]);
                 }
-                //localStorage.setItem(...['cart', JSON.stringify(res.data.cart)]);
             }
         })
             .catch(err => {
-                message.error(`Thêm sản phẩm vào giỏ hàng thất bại`);
-                //message.error(`${err.response.data.message}`);
+                error('error');
             })
     };
-
-
 
     return (
         <>
@@ -401,7 +402,7 @@ const Select_Product = (props) => {
                 <Col className="box-one">
                     <Row className="box-row-one">
                         <Col className="img-box">
-                            <Row>
+                            <Row className="box1">
                                 <Col>
                                     <img src={detail.hinh} alt="product" />
                                 </Col>
@@ -413,8 +414,8 @@ const Select_Product = (props) => {
                         <Col className="imfo-col">
                             <h1>{detail.tensp}</h1>
                             <ul className="vote-star">
-                                <li><Rate /></li>
-                                <li><Statistic title="Đánh giá" value={0} /></li>
+                                <li><Rate allowHalf defaultValue={4.5}/></li>
+                                <li><Statistic title="Đánh giá" value={ListComment.length} /></li>
                                 {/* <li><a href="#/">Submit a review</a></li> */}
                             </ul>
                             <div className="sale-imfo">
@@ -581,7 +582,7 @@ const Select_Product = (props) => {
                                                     className="card"
                                                     hoverable
                                                     style={{ width: 300 }}
-                                                    cover={<img alt="example" src={item.hinh} />}
+                                                    cover={<img alt="example" style={{height: 320}} src={item.hinh} />}
                                                 >
                                                     <Row>
                                                         <Col offset={5}>

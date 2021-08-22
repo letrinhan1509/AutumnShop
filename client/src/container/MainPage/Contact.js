@@ -2,7 +2,7 @@ import React from "react";
 import { useHistory } from "react-router-dom";
 import "container/components-css/Register.scss";
 import "container/components-css/contact.scss";
-import { Form, Input, Button, message } from "antd";
+import { Form, Input, Button, message, notification } from "antd";
 import emailjs from "emailjs-com";
 //const swal = require('react-swal');
 
@@ -21,7 +21,14 @@ const validateMessages = {
 };
 /* eslint-enable no-template-curly-in-string */
 
-
+//Thông báo action
+const compelete = type => {
+  notification[type]({
+      message: 'Gửi thành công',
+      description:
+          'Bạn đã gửi Email thành công !',
+  });
+};
 
 const Contact = () => {
   const history = useHistory();
@@ -30,7 +37,8 @@ const Contact = () => {
     emailjs.sendForm('service_fprwdeo', 'template_oqkdp1f', e.target, 'user_I5dii50iWFXQYsKXb4w4W')
       .then((result) => {
         console.log(result.text);
-        message.success("Bạn đã gửi Email thành công !!!");
+        compelete('success');
+        //message.success("Bạn đã gửi Email thành công !!!");
         setTimeout(() => {
           history.push("/");
         }, 1000);

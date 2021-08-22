@@ -29,13 +29,13 @@ const Home = (props) => {
             {/* <button onClick={() => firebase.auth().signOut()}>SIGH - OUT</button> */}
             <Carousel className="slider__bg" autoplay dots={false}>
                 <div className="box-img">
-                    <img src="../images/slider/slider5.jpg" alt="slider" />
+                    <img src="https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/slider%2Fcarousel2.jpg?alt=media&token=48ac36ae-ad14-44b7-9c27-745fe10fc763" alt="slider" />
                 </div>
                 <div className="box-img">
-                    <img src="../images/slider/slider1.jpeg" alt="slider" />
+                    <img src="https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/slider%2Fcarousel3.jpeg?alt=media&token=7389555d-5d73-456b-bfcd-8ef30a2d242f" alt="slider" />
                 </div>
                 <div className="box-img">
-                    <img src="../images/slider/slider4.jpg" alt="slider" />
+                    <img src="https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/slider%2Fcarousel1.jpg?alt=media&token=df295154-7497-4597-8714-bb3871b375c1" alt="slider" />
                 </div>
             </Carousel>
             <Row>

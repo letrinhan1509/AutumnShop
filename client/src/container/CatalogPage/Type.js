@@ -18,7 +18,7 @@ const Shirt = (props) => {
 
   useEffect(() => {
     catalog.getTypeID(id).then((res) => {
-      if (res.data.status === "Success"){
+      if (res.data.status === "Success") {
         setType(res.data.data);
       }
     });
@@ -28,6 +28,7 @@ const Shirt = (props) => {
         if (res.data.status === "Success") {
           setListProduct(res.data.data);
           setListFilter(res.data.data)
+          setLoading(false);
           setTimeout(() => {
             if (res.data.data !== "") {
               setLoading(true);
@@ -38,7 +39,7 @@ const Shirt = (props) => {
     } catch (error) {
       console.log(error);
     }
-  }, [])
+  }, [id])
   //const ak = props.ListProductHome.filter(ListProductHome => ListProductHome.tendm === "Áo");
   const [visible, setVisible] = useState(8);
   const showMoreProduct = () => {
@@ -192,14 +193,15 @@ const Shirt = (props) => {
                           hoverable
                         >
                           <div className="img-box">
-                            <Image
-                              width={'100%'}
-                              src={productItem.hinh}
-                              preview={{
-                                visible: false,
-                                /* onVisibleChange: () => { onClick() }, */
-                                mask: <div className="icon_product">
-                                  <span onClick={() => props.Thongbao_Them(productItem)}>
+                            <Link onClick={() => handleClick(productItem)} to={`/san-pham/chi-tiet-san-pham/${productItem.masp}`}>
+                              <Image
+                                width={'100%'}
+                                src={productItem.hinh}
+                                preview={{
+                                  visible: false,
+                                  /* onVisibleChange: () => { onClick() }, */
+                                  mask: <div className="icon_product">
+                                    {/* <span onClick={() => props.Thongbao_Them(productItem)}>
                                     <ShoppingCartOutlined
                                       style={{ fontSize: '36px' }} />
                                   </span>
@@ -209,10 +211,11 @@ const Shirt = (props) => {
                                         style={{ fontSize: '36px' }}
                                       />
                                     </Link>
-                                  </span>
-                                </div>
-                              }}
-                            />
+                                  </span> */}
+                                  </div>
+                                }}
+                              />
+                            </Link>
                           </div>
                           <Row className="product-price">
                             <Col>{(productItem.gia).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} đ</Col>
