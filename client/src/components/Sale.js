@@ -46,7 +46,7 @@ const Sale = () => {
                                     <Image
                                         className="sale_img"
                                         width={'100%'}
-                                        src="./images/slider/slider8.png"
+                                        src="https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/slider%2FHome-slider2.png?alt=media&token=194450f8-c3c1-4178-89ac-f4b43a5751b6"
                                         preview={{
                                             visible: false,
                                             /* onVisibleChange: () => { onClick() }, */
@@ -86,7 +86,7 @@ const Sale = () => {
                                     <Image
                                         className="sale_img"
                                         width={'100%'}
-                                        src="./images/slider/bg-attact.png"
+                                        src="https://firebasestorage.googleapis.com/v0/b/fashionshop-c6610.appspot.com/o/slider%2FHome-slider1.png?alt=media&token=048ae22f-932b-4836-b447-5510dcb67a8d"
                                         preview={{
                                             visible: false,
                                             /* onVisibleChange: () => { onClick() }, */

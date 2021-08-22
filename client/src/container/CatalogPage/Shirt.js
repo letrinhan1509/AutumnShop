@@ -16,7 +16,7 @@ const Shirt = (props) => {
 
   useEffect(() => {
     catalog.getDanhmucID(id).then((res) => {
-      if (res.data.status === "Success"){
+      if (res.data.status === "Success") {
         setCata(res.data.data);
       }
     });
@@ -26,6 +26,7 @@ const Shirt = (props) => {
         if (res.data.status === "Success") {
           setListProduct(res.data.data);
           setListFilter(res.data.data);
+          setLoading(false);
           setTimeout(() => {
             if (res.data.data !== "") {
               setLoading(true);
@@ -37,7 +38,7 @@ const Shirt = (props) => {
     } catch (error) {
       console.log(error);
     }
-  }, [])
+  }, [id])
   //const ak = props.ListProductHome.filter(ListProductHome => ListProductHome.tendm === "Áo");
   const [visible, setVisible] = useState(8);
   const showMoreProduct = () => {
@@ -111,22 +112,27 @@ const Shirt = (props) => {
       }
     } else if (tempPrice !== "") {
       setTempSize(value);
-      const filSize = ListProduct.filter(ListProduct => (ListProduct.size === value && ListProduct.gia <= tempPrice));
+      const filSize = ListProduct.filter(ListProduct => ((JSON.parse(ListProduct.chitiet).find(item => item.size === value)) && ListProduct.gia <= tempPrice));
       setListFilter(filSize);
       console.log(2);
     } else {
       setTempSize(value);
       console.log(ListProduct);
-      const filSize = ListProduct.filter(ListProduct => ListProduct.size === value);
+      console.log(JSON.parse(ListProduct[0].chitiet));
+      const filSize = ListProduct.filter(ListProduct => (
+        JSON.parse(ListProduct.chitiet).find(item => item.size === value)
+      ));
       setListFilter(filSize);
       console.log(3);
     }
   }
   function findPrice(value) {
-    console.log(Number(value));
+    console.log(value);
     if (value === "Mặc định") {
       if (tempSize !== "") {
-        const filPrice = ListProduct.filter(ListProduct => ListProduct.size === tempSize);
+        const filPrice = ListProduct.filter(ListProduct => (
+          JSON.parse(ListProduct.chitiet).find(item => item.size === tempSize)
+        ));
         setListFilter(filPrice);
         setTempPrice("");
       } else {
@@ -136,7 +142,11 @@ const Shirt = (props) => {
       console.log(4);
     } else if (tempSize !== "") {
       setTempPrice(value);
-      const filPrice = ListProduct.filter(ListProduct => (ListProduct.gia <= value && ListProduct.size === tempSize));
+      console.log(tempSize);
+      const filPrice = ListProduct.filter(ListProduct => (
+        JSON.parse(ListProduct.chitiet).find(item => item.size === tempSize) &&  ListProduct.gia <= value
+      ));
+      console.log(filPrice);
       setListFilter(filPrice);
       console.log(5);
     } else {
@@ -201,14 +211,15 @@ const Shirt = (props) => {
                           hoverable
                         >
                           <div className="img-box">
-                            <Image
-                              width={'100%'}
-                              src={productItem.hinh}
-                              preview={{
-                                visible: false,
-                                /* onVisibleChange: () => { onClick() }, */
-                                mask: <div className="icon_product">
-                                  <span onClick={() => props.Thongbao_Them(productItem)}>
+                            <Link onClick={() => handleClick(productItem)} to={`/san-pham/chi-tiet-san-pham/${productItem.masp}`}>
+                              <Image
+                                width={'100%'}
+                                src={productItem.hinh}
+                                preview={{
+                                  visible: false,
+                                  /* onVisibleChange: () => { onClick() }, */
+                                  mask: <div className="icon_product">
+                                    {/* <span onClick={() => props.Thongbao_Them(productItem)}>
                                     <ShoppingCartOutlined
                                       style={{ fontSize: '36px' }} />
                                   </span>
@@ -218,10 +229,11 @@ const Shirt = (props) => {
                                         style={{ fontSize: '36px' }}
                                       />
                                     </Link>
-                                  </span>
-                                </div>
-                              }}
-                            />
+                                  </span> */}
+                                  </div>
+                                }}
+                              />
+                            </Link>
                           </div>
                           <Row className="product-price">
                             <Col>{(productItem.gia).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} đ</Col>

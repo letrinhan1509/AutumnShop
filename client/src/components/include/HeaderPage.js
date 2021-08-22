@@ -65,6 +65,7 @@ const HeaderPage = (props) => {
     useEffect(() => {
         catalog.getAll().then((res) => {
             setlistCategory(res.data.listCategorys);
+            console.log(res.data.listCategorys);
         })
     }, []);
 
@@ -141,7 +142,7 @@ const HeaderPage = (props) => {
                     >
                         {listCategory.map((item) => (
                             <SubMenu key={`${item.madm}`} title={item.tendm} onTitleClick={handClick2} subMenuOpenDelay={0.5} >
-                                {listTypes.length === 1 ? ("") : (
+                                {listTypes.length < 1 ? ("") : (
                                     listTypes.map((type) => (
                                         <Menu.Item onClick={handClick3} key={`${type.maloai}`}>{type.tenloai}</Menu.Item>
                                     ))
