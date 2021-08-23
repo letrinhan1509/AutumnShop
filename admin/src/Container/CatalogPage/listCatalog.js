@@ -11,13 +11,14 @@ const ListCata = () => {
   const token = localStorage.getItem("token");
   const link = useHistory();
   const { confirm } = Modal;
+  const [ok, setOk] = useState(false);
   //API ListCategory
   const [listCategory, setListCategory] = useState([]);
   useEffect(() => {
     catalog.getAll().then((res) => {
       setListCategory(res.data.listCategorys);
     })
-  }, []);
+  }, [ok]);
 
   //Redirect sửa danh mục theo ID
   const linkto = (e) => {
@@ -58,9 +59,7 @@ const ListCata = () => {
             }).catch((error) => {
               console.log(error);
             });
-            setTimeout(() => {
-              window.location.reload()
-            }, 1000);
+            setOk(!ok);
           }
           else {
             message.error(res.data.message)
@@ -86,9 +85,7 @@ const ListCata = () => {
     catalog.updateStatusCata(values, token).then((res) => {
       if (res.data.status === "Success") {
         message.success(res.data.message)
-        setTimeout(() => {
-          link.go({ pathname: '/danh-muc-san-pham' });
-        }, 800)
+        setOk(!ok);
       }
     })
       .catch(err => {
@@ -104,9 +101,7 @@ const ListCata = () => {
     catalog.updateStatusCata(values, token).then((res) => {
       if (res.data.status === "Success") {
         message.success(res.data.message)
-        setTimeout(() => {
-          link.go('/danh-muc-san-pham')
-        }, 800)
+        setOk(!ok);
       }
     })
       .catch(err => {

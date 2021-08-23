@@ -54,44 +54,7 @@ const Cart = (props) => {
     props.CountUsercart(cartView)
     //Thành tiền User
     const sumUser = props.cart.reduce((a, c) => a + c.gia * c.soluong, 0);
-
-    /* const addCart = (productItem) => {
-        const exist = cartView.find((x) => x.masp === productItem.masp && x.mau === productItem.mau && x.size === productItem.size);
-        if (exist) {
-            setCartView(
-                cartView.map((x) => x.masp === productItem.masp && x.mau === productItem.mau && x.size === productItem.size ? { ...exist, soluong: exist.soluong + 1 } : x)
-            );
-        } else {
-            setCartView([...cartView, { ...productItem, soluong: 1 }]);
-        }
-    };
-    const removeCart = (productItem) => {
-        const exist = cartView.find((x) => x.masp === productItem.masp && x.mau === productItem.mau && x.size === productItem.size);
-        if (exist.soluong === 1) {
-            showDeleteCart(productItem);
-        } else {
-            setCartView(
-                cartView.map((x) => x.masp === productItem.masp && x.mau === productItem.mau && x.size === productItem.size ? { ...exist, soluong: exist.soluong - 1 } : x)
-            );
-        }
-    };
-    function showDeleteCart(productItem) {
-        confirm({
-            title: 'Bạn muốn xóa sản phẩm khỏi giỏ hàng?',
-            okText: 'Xóa',
-            okType: 'danger',
-            cancelText: 'Không',
-            onOk() {
-                setCartView(
-                    cartView.filter((x) => x.masp !== productItem.masp || x.mau !== productItem.mau || x.size !== productItem.size)
-                );
-            },
-            onCancel() {
-                console.log('Cancel');
-            },
-        });
-    } */
-
+    
     return (
         <Layout className="container">
             {props.cart.length === 0 ? (

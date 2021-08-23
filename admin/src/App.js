@@ -8,6 +8,7 @@ import Content from 'antd/lib/layout/layout';
 import Login from "./Container/UserPage/Login";
 import HeaderPage from "./Container/Components/Header";
 import Dashboard from "./Container/MainPage/Dashboard";
+import Statis from "./Container/MainPage/Statis";
 import Navigation from "./Container/Components/Navigation";
 import Footer from "./Container/Components/Footer";
 import ListUserKH from "./Container/UserPage/listUserKH";
@@ -117,6 +118,9 @@ function App() {
                 <Content className="content-wrapper">
                   <Route exact path="/">
                     <Dashboard />
+                  </Route>
+                  <Route exact path="/danh-sach-thong-ke">
+                    <Statis />
                   </Route>
                   <Route exact path="/danh-sach-khach-hang">
                     <ListUserKH />

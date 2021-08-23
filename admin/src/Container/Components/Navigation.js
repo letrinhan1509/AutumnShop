@@ -52,6 +52,7 @@ const Navigation = () => {
                             ) : ("")}
                         </SubMenu>
                         <SubMenu key="sub4" icon={<DollarCircleOutlined />} title="Quản lý kinh doanh">
+                            <Menu.Item key="danh-sach-thong-ke" icon={<UnorderedListOutlined />} >Danh sách thống kê</Menu.Item>
                             <Menu.Item key="danh-sach-don-hang" icon={<UnorderedListOutlined />} >Danh sách đơn hàng</Menu.Item>
                             <Menu.Item key="danh-sach-trang-thai" icon={<UnorderedListOutlined />} >Danh sách trạng thái</Menu.Item>
                             <SubMenu key="sub5" icon={<TagsOutlined />} title="Quản lý khuyến mãi">

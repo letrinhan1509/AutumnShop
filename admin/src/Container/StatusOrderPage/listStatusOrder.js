@@ -11,6 +11,7 @@ const ListStatusOrder = () => {
   const { confirm } = Modal;
   let result = JSON.parse(localStorage.getItem('user'));
   const token = localStorage.getItem("token");
+  const [ok, setOk] = useState(false);
   //API ListStatusOrder
   const [listStatus, setListStatus] = useState([]);
   useEffect(() => {
@@ -26,7 +27,7 @@ const ListStatusOrder = () => {
       })
       setListStatus(data) */
     })
-  }, []);
+  }, [ok]);
 
   //Redirect sửa
   const edit = (e) => {
@@ -53,9 +54,7 @@ const ListStatusOrder = () => {
         statusOrder.deleteStatusOrder(id, token).then((res) => {
           if (res.data.status === "Success") {
             message.success(res.data.message)
-            setTimeout(() => {
-              link.go({ pathname: '/danh-sach-trang-thai' });
-            }, 800)
+            setOk(!ok);
           }
         })
           .catch(err => {

@@ -10,13 +10,13 @@ const ListProductType = () => {
   const { confirm } = Modal;
   const link = useHistory();
   let result = JSON.parse(localStorage.getItem('user'));
-
+  const [ok, setOk] = useState(false);
   const [ListType, setListType] = useState([]);
   useEffect(() => {
     catalog.getAllType().then((res) => {
       setListType(res.data.data);
     })
-  }, []);
+  }, [ok]);
 
 
   const linkto = (e) => {
@@ -32,16 +32,13 @@ const ListProductType = () => {
 
   }
 
-  //Cập nhật trạng thái Voucher:
   const unlock = (e) => {
     let id = e.currentTarget.dataset.id;
     let values = { maloai: id, trangthai: 1 };
     catalog.updateStatusType(values, token).then((res) => {
       if (res.data.status === "Success") {
         message.success(res.data.message)
-        setTimeout(() => {
-          link.go({ pathname: '/danh-sach-voucher' });
-        }, 1000);
+        setOk(!ok);
       }
       else {
         message.error(res.data.message);
@@ -58,9 +55,7 @@ const ListProductType = () => {
     catalog.updateStatusType(values, token).then((res) => {
       if (res.data.status === "Success") {
         message.success(res.data.message);
-        setTimeout(() => {
-          link.go('/danh-sach-voucher');
-        }, 1000);
+        setOk(!ok);
       }
       else {
         message.error(res.data.message);
@@ -95,9 +90,7 @@ const ListProductType = () => {
             }).catch((error) => {
               console.log(error);
             });
-            setTimeout(() => {
-              window.location.reload()
-            }, 1000);
+            setOk(!ok);
           }
           else {
             message.error(res.data.message)

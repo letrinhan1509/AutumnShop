@@ -11,13 +11,14 @@ const ListProducer = () => {
   const link = useHistory();
   const { confirm } = Modal;
   let result = JSON.parse(localStorage.getItem('user'));
+  const [ok, setOk] = useState(false);
   //API ListProducer
   const [listProducer, setListProducer] = useState([]);
   useEffect(() => {
     producers.getAll().then((res) => {
       setListProducer(res.data.data);
     })
-  }, []);
+  }, [ok]);
 
   //Redirect sửa nhà sản xuất theo ID
   const edit = (e) => {
@@ -42,9 +43,7 @@ const ListProducer = () => {
     producers.updateStatus(values, token).then((res) => {
       if (res.data.status === "Success") {
         message.success(res.data.message)
-        setTimeout(() => {
-          link.go({ pathname: '/danh-sach-nha-sx' });
-        }, 800)
+        setOk(!ok);
       }
     })
       .catch(err => {
@@ -60,9 +59,7 @@ const ListProducer = () => {
     producers.updateStatus(values, token).then((res) => {
       if (res.data.status === "Success") {
         message.success(res.data.message)
-        setTimeout(() => {
-          link.go('/danh-sach-nha-sx')
-        }, 800)
+        setOk(!ok);
       }
     })
       .catch(err => {
@@ -82,9 +79,7 @@ const ListProducer = () => {
         producers.deleteProducer(id, token).then((res) => {
           if (res.data.status === "Success") {
             message.success(res.data.message)
-            setTimeout(() => {
-              link.go({ pathname: '/danh-sach-nha-sx' });
-            }, 800)
+            setOk(!ok);
           }
         })
           .catch(err => {

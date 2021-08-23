@@ -13,7 +13,7 @@ const ListSize = () => {
     //API Size
     const [click, setClick] = useState(false);
     const [listSize, setListSize] = useState([]);
-
+    const [ok, setOk] = useState(false);
 
     //Redirect sửa size theo masize
     const [sizeDetail, setSizeDetail] = useState([]);
@@ -26,7 +26,7 @@ const ListSize = () => {
             console.log(err.response);
             message.error(`${err.response.data.message}`);
         })
-    }, []);
+    }, [ok]);
     const edit = (e) => {
         let id = e.currentTarget.dataset.id
         size.getSizeId(id, token).then((res) => {
@@ -47,9 +47,7 @@ const ListSize = () => {
         size.deleteSize(id, token).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message)
-                setTimeout(() => {
-                    link.go({ pathname: '/danh-sach-size' });
-                }, 800)
+                setOk(!ok);
             }
         })
             .catch(err => {

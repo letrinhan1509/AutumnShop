@@ -23,6 +23,7 @@ const ListOrder = (props) => {
         order.getAll().then((res) => {
             setListOrder(res.data.data);
             setWordSearch(res.data.data);
+            console.log(res.data.data);
         })
         ghn.getAll_pickShiftGHN().then((res) => {
             setPickUp(res.data.pickShift);
@@ -190,10 +191,9 @@ const ListOrder = (props) => {
             {
                 dataIndex: 'madonhang',
                 key: 'madonhang',
-                render: (madonhang, maGHN) => (maGHN.vanchuyen === "GHN" ? (<div className="btn-box fix"><Button data-id={madonhang} key={madonhang} type="primary" onClick={TurnOn_GHN}> GHN </Button></div>) : (""))
+                render: (madonhang, code) => (code.vanchuyen !== "GHN" ? ("") : (<div className="btn-box fix"><Button data-id={madonhang} key={madonhang} type="primary" onClick={TurnOn_GHN}> GHN </Button></div>))
             }
-        ) : ("")
-        
+        ) : {}
     ];
 
     const giohang = [

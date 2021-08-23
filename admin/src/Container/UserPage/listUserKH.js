@@ -10,15 +10,14 @@ const { Option } = Select;
 const ListUserKH = (props) => {
   const token = localStorage.getItem("token");
   const [ListUser, setListUser] = useState([]);
-  const history = useHistory();
-
+  const [ok, setOk] = useState(false);
   //API ListUser
   useEffect(() => {
     user.getAll().then((res) => {
       setListUser(res.data.data);
       setWordSearch(res.data.data);
     })
-  }, []);
+  }, [ok]);
 
   //Cập nhật trạng thái User
   const unlock = (e) => {
@@ -32,11 +31,7 @@ const ListUserKH = (props) => {
     user.updateStatus(values, token).then((res) => {
       if (res.data.status === "Success") {
         message.success(res.data.message)
-        setTimeout(() => {
-          //history.go('/danh-sach-khach-hang')
-          history.go({ pathname: '/danh-sach-khach-hang' });
-        }, 800)
-
+        setOk(!ok);
       }
       else {
         message.error("Cập nhật trạng thái thất bại")
@@ -59,9 +54,7 @@ const ListUserKH = (props) => {
     user.updateStatus(values, token).then((res) => {
       if (res.data.status === "Success") {
         message.success(res.data.message)
-        setTimeout(() => {
-          history.go('/danh-sach-khach-hang')
-        }, 800)
+        setOk(!ok);
       }
       else {
         message.error("Cập nhật trạng thái thất bại")
@@ -71,19 +64,17 @@ const ListUserKH = (props) => {
         console.log(err.response);
         message.error(`Lỗi...! Khoá tài khoản thất bại!\n ${err.response.data}`)
       })
+      
   };
 
   const deleteCus = (e) => {
     let id = e.currentTarget.dataset.id
     user.delete_Customer(id, token).then((res) => {
       if (res.data.status === "Success") {
-        //setWordSearch(res.data.listUsers);
-        setTimeout(() => {
-          history.push('/danh-sach-khach-hang');
-        }, 100)
+        message.success(res.data.message)
+        setOk(!ok);
       }
     });
-
   }
 
   let result = JSON.parse(localStorage.getItem('user'));

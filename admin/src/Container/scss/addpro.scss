@@ -128,6 +128,26 @@
             }
             
         }
+        .search-statis{
+            padding: 20px 30px;
+            display: flex;
+            width: 100%;
+            //justify-content: space-between;
+            border-top: 1px solid #ccc;
+            border-bottom: 1px solid #ccc;
+            .search1{
+                margin-right: 20px;
+            }
+            .search2{
+                display: flex;
+                margin-right: 20px;
+                //width: 300px;
+                span{
+                    width: 70px;
+                    margin-top: 5px;
+                }
+            }
+        }
     }
 }
 .btn-box{

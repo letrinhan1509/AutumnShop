@@ -10,11 +10,12 @@ const ListComment = (props) => {
   const history = useHistory();
   let result = JSON.parse(localStorage.getItem('user'));
   const [listComment, setListComment] = useState([]);
+  const [ok, setOk] = useState(false);
   useEffect(() => {
     COMMENTS.getAll().then((res) => {
       setListComment(res.data.listComments);
     })
-  }, []);
+  }, [ok]);
 
   const unlockCmt = (e) => {
     let id = e.currentTarget.dataset.id;
@@ -26,9 +27,7 @@ const ListComment = (props) => {
     COMMENTS.hideCommet(values, token).then((res) => {
       if (res.data.status === "Success") {
         message.success(res.data.message)
-        setTimeout(() => {
-          history.go({ pathname: '/danh-sach-binh-luan' });
-        }, 800)
+        setOk(!ok);
       }
     })
       .catch(err => {
@@ -46,9 +45,7 @@ const ListComment = (props) => {
     COMMENTS.hideCommet(values, token).then((res) => {
       if (res.data.status === "Success") {
         message.success(res.data.message)
-        setTimeout(() => {
-          history.go('/danh-sach-binh-luan')
-        }, 800)
+        setOk(!ok);
       }
     })
       .catch(err => {

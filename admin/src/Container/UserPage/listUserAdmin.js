@@ -10,13 +10,14 @@ const ListUserAdmin = () => {
   const token = localStorage.getItem("token");
   const link = useHistory();
   const [ListAdmin, setListAdmin] = useState([]);
+  const [ok, setOk] = useState(false);
   //API ListAdmin
   useEffect(() => {
     admin.getAll().then((res) => {
       setListAdmin(res.data.data);
       setWordSearch(res.data.data);
     })
-  }, []);
+  }, [ok]);
 
   const openNotification = (mess) => {
     notification.open({
@@ -53,9 +54,7 @@ const ListUserAdmin = () => {
     admin.updateStatus(values, token).then((res) => {
       if (res.data.status === "Success") {
         message.success(res.data.message)
-        setTimeout(() => {
-          link.go({ pathname: '/danh-sach-admin' });
-        }, 800)
+        setOk(!ok);
       }
       else {
         message.error("Mở khoá tài khoản thất bại")
@@ -76,9 +75,7 @@ const ListUserAdmin = () => {
     admin.updateStatus(values, token).then((res) => {
       if (res.data.status === "Success") {
         message.success(res.data.message)
-        setTimeout(() => {
-          link.go('/danh-sach-admin')
-        }, 800)
+        setOk(!ok);
       }
       else {
         message.error("Khoá tài khoản thất bại!")

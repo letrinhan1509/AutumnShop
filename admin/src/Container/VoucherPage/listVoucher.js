@@ -14,14 +14,14 @@ const ListVoucher = (props) => {
     const [listVoucher, setListVoucher] = useState([]);
     const history = useHistory();
     let user = JSON.parse(localStorage.getItem('user'));
-
+    const [ok, setOk] = useState(false);
     //API List Voucher:
     useEffect(() => {
         voucher.getAllVoucher().then((res) => {
             setListVoucher(res.data.voucher);
             setWordSearch(res.data.voucher);
         })
-    }, []);
+    }, [ok]);
     // Sửa voucher:
     const loadEdit = (e) => {
         let id = e.currentTarget.dataset.id;
@@ -71,9 +71,7 @@ const ListVoucher = (props) => {
                 }).catch((error) => {
                 console.log(error);
                 });
-                setTimeout(() => {
-                window.location.reload()
-                }, 1000);
+                setOk(!ok);
             }
             else {
                 message.error(res.data.message)

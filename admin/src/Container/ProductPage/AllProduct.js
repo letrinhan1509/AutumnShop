@@ -13,7 +13,7 @@ const AllProduct = () => {
   const { confirm } = Modal;
   const [idPro, setIdPro] = useState([]);
   let result = JSON.parse(localStorage.getItem('user'))
-
+  const [ok, setOk] = useState(false);
   //API ListProduct
   const [ListProductHome, setListProductHome] = useState([]);
   useEffect(() => {
@@ -21,7 +21,7 @@ const AllProduct = () => {
       setListProductHome(res.data.data);
       setWordSearch(res.data.data);
     });
-  }, []);
+  }, [ok]);
 
   ListProductHome.forEach(element => {
     if (element.trangthai === 1) {
@@ -44,9 +44,7 @@ const AllProduct = () => {
     product.updateStatus(values, token).then((res) => {
       if (res.data.status === "Success") {
         message.success(res.data.message)
-        setTimeout(() => {
-          link.go({ pathname: '/tat-ca-san-pham' });
-        }, 800)
+        setOk(!ok);
       } else {
         message.error("Cập nhật trạng thái thất bại!")
       }
@@ -63,9 +61,7 @@ const AllProduct = () => {
     product.updateStatus(values, token).then((res) => {
       if (res.data.status === "Success") {
         message.success(res.data.message)
-        setTimeout(() => {
-          link.go('/tat-ca-san-pham')
-        }, 800)
+        setOk(!ok);
       } else {
         message.error("Cập nhật trạng thái thất bại")
       }
@@ -123,9 +119,7 @@ const AllProduct = () => {
             }).catch((error) => {
               console.log(error);
             });
-            setTimeout(() => {
-              window.location.reload()
-            }, 1000);
+            setOk(!ok);
           } if (res.data.status === "Fail") {
             message.error(res.data.message);
           }

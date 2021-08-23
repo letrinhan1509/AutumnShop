@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Image, Row, Col, Input, Button, message, Select, Table, Modal } from 'antd';
+import { Image, Row, Col, Input, Button, message, Select, Table, Modal, notification, Spin } from 'antd';
 import Meta from "antd/lib/card/Meta";
 import { useHistory, Link } from "react-router-dom";
 import OrderDetail from "./OrderDetail";
@@ -14,11 +14,18 @@ const Order = (props) => {
     const link = useHistory();
     const [ListOrder, setListOrder] = useState([]);
     const [visible, setVisible] = useState(false);
+    const [loading, setLoading] = useState(false);
     //API Customer order list :
     useEffect(() => {
         order.getUserID(user.makh).then((res) => {
             setListOrder(res.data.data);
             setWordSearch(res.data.data);
+            console.log(res.data.data);
+            setTimeout(() => {
+                if (res.data.data) {
+                    setLoading(true);
+                }
+            }, 1000);
         })
     }, []);
     console.log(ListOrder);
@@ -97,19 +104,32 @@ const Order = (props) => {
                 }, 100) */
             }
         })
-
     }
-
+    // action 
+    const compelete = type => {
+        notification[type]({
+            message: 'Hủy thành công',
+            description:
+                'Bạn đã hủy đơn hàng thành công !',
+        });
+    };
     const cancelOrder = (e) => {
         let i = e.currentTarget.dataset.id;
         console.log(i);
-
         order.cancelOrder(i).then((res) => {
             if (res.data.status === "Success") {
-                message.success(res.data.message);
-                setTimeout(() => {
-                    link.replace('/don-hang');
-                }, 400);
+                compelete("success");
+                setLoading(false);
+                order.getUserID(user.makh).then((res) => {
+                    setListOrder(res.data.data);
+                    setWordSearch(res.data.data);
+                    console.log(res.data.data);
+                    setTimeout(() => {
+                        if (res.data.data) {
+                            setLoading(true);
+                        }
+                    }, 1000);
+                })
             } else {
                 message.error(res.data.message);
             }
@@ -125,7 +145,7 @@ const Order = (props) => {
             key: 'madonhang',
         },
         {
-            title: 'Mã đơn GHTK',
+            title: 'Mã đơn GHN',
             dataIndex: 'code_GHN',
             key: 'code_GHN',
         },
@@ -169,6 +189,11 @@ const Order = (props) => {
             dataIndex: "madonhang",
             key: "madonhang",
             render: madonhang => (<Button className="detail-btn" data-id={madonhang} onClick={loadDetail} type="primary">Chi tiết</Button>)
+        },
+        {
+            dataIndex: "madonhang",
+            key: "madonhang",
+            render: (madonhang, donhang) => (donhang.trangthai === 4 ? ("") : (<Button className="detail-btn" data-id={madonhang} onClick={cancelOrder} type="primary" danger>Hủy đơn hàng</Button>))
         }
 
     ];
@@ -196,7 +221,13 @@ const Order = (props) => {
                             <input placeholder='Nhập tên đơn hàng tiết kiệm' style={{ width: 300 }} onChange={e => onChange(e)} />
                         </div>
                     </div>
-                    <Table className="proItem" dataSource={wordSearch} columns={columns} pagination={{ pageSize: `${pageSize}` }} size="middle" />
+                    {loading === false ? (
+                        <Row className="spin-wrapper">
+                            <Spin className="spin" size="large" />
+                        </Row>
+                    ) : (
+                        <Table className="proItem" dataSource={wordSearch} columns={columns} pagination={{ pageSize: `${pageSize}` }} size="middle" />
+                    )}
                 </div>
             </div>
             <Modal

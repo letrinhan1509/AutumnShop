@@ -16,6 +16,7 @@ const ListSale = (props) => {
     const { confirm } = Modal;
     let user = JSON.parse(localStorage.getItem('user'));
     const [wordSearch, setWordSearch] = useState([]);
+    const [ok, setOk] = useState(false);
     //API List Sale:
     useEffect(() => {
         discount.getAllSale().then((res) => {
@@ -23,7 +24,7 @@ const ListSale = (props) => {
             setWordSearch(res.data.discount);
             console.log(res.data.discount);
         })
-    }, []);
+    }, [ok]);
     console.log(listVoucher);
     // Sửa voucher:
     const loadEdit = (e) => {
@@ -115,9 +116,7 @@ const ListSale = (props) => {
                 }).catch((error) => {
                 console.log(error);
                 }); */
-                setTimeout(() => {
-                    window.location.reload()
-                }, 1000);
+                setOk(!ok);
             }
             else {
                 message.error(res.data.message)
