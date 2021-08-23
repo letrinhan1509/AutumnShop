@@ -20,7 +20,7 @@ router
     .get(indexController.getShop)
     .post(indexController.postCreateShop);
 
-router.get('/thong-ke', indexController.postThongkeDashboard);   // Thống kê ở trang Dashboard
+router.get('/thong-ke', authController.isLoggedIn, indexController.postDashboardStatistics);   // Thống kê ở trang Dashboard
 
 router.get('/city/:id', indexController.getDetailCity);     // Chi tiết 1 Tỉnh/Thành phố
 router.get('/dich-vu-GHN/:id', indexController.getService); // Danh sách các dịch vụ của GHN

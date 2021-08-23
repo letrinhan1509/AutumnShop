@@ -8,6 +8,57 @@ const e = require('express');
 const { json } = require('body-parser');
 
 
+const capNhat = async(product) => {
+    let pro = await modelProduct.get_By_Id(product.masp);
+    let chitiet = JSON.parse(pro.chitiet);
+    //console.log("Trước khi cập nhật", chitiet);
+    chitiet.forEach(element => {
+        if(product.size === element.size && product.mau === element.mau) {
+            element.soluong = element.soluong - product.soluong;
+        }
+    });
+    //console.log("Sau khi cập nhật", chitiet);
+    let temp_chitiet = JSON.stringify(chitiet);
+    const updateAmountProduct = await modelProduct.update_amount(product.masp, temp_chitiet);
+}
+exports.putAmount = catchAsync(async (req, res, next) => {
+    try {
+        let temp = [{
+            masp: 126,
+            size: "S",
+            mau: "trắng",
+            soluong: "1"
+        },
+        {
+            masp: 126,
+            size: "S",
+            mau: "đen",
+            soluong: "2"
+        }]
+        let promiseArr = [];
+        temp.forEach(function(element) {
+            //promiseArr.push(capNhat(element));
+            capNhat(element)
+        });
+        await Promise.all(promiseArr)
+        console.log(promiseArr[0]);
+        let pro = await modelProduct.get_By_Id(126);
+        let chitiet = JSON.parse(pro.chitiet);
+        return res.status(200).json({ 
+            status: "Success", 
+            data: chitiet
+        });
+    } catch (error) {
+        console.log(error);
+        return res.status(400).json({ 
+            status: "Fail", 
+            message: "Something went wrong!", 
+            error: error 
+        });
+    }
+});
+
+
                     // PRODUCT CONTROLLER
 
         // GET
@@ -15,8 +66,6 @@ const { json } = require('body-parser');
 exports.getListProducts = catchAsync(async (req, res, next) => {
     try {
         let listProducts = await modelProduct.list_products();
-        const newArray = [...listProducts].reverse();
-        console.log(newArray);
         return res.status(200).json({ 
             status: "Success", 
             data: listProducts
@@ -65,10 +114,18 @@ exports.getProduct = catchAsync(async (req, res, next) => {
         if(productExist.ngaytao === '23-7-2021') {
             console.log("ok");
         } */
-        /* console.log(productExist.chitiet);
-        var chitiet = JSON.parse(productExist.chitiet);
+
+        //console.log(productExist.chitiet);
+        /* var chitiet = JSON.parse(productExist.chitiet);
+        console.log(chitiet);
         chitiet.forEach(element => {
             //console.log(element.size);
+            temp.forEach(e => {
+                if(element.size === e.size && element.mau === e.mau) {
+                    console.log(element.soluong);
+                    element.soluong = element.soluong - e.soluong;
+                }
+            });
             if(element.size == 'S' && element.mau === "đen") {
                 console.log(element.soluong);
                 element.soluong = element.soluong - 1;

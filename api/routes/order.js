@@ -12,12 +12,6 @@ router
     .post(orderController.postCreateOrder)  // Tạo đơn hàng
     .put(orderController.putEditStatus);    // Cập nhật trạng thái đơn hàng
 
-router.get("/thong-ke", orderController.statistical);  // Thống kê doanh thu bán hàng và đơn hàng theo ngày
-router.get("/thong-ke-thang", orderController.statisticalMonth); // Thống kê doanh thu bán hàng và đơn hàng theo tháng
-
-router.post("/pay-momo", orderController.postPaymentMomo);
-router.post("/ket-qua-thanh-toan", orderController.postResult);
-
 router
     .route("/:id")
     .get(orderController.getOrder)  // Chi tiết 1 đơn hàng theo mã đơn hàng
@@ -27,11 +21,13 @@ router.get('/:id/chi-tiet-dhang', orderController.getListDetailOrders); // Danh 
 router.get('/khach-hang/:id', orderController.getListOrderUser);        // Đơn hàng theo mã khách hàng
 router.get('/so-dien-thoai/:phone', orderController.getListOrderPhone); // Đơn hàng theo số điện thoại
 
+router.post("/pay-momo", orderController.postPaymentMomo);
+router.post("/ket-qua-thanh-toan", orderController.postResult);
+router.post('/thong-ke-don-hang', orderController.postOrderStatistics);
+
 router.delete("/GHN/cancel/:id", orderController.deleteOrderGHN);   // Huỷ đơn hàng vận chuyển từ GHN
 router.post("/GHN/create", orderController.postCreateOrderGHN); // Tạo đơn hàng của GHN
 router.post("/GHN/detail", orderController.postDetailOrderGHN); // Thông tin chi tiết 1 đơn hàng
-
-//router.post('/thong-ke-don-hang', indexController.postThongkeDonhang);
 
 
 

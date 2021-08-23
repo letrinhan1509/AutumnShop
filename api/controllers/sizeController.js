@@ -177,12 +177,14 @@ exports.deleteSize = catchAsync(async (req, res, next) => {
             });
         } else {
             const size = await modelSize.delete_Size(masize);
-            const listSize = await modelSize.list_Size();
-            return res.status(200).json({ 
-                status: "Success", 
-                message: size,
-                listSize: listSize
-            });
+            if(size == 1) {
+                const listSize = await modelSize.list_Size();
+                return res.status(200).json({ 
+                    status: "Success", 
+                    message: "Xoá size quần áo thành công !",
+                    listSize: listSize
+                });
+            }
         }
     } catch (error) {
         return res.status(400).json({ 

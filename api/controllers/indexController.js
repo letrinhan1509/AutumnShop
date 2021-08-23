@@ -1,6 +1,13 @@
 const axios = require('axios');
 const catchAsync = require('../utils/catchAsync');
 const modelIndex = require('../models/model_index');
+const modelAdmin = require('../models/model_admin');
+const modelUser = require('../models/model_user');
+const modelCatalog = require('../models/model_catalog');
+const modelProducer = require('../models/model_producer');
+const modelProduct = require('../models/model_product');
+const modelDiscount = require('../models/model_discount');
+const modelOrder = require('../models/model_order');
 
 
 function xoa_dau(str) {
@@ -441,17 +448,45 @@ exports.getService = catchAsync(async (req, res, next) => {
     }
 });
 
-exports.postThongkeDashboard = catchAsync(async (req, res, next) => {
+exports.postDashboardStatistics = catchAsync(async (req, res, next) => {
     try {
-        let thang = req.body.thang;
+        /* let thang = req.body.thang;
         let nam = req.body.nam;
         if(thang == undefined) {
 
         } else {
 
-        }
+        } */
+        const listAdmins = await modelAdmin.list_Admins();
+        const listUsers = await modelUser.list();
+        const listProducts = await modelProduct.list_products();
+        const listProducers = await modelProducer.list_producers();
+        const listCategorys = await modelCatalog.list_Categorys();
+        const listTypes = await modelCatalog.list_types();
+        const listVouchers = await modelDiscount.list_Vouchers();
+        const revenueStatistics = await modelOrder.statistical();   // Thống kê doanh thu bán hàng và đơn hàng theo ngày
+        const new_revenueStatistics = [...revenueStatistics].reverse();
+        const monthlyRevenueStatistics = await modelOrder.statisticalMonth();   // Thống kê doanh thu bán hàng và đơn hàng theo tháng
+        const new_monthlyRevenueStatistics = [...monthlyRevenueStatistics].reverse();
+        return res.status(200).json({
+            status: "Success", 
+            message: "Thống kê trang Dashboard !",
+            listAdmins: listAdmins.length,
+            listUsers: listUsers.length,
+            listProducts: listProducts.length,
+            listProducers: listProducers.length,
+            listCategorys: listCategorys.length,
+            listTypes: listTypes.length,
+            listVouchers: listVouchers.length,
+            revenueStatistics: new_revenueStatistics,
+            monthlyRevenueStatistics: new_monthlyRevenueStatistics
+        });
     } catch (error) {
-        
+        return res.status(400).json({
+            status: "Fail", 
+            message: "Something went wrong",
+            error: error.response.data
+        });
     }
 });
 

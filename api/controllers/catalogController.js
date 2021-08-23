@@ -315,7 +315,6 @@ exports.putEditTypeStatus = catchAsync(async (req, res, next) => {
 exports.deleteCategory = catchAsync(async (req, res, next) => {
     try {
         let madm = req.params.id;
-        console.log(madm);
         if(!madm) {
             return res.status(400).json({ 
                 status: "Fail", 
@@ -330,16 +329,20 @@ exports.deleteCategory = catchAsync(async (req, res, next) => {
             });
         };
         let query = await modelCatalog.delete_Category(madm);
-        if(query == -1) {
+        if(query == 6) {
             return res.status(400).json({ 
                 status: "Fail", 
-                message: "Danh mục này đã có sản phẩm, không thể xoá !" 
+                message: "Danh mục này đã có sản phẩm, tạm thời không thể xoá !" 
             });
-        } else
+        };
+        if(query == 1) {
+            const listCategorys = await modelCatalog.list_Categorys();
             return res.status(200).json({ 
                 status: "Success", 
-                message: query 
+                message: "Xoá danh mục sản phẩm thành công !", 
+                listCategorys: listCategorys
             });
+        }; 
     } catch (error) {
         return res.status(400).json({ 
             status: "Fail", 
@@ -359,13 +362,20 @@ exports.deleteType = catchAsync(async (req, res, next) => {
             });
         };
         let query = await modelCatalog.delete_Type(maloai);
-        if(query == -1) {
+        if(query == 6) {
             return res.status(400).json({ 
                 status: "Fail", 
-                message: "Loại này đã có sản phẩm, không thể xoá !" 
+                message: "Loại này đã có sản phẩm, tạm thời không thể xoá !" 
             });
-        } else
-            return res.status(200).json({ status: "Success", message: query });   
+        };
+        if(query == 1) {
+            const listTypes = await modelCatalog.list_types(); 
+            return res.status(200).json({ 
+                status: "Success", 
+                message: "Xoá loại sản phẩm thành công !", 
+                listTypes: listTypes
+            });
+        };
     } catch (error) {
         return res.status(400).json({ 
             status: "Fail", 

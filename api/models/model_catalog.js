@@ -111,19 +111,17 @@ exports.delete_Category = async (madm) => {
         ON sanpham.madm = danhmuc.madm 
         WHERE sanpham.madm = '${madm}'`;
         db.query(sql_type, (error, result) => {
-            if(error)
-                hamLoi(error);
-            else if(result.length <= 0) {
-                let sql = `DELETE FROM danhmuc WHERE madm='${madm}'`;
-                db.query(sql, (err, result) => {
-                    if(err)
-                        hamLoi(err);
-                    else
-                        hamOK("Xoá danh mục sản phẩm thành công !");
-                })
-            }else{
-                // Có ràng buộc khoá ngoại nên không xoá được
-                hamOK(-1);
+            if(error) { hamLoi(error); }
+            else {
+                if(result.length <= 0) { 
+                    let sql = `DELETE FROM danhmuc WHERE madm='${madm}'`;
+                    db.query(sql, (err, result) => {
+                        if(err)
+                            hamLoi(err);
+                        else
+                            hamOK(1);
+                    }) 
+                } else { hamOK(6); }
             }
         })
     });
@@ -280,11 +278,11 @@ exports.delete_Type = (typeId) => {
                 let sql = `DELETE FROM loaisp WHERE maloai='${typeId}'`;
                 db.query(sql, (err, result) => {
                     console.log('Delete type success');
-                    hamOK("Xoá loại sản phẩm thành công !");
+                    hamOK(1);
                 })
             }else{
                 console.log("Không xoá được!");
-                hamOK(-1);
+                hamOK(6);
             }
         })
     });

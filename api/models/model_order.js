@@ -8,7 +8,7 @@ var dataName = [];
     // Danh sách tất cả đơn hàng:
 exports.list_Orders = async () => {
     return new Promise( (hamOK, hamLoi) => {
-        let sql = `SELECT DH.madonhang, DH.makh, DH.tenkh, DH.email, DH.sodienthoai, DH.diachi, DH.tienship, DH.tongtien, DH.ghichu, DH.makm,
+        let sql = `SELECT DH.madonhang, DH.code_GHN, DH.makh, DH.tenkh, DH.email, DH.sodienthoai, DH.diachi, DH.tienship, DH.tongtien, DH.ghichu, DH.makm,
         DH.hinhthuc, DH.vanchuyen, DATE_FORMAT(DH.ngaydat, '%e-%c-%Y') as ngaydat, DATE_FORMAT(DH.ngaygiao, '%e-%c-%Y') as ngaygiao, 
         DH.trangthai, TT.tentt as tentt FROM (donhang AS DH JOIN trangthai AS TT ON DH.trangthai = TT.trangthai)`;
         db.query(sql, (err, result) => {
@@ -26,17 +26,17 @@ exports.list_Orders = async () => {
 exports.get_By_Id = async (orderId) => {
     return new Promise( (hamOK, hamLoi) => {
         //const data = [];
-        let sql = `SELECT DH.madonhang, DH.makh, DH.tenkh, DH.email, DH.sodienthoai, DH.diachi, DH.tienship, DH.tongtien, DH.ghichu, DH.makm, DH.hinhthuc, DH.vanchuyen, DH.chitiet, DH.ngaydat, DH.ngaygiao, DH.trangthai, TT.tentt as tentt 
-        FROM (donhang AS DH JOIN trangthai AS TT ON DH.trangthai = TT.trangthai)
-        WHERE DH.madonhang = '${orderId}'`;
+        let sql = `SELECT DH.madonhang, DH.code_GHN, DH.makh, DH.tenkh, DH.email, DH.sodienthoai, DH.diachi, DH.tienship, DH.tongtien, DH.ghichu, 
+        DH.makm, DH.hinhthuc, DH.vanchuyen, DH.chitiet, DH.ngaydat, DH.ngaygiao, DH.trangthai, TT.tentt as tentt 
+        FROM (donhang AS DH JOIN trangthai AS TT ON DH.trangthai = TT.trangthai) WHERE DH.madonhang = '${orderId}'`;
         db.query(sql, (err, result) => {
             //console.log(result[0].madonhang);
             if(err){
                 hamLoi(err);
             }else{
                 if(result.length > 0){
-                    let sql = `SELECT CTDH.mact, CTDH.masp, sanpham.tensp, CTDH.size, CTDH.mau, CTDH.gia, CTDH.giagiam, CTDH.soluong, CTDH.thanhtien,
-                    CTDH.madonhang FROM (chitietdh AS CTDH JOIN sanpham ON CTDH.masp = sanpham.masp)
+                    let sql = `SELECT CTDH.mact, CTDH.masp, sanpham.tensp, CTDH.size, CTDH.mau, CTDH.gia, CTDH.giagiam, CTDH.soluong, 
+                    CTDH.thanhtien, CTDH.madonhang FROM (chitietdh AS CTDH JOIN sanpham ON CTDH.masp = sanpham.masp)
                     WHERE CTDH.madonhang = ?`;
                     db.query(sql, result[0].madonhang, (err, result1) => {
                         if(err){
@@ -117,7 +117,7 @@ exports.get_detailOrder = async (orderId) => {
     // Thống kê doanh thu bán hàng và số đơn hàng theo ngày:
 exports.statistical = async () => {
     return new Promise( (hamOK, hamLoi) => {
-        let sql = `SELECT madonhang, DATE_FORMAT(ngaydat, '%e-%c-%Y') as ngaydat, SUM(tongtien) as tongdoanhthu, COUNT(ngaydat) as tongdonhang FROM donhang
+        let sql = `SELECT DATE_FORMAT(ngaydat, '%e-%c-%Y') as ngaydat, SUM(tongtien) as tongdoanhthu, COUNT(ngaydat) as tongdonhang FROM donhang
         GROUP BY ngaydat ORDER BY ngaydat DESC LIMIT 7`;
         db.query(sql, (err, result) => {
             if(err){
@@ -131,7 +131,7 @@ exports.statistical = async () => {
     // Thống kê doanh thu bán hàng và số đơn hàng theo tháng:
 exports.statisticalMonth = async () => {
     return new Promise( (hamOK, hamLoi) => {
-        let sql = `SELECT madonhang, ngaydat, MONTH (ngaydat) as doanhthuthang, SUM(tongtien) as tongdoanhthu, COUNT(ngaydat) as tongdonhang 
+        let sql = `SELECT MONTH (ngaydat) as doanhthuthang, SUM(tongtien) as tongdoanhthu, COUNT(ngaydat) as tongdonhang 
         FROM donhang GROUP BY MONTH (ngaydat) ORDER BY doanhthuthang DESC`;
         db.query(sql, (err, result) => {
             if(err){
@@ -139,6 +139,43 @@ exports.statisticalMonth = async () => {
             }else{
                 hamOK(result);
             }
+        })
+    })
+};
+    // Thống kê đơn hàng theo tháng:
+exports.statisticsOrder_By_Month = async (month) => {
+    return new Promise( (hamOK, hamLoi) => {
+        let sql = `SELECT DH.madonhang, DH.code_GHN, DH.makh, DH.tenkh, DH.email, DH.sodienthoai, DH.diachi, DH.tienship, DH.tongtien, 
+        DH.ghichu, DH.makm, DH.hinhthuc, DH.vanchuyen, DH.chitiet, DH.ngaydat, DH.ngaygiao, DH.trangthai, TT.tentt as tentt 
+        FROM (donhang AS DH JOIN trangthai AS TT ON DH.trangthai = TT.trangthai) WHERE MONTH (DH.ngaydat) = '${month}'`;
+        db.query(sql, (err, result) => {
+            if(err) { hamLoi(err); }
+            else { hamOK(result); }
+        })
+    })
+};
+    // Thống kê đơn hàng theo năm:
+exports.statisticsOrder_By_Year = async (year) => {
+    return new Promise( (hamOK, hamLoi) => {
+        let sql = `SELECT DH.madonhang, DH.code_GHN, DH.makh, DH.tenkh, DH.email, DH.sodienthoai, DH.diachi, DH.tienship, DH.tongtien, 
+        DH.ghichu, DH.makm, DH.hinhthuc, DH.vanchuyen, DH.chitiet, DH.ngaydat, DH.ngaygiao, DH.trangthai, TT.tentt as tentt 
+        FROM (donhang AS DH JOIN trangthai AS TT ON DH.trangthai = TT.trangthai) WHERE YEAR (DH.ngaydat) = '${year}'`;
+        db.query(sql, (err, result) => {
+            if(err) { hamLoi(err); }
+            else { hamOK(result); }
+        })
+    })
+};
+    // Thống kê đơn hàng theo tháng và năm:
+exports.statisticsOrder_By_MonthYear = async (month, year) => {
+    return new Promise( (hamOK, hamLoi) => {
+        let sql = `SELECT DH.madonhang, DH.code_GHN, DH.makh, DH.tenkh, DH.email, DH.sodienthoai, DH.diachi, DH.tienship, DH.tongtien, 
+        DH.ghichu, DH.makm, DH.hinhthuc, DH.vanchuyen, DH.chitiet, DH.ngaydat, DH.ngaygiao, DH.trangthai, TT.tentt as tentt 
+        FROM (donhang AS DH JOIN trangthai AS TT ON DH.trangthai = TT.trangthai) 
+        WHERE MONTH (DH.ngaydat) = '${month}' AND YEAR (DH.ngaydat) = '${year}'`;
+        db.query(sql, (err, result) => {
+            if(err) { hamLoi(err); }
+            else { hamOK(result); }
         })
     })
 };

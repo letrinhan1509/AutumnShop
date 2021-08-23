@@ -87,6 +87,21 @@ const ListUserAdmin = () => {
       })
   };
 
+  // Xoá tài khoản admin:
+  const deleteAdmin = (e) => {
+    let id = e.currentTarget.dataset.id
+    admin.deleteAdmin(id, token).then((res) => {
+      if (res.data.status === "Success") {
+        //setWordSearch(res.data.listAdmins);
+        setTimeout(() => {
+          link.push('/danh-sach-admin');
+        }, 100)
+      }
+    }).catch(err => {
+      message.error(`${err.response.data.message}`)
+    });
+  }
+
   //xét trạng thái ADmin
   ListAdmin.forEach(element => {
     if (element.trangthai === 1) {
@@ -202,6 +217,13 @@ const ListUserAdmin = () => {
         dataIndex: 'manv',
         key: 'manv',
         render: manv => (<div className="btn-box fix">{result.manv === manv ? ("") : (<Button data-id={manv} key={manv} type="primary" onClick={linkto}>Sửa</Button>)}</div>)
+      } : (<> </>),
+    result.permission === 'Admin' || result.permission === 'QLNS' ?
+      {
+        title: 'Hành động',
+        dataIndex: 'manv',
+        key: 'manv',
+        render: manv => (<div className="btn-box delete">{result.manv === manv ? ("") : (<Button data-id={manv} key={manv} type="danger" onClick={deleteAdmin}> Xoá </Button>)}</div>)
       } : (<> </>)
 
   ];

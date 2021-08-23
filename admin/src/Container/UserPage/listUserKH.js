@@ -74,6 +74,9 @@ const ListUserKH = (props) => {
         message.success(res.data.message)
         setOk(!ok);
       }
+    }).catch(err => {
+      console.log(err.response.data.message);
+      message.error(`${err.response.data.message}`)
     });
   }
 

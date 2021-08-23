@@ -163,22 +163,36 @@ exports.update_Voucher = (data) => {
     // Xoá khuyến mãi:
 exports.delete = (id) => {
     return new Promise( (resolve, reject) => {
-        let sql = `SELECT * FROM chitietkm WHERE chitietkm.makm='${id}'`;
+        let sql = `SELECT * FROM donhang WHERE donhang.makm='${id}'`;
         db.query(sql, (error, result) => {
-            if(error)
-                reject(error);
+            if(error) { reject(error); }
             else {
                 if(result.length <= 0){
-                    console.log("Xoá được");
-                    /* let sql_delete = `DELETE FROM khuyenmai WHERE makm='${id}'`;
-                    let query = db.query(sql_delete, (err, result1) => {
-                        if(err)
-                            reject(err);
-                        else
-                            resolve("Xoá khuyến mãi thành công !");
-                    }); */
+                    let sql_detail = `SELECT * FROM chitietkm WHERE chitietkm.makm='${id}'`;
+                    db.query(sql_detail, (err, result) => {
+                        if(err) { reject(err); }
+                        else {
+                            if(result.length <= 0){
+                                let sql_delete = `DELETE FROM khuyenmai WHERE khuyenmai.makm='${id}'`;
+                                let query = db.query(sql_delete, (err, result1) => {
+                                    if(err) { reject(err); }
+                                    else { resolve(1); }
+                                });
+                            } else {
+                                let sql_deleteDetail = `DELETE FROM chitietkm WHERE chitietkm.makm='${id}'`;
+                                db.query(sql_deleteDetail, (err1, result1) => {
+                                    if(err1) { reject(err1); }
+                                });
+                                let sql_delete = `DELETE FROM khuyenmai WHERE khuyenmai.makm='${id}'`;
+                                db.query(sql_delete, (err2, result1) => {
+                                    if(err2) { reject(err2); }
+                                    else { resolve(1); }
+                                });
+                            }
+                        }
+                    })
                 } else {
-                    resolve(-1);
+                    resolve(6);
                 }
             }
         })

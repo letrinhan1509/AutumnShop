@@ -98,7 +98,7 @@ const Payments2 = (props) => {
           );
         });
     } else {
-      Oder
+      /* Oder
         .addOrder(values)
         .then(async (res) => {
           if (res.data.status === "Success") {
@@ -118,7 +118,7 @@ const Payments2 = (props) => {
           message.error(
             `Đặt hàng thất bại ! \n ${err.response.data.message}`
           );
-        });
+        }); */
     }
   };
 

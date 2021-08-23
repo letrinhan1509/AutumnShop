@@ -209,15 +209,18 @@ exports.deleteProducer = catchAsync(async (req, res, next) => {
             });
         } else {
             let queryDelete = await modelProducer.delete(producerId);
-            if(queryDelete == -1) {
+            if(queryDelete == 6) {
                 return res.status(400).json({ 
                     status: "Fail", 
                     message: "Có ràng buộc khoá ngoại. Không thể xoá nhà sản xuất này !"
                 });
-            } else {
+            };
+            if(queryDelete == 1) {
+                const listProducers = await modelProducer.list_producers();
                 return res.status(200).json({ 
                     status: "Success", 
-                    message: queryDelete
+                    message: "Xoá nhà sản xuất thành công !", 
+                    listProducers: listProducers
                 });
             }
         }
