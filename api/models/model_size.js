@@ -106,7 +106,7 @@ exports.delete_Size = async (masize) => {
             if(err) {
                 hamLoi(err);
             } else {
-                hamOK("Xoá size quần áo thành công !");
+                hamOK(1);
             }
         })
     })

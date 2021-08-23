@@ -122,13 +122,13 @@ exports.delete = (producerId) => {
                             hamLoi(err);
                         } else {
                             console.log('Delete type success');
-                            hamOK("Xoá nhà sản xuất thành công !");
+                            hamOK(1);
                         };
                     })
                 } else {
                     // Có ràng buộc khoá ngoại không thể xoá
                     console.log("Không xoá được!");
-                    hamOK(-1);
+                    hamOK(6);
                 }
             }
         })

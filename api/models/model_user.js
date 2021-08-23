@@ -150,7 +150,7 @@ exports.delete_User = (userId) => {
                                         db.query(sql_delete_User, (error_user, result_user) => {
                                             if(error_user) { reject(error_user); }
                                             else {
-                                                resolve("Xoá tài khoản user thành công !");
+                                                resolve(1);
                                             }
                                         })
                                     }

@@ -5,6 +5,7 @@ const modelOrder = require('../models/model_order');
 const modelDiscount = require('../models/model_discount');
 const modelUser = require('../models/model_user');
 const modelCart = require('../models/model_cart');
+const modelProduct = require('../models/model_product');
 
 
                     // ORDER CONTROLLER
@@ -62,7 +63,9 @@ const create_order_GHTK = async(cart, madonhang, email, tel, name, address, prov
         });
         if(order.status == 200) {
             return order.data;
-        };
+        } else {
+            return false;
+        }
     } catch (error) {
         return error; 
     }
@@ -287,45 +290,13 @@ exports.getListStatus = catchAsync(async (req, res, next) => {
         });
     }
 });
-// GET: Sales and order statistics
-exports.statistical = catchAsync(async (req, res, next) => {
-    try {
-        let statistical = await modelOrder.statistical();
-        return res.status(200).json({ 
-            status: "Success",
-            statistical: statistical
-        });
-    } catch (error) {
-        return res.status(400).json({ 
-            status: "Fail", 
-            message: "Something went wrong!", 
-            error: error 
-        });
-    }
-});
-// GET: Monthly statistics
-exports.statisticalMonth = catchAsync(async (req, res, next) => {
-    try {
-        let statistical = await modelOrder.statisticalMonth();
-        return res.status(200).json({ 
-            status: "Success",
-            statistical: statistical
-        });
-    } catch (error) {
-        return res.status(400).json({ 
-            status: "Fail", 
-            message: "Something went wrong!", 
-            error: error 
-        });
-    }
-});
 
 
         // POST
 // POST: Tạo đơn hàng trên web của shop 
 exports.postCreateOrder = catchAsync(async (req, res, next) => {
     try {
-        var chitiet = "NULL";
+        const chitiet = "NULL";
         var makh = req.body.order.makh;
         var tenkh = req.body.order.tenkh;
         var email = req.body.order.email;
@@ -393,7 +364,7 @@ exports.postCreateOrder = catchAsync(async (req, res, next) => {
         };
         if(makh == undefined){
             // Tạo đơn hàng cho khách không có tài khoản
-            let queryNotUserDiscount = await modelOrder.insert_Order(tenkh, email, sodienthoai, diachi, ship, tongtien, ghichu, makm, hinhthuc, vanchuyen, ngaydat, cart);
+            let queryNotUserDiscount = await modelOrder.insert_Order(tenkh, email, sodienthoai, diachi, ship, tongtien, ghichu, makm, hinhthuc, vanchuyen, chitiet, ngaydat, cart);
             if(vanchuyen == "GHTK") {
                 const order_GHTK = await create_order_GHTK(cart, queryNotUserDiscount, email, sodienthoai, tenkh, diachi, thanhpho, quan, phuong_API, diachi, freeship, tongtien, ghichu);
                 if(order_GHTK.success) {
@@ -413,7 +384,7 @@ exports.postCreateOrder = catchAsync(async (req, res, next) => {
                     });
                 }
             } else {
-                // Tạo đơn hàng thành công vs hình thức giao hàng là: "SHOP"
+                // Tạo đơn hàng thành công vs hình thức giao hàng là: "SHOP", "GHN"
                 return res.status(200).json({
                     status: "Success",
                     message: "Tạo đơn thành công !"
@@ -430,32 +401,40 @@ exports.postCreateOrder = catchAsync(async (req, res, next) => {
             } else {
                 // Thanh toán Momo:
                 if(momo === "YES") {
-                    tongtien = 0;
+                    
                 };
                 // Tạo đơn hàng với hình thức giao hàng là: GHTK:
                 if(vanchuyen == "GHTK") {
                     let madonhang = "DH51703846";
-                    let queryUserDiscount = await modelOrder.insert_Order_User(makh, tenkh, email, sodienthoai, diachi, ship, tongtien, ghichu, makm, hinhthuc, vanchuyen, ngaydat, cart);
+                    let queryUserDiscount = await modelOrder.insert_Order_User(makh, tenkh, email, sodienthoai, diachi, ship, tongtien, ghichu, makm, hinhthuc, vanchuyen, chitiet, ngaydat, cart);
                     const order_GHTK = await create_order_GHTK(cart, madonhang, email, sodienthoai, tenkh, diachi, thanhpho, quan, phuong_API, diachi, freeship, tongtien, ghichu);
                     if(order_GHTK.success) {
-                        let delet_cart = await modelCart.deleteCart_Customer(makh); // Xoá sản phẩm khỏi giỏ hàng sau khi tạo đơn hàng thành công.
                         return res.status(200).json({
                             status: "Success",
                             message: "Tạo đơn với phương thức vận chuyển là Giao Hàng Tiết Kiệm thành công !",
                             order: order_GHTK.order
                         });
                     } else {
-                        //const delete_Order = await modelOrder.delete_GHTK(queryUserDiscount); // Tạo đơn trên GHTK thất bại => Xoá đơn hàng vừa tạo khỏi DB.
+                        const delete_Order = await modelOrder.delete_GHTK(queryUserDiscount); // Tạo đơn trên GHTK thất bại => Xoá đơn hàng vừa tạo khỏi DB.
                         return res.status(400).json({
                             status: "Fail",
-                            message: "Tạo đơn hàng bằng phương thức vận chuyển Giao Hàng Tiết Kiệm thất bại !",
+                            message: "Tạo đơn hàng bằng phương thức vận chuyển Giao Hàng Tiết Kiệm thất bại, quý khách vui lòng chọn phương thức vận chuyển khác !",
                             message_error: order_GHTK.message
                         });
                     }
                 } else {
                     // Tạo đơn hàng với hình thức giao hàng là: "SHOP", "GHN"
                     let queryUserDiscount = await modelOrder.insert_Order_User(makh, tenkh, email, sodienthoai, diachi, ship, tongtien, ghichu, makm, hinhthuc, vanchuyen, chitiet, ngaydat, cart);
-                    //let updateAmountProduct = await modelCart;
+                    /* cart.forEach(async(element) => {
+                        let product = await modelProduct.get_By_Id(element.masp);
+                        var chitiet = JSON.parse(product.chitiet);
+                        chitiet.forEach(e => {
+                            if(element.size === e.size && element.mau === e.mau) {
+                                e.soluong = e.soluong - element.soluong;
+                            }
+                        });
+                        const updateAmountProduct = await modelProduct.update_amount(element.masp, chitiet);
+                    }); */
                     let delet_cart = await modelCart.deleteCart_Customer(makh);
                     return res.status(200).json({
                         status: "Success",
@@ -601,7 +580,6 @@ exports.postDetailOrderGHN = catchAsync(async (req, res, next) => {
             });
         };
     } catch (error) {
-        console.log(error.response);
         return res.status(400).json({ 
             status: "Fail", 
             message: "Something went wrong!", 
@@ -613,42 +591,47 @@ exports.postDetailOrderGHN = catchAsync(async (req, res, next) => {
 exports.postResult = catchAsync(async (req, res, next) => {
     console.log(req.body);
     console.log("ok");
+    try {
+        if(req.body.errorCode == 0) {
+            // Thanh toán thành công
+            let hinhthuc = "Đã thanh toán bằng MOMO";
+            let extraData = req.body.extraData;
+            let signature = req.body.signature;
+
+        } else {
+            // Thanh toán không thành công
+
+        }
+    } catch (error) {
+        return res.status(400).json({ 
+            status: "Fail", 
+            message: "Something went wrong!", 
+            error: error.response.data 
+        });
+    }
 });
 // POST: Thanh toán qua momo
 exports.postPaymentMomo = catchAsync(async (req, res, next) => {
     try {
+        //let madonhang = req.body.madonhang;
         let tongtien = req.body.order.sumpay;
-
-        /* var endpoint = "https://payment.momo.vn/gw_payment/transactionProcessor"
-        var hostname = "https://test-payment.momo.vn"
-        var path = "/gw_payment/transactionProcessor"
-        var partnerCode = "MOMOH8PS20210810"
-        var accessKey = "MuKpOqDVHUTn31q1"
-        var serectkey = "DggJevNUCROJX7lycfA8KS1Y06vh7jg1"
-        var orderInfo = "Thông tin đơn hàng"    // Thông tin đơn hàng
-        var returnUrl = "http://localhost:3000/hoan-tat-don-hang"
-        //var notifyurl = "https://momo.vn/"
-        var notifyurl = "http://localhost:5000/api/v1/don-hang/ket-qua-thanh-toan"
-        var amount = String(tongtien);//req.body.order.sumpay;  // Tổng tiền đơn hàng
-        var orderId = "MOMOH8PS20210810014"      // Mã đơn hàng
-        var requestId = "MOMOH8PS20210810014"    // Mã đơn hàng
-        var requestType = "captureMoMoWallet"
-        var extraData = "merchantName=[AutumnShop];merchantId=[]"// Tên cửa hàng và ID cửa hàng */
+        let hinhthuc = "Chưa thanh toán bằng MOMO";
 
         var endpoint = "https://test-payment.momo.vn/gw_payment/transactionProcessor"
         var hostname = "https://test-payment.momo.vn"
         var path = "/gw_payment/transactionProcessor"
-        var partnerCode = "MOMOH8PS20210810"
-        var accessKey = "MuKpOqDVHUTn31q1"
-        var serectkey = "DggJevNUCROJX7lycfA8KS1Y06vh7jg1"
-        var orderInfo = "pay with MoMo"
+        var partnerCode = "MOMOWQQ420210821"
+        var accessKey = "pq0MAaL8s5IGlDgx"
+        var serectkey = "8KZPP1qp9laisbVdSAAX97FrTvpkbwPp"
+        var orderInfo = "pay with MoMo" // Thông tin đơn hàng
         var returnUrl = "http://localhost:3000/hoan-tat-don-hang"
-        var notifyurl = "http://localhost:5000/api/v1/don-hang/ket-qua-thanh-toan"
-        var amount = "11000"
-        var orderId = "MOMOH8PS20210810015"
-        var requestId = "MOMOH8PS20210810015"
+        var notifyurl = "https://webhook.site/7a34395c-ce3e-4939-b42c-00e8ee775d64"
+        var amount = "11000"    // Tổng tiền đơn hàng
+        var orderId = "MOMOH8PS20210810022"     // Mã đơn hàng
+        var requestId = "MOMOH8PS20210810022"   // Mã đơn hàng
         var requestType = "captureMoMoWallet"
-        var extraData = "merchantName=;merchantId="
+        var extraData = "merchantName=[AutumnShop];merchantId=[AutumnShop180]"
+        //var extraDataa = {merchantName: AutumnShop, merchantId: AutumnShop180}
         
         var rawSignature = "partnerCode="+partnerCode+"&accessKey="+accessKey+"&requestId="+requestId+"&amount="+amount+"&orderId="+orderId+"&orderInfo="+orderInfo+"&returnUrl="+returnUrl+"&notifyUrl="+notifyurl+"&extraData="+extraData
         //puts raw signature
@@ -677,10 +660,8 @@ exports.postPaymentMomo = catchAsync(async (req, res, next) => {
             signature : signature,
         }
 
-
-        let url = `https://payment.momo.vn/gw_payment/transactionProcessor`;
+        let url = `https://test-payment.momo.vn/gw_payment/transactionProcessor`;
         const momo = await axios.post(url, body);
-        console.log(momo.data);
         if(momo.data.errorCode == 0) {
             return res.status(200).json({ 
                 status: "Success", 
@@ -694,20 +675,55 @@ exports.postPaymentMomo = catchAsync(async (req, res, next) => {
             });
         }
 
-        /* console.log(body);
-        axios.post(url, body).then(function (response) {
-            console.log(response.data);
-            if (response.data.errorCode == 0) {
-                return res.status(200).json({
-                    status: "Success", 
-                    message: response.data.localMessage,
-                    payUrl: response.data.payUrl
-                });
-            }
-        }); */
     } catch (error) {
-        console.log(error);
         console.log(error.response.data);
+        return res.status(400).json({ 
+            status: "Fail", 
+            message: "Something went wrong!", 
+            error: error 
+        });
+    }
+});
+
+// Thống kê đơn hàng theo tháng và năm:
+exports.postOrderStatistics = catchAsync(async (req, res, next) => {
+    try {
+        let month = req.body.month;
+        let year = req.body.year;
+        if(!month && !year) {
+            return res.status(400).json({ 
+                status: "Fail", 
+                message: "Thiếu thông tin, vui lòng chọn tháng hoặc năm để thống kê !"
+            });
+        };
+        if(month && year) {
+            let query = await modelOrder.statisticsOrder_By_MonthYear(month, year);
+            return res.status(200).json({
+                status: "Success",
+                message: "Thống kê đơn hàng tháng " + `${month}` + "-" + `${year}` + " !",
+                total_Order: query.length,
+                data: query
+            });
+        };
+        if(month && !year) {
+            let query_month = await modelOrder.statisticsOrder_By_Month(month);
+            return res.status(200).json({
+                status: "Success",
+                message: "Thống kê đơn hàng tháng " + `${month}` + " !",
+                total_Order: query_month.length,
+                data: query_month
+            });
+        }
+        if(!month && year) {
+            let query_year = await modelOrder.statisticsOrder_By_Year(year);
+            return res.status(200).json({
+                status: "Success",
+                message: "Thống kê đơn hàng năm " + `${year}` + " !",
+                total_Order: query_year.length,
+                data: query_year
+            });
+        }
+    } catch (error) {
         return res.status(400).json({ 
             status: "Fail", 
             message: "Something went wrong!", 

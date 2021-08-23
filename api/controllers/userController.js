@@ -455,11 +455,12 @@ exports.deleteUser = catchAsync(async (req, res, next) => {
                     status: "Fail",
                     message: "Hiện tại không thể xoá tài khoản này, đã chuyển trạng thái tài khoản thành khoá !"
                 });
-            } else {
+            };
+            if(query == 1) {
                 const listUsers = await modelUser.list();
                 return res.status(200).json({ 
                     status: "Success", 
-                    message: query,
+                    message: "Xoá tài khoản user thành công !",
                     listUsers: listUsers 
                 });
             }

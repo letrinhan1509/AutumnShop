@@ -203,7 +203,10 @@ exports.update_amount = (masp, chitiet) => {
         let sql = `UPDATE sanpham SET chitiet = '${chitiet}' WHERE masp = '${masp}'`;
         db.query(sql, (err, result) => {
             if(err){ hamLoi(err); } 
-            else { hamOK("Cập nhật chi tiết số lượng thành công !"); }
+            else { 
+                console.log("Cập nhật chi tiết số lượng thành công !");
+                hamOK("Cập nhật chi tiết số lượng thành công !"); 
+            }
         })
     })
 }

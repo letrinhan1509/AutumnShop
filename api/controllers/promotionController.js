@@ -296,17 +296,22 @@ exports.deletePromotion = catchAsync(async (req, res, next) => {
         } else {
             // Promotion tồn tại
             let query = await modelDiscount.delete(makm);
-            if(query == -1) {
+            if(query == 6) {
                 return res.status(400).json({ 
                     status: "Fail", 
-                    message: "Có ràng buộc khoá ngoại, xoá chương trình khuyến mãi thất bại !" 
-                });
-            } else {
-                return res.status(200).json({ 
-                    status: "Success", 
-                    message: query
+                    message: "Tạm thời không thể xoá chương trình khuyến mãi này !" 
                 });
             };
+            if(query == 1) {
+                const listPromotions = await modelDiscount.list_Dis_Product();
+                const listVouchers = await modelDiscount.list_Vouchers();
+                return res.status(200).json({ 
+                    status: "Success", 
+                    message: "Xoá chương trình khuyến mãi thành công !!!",
+                    listPromotions: listPromotions,
+                    listVouchers: listVouchers
+                });
+            }
         };
     } catch (error) {
         return res.status(400).json({
