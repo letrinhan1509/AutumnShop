@@ -1,5 +1,6 @@
 exports.Purchase = (data) => {
-
+    let tienship = (data.tienship).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    let tongtien = (data.tongtien).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     return `
         <!DOCTYPE html>
         <html lang="en" style="margin: 0; padding: 0;">
@@ -22,9 +23,9 @@ exports.Purchase = (data) => {
                Email: ${data.email}, <br />
                Số điện thoại: ${data.sodienthoai}, <br />
                Địa chỉ: ${data.diachi}, <br />
-               Tiền ship: ${data.tienship}, <br />
-               Tổng tiền thanh toán: ${data.tongtien}, <br />
-               Ngày đặt hàng: ${data.ngaydat},
+               Tiền ship: ${tienship} đ, <br />
+               Tổng tiền thanh toán: ${tongtien} đ, <br />
+               Ngày đặt hàng: ${data.ngaydat}
             </div>
             <br />
             <div>

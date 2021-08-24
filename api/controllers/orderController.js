@@ -401,21 +401,45 @@ exports.postCreateOrder = catchAsync(async (req, res, next) => {
         }
         if(makh == undefined){
             // Tạo đơn hàng cho khách không có tài khoản
-            let queryNotUserDiscount = await modelOrder.insert_Order(tenkh, email, sodienthoai, diachi, ship, tongtien, ghichu, makm, hinhthuc, vanchuyen, chitiet, ngaydat, cart);
             if(vanchuyen == "GHTK") {
+                let queryNotUserDiscount = await modelOrder.insert_Order(tenkh, email, sodienthoai, diachi, ship, tongtien, ghichu, makm, hinhthuc, vanchuyen, chitiet, ngaydat, cart);
                 const order_GHTK = await create_order_GHTK(cart, queryNotUserDiscount, email, sodienthoai, tenkh, diachi, thanhpho, quan, phuong_API, diachi, freeship, tongtien, ghichu);
                 if(order_GHTK.success) {
                     console.log("Tạo đơn hàng trên GHTK thành công");
-                    for (let i = 0; i < cart.length; i++) {
-                        await capNhatSoLuong(cart[i]);
-                    };
-                    data_Order.madonhang = queryNotUserDiscount;
-                    await sendmail(email, tenkh, "purchase", data_Order);
-                    return res.status(200).json({
-                        status: "Success",
-                        message: "Tạo đơn với phương thức vận chuyển là Giao Hàng Tiết Kiệm thành công !",
-                        order: order_GHTK.order
-                    });
+                    if(momo === "YES") {
+                        const pay_MOMO = await pay_Momo(queryNotUserDiscount, tongtien, ghichu);
+                        if(pay_MOMO) {
+                            for (let i = 0; i < cart.length; i++) {
+                                await capNhatSoLuong(cart[i]);
+                            }
+                            data_Order.madonhang = queryNotUserDiscount;
+                            await sendmail(email, tenkh, "purchase", data_Order);
+                            return res.status(200).json({
+                                status: "Success",
+                                message: "Tạo đơn hàng với phương thức vận chuyển là Giao Hàng Tiết Kiệm thành công !",
+                                order: order_GHTK.order,
+                                message_momo: pay_MOMO.localMessage,
+                                payUrl: pay_MOMO.payUrl
+                            });
+                        } else {
+                            const delete_Order = await modelOrder.delete_GHTK(queryNotUserDiscount);
+                            return res.status(400).json({
+                                status: "Fail",
+                                message: "Thanh toán đơn hàng Giao Hàng Tiết Kiệm bằng Momo thất bại !",
+                            });
+                        }
+                    } else {
+                        for (let i = 0; i < cart.length; i++) {
+                            await capNhatSoLuong(cart[i]);
+                        };
+                        data_Order.madonhang = queryNotUserDiscount;
+                        await sendmail(email, tenkh, "purchase", data_Order);
+                        return res.status(200).json({
+                            status: "Success",
+                            message: "Tạo đơn với phương thức vận chuyển là Giao Hàng Tiết Kiệm thành công !",
+                            order: order_GHTK.order
+                        });
+                    }
                 } else {
                     const delete_Order = await modelOrder.delete_GHTK(queryNotUserDiscount);
                     return res.status(400).json({
@@ -426,15 +450,40 @@ exports.postCreateOrder = catchAsync(async (req, res, next) => {
                 }
             } else {
                 // Tạo đơn hàng thành công vs hình thức giao hàng là: "SHOP", "GHN"
-                for (let i = 0; i < cart.length; i++) {
-                    await capNhatSoLuong(cart[i]);
-                };
-                data_Order.madonhang = queryNotUserDiscount;
-                await sendmail(email, tenkh, "purchase", data_Order);
-                return res.status(200).json({
-                    status: "Success",
-                    message: "Tạo đơn thành công !"
-                });
+                let queryNotUserDiscount = await modelOrder.insert_Order(tenkh, email, sodienthoai, diachi, ship, tongtien, ghichu, makm, hinhthuc, vanchuyen, chitiet, ngaydat, cart);
+                if(momo === "YES") {
+                    const pay_MOMO = await pay_Momo(queryNotUserDiscount, tongtien, ghichu);
+                    if(pay_MOMO) {
+                        for (let i = 0; i < cart.length; i++) {
+                            await capNhatSoLuong(cart[i]);
+                        };
+                        data_Order.madonhang = queryNotUserDiscount;
+                        await sendmail(email, tenkh, "purchase", data_Order);
+                        return res.status(200).json({
+                            status: "Success",
+                            message: "Tạo đơn hàng thành công !",
+                            message_momo: pay_MOMO.localMessage,
+                            payUrl: pay_MOMO.payUrl
+                        });
+                    } else {
+                        const delete_Order = await modelOrder.delete_GHTK(queryNotUserDiscount);
+                        return res.status(400).json({
+                            status: "Fail",
+                            message: "Thanh toán đơn hàng bằng Momo thất bại !",
+                        });
+                    }
+                } else {
+                    for (let i = 0; i < cart.length; i++) {
+                        await capNhatSoLuong(cart[i]);
+                    };
+                    data_Order.madonhang = queryNotUserDiscount;
+                    await sendmail(email, tenkh, "purchase", data_Order);
+                    return res.status(200).json({
+                        status: "Success",
+                        message: "Tạo đơn hàng thành công !",
+                        payUrl: ""
+                    });
+                }
             }
         } else {
             // Tạo đơn hàng cho khách có tài khoản
@@ -468,6 +517,7 @@ exports.postCreateOrder = catchAsync(async (req, res, next) => {
                                     payUrl: pay_MOMO.payUrl
                                 });
                             } else {
+                                const delete_Order = await modelOrder.delete_GHTK(queryUserDiscount);
                                 return res.status(400).json({
                                     status: "Fail",
                                     message: "Thanh toán đơn hàng Giao Hàng Tiết Kiệm bằng Momo thất bại !",
@@ -513,23 +563,25 @@ exports.postCreateOrder = catchAsync(async (req, res, next) => {
                                 payUrl: pay_MOMO.payUrl
                             });
                         } else {
+                            const delete_Order = await modelOrder.delete_GHTK(queryUserDiscount);
                             return res.status(400).json({
                                 status: "Fail",
                                 message: "Thanh toán đơn hàng bằng Momo thất bại !",
                             });
                         }
-                    };
-                    for (let i = 0; i < cart.length; i++) {
-                        await capNhatSoLuong(cart[i]);
+                    } else {
+                        for (let i = 0; i < cart.length; i++) {
+                            await capNhatSoLuong(cart[i]);
+                        }
+                        let delet_cart = await modelCart.deleteCart_Customer(makh);
+                        data_Order.madonhang = queryUserDiscount;
+                        await sendmail(email, tenkh, "purchase", data_Order);
+                        return res.status(200).json({
+                            status: "Success",
+                            message: "Tạo đơn hàng thành công !",
+                            payUrl: ""
+                        });
                     }
-                    let delet_cart = await modelCart.deleteCart_Customer(makh);
-                    data_Order.madonhang = queryUserDiscount;
-                    await sendmail(email, tenkh, "purchase", data_Order);
-                    return res.status(200).json({
-                        status: "Success",
-                        message: "Tạo đơn hàng thành công !",
-                        payUrl: ""
-                    });
                 };
             }
         }
@@ -700,97 +752,16 @@ exports.postResult = catchAsync(async (req, res, next) => {
         });
     }
 });
-// POST: Thanh toán qua momo
-exports.postPaymentMomo = catchAsync(async (req, res, next) => {
-    try {
-        //let madonhang = req.body.madonhang;
-        let tongtien = req.body.order.sumpay;
-        let hinhthuc = "Chưa thanh toán bằng MOMO";
-
-        var endpoint = "https://test-payment.momo.vn/gw_payment/transactionProcessor"
-        var hostname = "https://test-payment.momo.vn"
-        var path = "/gw_payment/transactionProcessor"
-        var partnerCode = "MOMOWQQ420210821"
-        var accessKey = "pq0MAaL8s5IGlDgx"
-        var serectkey = "8KZPP1qp9laisbVdSAAX97FrTvpkbwPp"
-        var orderInfo = "pay with MoMo" // Thông tin đơn hàng
-        var returnUrl = "http://localhost:3000/hoan-tat-don-hang"
-        var notifyurl = "https://webhook.site/7a34395c-ce3e-4939-b42c-00e8ee775d64"
-        var amount = "11000"    // Tổng tiền đơn hàng
-        var orderId = "MOMOH8PS20210810022"     // Mã đơn hàng
-        var requestId = "MOMOH8PS20210810022"   // Mã đơn hàng
-        var requestType = "captureMoMoWallet"
-        var extraData = "merchantName=[AutumnShop];merchantId=[AutumnShop180]"
-        //var extraDataa = {merchantName: AutumnShop, merchantId: AutumnShop180}
-        
-        var rawSignature = "partnerCode="+partnerCode+"&accessKey="+accessKey+"&requestId="+requestId+"&amount="+amount+"&orderId="+orderId+"&orderInfo="+orderInfo+"&returnUrl="+returnUrl+"&notifyUrl="+notifyurl+"&extraData="+extraData
-        //puts raw signature
-        console.log("--------------------RAW SIGNATURE----------------")
-        console.log(rawSignature)
-        //signature
-        const crypto = require('crypto');
-        var signature = crypto.createHmac('sha256', serectkey)
-                        .update(rawSignature)
-                        .digest('hex');
-        console.log("--------------------SIGNATURE----------------")
-        console.log(signature)
-
-        //json object send to MoMo endpoint
-        var body = {
-            partnerCode : partnerCode,
-            accessKey : accessKey,
-            requestId : requestId,
-            amount : amount,
-            orderId : orderId,
-            orderInfo : orderInfo,
-            returnUrl : returnUrl,
-            notifyUrl : notifyurl,
-            extraData : extraData,
-            requestType : requestType,
-            signature : signature,
-        }
-
-        let url = `https://test-payment.momo.vn/gw_payment/transactionProcessor`;
-        const momo = await axios.post(url, body);
-        if(momo.data.errorCode == 0) {
-            return res.status(200).json({ 
-                status: "Success", 
-                message: momo.data.localMessage,
-                payUrl: momo.data.payUrl
-            });
-        } else {
-            return res.status(400).json({ 
-                status: "Fail", 
-                message: momo.data.localMessage,
-            });
-        }
-
-    } catch (error) {
-        console.log(error.response.data);
-        return res.status(400).json({ 
-            status: "Fail", 
-            message: "Something went wrong!", 
-            error: error 
-        });
-    }
-});
 
 // Thống kê đơn hàng theo tháng và năm:
 exports.postOrderStatistics = catchAsync(async (req, res, next) => {
     try {
         let month = req.body.month;
         let year = req.body.year;
-        console.log(req.body);
         if(!month && !year) {
             return res.status(400).json({ 
                 status: "Fail", 
                 message: "Thiếu thông tin, vui lòng chọn tháng hoặc năm để thống kê !"
-            });
-        };
-        if(typeof(year) != number) {
-            return res.status(400).json({ 
-                status: "Fail", 
-                message: "Vui lòng nhập số năm để xem thống kê đơn hàng !"
             });
         };
         if(month && year) {
@@ -821,6 +792,7 @@ exports.postOrderStatistics = catchAsync(async (req, res, next) => {
             });
         }
     } catch (error) {
+        console.log(error);
         return res.status(400).json({ 
             status: "Fail", 
             message: "Something went wrong!", 

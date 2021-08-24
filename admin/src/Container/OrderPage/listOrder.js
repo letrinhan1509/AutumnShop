@@ -191,7 +191,7 @@ const ListOrder = (props) => {
             {
                 dataIndex: "madonhang",
                 key: "madonhang",
-                render: madonhang => (<div className="btn-box fix"><Button data-id={madonhang} onClick={loadEdit} type="primary">Sửa</Button></div>)
+                render: (madonhang, stt) => (stt.trangthai === 4 ? ("") : (<div className="btn-box fix"><Button data-id={madonhang} onClick={loadEdit} type="primary">Sửa</Button></div>))
             }) : {},
         {
             dataIndex: "madonhang",

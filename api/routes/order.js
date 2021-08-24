@@ -21,7 +21,6 @@ router.get('/:id/chi-tiet-dhang', orderController.getListDetailOrders); // Danh 
 router.get('/khach-hang/:id', orderController.getListOrderUser);        // Đơn hàng theo mã khách hàng
 router.get('/so-dien-thoai/:phone', orderController.getListOrderPhone); // Đơn hàng theo số điện thoại
 
-router.post("/pay-momo", orderController.postPaymentMomo);
 router.post("/ket-qua-thanh-toan", orderController.postResult);
 
 router.post('/thong-ke-don-hang', orderController.postOrderStatistics);

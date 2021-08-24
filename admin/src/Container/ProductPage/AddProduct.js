@@ -245,10 +245,10 @@ const AddProduct = (props) => {
         values['img'] = link;
         values['imgName'] = imageName.name;
         values['hinhct'] = "";
-        values['hinhchitiet'] = linkDe;
+        values['hinhchitiet'] = JSON.stringify(linkDe);
         values['chitiet'] = JSON.stringify(add);  
         console.log(values);
-        /* product.addproduct(values, token).then((res) => {
+        product.addproduct(values, token).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message)
                 setTimeout(() => {
@@ -258,7 +258,7 @@ const AddProduct = (props) => {
         }).catch(err => {
             console.log(err.response);
             message.error(`Thêm thất bại!\n ${err.response.data.message}`)
-        }) */
+        })
     };
     const [add, setAdd] = useState([]);
     const [id, setID] = useState(0);

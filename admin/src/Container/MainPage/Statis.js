@@ -177,13 +177,68 @@ const Statis = (props) => {
         },
     ];
 
+    const Years = [
+        {
+            key: 0,
+            value: ""
+        },
+        {
+            key: 1,
+            value: "2019"
+        },
+        {
+            key: 2,
+            value: "2020"
+        },
+        {
+            key: 3,
+            value: "2021"
+        },
+        {
+            key: 4,
+            value: "2022"
+        },
+        {
+            key: 5,
+            value: "2023"
+        },
+        {
+            key: 6,
+            value: "2024"
+        },
+        {
+            key: 7,
+            value: "2025"
+        },
+        {
+            key: 8,
+            value: "2026"
+        },
+        {
+            key: 9,
+            value: "2027"
+        },
+        {
+            key: 10,
+            value: "2028"
+        },
+        {
+            key: 11,
+            value: "2029"
+        },
+        {
+            key: 12,
+            value: "2030"
+        }
+    ];
+
     const [months, setMonths] = useState([]);
     const changeMonths = (e) => {
         setMonths(e);
     }
     const [years, setYears] = useState("");
     const changeYears = (e) => {
-        setYears(e.target.value);
+        setYears(e);
     }
     const searchStatis = () => {
         let values = {
@@ -214,8 +269,8 @@ const Statis = (props) => {
                 <h2 style={{ textAlign: 'center', marginTop: "20px", marginBottom: "20px" }}>DANH SÁCH THỐNG KÊ</h2>
                 <div className="search-statis">
                     <div className="search1">
-                        <span>Nhập tháng: </span>
-                        <Select Option style={{ width: 70 }} onChange={changeMonths}>
+                        <span>Chọn tháng: </span>
+                        <Select style={{ width: 70 }} onChange={changeMonths}>
                             {Months.map((item) => {
                                 return (
                                     <>
@@ -226,8 +281,17 @@ const Statis = (props) => {
                         </Select>
                     </div>
                     <div className="search2">
-                        <span>Nhập năm: </span>
-                        <Input style={{ width: 100 }} onChange={changeYears} />
+                        <span>Chọn năm: </span>
+                        <Select style={{ width: 100 }} onChange={changeYears}>
+                            {Years.map((item) => {
+                                return (
+                                    <>
+                                        <Option value={item.value}>{item.value}</Option>
+                                    </>
+                                )
+                            })}
+                        </Select>
+                        {/* <Input type="number" maxLength="4" style={{ width: 100 }} onChange={changeYears} /> */}
                     </div>
                     <Button onClick={searchStatis} type="primary">Tìm</Button>
                     {/* <div className="search-box">

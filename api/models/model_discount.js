@@ -5,7 +5,8 @@ var dataList=[]; // biến để chứa dữ liệu đổ về cho controller
     // Danh sách tất cả khuyến mãi:
 exports.list_Discounts = async () => {
     return new Promise( (hamOK, hamLoi) => {
-        let sql = `SELECT * FROM khuyenmai`;
+        let sql = `SELECT makm, tenkm, voucher, ghichu, tenhinh, hinh, dieukien, giagiam, soluong, 
+        DATE_FORMAT(ngaybd, '%e-%c-%Y') as ngaybd, DATE_FORMAT(ngaykt, '%e-%c-%Y') as ngaykt FROM khuyenmai`;
         let query = db.query(sql, (err, result) => {
             if(err){
                 hamLoi(err);
@@ -18,7 +19,9 @@ exports.list_Discounts = async () => {
     // Danh sách các voucher:
 exports.list_Vouchers = async () => {
     return new Promise( (hamOK, hamLoi) => {
-        let sql = `SELECT * FROM khuyenmai WHERE voucher IS NOT NULL`;
+        let sql = `SELECT makm, tenkm, voucher, ghichu, tenhinh, hinh, dieukien, giagiam, soluong, 
+        DATE_FORMAT(ngaybd, '%e-%c-%Y') as ngaybd, DATE_FORMAT(ngaykt, '%e-%c-%Y') as ngaykt 
+        FROM khuyenmai WHERE voucher IS NOT NULL`;
         db.query(sql, (err, result) => {
             if(err){
                 hamLoi(err);
@@ -32,7 +35,9 @@ exports.list_Vouchers = async () => {
 exports.list_Dis_Product = async () => {
     return new Promise( (hamOK, hamLoi) => {
         let data = [];
-        let sql = `SELECT * FROM khuyenmai WHERE voucher IS NULL`;
+        let sql = `SELECT makm, tenkm, voucher, ghichu, tenhinh, hinh, dieukien, giagiam, soluong, 
+        DATE_FORMAT(ngaybd, '%e-%c-%Y') as ngaybd, DATE_FORMAT(ngaykt, '%e-%c-%Y') as ngaykt 
+        FROM khuyenmai WHERE voucher IS NULL`;
         db.query(sql, (err, result) => {
             if(err){
                 hamLoi(err);
@@ -46,7 +51,9 @@ exports.list_Dis_Product = async () => {
     // Chi tiết các sản phẩm khuyến mãi theo "makm":
 exports.get_By_discountId = async (makm) => {
     return new Promise( (hamOK, hamLoi) => {
-        let sql = `SELECT * FROM khuyenmai WHERE khuyenmai.makm = '${makm}'`;
+        let sql = `SELECT makm, tenkm, voucher, ghichu, tenhinh, hinh, dieukien, giagiam, soluong, 
+        DATE_FORMAT(ngaybd, '%e-%c-%Y') as ngaybd, DATE_FORMAT(ngaykt, '%e-%c-%Y') as ngaykt 
+        FROM khuyenmai WHERE khuyenmai.makm = '${makm}'`;
         db.query(sql, (error, result) => {
             if(error){
                 hamLoi(error);
@@ -126,7 +133,7 @@ exports.create_Discount = (data, chitietKM) => {
                 chitietKM.forEach(element => {
                     element.sanpham.forEach(e => {
                         dataCTKM.masp = e.masp;
-                        dataCTKM.chitiet_km = e.chitiet;
+                        dataCTKM.chitiet_km = JSON.stringify(e.chitiet);
                         dataCTKM.chietkhau = element.chietkhau;
                         dataCTKM.giakm = e.gia - (e.gia * (element.chietkhau/100));
                         //temp = [...dataCTKM]

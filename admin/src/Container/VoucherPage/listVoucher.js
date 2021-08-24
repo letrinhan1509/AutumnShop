@@ -118,21 +118,11 @@ const ListVoucher = (props) => {
             title: 'Ngày bắt đầu',
             dataIndex: 'ngaybd',
             key: 'ngaybd',
-            render: ngaybd => {
-                return (
-                    moment(ngaybd).format('DD/MM/YYYY')
-                );
-            }
         },
         {
             title: 'Ngày kết thúc',
             dataIndex: 'ngaykt',
             key: 'ngaykt',
-            render: ngaykt => {
-                return (
-                    moment(ngaykt).format('DD/MM/YYYY')
-                );
-            }
         },
         user.permission !== 'NVBH' ? {
             dataIndex: "voucher",

@@ -23,7 +23,7 @@ const Dashboard = () => {
             setListUser(res.data.listUsers);
             setListProduct(res.data.listProducts);
             setStatistical(res.data.revenueStatistics);
-            setListVoucher(res.data.listVoucher);
+            setListVoucher(res.data.listVouchers);
         })
     }, []);
 

@@ -132,7 +132,7 @@ exports.statistical = async () => {
 exports.statisticalMonth = async () => {
     return new Promise( (hamOK, hamLoi) => {
         let sql = `SELECT MONTH (ngaydat) as doanhthuthang, SUM(tongtien) as tongdoanhthu, COUNT(ngaydat) as tongdonhang 
-        FROM donhang GROUP BY MONTH (ngaydat) ORDER BY doanhthuthang DESC`;
+        FROM donhang GROUP BY MONTH (ngaydat) ORDER BY doanhthuthang DESC LIMIT 7`;
         db.query(sql, (err, result) => {
             if(err){
                 hamLoi(err);

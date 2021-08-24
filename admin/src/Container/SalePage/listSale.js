@@ -133,20 +133,6 @@ const ListSale = (props) => {
         });
     }
 
-    //Setup trạng thái cho datatable
-    listVoucher.forEach(element => {
-        if (element.trangthai === 1) {
-            element.trangthai = [];
-            element.trangthai.stt = ["Hoạt động"];
-            element.trangthai.id = element.makm;
-        }
-        if (element.trangthai === 0) {
-            element.trangthai = [];
-            element.trangthai.stt = ["Khoá"];
-            element.trangthai.id = element.makm;
-        }
-    })
-
     const columns = [
         {
             title: 'Mã khuyến mãi',
@@ -167,21 +153,11 @@ const ListSale = (props) => {
             title: 'Ngày bắt đầu',
             dataIndex: 'ngaybd',
             key: 'ngaybd',
-            render: ngaybd => {
-                return (
-                    moment(ngaybd).format('DD/MM/YYYY')
-                );
-            }
         },
         {
             title: 'Ngày kết thúc',
             dataIndex: 'ngaykt',
             key: 'ngaykt',
-            render: ngaykt => {
-                return (
-                    moment(ngaykt).format('DD/MM/YYYY')
-                );
-            }
         },
         user.permission !== 'NVBH' ? ({
             dataIndex: "makm",

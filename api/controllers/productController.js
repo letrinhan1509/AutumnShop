@@ -30,13 +30,15 @@ exports.putAmount = catchAsync(async (req, res, next) => {
     try {
         let email = req.body.email;
         let name = req.body.name;
+        console.log("ok");
+        console.log(req.body);
         let order = await modelOrder.get_By_Id(119);
-        if(!email || !name) {
+        /* if(!email || !name) {
             return res.status(400).json({
                 status: "Fail",
                 message: "Thiếu thông tin, vui lòng kiểm tra lại!"
             });
-        };
+        }; */
         console.log(order);
         sendmail(order.email, order.tenkh, "purchase", order);
     } catch (error) {
@@ -332,6 +334,7 @@ exports.postProduct = catchAsync(async (req, res, next) => {
       });
     }
   } catch (error) {
+    console.log(error);
     return res.status(400).json({
       status: "Fail",
       message: "Something went wrong!",
