@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from "axios"
-import { Row, Form, Input, Button, Select, Radio, DatePicker, Modal, message, Upload, Col, Image } from 'antd';
+import { Row, Form, Input, Button, Select, Radio, DatePicker, Modal, message, Upload, Col, Image, InputNumber } from 'antd';
 import { useHistory, Link } from "react-router-dom"
 import "Container/scss/addpro.scss";
 import moment from 'moment';
@@ -242,6 +242,18 @@ const AddVoucher = (props) => {
                         <Input />
                     </Form.Item>
                     <Form.Item
+                        name="soluong"
+                        label="Số lượng"
+                        /* rules={[
+                            {
+                                required: true,
+                                message: 'Vui lòng nhập số lượng voucher!',
+                            },
+                        ]} */
+                    >
+                        <InputNumber min="1" max="200" defaultValue="1"/>
+                    </Form.Item>
+                    <Form.Item
                         name="ghichu"
                         label="Ghi chú"
                         rules={[
@@ -303,16 +315,6 @@ const AddVoucher = (props) => {
                         ]}
                     >
                         <DatePicker onChange={endChange} />
-                    </Form.Item>
-                    <Form.Item
-                        label="Trạng thái"
-                    >
-                        <Radio.Group onChange={selectTitle} value={title}>
-                            <Radio value="Hiện">Hiện</Radio>
-                            <Radio value="Ẩn">Ẩn</Radio>
-                        </Radio.Group>
-                        {/* <Checkbox onChange={changett} value="1">Hiện</Checkbox>
-                        <Checkbox onChange={changett} value="0">Ẩn</Checkbox> */}
                     </Form.Item>
                     <Form.Item {...tailFormItemLayout}>
                         <Button className="ant-btn ant-btn-dashed" onClick={back} style={{ marginLeft: -30 }}>

@@ -7,6 +7,7 @@ import { useParams } from "react-router";
 import { Link } from "react-router-dom";
 import comment from 'API_Call/Api_comment/comment';
 import PRODUCT from 'API_Call/Api_product/product';
+import SizeAPI from 'API_Call/Api_size/size';
 import CART from 'API_Call/API_cart/cart';
 
 
@@ -66,12 +67,13 @@ const Select_Product = (props) => {
         comment.getProductID(idBL).then((res) => {
             setListComment(res.data.listComment);
             console.log(res.data.listComment);
+            console.log(res.data.listComment.traLoiBL);
         })
     }, [id]);
 
     /* let traloi = [];
-    if (ListComment[0].traLoiBL.length !== 0) {
-        traloi = [...ListComment.traLoiBL];
+    if (ListComment[0].traLoiBL.length > 0) {
+        traloi = [...ListComment[0].traLoiBL];
         console.log(traloi);
     } */
 
@@ -86,11 +88,11 @@ const Select_Product = (props) => {
         console.log(value);
         //setSubmitting(true);
 
-        /* comment.addComment(value, token).then((res) => {
+        comment.addComment(value, token).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message);
                 console.log(res.data);
-                //setListComment(res.data.listComment);
+                setListComment(res.data.listComments);
                 //document.getElementById("cmt").reset();
             } else {
                 message.error(res.data.message)
@@ -99,15 +101,15 @@ const Select_Product = (props) => {
             .catch(err => {
                 console.log(err.response);
                 message.error(`ERROR !\n ${err.response.data.message}`)
-            }) */
+            })
     };
     const editComs = (value) => {
         console.log(value);
 
-        /* comment.updateComment(value, token).then((res) => {
+        comment.updateComment(value, token).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message);
-                setListComment(res.data.listComment);
+                setListComment(res.data.listComments);
             } else {
                 message.error(res.data.message)
             }
@@ -115,15 +117,15 @@ const Select_Product = (props) => {
             .catch(err => {
                 console.log(err.response);
                 message.error(`ERROR !\n ${err.response.data.message}`)
-            }) */
+            })
     };
     const delComment = (e) => {
         console.log(e.mabl);
         let mabl = e.mabl;
-        /* comment.deleteCommentID(mabl, token).then((res) => {
+        comment.deleteCommentID(mabl, token).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message);
-                setListComment(res.data.listComment);
+                setListComment(res.data.listComments);
             } else {
                 message.error(res.data.message)
             }
@@ -131,7 +133,25 @@ const Select_Product = (props) => {
             .catch(err => {
                 console.log(err.response);
                 message.error(`ERROR !\n ${err.response.data.message}`)
-            }) */
+            })
+    }
+    const [rep, setRep] = useState([]);
+    const repComment = (e) => {
+        let mabl = e.mabl;
+        comment.getDetailID(mabl).then((res) => {
+            if (res.data.status === "Success") {
+                setRep(res.data.listComment);
+                console.log(rep);
+                //setListComment(res.data.listComments);
+                //document.getElementById("cmt").reset();
+            } else {
+                message.error(res.data.message)
+            }
+        })
+            .catch(err => {
+                console.log(err.response);
+                message.error(`ERROR !\n ${err.response.data.message}`)
+            })
     }
 
     const handleChange = (e) => {
@@ -220,7 +240,9 @@ const Select_Product = (props) => {
                             const Customer = ({ children }) => (
                                 <Comment
                                     actions={[
-                                        fix === true ? ("") : (<a key="comment-list-reply-to-0" onClick={() => delComment(item)}>Xóa</a>)
+                                        fix === true ? ("") : (<><a style={{ marginRight: 20 }} key="comment-list-reply-to-0" onClick={() => repComment(item)}>Xem phản hồi</a>
+                                        <a key="comment-list-reply-to-0" onClick={() => delComment(item)}>Xóa</a>
+                                        </>)
                                     ]}
                                     author={item.tenkh}
                                     avatar={item.hinh}
@@ -260,21 +282,21 @@ const Select_Product = (props) => {
                                     {children}
                                 </Comment>
                             );
-                            /*const Staff = ({ children }) => (
-                                traloi.length !== 0 ? (
+                            const Staff = ({ children }) => (
+                                rep.length > 0 ? (
                                     <Comment
-                                        author={traloi.tennv}
-                                        avatar={traloi.hinh}
-                                        content={[traloi.noidung]}
-                                        datetime={moment(traloi.ngaybl).format('DD-MM-YYYY')}
+                                        author={rep[0].ten}
+                                        avatar={rep[0].hinh}
+                                        content={[rep[0].noidung]}
+                                        datetime={moment(rep[0].ngaybl).format('DD-MM-YYYY')}
                                     >
                                         {children}
                                     </Comment>
-                                ) : ("")*/
+                                ) : (""))
                             return (
                                 <>
                                     <Customer>
-                                        {/* <Staff /> */}
+                                        <Staff />
                                     </Customer>
                                 </>
                             );
@@ -331,7 +353,7 @@ const Select_Product = (props) => {
     const findSize = (values) => {
         values["gioitinh"] = title;
         console.log(values);
-        PRODUCT.getChecksize(values).then((res) => {
+        SizeAPI.getChecksize(values).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message);
                 setCheck(res.data.message);

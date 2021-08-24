@@ -15,17 +15,17 @@ exports.Purchase = (data) => {
             <div>Shop mong rằng bạn sẽ có những trải nghiệm tuyệt vời khi sử dụng sản phẩm.</div>
             <br />
             <div>
-                &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; THÔNG TIN ĐƠN HÀNG
+                &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; THÔNG TIN ĐƠN HÀNG
             </div>
             <div>
-               Mã đơn hàng: ${data.madonhang}, <br />
-               Tên khách hàng: ${data.tenkh}, <br />
-               Email: ${data.email}, <br />
-               Số điện thoại: ${data.sodienthoai}, <br />
-               Địa chỉ: ${data.diachi}, <br />
-               Tiền ship: ${tienship} đ, <br />
-               Tổng tiền thanh toán: ${tongtien} đ, <br />
-               Ngày đặt hàng: ${data.ngaydat}
+                &nbsp;&nbsp;&nbsp;&nbsp; Mã đơn hàng: ${data.madonhang}, <br />
+                &nbsp;&nbsp;&nbsp;&nbsp; Tên khách hàng: ${data.tenkh}, <br />
+                &nbsp;&nbsp;&nbsp;&nbsp; Email: ${data.email}, <br />
+                &nbsp;&nbsp;&nbsp;&nbsp; Số điện thoại: ${data.sodienthoai}, <br />
+                &nbsp;&nbsp;&nbsp;&nbsp; Địa chỉ: ${data.diachi}, <br />
+                &nbsp;&nbsp;&nbsp;&nbsp; Tiền ship: ${tienship} đ, <br />
+                &nbsp;&nbsp;&nbsp;&nbsp; Tổng tiền thanh toán: ${tongtien} đ, <br />
+                &nbsp;&nbsp;&nbsp;&nbsp; Ngày đặt hàng: ${data.ngaydat}
             </div>
             <br />
             <div>

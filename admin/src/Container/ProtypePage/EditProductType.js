@@ -92,6 +92,7 @@ const EditProductType = (props) => {
     }, []);
 
     const update = (values) => {
+        var temp = {};
         if (imageName !== "") {
             values['imgName'] = imageName.name;
         } else {
@@ -102,7 +103,9 @@ const EditProductType = (props) => {
         } else {
             values['img'] = Type.hinh;
         }
+        values['hinh'] = "";
         console.log(values)
+        
         catalog.updateProtype(values, token).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message)
@@ -226,7 +229,7 @@ const EditProductType = (props) => {
                     </Row>
                 </Form.Item>
                 <Form.Item
-                    name=" "
+                    name="hinh"
                     label="Tải ảnh mới"
                     valuePropName="fileList"
                     getValueFromEvent={normFile}

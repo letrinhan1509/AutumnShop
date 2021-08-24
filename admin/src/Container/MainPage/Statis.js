@@ -88,6 +88,11 @@ const Statis = (props) => {
             title: 'Tổng tiền',
             dataIndex: 'tongtien',
             key: 'tongtien',
+            render: tongtien => {
+                return (
+                    tongtien.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                );
+            }
         },
         {
             title: 'Hình thức',
@@ -248,16 +253,17 @@ const Statis = (props) => {
         console.log(values);
         order.getStatistical_Oder(values, token).then((res) => {
             if (res.data.status === "Success") {
-                if (res.data.data !== "") {
+                if (res.data.data.length !== 0) {
+                    message.success(res.data.message)
                     setListOrder(res.data.data);
                     setWordSearch(res.data.data);
                     console.log(res.data);
                 }else{
+                    setWordSearch([]);
                     message.success('Không có dữ liệu thống kê, vui lòng chọn tháng và năm khác !')
                 }
             }
         }).catch(err => {
-            console.log(err.response);
             message.error(`${err.response.data.message}`);
         });
     }

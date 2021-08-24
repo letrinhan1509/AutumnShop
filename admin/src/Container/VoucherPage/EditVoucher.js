@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from "axios"
-import { Row, Form, Input, Button, Select, Radio, DatePicker, Col, message, Upload, Image, Modal } from 'antd';
+import { Row, Form, Input, Button, Select, Radio, DatePicker, Col, message, Upload, Image, Modal, InputNumber } from 'antd';
 import { DownloadOutlined, UploadOutlined, DeleteOutlined } from '@ant-design/icons';
 import { useHistory, Link } from "react-router-dom"
 import "Container/scss/addpro.scss";
@@ -149,8 +149,16 @@ const EditVoucher = (props) => {
             values["ngaybd"] = moment(datestart).format('YYYY-MM-DD');
             values["ngaykt"] = moment(dateEnd).format('YYYY-MM-DD');
         } else {
-            values["ngaybd"] = moment(voucherID.ngaybd).format('YYYY-MM-DD');
-            values["ngaykt"] = moment(voucherID.ngaykt).format('YYYY-MM-DD');
+            if(datestart !== "") {
+                values["ngaybd"] = moment(datestart).format('YYYY-MM-DD');
+                values["ngaykt"] = moment(voucherID.ngaykt).format('YYYY-MM-DD');
+            } else if(dateEnd !== "") {
+                values["ngaybd"] = moment(voucherID.ngaybd).format('YYYY-MM-DD');
+                values["ngaykt"] = moment(dateEnd).format('YYYY-MM-DD');
+            } else {
+                values["ngaybd"] = moment(voucherID.ngaybd).format('YYYY-MM-DD');
+                values["ngaykt"] = moment(voucherID.ngaykt).format('YYYY-MM-DD');
+            }
         }
         values["trangthai"] = title;
         if (imageName !== "") {
@@ -213,6 +221,7 @@ const EditVoucher = (props) => {
                         giagiam: `${voucherID.giagiam}`,
                         ghichu: `${voucherID.ghichu}`,
                         hinh: `${voucherID.hinh}`,
+                        soluong: `${voucherID.soluong}`,
                     }}
                 >
                     <Form.Item
@@ -278,6 +287,13 @@ const EditVoucher = (props) => {
                         ]}
                     >
                         <Input />
+                    </Form.Item>
+                    <Form.Item
+                        name="soluong"
+                        label="Số lượng"
+                        
+                    >
+                        <InputNumber min="1" max="200"/>
                     </Form.Item>
                     <Form.Item
                         name="ghichu"
@@ -349,16 +365,16 @@ const EditVoucher = (props) => {
                             },
                         ]}
                     >
-                        {datePickers === false ? (<span>{moment(voucherID.ngayky).format('DD/MM/YYYY')}</span>) : (<DatePicker onChange={endChange} />)}
+                        {datePickers === false ? (<span>{moment(voucherID.ngaykt).format('DD/MM/YYYY')}</span>) : (<DatePicker onChange={endChange} />)}
                     </Form.Item>
-                    <Form.Item
+                    {/* <Form.Item
                         label="Trạng thái"
                     >
                         <Radio.Group onChange={selectTitle} value={title}>
                             <Radio value={1}>Hiện</Radio>
                             <Radio value={0}>Ẩn</Radio>
                         </Radio.Group>
-                    </Form.Item>
+                    </Form.Item> */}
                     <Form.Item {...tailFormItemLayout}>
                         <Button className="ant-btn ant-btn-dashed" onClick={back} style={{ marginLeft: -30 }}>
                             Trở về

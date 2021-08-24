@@ -210,9 +210,11 @@ const EditProduct = (props) => {
             values['img'] = ProductEdit.hinh;
         }
         values['hinhchitiet'] = JSON.stringify(linkDe);
+        values['hinh'] = "";
+        values['hinhct'] = "";
         console.log(linkDe);
         console.log(values);
-        /* product.updatePro(values, token).then((res) => {
+        product.updatePro(values, token).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message)
                 if (link !== "") {
@@ -231,7 +233,7 @@ const EditProduct = (props) => {
         })
             .catch(err => {
                 message.error(`Sửa sản phẩm thất bại!\n ${err.response.data.message}`);
-            }) */
+            })
     };
 
 

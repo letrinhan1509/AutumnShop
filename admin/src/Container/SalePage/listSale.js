@@ -153,11 +153,13 @@ const ListSale = (props) => {
             title: 'Ngày bắt đầu',
             dataIndex: 'ngaybd',
             key: 'ngaybd',
+            render: ngaybd => (<div className="btn-box fix">{moment(ngaybd).format('DD/MM/YYYY')}</div>)
         },
         {
             title: 'Ngày kết thúc',
             dataIndex: 'ngaykt',
             key: 'ngaykt',
+            render: ngaykt => (<div className="btn-box fix">{moment(ngaykt).format('DD/MM/YYYY')}</div>)
         },
         user.permission !== 'NVBH' ? ({
             dataIndex: "makm",

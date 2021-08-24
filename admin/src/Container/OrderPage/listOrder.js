@@ -160,6 +160,11 @@ const ListOrder = (props) => {
             title: 'Tổng tiền',
             dataIndex: 'tongtien',
             key: 'tongtien',
+            render: tongtien => {
+                return (
+                    tongtien.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                );
+            }
         },
         {
             title: 'Hình thức',

@@ -3,6 +3,7 @@ import { Image, Row, Col, Input, Button, message, Select, Table } from 'antd';
 import Meta from "antd/lib/card/Meta";
 import { Link , useHistory} from "react-router-dom";
 import "Container/scss/orderDetail.scss";
+import moment from 'moment';
 
 const { TextArea } = Input;
 
@@ -13,9 +14,6 @@ const OrderDetail = (props) => {
         ORDER = orderStatis;
     }
     const link = useHistory();
-    var date = new Date(ORDER.ngaydat);
-    console.log(date.toLocaleString());
-    var ngayGiao = new Date(ORDER.ngaygiao);
 
     const back = () => {
         if(orderStatis !== null){
@@ -48,10 +46,10 @@ const OrderDetail = (props) => {
                         <li><span>Hình thức thanh toán: </span>{ORDER.hinhthuc}</li>
                         {ORDER.ghichu === "" ? ("") : (<li><span>Ghi chú: </span>{ORDER.ghichu}</li>)}
                         {/* {ORDER.makm === null ? ("") : (<li><span>Mã khuyến mãi: </span>{ORDER.makm}</li>)} */}
-                        <li><span>Ngày đặt: </span>{date.toLocaleString()}</li>
-                        <li><span>Phí vận chuyển: </span>{ORDER.tienship}</li>
-                        <li><span>Tổng hóa đơn: </span>{ORDER.tongtien}</li>
-                        {ORDER.ngaygiao === null ? ("") : (<li><span>Ngày giao hàng: </span>{ngayGiao.toLocaleString()}</li>)}
+                        <li><span>Ngày đặt: </span>{moment(ORDER.ngaydat).format('DD/MM/YYYY')}</li>
+                        <li><span>Phí vận chuyển: </span>{(ORDER.tienship).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} đ</li>
+                        <li><span>Tổng hóa đơn: </span>{(ORDER.tongtien).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} đ</li>
+                        {ORDER.ngaygiao === null ? ("") : (<li><span>Ngày giao hàng: </span>{moment(ORDER.ngaygiao).format('DD/MM/YYYY')}</li>)}
                         <li><span>Trạng thái đơn hàng: </span>{ORDER.tentt}</li>
                     </ul>
                 </Col>
@@ -63,9 +61,9 @@ const OrderDetail = (props) => {
                                 <ul>
                                     <li><span>Tên sản phẩm: </span>{item.tensp}</li>
                                     <li><span>Số lượng: </span>{item.soluong}</li>
-                                    <li><span>Giá: </span>{item.gia}Đ</li>
+                                    <li><span>Giá: </span>{(item.gia).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} đ</li>
                                     {Number(item.giagiam) === 0 ? ("") : (<li><span>Giảm giá: </span>{item.giagiam}</li>)}
-                                    <li><span>Thành tiền: </span>{item.thanhtien}Đ</li>
+                                    <li><span>Thành tiền: </span>{(item.thanhtien).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} đ</li>
                                 </ul>
                             </li>
                         ))}

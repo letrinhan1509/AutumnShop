@@ -69,7 +69,7 @@ const AddSale = (props) => {
         values["sanphamCK"] = add;
         console.log(values);
 
-        /* discount.addSale(values, token).then((res) => {
+        discount.addSale(values, token).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message)
                 setTimeout(() => {
@@ -81,7 +81,7 @@ const AddSale = (props) => {
             .catch(err => {
                 console.log(err.response);
                 message.error(`${err.response.data.message}\n Tạo khuyến mãi sản phẩm thất bại !`);
-            }); */
+            });
     };
 
     const [listTypes, setListTypes] = useState([]);

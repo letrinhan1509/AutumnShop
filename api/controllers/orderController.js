@@ -7,12 +7,21 @@ const modelUser = require('../models/model_user');
 const modelCart = require('../models/model_cart');
 const modelProduct = require('../models/model_product');
 const { sendmail } = require('../mail');
+const e = require('express');
 
 
                     // ORDER CONTROLLER
 
 const kiemTraSoLuong = async() => {
 
+}
+
+const capNhatSoLuong_KhuyenMai = async(makm) => {
+    let discount = await modelDiscount.get_By_discountId(makm);
+    if(discount.voucher !== "null" && discount.soluong > 0) {
+        let soluong = discount.soluong - 1;
+        let query = await modelDiscount.update_AmountVoucher(makm, soluong);
+    }
 }
 
 const capNhatSoLuong = async(product) => {
@@ -507,6 +516,9 @@ exports.postCreateOrder = catchAsync(async (req, res, next) => {
                                     await capNhatSoLuong(cart[i]);
                                 }
                                 let delet_cart = await modelCart.deleteCart_Customer(makh);
+                                /* if(makm != undefined) {
+                                    await capNhatSoLuong_KhuyenMai(makm);
+                                }; */
                                 data_Order.madonhang = queryUserDiscount;
                                 await sendmail(email, tenkh, "purchase", data_Order);
                                 return res.status(200).json({

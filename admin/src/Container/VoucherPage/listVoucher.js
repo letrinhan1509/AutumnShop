@@ -25,9 +25,9 @@ const ListVoucher = (props) => {
     // Sửa voucher:
     const loadEdit = (e) => {
         let id = e.currentTarget.dataset.id;
-        voucher.getVoucherID(id).then((res) => {
+        voucher.getSaleID(id).then((res) => {
             if (res.data.status === "Success") {
-                localStorage.setItem('voucherID', JSON.stringify(res.data.voucher));
+                localStorage.setItem('voucherID', JSON.stringify(res.data.detailPromotion));
                 setTimeout(() => {
                     history.push('/danh-sach-voucher/sua-voucher');
                 }, 100)
@@ -108,26 +108,38 @@ const ListVoucher = (props) => {
             title: 'Điều kiện',
             dataIndex: 'dieukien',
             key: 'dieukien',
+            render: dieukien => {
+                return (
+                    dieukien.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                );
+            }
         },
         {
             title: 'Giá giảm',
             dataIndex: 'giagiam',
             key: 'giagiam',
+            render: giagiam => {
+                return (
+                    giagiam.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                );
+            }
         },
         {
             title: 'Ngày bắt đầu',
             dataIndex: 'ngaybd',
             key: 'ngaybd',
+            render: ngaybd => (<div className="btn-box fix">{moment(ngaybd).format('DD/MM/YYYY')}</div>)
         },
         {
             title: 'Ngày kết thúc',
             dataIndex: 'ngaykt',
             key: 'ngaykt',
+            render: ngaykt => (<div className="btn-box fix">{moment(ngaykt).format('DD/MM/YYYY')}</div>)
         },
         user.permission !== 'NVBH' ? {
-            dataIndex: "voucher",
-            key: "voucher",
-            render: voucher => (<div className="btn-box fix"><Button data-id={voucher} onClick={loadEdit} type="primary">Sửa</Button></div>)
+            dataIndex: "makm",
+            key: "makm",
+            render: makm => (<div className="btn-box fix"><Button data-id={makm} onClick={loadEdit} type="primary">Sửa</Button></div>)
         } : {
             dataIndex: "voucher",
             key: "voucher",

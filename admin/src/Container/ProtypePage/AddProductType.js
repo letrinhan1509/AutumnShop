@@ -115,6 +115,7 @@ const AddProductType = (props) => {
     const addProductType = (values) => {
         values['img'] = link;
         values['imgName'] = imageName.name;
+        values['hinh'] = "";
         console.log(values);
         catalog.addProtype(values, token).then((res) => {
             message.success(res.data.message)

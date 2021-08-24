@@ -58,25 +58,26 @@ const EditSale = (props) => {
 
     const update = (values) => {
         //values["ngaybd"] = moment(saleID.ngaybd).format('YYYY-MM-DD');
-        /* if (dateEnd !== "") {
+        values['makm'] = saleID.makm;
+        if (dateEnd !== "") {
             values["ngaykt"] = moment(dateEnd).format('YYYY-MM-DD');
         } else {
             values["ngaykt"] = moment(saleID.ngaykt).format('YYYY-MM-DD');
         }
-        values["trangthai"] = title;
+        values["deleteMact"] = delSale;
         console.log(values);
-        orders.updateSale(values, token).then((res) => {
+        discount.updateSale(values, token).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message)
-                localStorage.removeItem("order");
+                localStorage.removeItem("saleID");
                 setTimeout(() => {
                     history.push('/danh-sach-khuyen-mai');
                 }, 2000)
             }
         })
             .catch(err => {
-                message.error(`${err.response.data.message}\n Cập nhật đơn hàng thất bại! `);
-            }) */
+                message.error(`${err.response.data.message}`);
+            })
     };
 
     const [listTypes, setListTypes] = useState([]);
@@ -128,6 +129,7 @@ const EditSale = (props) => {
             okType: 'danger',
             cancelText: 'Không',
             onOk() {
+                localStorage.removeItem("saleID");
                 history.push('/danh-sach-khuyen-mai');
             },
             onCancel() {
@@ -144,7 +146,7 @@ const EditSale = (props) => {
     return (
         <>
             <div className="sale-wrapper">
-                <h2 style={{ textAlign: 'center' }}> Nhập thông tin chương trình khuyến mãi</h2>
+                <h2 style={{ textAlign: 'center' }}> Cập nhật thông tin chương trình khuyến mãi</h2>
                 <div className="col-box">
                     <div className="col-one">
                         <Form
@@ -192,7 +194,7 @@ const EditSale = (props) => {
                                     },
                                 ]}
                             >
-                                <Input value={saleID.ngaybd} disabled style={{ width: 150, color: 'black' }} />
+                                <Input value={moment(saleID.ngaybd).format('DD-MM-YYYY')} disabled style={{ width: 150, color: 'black' }} />
                             </Form.Item>
                             <Form.Item
                                 label="Ngày kết thúc"
@@ -205,7 +207,7 @@ const EditSale = (props) => {
                             >
                                 {hide === false ? (
                                     <>
-                                        <Input value={saleID.ngaykt} disabled style={{ width: 150, color: 'black' }} />
+                                        <Input value={moment(saleID.ngaykt).format('DD-MM-YYYY')} disabled style={{ width: 150, color: 'black' }} />
                                         <Button type="primary" onClick={changeNgaykt}>Đổi</Button>
                                     </>
                                 ) : (
@@ -215,25 +217,25 @@ const EditSale = (props) => {
                                     </>
                                 )}
                             </Form.Item>
-                            <Form.Item
+                            {/* <Form.Item
                                 label="Trạng thái"
                             >
                                 <Radio.Group onChange={selectTitle} value={title}>
                                     <Radio value="Hiện">Hiện</Radio>
                                     <Radio value="Ẩn">Ẩn</Radio>
                                 </Radio.Group>
-                            </Form.Item>
+                            </Form.Item> */}
                             <Form.Item {...tailFormItemLayout}>
                                 <Button className="ant-btn ant-btn-dashed " onClick={back} style={{ marginLeft: -30 }}>
                                     Trở về
                                 </Button>
                                 {add.length !== 0 ? (
                                     <Button type="primary" htmlType="submit" style={{ marginLeft: 30 }}>
-                                        Tạo chương trình
+                                        Cập nhật
                                     </Button>
                                 ) : (
                                     <Button type="primary" htmlType="submit" style={{ marginLeft: 30 }} disabled>
-                                        Tạo chương trình
+                                        Cập nhật
                                     </Button>
                                 )}
                             </Form.Item>
@@ -267,6 +269,7 @@ const EditSale = (props) => {
                                                         </Row>
                                                         <Row className="product-inf" style={{ margin: 0 }}>
                                                             <Col><span>Mã: </span>{item.masp}</Col>
+                                                            <Col><span>Tên: </span>{item.tensp}</Col>
                                                             <Col><span>Giá: </span>{item.giakm}</Col>
                                                         </Row>
                                                         {chitiet_km.map((sp) => {

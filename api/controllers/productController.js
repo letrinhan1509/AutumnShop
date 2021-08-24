@@ -9,47 +9,6 @@ const { sendmail } = require('../mail');
 const e = require("express");
 const { json } = require("body-parser");
 
-const capNhat = async (product) => {
-  let pro = await modelProduct.get_By_Id(product.masp);
-  let chitiet = JSON.parse(pro.chitiet);
-  //console.log("Trước khi cập nhật", chitiet);
-  chitiet.forEach((element) => {
-      console.log(product.size === element.size && product.mau === element.mau);
-    if (product.size === element.size && product.mau === element.mau) {
-      element.soluong = element.soluong - product.soluong;
-    }
-  });
-  //console.log("Sau khi cập nhật", chitiet);
-  let temp_chitiet = JSON.stringify(chitiet);
-  const updateAmountProduct = await modelProduct.update_amount(
-    product.masp,
-    temp_chitiet
-  );
-};
-exports.putAmount = catchAsync(async (req, res, next) => {
-    try {
-        let email = req.body.email;
-        let name = req.body.name;
-        console.log("ok");
-        console.log(req.body);
-        let order = await modelOrder.get_By_Id(119);
-        /* if(!email || !name) {
-            return res.status(400).json({
-                status: "Fail",
-                message: "Thiếu thông tin, vui lòng kiểm tra lại!"
-            });
-        }; */
-        console.log(order);
-        sendmail(order.email, order.tenkh, "purchase", order);
-    } catch (error) {
-      console.log(error);
-        return res.status(400).json({
-            status: "Fail",
-            message: "Something went wrong!",
-            error: error
-        });
-    }
-});
 
 // PRODUCT CONTROLLER
 
@@ -354,7 +313,7 @@ exports.putEditProduct = catchAsync(async (req, res, next) => {
     let tenhinh = req.body.imgName;
     let hinh = req.body.img;
     //let tenhinhct = req.body.imgNameDetail;
-    //let hinhchitiet = req.body.imgDetail;
+    let hinhchitiet = req.body.hinhchitiet;
     let mota = req.body.mota;
     let trangthai = req.body.trangthai;
     let mansx = req.body.mansx;
@@ -393,18 +352,21 @@ exports.putEditProduct = catchAsync(async (req, res, next) => {
         chitiet,
         tenhinh,
         hinh,
+        hinhchitiet,
         mota,
         trangthai,
         mansx,
         maloai,
         madm
       );
-      const listProducts = await modelProduct.list_products();
-      return res.status(200).json({
-        status: "Success",
-        message: "Cập nhật thông tin sản phẩm thành công !",
-        listProducts: listProducts,
-      });
+      if(query == 1) {
+        const listProducts = await modelProduct.list_products();
+        return res.status(200).json({
+          status: "Success",
+          message: "Cập nhật thông tin sản phẩm thành công !",
+          listProducts: listProducts,
+        });
+      }
     }
   } catch (error) {
     return res.status(400).json({

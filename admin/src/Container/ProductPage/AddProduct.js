@@ -188,6 +188,11 @@ const AddProduct = (props) => {
             key: 3,
             masize: 'L',
             tensize: 'L',
+        },
+        {
+            key: 4,
+            masize: 'XL',
+            tensize: 'XL',
         }
     ];
     const mau = [
@@ -246,7 +251,8 @@ const AddProduct = (props) => {
         values['imgName'] = imageName.name;
         values['hinhct'] = "";
         values['hinhchitiet'] = JSON.stringify(linkDe);
-        values['chitiet'] = JSON.stringify(add);  
+        values['chitiet'] = JSON.stringify(add); 
+        values['hinh'] = "";
         console.log(values);
         product.addproduct(values, token).then((res) => {
             if (res.data.status === "Success") {
