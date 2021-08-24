@@ -204,7 +204,6 @@ exports.update_amount = (masp, chitiet) => {
         db.query(sql, (err, result) => {
             if(err){ hamLoi(err); } 
             else { 
-                console.log("Cập nhật chi tiết số lượng thành công !");
                 hamOK("Cập nhật chi tiết số lượng thành công !"); 
             }
         })

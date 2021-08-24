@@ -80,25 +80,7 @@ const Payments2 = (props) => {
     }
 
     console.log(values);
-    if (payValue === "Thanh toán MOMO") {
-      //API MoMo
-      Oder
-        .addOrderMomo(values)
-        .then(async (res) => {
-          if (res.data.status === "Success") {
-            console.log(res.data);
-            console.log(res.data.payUrl);
-            message.success(res.data.message);
-            window.location.href = res.data.payUrl;
-          }
-        })
-        .catch((err) => {
-          message.error(
-            `Đặt hàng thất bại ! \n ${err.response.data.message}`
-          );
-        });
-    } else {
-      /* Oder
+    Oder
         .addOrder(values)
         .then(async (res) => {
           if (res.data.status === "Success") {
@@ -106,10 +88,14 @@ const Payments2 = (props) => {
             message.success(res.data.message);
             localStorage.removeItem("cart");
             localStorage.removeItem("order");
-            setTimeout(() => {
-              history.push("/hoan-tat-don-hang");
-              window.location.reload();
-            }, 1000);
+            if(res.data.payUrl !== "") {
+              window.location.href = res.data.payUrl;
+            } else {
+              setTimeout(() => {
+                history.push("/hoan-tat-don-hang");
+                window.location.reload();
+              }, 1000);
+            }
           } else {
             message.error("Đặt hàng thất bại !");
           }
@@ -118,8 +104,7 @@ const Payments2 = (props) => {
           message.error(
             `Đặt hàng thất bại ! \n ${err.response.data.message}`
           );
-        }); */
-    }
+        });
   };
 
   const back = () => {

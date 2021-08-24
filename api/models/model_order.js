@@ -27,8 +27,8 @@ exports.get_By_Id = async (orderId) => {
     return new Promise( (hamOK, hamLoi) => {
         //const data = [];
         let sql = `SELECT DH.madonhang, DH.code_GHN, DH.makh, DH.tenkh, DH.email, DH.sodienthoai, DH.diachi, DH.tienship, DH.tongtien, DH.ghichu, 
-        DH.makm, DH.hinhthuc, DH.vanchuyen, DH.chitiet, DH.ngaydat, DH.ngaygiao, DH.trangthai, TT.tentt as tentt 
-        FROM (donhang AS DH JOIN trangthai AS TT ON DH.trangthai = TT.trangthai) WHERE DH.madonhang = '${orderId}'`;
+        DH.makm, DH.hinhthuc, DH.vanchuyen, DH.chitiet, DATE_FORMAT(DH.ngaydat, '%e-%c-%Y') as ngaydat, DATE_FORMAT(DH.ngaygiao, '%e-%c-%Y') as ngaygiao, 
+        DH.trangthai, TT.tentt as tentt FROM (donhang AS DH JOIN trangthai AS TT ON DH.trangthai = TT.trangthai) WHERE DH.madonhang = '${orderId}'`;
         db.query(sql, (err, result) => {
             //console.log(result[0].madonhang);
             if(err){

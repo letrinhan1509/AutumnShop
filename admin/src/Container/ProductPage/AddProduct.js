@@ -217,8 +217,8 @@ const AddProduct = (props) => {
         detail['id'] = tam;
         detail['size'] = SIZE.current.props.value;
         detail['mau'] = MAU.current.props.value;
-        detail['soluong'] = SOLUONG.current.ariaValueNow;
-        detail['giagiam'] = '0';
+        detail['soluong'] = parseInt(SOLUONG.current.ariaValueNow);
+        detail['giagiam'] = 0;
         setAdd([...add, { ...detail }]);
         setID(tam);
         console.log(detail);
@@ -454,7 +454,7 @@ const AddProduct = (props) => {
                                 label="Màu"
                             //rules={[{ required: false }]}
                             >
-                                <Select ref={MAU} style={{ width: 100 }}>
+                                {/* <Select ref={MAU} style={{ width: 100 }}>
                                     {mau.map((item) => {
                                         return (
                                             <>
@@ -462,7 +462,8 @@ const AddProduct = (props) => {
                                             </>
                                         )
                                     })}
-                                </Select>
+                                </Select> */}
+                                <Input ref={MAU} style={{width: 100}}/>
                             </Form.Item>
                             <Button className="btn-detail" type="primary" onClick={addDetail}>Thêm chi tiết</Button>
                         </Form>

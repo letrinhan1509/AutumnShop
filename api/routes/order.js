@@ -23,6 +23,7 @@ router.get('/so-dien-thoai/:phone', orderController.getListOrderPhone); // Đơn
 
 router.post("/pay-momo", orderController.postPaymentMomo);
 router.post("/ket-qua-thanh-toan", orderController.postResult);
+
 router.post('/thong-ke-don-hang', orderController.postOrderStatistics);
 
 router.delete("/GHN/cancel/:id", orderController.deleteOrderGHN);   // Huỷ đơn hàng vận chuyển từ GHN
