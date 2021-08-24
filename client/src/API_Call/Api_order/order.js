@@ -16,6 +16,10 @@ const order = {
         const url = `/khach-hang/${id}`;
         return AxiosOrder.get(url);
     },
+    getOrder_fail: (phone) => {
+        const url = `/so-dien-thoai/${phone}`;
+        return AxiosOrder.get(url);
+    },
     //(Tạo 1 đơn hàng của khách hàng)
     addOrder: (values, token) => {
         const url = "/";

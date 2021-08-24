@@ -53,7 +53,7 @@ const discount = {
     },
     //(Cập nhật chương trình khuyến mãi theo sản phẩm)
     updateSale: (values, token) => {
-        const url = "/sanpham";
+        const url = "/san-pham";
         return AxiosDiscount.put(url ,values, {
             headers: {
                 Token: `${token}`,

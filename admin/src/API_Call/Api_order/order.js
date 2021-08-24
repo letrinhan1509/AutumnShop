@@ -56,11 +56,6 @@ const order = {
             },
         });
     },
-    //(Thống kê doanh thu bán hàng và đơn hàng)
-    statistical: () => {
-        const url = "/thong-ke";
-        return AxiosOrder.get(url);
-    }
 };
 
 export default order;

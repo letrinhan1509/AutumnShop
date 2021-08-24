@@ -1,26 +1,37 @@
 import React, { useState, useEffect } from 'react';
 import { Image, Row, Col, Input, Button, message, Select, Table } from 'antd';
 import Meta from "antd/lib/card/Meta";
-import { Link } from "react-router-dom";
+import { Link , useHistory} from "react-router-dom";
 import "Container/scss/orderDetail.scss";
 
 const { TextArea } = Input;
 
 const OrderDetail = (props) => {
-    const ORDER = JSON.parse(localStorage.getItem("order"));
+    let ORDER = JSON.parse(localStorage.getItem("order"));
+    const orderStatis = JSON.parse(localStorage.getItem("orderStatis"));
+    if(orderStatis !== null){
+        ORDER = orderStatis;
+    }
+    const link = useHistory();
     var date = new Date(ORDER.ngaydat);
     console.log(date.toLocaleString());
     var ngayGiao = new Date(ORDER.ngaygiao);
 
     const back = () => {
-        localStorage.removeItem("order");
+        if(orderStatis !== null){
+            link.push('/danh-sach-thong-ke');
+            localStorage.removeItem("orderStatis");
+        }else{
+            link.push('/danh-sach-don-hang');
+            localStorage.removeItem("order");
+        }
     }
 
     return (
         <div className="wrapper" >
             <Row className="btn-box">
                 <Button onClick={back} className="pay" type="primary">
-                    <Link to="/danh-sach-don-hang">Trở về</Link>
+                    Trở về
                 </Button>
             </Row>
             <Row className="box">
@@ -29,6 +40,7 @@ const OrderDetail = (props) => {
                     <ul>
                         {/* <li>Mã Khách hàng: {ORDER.makh}</li> */}
                         <li><span>Mã đơn hàng: </span>{ORDER.madonhang}</li>
+                        {ORDER.code_GHN === null ? ("") : (<li><span>Mã GHN: </span>{ORDER.code_GHN}</li>)}
                         <li><span>Tên khách hàng: </span>{ORDER.tenkh}</li>
                         <li><span>Điện thoại: </span>{ORDER.sodienthoai}</li>
                         <li><span>Email: </span>{ORDER.email}</li>

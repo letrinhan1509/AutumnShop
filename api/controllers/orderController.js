@@ -690,6 +690,7 @@ exports.postOrderStatistics = catchAsync(async (req, res, next) => {
     try {
         let month = req.body.month;
         let year = req.body.year;
+        console.log(req.body);
         if(!month && !year) {
             return res.status(400).json({ 
                 status: "Fail", 

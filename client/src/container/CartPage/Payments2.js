@@ -98,7 +98,7 @@ const Payments2 = (props) => {
           );
         });
     } else {
-      /* Oder
+      Oder
         .addOrder(values)
         .then(async (res) => {
           if (res.data.status === "Success") {
@@ -118,7 +118,7 @@ const Payments2 = (props) => {
           message.error(
             `Đặt hàng thất bại ! \n ${err.response.data.message}`
           );
-        }); */
+        });
     }
   };
 
@@ -185,9 +185,9 @@ const Payments2 = (props) => {
                       <li><span>Điện thoại: </span>{order.sodienthoai}</li>
                       <li><span>E-mail: </span>{order.email}</li>
                       <li><span>Địa chỉ: </span>{order.address}</li>
-                      <li><span>Phường/Xã: </span>{WARD}</li>
-                      <li><span>Quận/Huyện: </span>{DISTRICT}</li>
-                      <li><span>Tỉnh/Thành Phố: </span>{CITY}</li>
+                      <li><span>Phường/Xã: </span>{order.GHN.ward}</li>
+                      <li><span>Quận/Huyện: </span>{order.GHN.district}</li>
+                      <li><span>Tỉnh/Thành Phố: </span>{order.GHN.city}</li>
                     </ul>
                   </div>
                   <div className="col-one-box2">
