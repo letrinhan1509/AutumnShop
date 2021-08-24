@@ -37,20 +37,14 @@ const tailFormItemLayout = {
 const EditSale = (props) => {
     const token = localStorage.getItem("token");
     const saleID = JSON.parse(localStorage.getItem('saleID'));
+    //const chitietKM = JSON.parse(saleID.chitietKM);
     console.log(saleID);
     const valueOption = useRef(null);
     const [form] = Form.useForm();
     const history = useHistory();
     const DETAIL = useRef(null);
-    const [datestart, setDatestart] = useState("");
-    const [dateEnd, setDateEnd] = useState("");
-    //let a = "";
-    function startChange(date) {
-        if (date !== null) {
-            setDatestart(date._d);
 
-        }
-    }
+    const [dateEnd, setDateEnd] = useState("");
     function endChange(date) {
         if (date !== null) {
             setDateEnd(date._d);
@@ -63,12 +57,11 @@ const EditSale = (props) => {
     };
 
     const update = (values) => {
-        /* if (dateStart !== "" && dateEnd !== "") {
-            values["ngaybd"] = moment(dateStart).format('YYYY-MM-DD');
+        //values["ngaybd"] = moment(saleID.ngaybd).format('YYYY-MM-DD');
+        /* if (dateEnd !== "") {
             values["ngaykt"] = moment(dateEnd).format('YYYY-MM-DD');
         } else {
-            values["ngaybd"] = moment(dateBD).format('YYYY-MM-DD');
-            values["ngaykt"] = moment(dateKT).format('YYYY-MM-DD');
+            values["ngaykt"] = moment(saleID.ngaykt).format('YYYY-MM-DD');
         }
         values["trangthai"] = title;
         console.log(values);
@@ -105,156 +98,22 @@ const EditSale = (props) => {
         })
         console.log(listPro);
     };
-    const [add, setAdd] = useState([]);
-
-    const [chitiets, setChitiets] = useState("");
-    function ChangeDetail(value) {
-        setChitiets(value);
-    }
-    const [proTemp, setProTemp] = useState([]);
-    const addTemp = (e) => {
-        let ma = e.currentTarget.dataset.id;
-        product.getid(ma).then((res) => {
-            if (res.data.status === "Success") {
-                const ct = JSON.parse(res.data.dataSpham.chitiet);
-                let newArr = [];
-                let arrChiTiet = [];
-                if (proTemp.length > 0) {
-                    newArr = [...proTemp];
-                }
-                const existMa = proTemp.find((x) => x.masp === res.data.dataSpham.masp)
-                if (!existMa) {
-                    arrChiTiet.push({
-                        ...ct.find(x => x.id === chitiets)
-                    })
-                    newArr.push({
-                        ...res.data.dataSpham,
-                        chitiet: arrChiTiet
-                    });
-                    setProTemp(newArr)
-                }
-                else {
-                    if (proTemp.length > 0) {
-                        arrChiTiet = [...existMa.chitiet];
-                    }
-                    const tam = ct.find((x) => x.id === chitiets);
-                    const existChiTiet = existMa.chitiet.find((x) => x.id === chitiets && x.mau === tam.mau && x.size === tam.size);
-                    if (!existChiTiet) {
-                        arrChiTiet.push({
-                            ...ct.find(x => x.id === chitiets)
-                        })
-                        const replaceIndex = newArr.findIndex((x) => x.masp === res.data.dataSpham.masp);
-                        newArr.splice(replaceIndex, 1, {
-                            ...res.data.dataSpham,
-                            chitiet: arrChiTiet
-                        })
-                        setProTemp(newArr)
-                    }
-                    else {
-                        message.error("Sản phẩm đã được thêm!");
-                    }
-                }
-            }
-        })
-    }
-
-    const columns = [
-        {
-            title: 'Mã',
-            dataIndex: 'masp',
-            key: 'masp',
-        },
-        {
-            title: 'Tên',
-            dataIndex: 'tensp',
-            key: 'tensp',
-        },
-        {
-            title: 'Giá',
-            dataIndex: 'gia',
-            key: 'gia',
-        },
-        {
-            title: 'Chi tiết KM',
-            dataIndex: 'chitiet',
-            key: 'chitiet',
-            render: (size, pro) => {
-                let chitiet = JSON.parse(pro.chitiet);
-                console.log(chitiet);
-                return (
-                    <Select ref={DETAIL} onChange={ChangeDetail} style={{ width: 250 }}>
-                        {chitiet.map((item) => {
-                            return (
-                                <>
-                                    <Option value={item.id}>size: {item.size} - Màu: {item.mau} - Số lượng: {item.soluong}</Option>
-                                </>
-                            )
-                        })}
-                    </Select>
-                );
-            }
-        },
-        {
-            dataIndex: "masp",
-            key: "masp",
-            render: masp => (<div className="btn-box"><Button data-id={masp} onClick={addTemp} type="primary"><PlusOutlined /></Button></div>)
-        }
-    ];
-
-    //const demo = [];
-    const [lenght, setLenght] = useState(0);
-    const [id, setID] = useState(0);
-    //let id = 0;
-
-    const thempro = () => {
-        console.log(proTemp);
-        //proTemp !== ""
-        let chietkhau = valueOption.current.props.value;
-        if (proTemp !== "" && chietkhau !== "") {
-            let tam = id + 1;
-            let value = []
-            value['id'] = tam;
-            value['sanpham'] = proTemp;
-            value['chietkhau'] = chietkhau;
-            console.log(value);
-            setAdd([...add, { ...value }]);
-            setID(tam);
-            setProTemp([]);
-        } else {
-            message.error("Bạn chưa thêm sản phẩm hoặc chiết khấu !");
-        }
-
-        //setlistPro([]);
-        //document.getElementById("P").value = "";
-    };
-
+    const ctKM = saleID.chitietKM;
+    const [add, setAdd] = useState(ctKM);
+    const [delSale, setDelSale] = useState([]);
+    
     const { confirm } = Modal;
-    function showDeleteProduct(item) {
-        confirm({
-            title: 'Bạn thật sự muốn xóa khuyến mãi này?',
-            okText: 'Xóa',
-            okType: 'danger',
-            cancelText: 'Không',
-            onOk() {
-                setProTemp(
-                    proTemp.filter((x) => x.masp !== item.masp)
-                );
-            },
-            onCancel() {
-                console.log('Cancel');
-            },
-        });
-    }
-
     function showDeleteSale(item) {
+        console.log(item);
         confirm({
             title: 'Bạn thật sự muốn xóa khuyến mãi này?',
             okText: 'Xóa',
             okType: 'danger',
             cancelText: 'Không',
             onOk() {
+                setDelSale([...delSale, item.mact]);
                 setAdd(
-                    add.filter((x) => x.id !== item.id)
+                    add.filter((x) => x.mact !== item.mact)
                 );
             },
             onCancel() {
@@ -277,6 +136,10 @@ const EditSale = (props) => {
         });
     };
 
+    const [hide, setHide] = useState(false);
+    const changeNgaykt = () => {
+        setHide(!hide);
+    }
 
     return (
         <>
@@ -290,6 +153,11 @@ const EditSale = (props) => {
                             name="register"
                             onFinish={update}
                             scrollToFirstError
+                            initialValues={{
+                                tenkm: `${saleID.tenkm}`,
+                                ghichu: `${saleID.ghichu}`,
+                                ngaykt: `${saleID.ngaykt}`,
+                            }}
                         >
                             <Form.Item
                                 name="tenkm"
@@ -324,7 +192,7 @@ const EditSale = (props) => {
                                     },
                                 ]}
                             >
-                                <DatePicker onChange={startChange} />
+                                <Input value={saleID.ngaybd} disabled style={{ width: 150, color: 'black' }} />
                             </Form.Item>
                             <Form.Item
                                 label="Ngày kết thúc"
@@ -335,7 +203,17 @@ const EditSale = (props) => {
                                     },
                                 ]}
                             >
-                                <DatePicker onChange={endChange} />
+                                {hide === false ? (
+                                    <>
+                                        <Input value={saleID.ngaykt} disabled style={{ width: 150, color: 'black' }} />
+                                        <Button type="primary" onClick={changeNgaykt}>Đổi</Button>
+                                    </>
+                                ) : (
+                                    <>
+                                        <DatePicker onChange={endChange} />
+                                        <Button type="primary" onClick={changeNgaykt}>Đổi</Button>
+                                    </>
+                                )}
                             </Form.Item>
                             <Form.Item
                                 label="Trạng thái"
@@ -358,156 +236,61 @@ const EditSale = (props) => {
                                         Tạo chương trình
                                     </Button>
                                 )}
-
                             </Form.Item>
                         </Form>
                     </div>
                     <div className="col-two">
-                        <Form
-                            onFinish={thempro}
-                            id="themproduct"
-                        >
-
-                            <Row style={{ display: 'flex', justifyContent: 'space-evenly' }}>
-                                <Form.Item
-                                    label="Loại sản phẩm"
-                                    rules={[
-                                        {
-                                            required: true,
-                                            message: 'Vui lòng chọn loại sản phẩm!',
-                                        },
-                                    ]}
-                                >
-                                    <Select onChange={getSP} style={{ width: 150 }}>
-                                        {listTypes.map((item) => {
+                        <Row className="add-sale">
+                            {
+                                add.length !== 0 ? (
+                                    <>
+                                        <h1 >CHƯƠNG TRÌNH KHUYẾN MÃI</h1>
+                                        {add.map((item) => {
+                                            const chitiet_km = JSON.parse(item.chitiet_km);
                                             return (
                                                 <>
-                                                    <Option value={item.maloai}>{item.tenloai}</Option>
-                                                </>
-                                            )
-                                        })}
-                                    </Select>
-                                </Form.Item>
-                                <Form.Item
-                                    name="chietkhau"
-                                    id="persen"
-                                    label="Chiết khấu"
-                                    rules={[
-                                        {
-                                            required: true,
-                                            message: 'Vui lòng chọn chiết khấu!',
-                                        },
-                                    ]}
-                                >
-                                    {/* <Select onChange={plusID}>
-                                    {chietkhau.map((item) => {
-                                        return (
-                                            <>
-                                                <Option ref={valueOption} value={item.key}>{item.persen}</Option>
-                                            </>
-                                        )
-                                    })}
-                                </Select> */}
-                                    <Input ref={valueOption} style={{ width: 150 }} />
-                                </Form.Item>
-                            </Row>
-                            <Row className="add-sale">
-                                {
-                                    proTemp !== "" ? (
-                                        <>
-                                            {proTemp.map((item) => {
-                                                return (
-                                                    <>
-                                                        {/* <Col>
-                                                            <Button onClick={() => showDeleteProduct(item)} type="primary" danger>
-                                                                <CloseOutlined />
-                                                            </Button>
-                                                        </Col> */}
-                                                        <Col className="box-selected">
-                                                            {/* <p>{item.id}</p> */}
-                                                            <Row className="title">
-
-                                                            </Row>
-                                                            <Row className="product-inf">
-                                                                <Col><span>Mã: </span>{item.masp}</Col>
-                                                                <Col><span>Tên: </span>{item.tensp}</Col>
-                                                                <Col><span>Giá: </span>{item.gia}</Col>
-                                                                <Col>
-                                                                    <Button onClick={() => showDeleteProduct(item)} size="small" type="primary" danger>
+                                                    <Col className="box-selected">
+                                                        {/* <p>{item.id}</p> */}
+                                                        <Row className="title">
+                                                            <Col>
+                                                                {add.length === 1 ? (
+                                                                    <Button onClick={() => showDeleteSale(item)} size="small" type="primary" danger disabled>
                                                                         <CloseOutlined />
                                                                     </Button>
-                                                                </Col>
-                                                            </Row>
-                                                            <ul className="product-detail">
-                                                                {item.chitiet.map((ct) => (
-                                                                    <li style={{ marginTop: 10 }}>
-                                                                        <span>Size: {ct.size}</span>
-                                                                        <span style={{ marginLeft: 50 }}>Màu: {ct.mau}</span>
-                                                                        <span style={{ marginLeft: 50 }}>Số lượng: {ct.soluong}</span>
-                                                                    </li>
-                                                                ))}
-                                                            </ul>
-                                                        </Col>
-                                                    </>
-                                                );
-                                            })}
-                                        </>
-                                    ) : ("")
-                                }
-                            </Row>
-                            <Table /*rowSelection={rowSelection}*/ rowKey={listPro => listPro.masp} dataSource={listPro} columns={columns} pagination={{ pageSize: 5 }} />
-                            <Button onClick={thempro} >Thêm chương trình</Button>
-                            {/* <Row className="sale-title">
-                                <h1 >CHƯƠNG TRÌNH ĐÃ THÊM</h1>
-                            </Row> */}
-                            <Row className="add-sale">
-                                {
-                                    add.length !== 0 ? (
-                                        <>
-                                            <h1 >CHƯƠNG TRÌNH ĐÃ THÊM</h1>
-                                            {add.map((item) => {
-                                                return (
-                                                    <>
-
-                                                        <Col className="box-selected">
-                                                            {/* <p>{item.id}</p> */}
-                                                            <Row className="title">
-                                                                <Col>
+                                                                ) : (
                                                                     <Button onClick={() => showDeleteSale(item)} size="small" type="primary" danger>
                                                                         <CloseOutlined />
                                                                     </Button>
-                                                                </Col>
-                                                                <Col><span>Chiết khấu: </span>{item.chietkhau}</Col>
-                                                            </Row>
-                                                            {item.sanpham.map((sp) => {
-                                                                return (
-                                                                    <>
-                                                                        <Row className="product-inf" style={{margin: 0}}>
-                                                                            <Col><span>Mã: </span>{sp.masp}</Col>
-                                                                            <Col><span>Tên: </span>{sp.tensp}</Col>
-                                                                            <Col><span>Giá: </span>{sp.gia}</Col>
-                                                                        </Row>
-                                                                        <ul className="product-detail" style={{marginLeft: 25}}>
-                                                                            {sp.chitiet.map((ct) => (
-                                                                                <li style={{ marginTop: 10 }}>
-                                                                                    <span>Size: {ct.size}</span>
-                                                                                    <span style={{ marginLeft: 50 }}>Màu: {ct.mau}</span>
-                                                                                    <span style={{ marginLeft: 50 }}>Số lượng: {ct.soluong}</span>
-                                                                                </li>
-                                                                            ))}
-                                                                        </ul>
-                                                                    </>
-                                                                );
-                                                            })}
-                                                        </Col>
-                                                    </>
-                                                );
-                                            })}
-                                        </>
-                                    ) : ("")
-                                }
-                            </Row>
-                        </Form>
+                                                                )}
+                                                            </Col>
+                                                            <Col><span>Chiết khấu: </span>{item.chietkhau}</Col>
+                                                        </Row>
+                                                        <Row className="product-inf" style={{ margin: 0 }}>
+                                                            <Col><span>Mã: </span>{item.masp}</Col>
+                                                            <Col><span>Giá: </span>{item.giakm}</Col>
+                                                        </Row>
+                                                        {chitiet_km.map((sp) => {
+                                                            return (
+                                                                <>
+
+                                                                    <ul className="product-detail" style={{ marginLeft: 25 }}>
+                                                                        <li style={{ marginTop: 10 }}>
+                                                                            <span>Size: {sp.size}</span>
+                                                                            <span style={{ marginLeft: 50 }}>Màu: {sp.mau}</span>
+                                                                            <span style={{ marginLeft: 50 }}>Số lượng: {sp.soluong}</span>
+                                                                        </li>
+                                                                    </ul>
+                                                                </>
+                                                            );
+                                                        })}
+                                                    </Col>
+                                                </>
+                                            );
+                                        })}
+                                    </>
+                                ) : ("")
+                            }
+                        </Row>
                     </div>
                 </div>
             </div>

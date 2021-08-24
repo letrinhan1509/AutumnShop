@@ -1,4 +1,4 @@
-import { Col, Layout, Row, Rate, Statistic, Select, Button, Card, Carousel, Tabs, Comment, List, Form, Input, Avatar, message, Radio, Menu, notification } from "antd";
+import { Col, Layout, Row, Rate, Statistic, Select, Button, Card, Carousel, Tabs, Comment, List, Form, Input, Avatar, message, Radio, Menu, notification, Image } from "antd";
 import moment from 'moment';
 import { ShoppingCartOutlined, HeartOutlined, FacebookOutlined, TwitterOutlined, EditOutlined } from '@ant-design/icons';
 import React, { createContext, useState, useEffect } from 'react';
@@ -17,7 +17,7 @@ export const DataContext = createContext()
 const Select_Product = (props) => {
     const User = JSON.parse(localStorage.getItem('user'));
     const token = localStorage.getItem('token');
-    const detail = JSON.parse(localStorage.getItem('detail'));
+    let detail = JSON.parse(localStorage.getItem('detail'));
     const chitiet = JSON.parse(detail.chitiet);
     const { id } = useParams();
     const [sizeID, setSizeID] = useState("");
@@ -52,11 +52,13 @@ const Select_Product = (props) => {
     let visible = 4;
     const [ListComment, setListComment] = useState([]);
 
-
+    const [imgDetail, setImgDetail] =  useState([]);
     useEffect(() => {
         PRODUCT.getid(id).then((res) => {
             if (res.data.status === "Success") {
                 console.log(res.data.dataSpham);
+                let ct = JSON.parse(res.data.dataSpham.hinhchitiet);
+                setImgDetail(ct);
             }
         })
         console.log(detail);
@@ -394,7 +396,7 @@ const Select_Product = (props) => {
                 error('error');
             })
     };
-
+//<Image name={detail.id} src={item.link} width={120} src={detail.hinh} alt="product" />
     return (
         <>
             <Row className="cover-one">
@@ -407,7 +409,10 @@ const Select_Product = (props) => {
                                 </Col>
                             </Row>
                             <Row className="img-change">
-                                <Col className="hinh"><img name={detail.id} src={detail.hinh} alt="product" /*onClick={(e) => handleTab(e.file, e)}*/ /></Col>
+                                <Col className="hinh"><Image name={detail.id} src={detail.link} height={80} width={80} src={detail.hinh} alt="product" /*onClick={(e) => handleTab(e.file, e)}*/ /></Col>
+                                {imgDetail.map((item) => (
+                                    <Col className="hinh"><Image width={80} height={80} name={item.ten} src={item.link} alt="product" /*onClick={(e) => handleTab(e.file, e)}*/ /></Col>
+                                ))}
                             </Row>
                         </Col>
                         <Col className="imfo-col">

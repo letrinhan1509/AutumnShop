@@ -281,7 +281,7 @@ const Statis = (props) => {
                         </Select>
                     </div>
                     <div className="search2">
-                        <span>Chọn năm: </span>
+                        <span style={{ marginTop: 5}}>Chọn năm: </span>
                         <Select style={{ width: 100 }} onChange={changeYears}>
                             {Years.map((item) => {
                                 return (

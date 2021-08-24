@@ -59,6 +59,7 @@ const EditProduct = (props) => {
     const { TextArea } = Input;
     const ProductEdit = JSON.parse(localStorage.getItem("product"))
     const chitiet = JSON.parse(ProductEdit.chitiet);
+    const hinhchitiet = JSON.parse(ProductEdit.hinhchitiet);
     const [ImgEdit, setImgEdit] = useState(ProductEdit.hinh);
     const [imageName, setImageName] = useState("");
     const [fileList, setFileList] = useState([]);
@@ -135,6 +136,66 @@ const EditProduct = (props) => {
         });
     }
 
+    const [fileDetail, setFileDetail] = useState([]);
+    const [linkDe, setLinkDe] = useState(hinhchitiet);
+    const [del, setDel] = useState(hinhchitiet);
+    const beforeUploadDe = file => {
+        setFileDetail(fileDetail.concat(file));
+        return false;
+    }
+    const handleDetail = file => {
+        console.log("file.file.name", file.file.name);
+        console.log(fileDetail);
+        const exist = del.find((x) => x.ten === file.file.name);
+        if (file.fileList.length !== 0) {
+            if (!exist) {
+                const upload = storage.ref(`ProductDetail_Img/${fileDetail[0].name}`).put(fileDetail[0]);
+                upload.on(
+                    "state_changed",
+                    snapshot => { },
+                    error => {
+                        console.log(error);
+                    },
+                    () => {
+                        storage
+                            .ref("ProductDetail_Img")
+                            .child(fileDetail[0].name)
+                            .getDownloadURL()
+                            .then(url => {
+                                console.log("ulr:", url);
+                                console.log("namehinh:", fileDetail[0].name);
+                                setLinkDe([...linkDe, { link: url, ten: fileDetail[0].name }]);
+                                setDel([...linkDe, { link: url, ten: fileDetail[0].name }]);
+                                setFileDetail([]);
+                            });
+                        message.success("Tải ảnh thành công!");
+                    }
+                );
+            }
+        }
+    };
+    const onRemoveDe = file => {
+        console.log(file.name);
+        const del = storage.ref(`ProductDetail_Img/${file.name}`);
+        const nametemp = file.name;
+        del.delete().then((res) => {
+            setLinkDe(linkDe.filter((x) => x.ten !== nametemp));
+            message.success("Đã xóa ảnh!");
+        }).catch((error) => {
+            console.log(error);
+        });
+    };
+
+    const deleteImgDe = (e) => {
+        const del = storage.ref(`ProductDetail_Img/${e}`);
+        del.delete().then((res) => {
+            setLinkDe(linkDe.filter((x) => x.ten !== e));
+            message.success("Đã xóa ảnh!");
+        }).catch((error) => {
+            console.log(error);
+        });
+    }
+
     const update = (values) => {
         values['masp'] = ProductEdit.masp;
         values['chitiet'] = JSON.stringify(add);
@@ -148,8 +209,10 @@ const EditProduct = (props) => {
         } else {
             values['img'] = ProductEdit.hinh;
         }
+        values['hinhchitiet'] = JSON.stringify(linkDe);
+        console.log(linkDe);
         console.log(values);
-        product.updatePro(values, token).then((res) => {
+        /* product.updatePro(values, token).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message)
                 if (link !== "") {
@@ -168,7 +231,7 @@ const EditProduct = (props) => {
         })
             .catch(err => {
                 message.error(`Sửa sản phẩm thất bại!\n ${err.response.data.message}`);
-            })
+            }) */
     };
 
 
@@ -388,6 +451,40 @@ const EditProduct = (props) => {
                     </Upload>
                 </Form.Item>
                 <Form.Item
+                    name="hinhct"
+                    label="Ảnh chi tiết"
+                >
+                    {linkDe !== "" ? (
+                        linkDe.map((item) => (
+                            <>
+                                <Image src={item.link} width={120} />
+                                <Button onClick={() => deleteImgDe(item.ten)} type="primary" danger><DeleteOutlined /></Button>
+                            </>
+                        ))
+                    ) : (<span>Chưa có ảnh chi tiết !</span>)}
+                </Form.Item>
+                <Form.Item
+                    name="hinhct"
+                    label=" "
+                    valuePropName="fileList"
+                    getValueFromEvent={normFile}
+
+                >
+                    <Upload
+                        listType="picture"
+                        name='hinhct'
+                        multiple='true'
+                        beforeUpload={beforeUploadDe}
+                        onChange={handleDetail}
+                        onRemove={onRemoveDe}
+                        fileList
+                    >
+                        {linkDe.length === 3 ? (
+                            <Button disabled icon={<UploadOutlined />} >Tải ảnh lên</Button>
+                        ) : (<Button icon={<UploadOutlined />} >Tải ảnh lên</Button>)}
+                    </Upload>
+                </Form.Item>
+                <Form.Item
                     name="mota"
                     label="Mô tả"
                     rules={[
@@ -496,7 +593,7 @@ const EditProduct = (props) => {
                                     )
                                 })}
                             </Select> */}
-                            <Input ref={MAU} style={{width: 100}}/>
+                            <Input ref={MAU} style={{ width: 100 }} />
                         </Form.Item>
                         <Button className="btn-detail" type="primary" onClick={addDetail}>Thêm chi tiết</Button>
                     </Form>
