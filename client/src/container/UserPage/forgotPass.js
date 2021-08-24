@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Input, Button, Checkbox, Row, Col, message } from 'antd';
+import { Form, Input, Button, Checkbox, Row, Col, message, notification } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
 import { useHistory, Link } from "react-router-dom";
 import "container/components-css/Form.scss";
@@ -43,7 +43,13 @@ const uiConfig = {
         firebase.auth.FacebookAuthProvider.PROVIDER_ID
     ]
 };
-
+const compelete = type => {
+    notification[type]({
+        message: 'gửi thành công',
+        description:
+            'Bạn hãy vào email đã yêu cầu để lấy lại mật khẩu mới !',
+    });
+};
 const ForgotPass = () => {
     const history = useHistory();
 
@@ -54,6 +60,7 @@ const ForgotPass = () => {
             .then(async (res) => {
                 console.log(res.data);
                 if (res.data.status === "Success") {
+                    compelete('success');
                     setTimeout(() => {
                         history.push("/dang-nhap")
                     }, 1000)

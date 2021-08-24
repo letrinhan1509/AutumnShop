@@ -137,6 +137,16 @@ const ListOrder = (props) => {
             key: 'madonhang',
         },
         {
+            title: 'Mã GHN',
+            dataIndex: 'code_GHN',
+            key: 'code_GHN',
+            render: code_GHN => {
+                return (
+                    code_GHN === null ? ("") : (code_GHN)
+                );
+            }
+        },
+        {
             title: 'Tên khách hàng',
             dataIndex: 'tenkh',
             key: 'tenkh',
@@ -182,7 +192,8 @@ const ListOrder = (props) => {
                 dataIndex: "madonhang",
                 key: "madonhang",
                 render: madonhang => (<div className="btn-box fix"><Button data-id={madonhang} onClick={loadEdit} type="primary">Sửa</Button></div>)
-            }) : {
+            }) : {},
+        {
             dataIndex: "madonhang",
             key: "madonhang",
             render: madonhang => (<div className="btn-box"><Button data-id={madonhang} onClick={loadDetail} type="primary">Chi tiết</Button></div>)
@@ -232,7 +243,7 @@ const ListOrder = (props) => {
 
     const Create_GHN = (values) => {
         service.map((item) => {
-            if(item.service_id === values.dichvuID) {
+            if (item.service_id === values.dichvuID) {
                 values["service_type_id"] = item.service_type_id;
             }
         });
@@ -245,11 +256,11 @@ const ListOrder = (props) => {
         setVisible(false);
         order.createOrderGHN(values).then(async (res) => {
             if (res.data.status === "Success") {
-                    message.success(res.data.message);
-                } else {
+                message.success(res.data.message);
+            } else {
                 message.error("Tạo đơn hàng trên GHN thất bại !");
-                }
-            })
+            }
+        })
             .catch((err) => {
                 message.error(`\n ${err.response.data.message}`);
             });
@@ -351,25 +362,25 @@ const ListOrder = (props) => {
                             name="rong"
                             label="Rộng"
                         >
-                            <Input style={{ width: 80 }} suffix="cm"/>
+                            <Input style={{ width: 80 }} suffix="cm" />
                         </Form.Item>
                         <Form.Item
                             name="cao"
                             label="Cao"
                         >
-                            <Input style={{ width: 80 }} suffix="cm"/>
+                            <Input style={{ width: 80 }} suffix="cm" />
                         </Form.Item>
                         <Form.Item
                             name="dai"
                             label="Dài"
                         >
-                            <Input style={{ width: 80 }} suffix="cm"/>
+                            <Input style={{ width: 80 }} suffix="cm" />
                         </Form.Item>
                         <Form.Item
                             name="trongluong"
                             label="Trọng lượng"
                         >
-                            <Input style={{ width: 80 }} suffix="g"/>
+                            <Input style={{ width: 80 }} suffix="g" />
                         </Form.Item>
                     </Col>
                     <Form.Item

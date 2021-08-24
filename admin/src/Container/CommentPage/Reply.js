@@ -12,11 +12,18 @@ const Reply = (props) => {
   const token = localStorage.getItem("token");
   const User = JSON.parse(localStorage.getItem('user'));
   const history = useHistory();
-  const detailComment = JSON.parse(localStorage.getItem('detailComment'));
+  const [ok, setOk] = useState(false);
+  let detailComment = JSON.parse(localStorage.getItem('detailComment'));
   let traloi = [];
   if (detailComment[0].traLoiBL.length > 0) {
     traloi = [...detailComment[0].traLoiBL];
   }
+  useEffect(() => {
+    detailComment = JSON.parse(localStorage.getItem('detailComment'));
+    if (detailComment[0].traLoiBL.length > 0) {
+      traloi = [...detailComment[0].traLoiBL];
+    }
+  }, [ok])
   console.log("traloi", traloi);
 
   let values = '';
@@ -25,9 +32,8 @@ const Reply = (props) => {
     comment.replyComment(value, token).then((res) => {
         if (res.data.status === "Success") {
             message.success(res.data.message);
-            setTimeout(() => {
-              history.push('/danh-sach-binh-luan');
-            }, 100)
+            localStorage.setItem('detailComment', JSON.stringify(res.data.comment));
+            setOk(!ok);
         } else {
             message.error(res.data.message)
         }
@@ -43,9 +49,8 @@ const Reply = (props) => {
     comment.updateDeComment(value, token).then((res) => {
         if (res.data.status === "Success") {
             message.success(res.data.message);
-            setTimeout(() => {
-              history.push('/danh-sach-binh-luan');
-            }, 100)
+            localStorage.setItem('detailComment', JSON.stringify(res.data.comment));
+            setOk(!ok);
         } else {
             message.error(res.data.message)
         }
@@ -65,7 +70,8 @@ const Reply = (props) => {
     comment.deleteCommentDe(mact, token).then((res) => {
         if (res.data.status === "Success") {
             message.success(res.data.message);
-            //setListComment(res.data.comment);
+            localStorage.setItem('detailComment', JSON.stringify(res.data.comment));
+            setOk(!ok);
         } else {
             message.error(res.data.message)
         }
@@ -141,7 +147,13 @@ const Reply = (props) => {
             fix === true ? ("") : (<a key="comment-list-reply-to-0" onClick={() => delComment(traloi[0])}>Xóa</a>)
           ]}
           author={traloi[0].ten}
-          avatar={traloi[0].hinh}
+          avatar={
+            <Avatar
+              src={traloi[0].hinhnv}
+              alt={traloi[0].ten}
+              width="40"
+            />
+          }
           content={[
             fix === true ? (
               <Form

@@ -124,6 +124,55 @@ const AddProduct = (props) => {
         });
     };
 
+    const [fileDetail, setFileDetail] = useState([]);
+    const [linkDe, setLinkDe] = useState([]);
+    const [del, setDel] = useState([]);
+    const beforeUploadDe = file => {
+        setFileDetail(fileDetail.concat(file));
+        return false;
+    }
+    const handleDetail = file => {
+        console.log("file.file.name", file.file.name);
+        console.log(fileDetail);
+        const exist = del.find((x) => x.ten === file.file.name);
+        if (file.fileList.length !== 0) {
+            if (!exist) {
+                const upload = storage.ref(`ProductDetail_Img/${fileDetail[0].name}`).put(fileDetail[0]);
+                upload.on(
+                    "state_changed",
+                    snapshot => { },
+                    error => {
+                        console.log(error);
+                    },
+                    () => {
+                        storage
+                            .ref("ProductDetail_Img")
+                            .child(fileDetail[0].name)
+                            .getDownloadURL()
+                            .then(url => {
+                                console.log("ulr:", url);
+                                console.log("namehinh:", fileDetail[0].name);
+                                setLinkDe([...linkDe, { link: url, ten: fileDetail[0].name }]);
+                                setDel([...linkDe, { link: url, ten: fileDetail[0].name }]);
+                                setFileDetail([]);
+                            });
+                        message.success("Tải ảnh thành công!");
+                    }
+                );
+            }
+        }
+    };
+    const onRemoveDe = file => {
+        console.log(file.name);
+        const del = storage.ref(`ProductDetail_Img/${file.name}`);
+        const nametemp = file.name;
+        del.delete().then((res) => {
+            setLinkDe(linkDe.filter((x) => x.ten !== nametemp));
+            message.success("Đã xóa ảnh!");
+        }).catch((error) => {
+            console.log(error);
+        });
+    };
     const size = [
         {
             key: 1,
@@ -195,9 +244,11 @@ const AddProduct = (props) => {
         values["trangthai"] = title;
         values['img'] = link;
         values['imgName'] = imageName.name;
-        values['chitiet'] = JSON.stringify(add);
+        values['hinhct'] = "";
+        values['hinhchitiet'] = linkDe;
+        values['chitiet'] = JSON.stringify(add);  
         console.log(values);
-        product.addproduct(values, token).then((res) => {
+        /* product.addproduct(values, token).then((res) => {
             if (res.data.status === "Success") {
                 message.success(res.data.message)
                 setTimeout(() => {
@@ -205,9 +256,9 @@ const AddProduct = (props) => {
                 }, 2000)
             };
         }).catch(err => {
-                console.log(err.response);
-                message.error(`Thêm thất bại!\n ${err.response.data.message}`)
-            })
+            console.log(err.response);
+            message.error(`Thêm thất bại!\n ${err.response.data.message}`)
+        }) */
     };
     const [add, setAdd] = useState([]);
     const [id, setID] = useState(0);
@@ -221,7 +272,6 @@ const AddProduct = (props) => {
         detail['giagiam'] = 0;
         setAdd([...add, { ...detail }]);
         setID(tam);
-        console.log(detail);
     };
     function showDeleteDetail(item) {
         let IDdel = item.currentTarget.dataset.id;
@@ -351,6 +401,37 @@ const AddProduct = (props) => {
                             fileList
                         >
                             {link !== "" ? (
+                                <Button disabled icon={<UploadOutlined />} >Tải ảnh lên</Button>
+                            ) : (<Button icon={<UploadOutlined />} >Tải ảnh lên</Button>)}
+                        </Upload>
+                    </Form.Item>
+                    <Form.Item
+                        name="hinhct"
+                        label="Ảnh chi tiết"
+                    >
+                        {linkDe !== "" ? (
+                            linkDe.map((item) => (
+                                <Image src={item.link} width={120} />
+                            ))
+                        ) : (<span>Chưa có ảnh chi tiết !</span>)}
+                    </Form.Item>
+                    <Form.Item
+                        name="hinhct"
+                        label=" "
+                        valuePropName="fileList"
+                        getValueFromEvent={normFile}
+
+                    >
+                        <Upload
+                            listType="picture"
+                            name='hinhct'
+                            multiple='true'
+                            beforeUpload={beforeUploadDe}
+                            onChange={handleDetail}
+                            onRemove={onRemoveDe}
+                            fileList
+                        >
+                            {linkDe.length === 3 ? (
                                 <Button disabled icon={<UploadOutlined />} >Tải ảnh lên</Button>
                             ) : (<Button icon={<UploadOutlined />} >Tải ảnh lên</Button>)}
                         </Upload>

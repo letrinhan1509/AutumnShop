@@ -9,24 +9,15 @@ import ghn from 'API_Call/Api_city/city';
 
 const { TextArea } = Input;
 const { Option } = Select;
-const user = JSON.parse(localStorage.getItem("user"));
+
 const Statis = (props) => {
+    const token = localStorage.getItem("token");
     const [form] = Form.useForm();
     const link = useHistory();
     const [ListOrder, setListOrder] = useState([]);
     const [wordSearch, setWordSearch] = useState([]);
-    const [pickUp, setPickUp] = useState([]);
     //API List Order:
-    useEffect(() => {
-        order.getAll().then((res) => {
-            setListOrder(res.data.data);
-            setWordSearch(res.data.data);
-            console.log(res.data.data);
-        })
-        ghn.getAll_pickShiftGHN().then((res) => {
-            setPickUp(res.data.pickShift);
-        })
-    }, []);
+
 
 
     //Redirect sua-san-pham 
@@ -34,7 +25,7 @@ const Statis = (props) => {
         let id = e.currentTarget.dataset.id;
         order.getOrderID(id).then((res) => {
             if (res.data.status === "Success") {
-                localStorage.setItem('order', JSON.stringify(res.data.data));
+                localStorage.setItem('orderStatis', JSON.stringify(res.data.data));
                 setTimeout(() => {
                     link.push('/danh-sach-don-hang/chi-tiet');
                 }, 100)
@@ -74,47 +65,8 @@ const Statis = (props) => {
         }
         console.log(demo);
     }
-    const [pageSize, setPageSize] = useState(4);
-    const size = [
-        {
-            key: 1,
-            PSize: 4,
 
-        },
-        {
-            key: 2,
-            PSize: 6,
-        },
-        {
-            key: 3,
-            PSize: 8,
-        },
-        {
-            key: 3,
-            PSize: 10,
-        }
-    ];
-    const ChangeSize = (e) => {
-        setPageSize(e);
-    };
 
-    const [visible, setVisible] = useState(false);
-    const [oderDetail, setOderDetail] = useState([]);
-    const [service, setService] = useState([]);
-    const TurnOn_GHN = (e) => {
-        let id = e.currentTarget.dataset.id;
-        order.getOrderID(id).then((res) => {
-            if (res.data.status === "Success") {
-                setOderDetail(res.data.data);
-                console.log(res.data.data);
-                let disID = JSON.parse(res.data.data.chitiet);
-                ghn.getAll_ServiceGHN(disID.DistrictID).then((res) => {
-                    setService(res.data.service);
-                })
-            }
-            setVisible(true)
-        });
-    }
 
     const columns = [
         {
@@ -171,6 +123,10 @@ const Statis = (props) => {
     ];
 
     const Months = [
+        {
+            key: 0,
+            value: ""
+        },
         {
             key: 1,
             value: "01"
@@ -230,19 +186,27 @@ const Statis = (props) => {
         setYears(e.target.value);
     }
     const searchStatis = () => {
-        let values = [];
-        values['month'] = months;
-        values['year'] = years;
+        let values = {
+            month: months,
+            year: years
+        };
         console.log(values);
-        /* order.statistical(values).then((res) => {
+        order.getStatistical_Oder(values, token).then((res) => {
             if (res.data.status === "Success") {
-                setWordSearch(res.data.data);
-                console.log(res.data.data);
+                if (res.data.data !== "") {
+                    setListOrder(res.data.data);
+                    setWordSearch(res.data.data);
+                    console.log(res.data);
+                }else{
+                    message.success('Không có dữ liệu thống kê, vui lòng chọn tháng và năm khác !')
+                }
             }
-            //setVisible(true)
-        }); */
+        }).catch(err => {
+            console.log(err.response);
+            message.error(`${err.response.data.message}`);
+        });
     }
-                    
+
 
     return (
         <>
@@ -263,7 +227,7 @@ const Statis = (props) => {
                     </div>
                     <div className="search2">
                         <span>Nhập năm: </span>
-                        <Input style={{width: 100}} onChange={changeYears}/>
+                        <Input style={{ width: 100 }} onChange={changeYears} />
                     </div>
                     <Button onClick={searchStatis} type="primary">Tìm</Button>
                     {/* <div className="search-box">
@@ -271,8 +235,8 @@ const Statis = (props) => {
                         <input placeholder='Nhập tên voucher' style={{ width: 300 }} onChange={e => onChange(e)} />
                     </div> */}
                 </div>
-                <Table className="proItem" dataSource={wordSearch} columns={columns} pagination={{ pageSize: `${pageSize}` }} size="middle" />
-            </div> 
+                <Table className="proItem" dataSource={wordSearch} columns={columns} pagination={{ pageSize: 6 }} size="middle" />
+            </div>
         </>
     );
 }

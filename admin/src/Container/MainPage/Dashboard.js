@@ -1,18 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import moment from 'moment';
-import product from 'API_Call/Api_product/product';
-import catalog from 'API_Call/Api_catalog/catalog';
-import voucher from 'API_Call/Api_discount/discount';
-import admins from 'API_Call/Api_admin/admin';
-import user from 'API_Call/Api_user/user';
-import order from 'API_Call/Api_order/order';
 import { Row, Col, Image } from 'antd';
 import "Container/scss/dashboard.scss";
 import { Link } from 'react-router-dom';
-import { Line, Bar } from 'react-chartjs-2';
+import { Bar } from 'react-chartjs-2';
 import statis from 'API_Call/Api_city/city';
 
 const admin = JSON.parse(localStorage.getItem('user'));
+const token = localStorage.getItem('token');
 console.log(admin);
 const Dashboard = () => {
 
@@ -22,29 +16,15 @@ const Dashboard = () => {
     const [ListVoucher, setListVoucher] = useState([]);
     const [statistical, setStatistical] = useState([]);
     useEffect(() => {
-        product.getAll().then((res) => {
-            setListProduct(res.data.data);
-        });
-        admins.getAll().then((res) => {
-            setListAdmin(res.data.data);
-        });
-        user.getAll().then((res) => {
-            setListUser(res.data.data);
-        });
-        order.statistical().then((res) => {
-            setStatistical(res.data.statistical);
-        });
-        voucher.getAllVoucher().then((res) => {
-            setListVoucher(res.data.voucher);
-        })
-        /* statis.getStatistical().then((res) => {
+        statis.getStatistical(token).then((res) => {
             // Trả về tất cả thống kê:
+            console.log(res.data);
             setListAdmin(res.data.listAdmins);
             setListUser(res.data.listUsers);
             setListProduct(res.data.listProducts);
-            setStatistical(res.data.statistical);
+            setStatistical(res.data.revenueStatistics);
             setListVoucher(res.data.listVoucher);
-        }) */
+        })
     }, []);
 
     return (
@@ -169,7 +149,7 @@ const Dashboard = () => {
                                     mask: <div className="link_product">
 
                                         <span>
-                                            ADMIN: {ListAdmin.length}
+                                            ADMIN: {ListAdmin}
                                         </span>
                                     </div>
                                 }}
@@ -187,7 +167,7 @@ const Dashboard = () => {
                                     mask: <div className="link_product">
 
                                         <span>
-                                            USER: {ListUser.length}
+                                            USER: {ListUser}
                                         </span>
                                     </div>
                                 }}
@@ -205,7 +185,7 @@ const Dashboard = () => {
                                     mask: <div className="link_product">
 
                                         <span>
-                                            PRODUCT: {ListProduct.length}
+                                            PRODUCT: {ListProduct}
                                         </span>
                                     </div>
                                 }}
@@ -223,7 +203,7 @@ const Dashboard = () => {
                                     mask: <div className="link_product">
 
                                         <span>
-                                            VOUCHER: {ListVoucher.length}
+                                            VOUCHER: {ListVoucher}
                                         </span>
                                     </div>
                                 }}

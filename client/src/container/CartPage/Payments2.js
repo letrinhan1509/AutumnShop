@@ -79,7 +79,6 @@ const Payments2 = (props) => {
       values['momo'] = "YES";
     }
 
-    console.log(values);
     Oder
         .addOrder(values)
         .then(async (res) => {
@@ -170,9 +169,9 @@ const Payments2 = (props) => {
                       <li><span>Điện thoại: </span>{order.sodienthoai}</li>
                       <li><span>E-mail: </span>{order.email}</li>
                       <li><span>Địa chỉ: </span>{order.address}</li>
-                      <li><span>Phường/Xã: </span>{WARD}</li>
-                      <li><span>Quận/Huyện: </span>{DISTRICT}</li>
-                      <li><span>Tỉnh/Thành Phố: </span>{CITY}</li>
+                      <li><span>Phường/Xã: </span>{order.GHN.ward}</li>
+                      <li><span>Quận/Huyện: </span>{order.GHN.district}</li>
+                      <li><span>Tỉnh/Thành Phố: </span>{order.GHN.city}</li>
                     </ul>
                   </div>
                   <div className="col-one-box2">

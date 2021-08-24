@@ -6,23 +6,9 @@ import "./components-css/HomeBestseller.scss";
 import cookies from "react-cookies";
 
 
-const { TabPane } = Tabs;
-
-
-
-const { Meta } = Card;
-
-const button = [
-    { name: "all", value: "Tất cả" },
-    { name: "asm", value: "Áo sơ mi" },
-    { name: "ak", value: "Áo Khoác" },
-    { name: "bl", value: "Balo" },
-    { name: "giay", value: "Giày" }
-]
-
-
 const HomeBestseller = (props) => {
     const [ProductHome, setProductHome] = useState(props.ProductHomeS);
+    console.log(ProductHome);
     useEffect(() => {
         setProductHome(props.ProductHomeS)
     }, [props.ProductHomeS])

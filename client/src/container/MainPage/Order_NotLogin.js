@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Image, Row, Col, Input, Button, message, Select, Table } from 'antd';
 import { useHistory, Link } from "react-router-dom";
 import "container/components-css/order.scss";
-import users from 'API_Call/Api_user/user';
+import ORDER from 'API_Call/Api_order/order';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -30,22 +30,25 @@ const Order = (props) => {
     }
     //let demo = ListAdmin;
     const [wordSearch, setWordSearch] = useState([]);
-    /* function onChange(e) {
-        if (e.target.value !== "") {
-            let filter = filterItems(ListAdmin, e.target.value);
-            if (filter !== "") {
-                demo = filter;
-                setWordSearch(demo);
-            } else {
-                demo = ListAdmin;
-                setWordSearch(demo);
+    const [temp, setTemp] = useState("");
+    function onChange(e) {
+        console.log(e.target.value);
+        setTemp(e.target.value);
+    }
+
+    const searchOrder = () => {
+        console.log(temp);
+        ORDER.getOrder_fail(temp).then((res) => {
+            if (res.data.status === "Success") {
+                message.success(res.data.message);
+                console.log(res.data);
+                setWordSearch(res.data.data);
             }
-        } else {
-            demo = ListAdmin;
-            setWordSearch(demo);
-        }
-        console.log(demo);
-    } */
+        })
+            .catch(err => {
+                message.error(`Không tìm thấy đơn hàng!\n ${err.response.data.message}`);
+            })
+    }
     const [pageSize, setPageSize] = useState(6);
     const size = [
         {
@@ -109,6 +112,8 @@ const Order = (props) => {
 
     ];
 
+
+
     return (
         <div className="order">
             <div className="order-wrapper" >
@@ -127,8 +132,8 @@ const Order = (props) => {
                         </Select>
                     </div>
                     <div className="search-box">
-                        <span>Tìm kiếm: </span>
-                        <input placeholder='Nhập số điện thoại của đơn hàng cần tìm' style={{ width: 300 }} /*onChange={e => onChange(e)}*/ />
+                        <input placeholder='Nhập số điện thoại của đơn hàng cần tìm' style={{ width: 300 }} onChange={e => onChange(e)} />
+                        <Button onClick={searchOrder} type="primary" style={{ width: 50 }}>Tìm</Button>
                     </div>
                 </div>
                 <Table className="proItem" dataSource={wordSearch} columns={columns} pagination={{ pageSize: `${pageSize}` }} size="middle" />

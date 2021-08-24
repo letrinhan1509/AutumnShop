@@ -102,6 +102,12 @@ const Payments = (props) => {
       values['sumpay'] = ship + Number(sumCart);
     }
     values['delivery'] = deliveryValue;
+    let GHN = {
+      city: cityView.ProvinceName,
+      district: districtView.DistrictName,
+      ward: wardView.WardName
+    };
+    values['name_GHN'] = GHN;
     console.log(values);
     localStorage.setItem('order', JSON.stringify(values));
     setTimeout(() => {
@@ -133,14 +139,15 @@ const Payments = (props) => {
         message.error(`Áp dụng mã thất bại!\n ${err.response.data.message}`);
       })
   };
-
-
-
   const deleteVoucher = () => {
     localStorage.removeItem("voucher");
     setKhuyenmai([]);
   };
   const sumCart = cartView.reduce((a, c) => a + c.gia * c.soluong, 0);
+
+  const [cityView, setCityView] = useState("");
+  const [districtView, setDistrictView] = useState("");
+  const [wardView, setWardView] = useState("");
 
   const [deliveryValue, setDeliveryValue] = useState("SHOP");
   const [cityGHN, setCityGHN] = useState([])
@@ -157,17 +164,19 @@ const Payments = (props) => {
   const [districtGHN, setDistrictGHN] = useState([]);
   const ChangeCityGHN = (e) => {
     let idCity = e;
+    setCityView(e);
     city.getDistrict_GHN(idCity).then((res) => {
       setDistrictGHN(res.data.district);
+      console.log(res.data);
     })
   };
   //API Phường - Xã GHN
   const [wardGHN, setWardGHN] = useState([]);
-  const ChangeDistrictGHN = (e) => {
+  const ChangeDistrictGHN = (e) => { 
+    setDistrictView(e);
     let idDistrict = e;
     city.getWard_GHN(idDistrict).then((res) => {
       setWardGHN(res.data.ward);
-      console.log(res.data.ward);
     });
     //lấy phí ship
     let sum = 0;
@@ -180,9 +189,24 @@ const Payments = (props) => {
       setShip(res.data.ship);
     })
   };
-  const onClear = (e) => {
-    console.log(e)
+  const changeWardGHN = (e) => {
+    console.log(districtView); 
+    setCityView(cityGHN.find((x) => x.ProvinceID === cityView));
+    setDistrictView(districtGHN.find((x) => x.DistrictID === districtView));
+    setWardView(wardGHN.find((x) => x.WardCode === e));
   }
+
+  const CLICK = () => {
+    console.log(cityView);
+    console.log(districtView);
+    console.log(wardView);
+    let GHN = [];
+    GHN['city'] = cityView.ProvinceName;
+    GHN['district'] = districtView.DistrictName;
+    GHN['ward'] = wardView.WardName;
+    console.log(GHN);
+  }
+
   return (
     <>
       <Layout className="container">
@@ -285,7 +309,7 @@ const Payments = (props) => {
                         id="cityGHN"
                         label="Thành phố"
                       >
-                        <Select onChange={ChangeCityGHN} onClear={onClear}>
+                        <Select onChange={ChangeCityGHN}>
                           {cityGHN.map((item) => {
                             return (
                               <>
@@ -351,7 +375,7 @@ const Payments = (props) => {
                         id="wardGHN"
                         label="Phường - Xã"
                       >
-                        <Select>
+                        <Select onChange={changeWardGHN}>
                           {wardGHN.map((item) => {
                             return (
                               <>
@@ -464,6 +488,7 @@ const Payments = (props) => {
                     <Button className="continue">
                       <Link to="/gio-hang">Quay lại<RollbackOutlined /></Link>
                     </Button>
+                    <Button onClick={CLICK} >aaaaaaaa</Button>
                   </Row>
                 </Col>
               </Form>

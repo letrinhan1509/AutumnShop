@@ -23,8 +23,9 @@ const Select_Product = (props) => {
     const [sizeID, setSizeID] = useState("");
     const [colorID, setColorID] = useState("");
     const [hide, setHide] = useState(true);
-    const [proTemp, setProTemp] = useState("");
+    const [proTemp, setProTemp] = useState([]);
     const [Proadd, setProadd] = useState({});
+    //const [disPrice, setDisPrice] = useState([]);
     function Changesize(value) {
         setSizeID(value);
         let a = chitiet.find((x) => x.size === value);
@@ -46,8 +47,6 @@ const Select_Product = (props) => {
         add['tensp'] = detail.tensp;
         add['size'] = sizeID;
         add['mau'] = value;
-        //add['soluong'] = value;
-        console.log(add);
         setProadd(add);
     }
     let visible = 4;
@@ -348,18 +347,18 @@ const Select_Product = (props) => {
     //Thông báo action
     const compelete = type => {
         notification[type]({
-          message: 'Thêm thành công',
-          description:
-            'Bạn đã thêm sản phẩm vào giỏ hàng !',
+            message: 'Thêm thành công',
+            description:
+                'Bạn đã thêm sản phẩm vào giỏ hàng !',
         });
-      };
-      const error = type => {
+    };
+    const error = type => {
         notification[type]({
-          message: 'Thêm thất bại',
-          description:
-            'Bạn vui lòng thêm lại sản phẩm khác !',
+            message: 'Thêm thất bại',
+            description:
+                'Bạn vui lòng thêm lại sản phẩm khác !',
         });
-      };
+    };
 
     const Usercart = () => {
         let add = {};
@@ -414,19 +413,37 @@ const Select_Product = (props) => {
                         <Col className="imfo-col">
                             <h1>{detail.tensp}</h1>
                             <ul className="vote-star">
-                                <li><Rate allowHalf defaultValue={4.5}/></li>
+                                <li><Rate allowHalf defaultValue={4.5} /></li>
                                 <li><Statistic title="Đánh giá" value={ListComment.length} /></li>
                                 {/* <li><a href="#/">Submit a review</a></li> */}
                             </ul>
                             <div className="sale-imfo">
-                                <Row>
-                                    <Col><p>Giá:</p></Col>
-                                    <Col offset={7}><p>{(detail.gia).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} đ</p></Col>
-                                </Row>
-                                <Row>
-                                    <Col><p>Giảm giá:</p></Col>
-                                    <Col offset={5}><p>{detail.giamgia}% OFF</p></Col>
-                                </Row>
+
+                                {proTemp.length > 0 ? (
+                                    proTemp.giagiam === 0 ? (
+                                        <Row>
+                                            <Col><p>Giá:</p></Col>
+                                            <Col offset={7}><p>{(detail.gia).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} đ</p></Col>
+                                        </Row>
+                                    ) : (
+                                        <>
+                                            <Row className="hide-price">
+                                                <Col><p>Giá:</p></Col>
+                                                <Col className="hide-item" offset={7}><p>{(detail.gia).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} đ</p></Col>
+                                            </Row>
+                                            <Row>
+                                                <Col><p>Giảm giá:</p></Col>
+                                                <Col offset={5}><p>{(proTemp.giagiam).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} đ</p></Col>
+                                            </Row>
+                                        </>
+                                    )
+                                ) : (
+                                    <Row>
+                                        <Col><p>Giá:</p></Col>
+                                        <Col offset={7}><p>{(detail.gia).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} đ</p></Col>
+                                    </Row>
+                                )}
+
                                 <Row>
                                     <Col>
                                         <p>Thương hiệu:</p>
@@ -461,10 +478,10 @@ const Select_Product = (props) => {
                                                     <span>Chọn màu</span>
                                                 </Col>
                                                 <Col>
-                                                    <Select style={{ width: 120 }} onChange={Changecolor}>
+                                                    <Select  style={{ width: 120 }} onChange={Changecolor}>
                                                         {chitiet.map((item) => {
                                                             return (
-                                                                item.size === sizeID ? (<Option key={item.mau} value={item.mau}>{item.mau}</Option>) : ("")
+                                                                item.size === sizeID ? (<Option value={item.mau}>{item.mau}</Option>) : ("")
                                                             );
                                                         })}
                                                     </Select>
@@ -521,7 +538,7 @@ const Select_Product = (props) => {
                             <div className="add-cart">
                                 <Row>
                                     <Col offset={13} span={4}>
-                                        {sizeID !== "" && colorID !== "" ? (
+                                        {(sizeID !== "" && colorID !== "") || (proTemp.soluong === "0") ? (
                                             User === null ? (
                                                 <Button onClick={() => props.Thongbao_Them(Proadd)} className="btn-add" type="primary" icon={<ShoppingCartOutlined />} size={size}>
                                                     Add To Cart
@@ -582,7 +599,7 @@ const Select_Product = (props) => {
                                                     className="card"
                                                     hoverable
                                                     style={{ width: 300 }}
-                                                    cover={<img alt="example" style={{height: 320}} src={item.hinh} />}
+                                                    cover={<img alt="example" style={{ height: 320 }} src={item.hinh} />}
                                                 >
                                                     <Row>
                                                         <Col offset={5}>
